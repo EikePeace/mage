@@ -6,6 +6,7 @@ import mage.abilities.LoyaltyAbility;
 import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility;
 import mage.abilities.effects.*;
+import mage.abilities.effects.common.InfoEffect;
 import mage.abilities.effects.common.SacrificeTargetEffect;
 import mage.abilities.effects.common.continuous.GainAbilityTargetEffect;
 import mage.abilities.effects.common.counter.AddCountersAllEffect;
@@ -17,6 +18,7 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
+import mage.filter.common.FilterControlledPlaneswalkerPermanent;
 import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
 import mage.filter.common.FilterInstantOrSorceryCard;
 import mage.filter.predicate.mageobject.ColorPredicate;
@@ -30,10 +32,7 @@ import mage.game.permanent.token.YoungPyromancerElementalToken;
 import mage.players.Player;
 import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.targetpointer.FixedTarget;
-import mage.target.targetpointer.FixedTargets;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static mage.constants.Outcome.Benefit;
@@ -44,7 +43,7 @@ import static mage.constants.Outcome.Benefit;
 public final class ChandraAcolyteOfFlame extends CardImpl {
 
     private static final FilterPermanent filter
-            = new FilterCreatureOrPlaneswalkerPermanent("red planeswalker you control");
+            = new FilterControlledPlaneswalkerPermanent("red planeswalker you control");
     private static final FilterCard filter2
             = new FilterInstantOrSorceryCard("instant or sorcery card with converted mana cost 3 or less");
 
@@ -67,7 +66,7 @@ public final class ChandraAcolyteOfFlame extends CardImpl {
         this.addAbility(new LoyaltyAbility(new ChandraAcolyteOfFlameEffect(), 0));
 
         // -2: You may cast target instant or sorcery card with converted mana cost 3 or less from your graveyard. If that card would be put into your graveyard this turn, exile it instead.
-        Ability ability = new LoyaltyAbility(new ChandraAcolyteOfFlameGraveyardEffect(), -3);
+        Ability ability = new LoyaltyAbility(new ChandraAcolyteOfFlameGraveyardEffect(), -2);
         ability.addTarget(new TargetCardInYourGraveyard(filter2));
         this.addAbility(ability);
     }
@@ -104,16 +103,23 @@ class ChandraAcolyteOfFlameEffect extends OneShotEffect {
         Token token = new YoungPyromancerElementalToken();
         token.putOntoBattlefield(2, game, source.getSourceId(), source.getControllerId());
 
-        List<Permanent> perms = new ArrayList();
-        token.getLastAddedTokenIds().stream().map(permId -> perms.add(game.getPermanent(permId)));
+        token.getLastAddedTokenIds().stream().forEach(permId -> {
+            Permanent permanent = game.getPermanent(permId);
+            if (permanent == null) {
+                return;
+            }
 
-        ContinuousEffect effect = new GainAbilityTargetEffect(HasteAbility.getInstance(), Duration.Custom);
-        effect.setTargetPointer(new FixedTargets(perms, game));
-        game.addEffect(effect, source);
+            ContinuousEffect effect = new GainAbilityTargetEffect(HasteAbility.getInstance(), Duration.Custom);
+            effect.setTargetPointer(new FixedTarget(permId, game));
+            game.addEffect(effect, source);
 
-        Effect effect2 = new SacrificeTargetEffect();
-        effect.setTargetPointer(new FixedTargets(perms, game));
-        game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect2), source);
+            Effect effect2 = new SacrificeTargetEffect();
+            effect2.setTargetPointer(new FixedTarget(permId, game));
+            game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect2), source);
+
+            // extra info
+            InfoEffect.addInfoToPermanent(game, source, permanent, "<i><b>Warning</b>: It will be sacrificed at the beginning of the next end step</i>");
+        });
 
         return true;
     }

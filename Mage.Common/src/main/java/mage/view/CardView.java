@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * @author BetaSteward_at_googlemail.com
  */
-public class CardView extends SimpleCardView {
+public class CardView extends SimpleCardView implements SelectableObjectView {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,9 +50,9 @@ public class CardView extends SimpleCardView {
     @Expose
     protected String loyalty = "";
     protected String startingLoyalty;
-    protected EnumSet<CardType> cardTypes;
+    protected Set<CardType> cardTypes;
     protected SubTypeList subTypes;
-    protected EnumSet<SuperType> superTypes;
+    protected Set<SuperType> superTypes;
     protected ObjectColor color;
     protected ObjectColor frameColor;
     protected FrameStyle frameStyle;
@@ -731,7 +731,7 @@ public class CardView extends SimpleCardView {
         return subTypes;
     }
 
-    public EnumSet<SuperType> getSuperTypes() {
+    public Set<SuperType> getSuperTypes() {
         return superTypes;
     }
 

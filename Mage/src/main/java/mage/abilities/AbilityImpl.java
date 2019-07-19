@@ -346,23 +346,6 @@ public abstract class AbilityImpl implements Ability {
                 }
             }
         }
-        //20100716 - 601.2e
-        if (sourceObject != null) {
-            sourceObject.adjustCosts(this, game);
-            if (sourceObject instanceof Card) {
-                for (Ability ability : ((Card) sourceObject).getAbilities(game)) {
-                    if (ability instanceof AdjustingSourceCosts) {
-                        ((AdjustingSourceCosts) ability).adjustCosts(this, game);
-                    }
-                }
-            } else {
-                for (Ability ability : sourceObject.getAbilities()) {
-                    if (ability instanceof AdjustingSourceCosts) {
-                        ((AdjustingSourceCosts) ability).adjustCosts(this, game);
-                    }
-                }
-            }
-        }
 
         // this is a hack to prevent mana abilities with mana costs from causing endless loops - pay other costs first
         if (this instanceof ActivatedManaAbilityImpl && !costs.pay(this, game, sourceId, controllerId, noMana, null)) {
@@ -372,6 +355,26 @@ public abstract class AbilityImpl implements Ability {
 
         //20101001 - 601.2e
         if (costModificationActive) {
+
+            // TODO: replace all AdjustingSourceCosts abilities to continuus effect, see Affinity example
+            //20100716 - 601.2e
+            if (sourceObject != null) {
+                sourceObject.adjustCosts(this, game);
+                if (sourceObject instanceof Card) {
+                    for (Ability ability : ((Card) sourceObject).getAbilities(game)) {
+                        if (ability instanceof AdjustingSourceCosts) {
+                            ((AdjustingSourceCosts) ability).adjustCosts(this, game);
+                        }
+                    }
+                } else {
+                    for (Ability ability : sourceObject.getAbilities()) {
+                        if (ability instanceof AdjustingSourceCosts) {
+                            ((AdjustingSourceCosts) ability).adjustCosts(this, game);
+                        }
+                    }
+                }
+            }
+
             game.getContinuousEffects().costModification(this, game);
         } else {
             costModificationActive = true;
@@ -438,11 +441,7 @@ public abstract class AbilityImpl implements Ability {
         if (this instanceof SpellAbility) {
             // A player can't apply two alternative methods of casting or two alternative costs to a single spell.
             switch (((SpellAbility) this).getSpellAbilityCastMode()) {
-                case NORMAL:
-                default:
-                    canUseAlternativeCost = true;
-                    canUseAdditionalCost = true;
-                    break;
+
                 case FLASHBACK:
                 case MADNESS:
                     // from Snapcaster Mage:
@@ -451,6 +450,11 @@ public abstract class AbilityImpl implements Ability {
                     canUseAlternativeCost = false;
                     // You may pay any optional additional costs the spell has, such as kicker costs. You must pay any
                     // mandatory additional costs the spell has, such as that of Tormenting Voice. (2018-12-07)
+                    canUseAdditionalCost = true;
+                    break;
+                case NORMAL:
+                default:
+                    canUseAlternativeCost = true;
                     canUseAdditionalCost = true;
                     break;
             }
