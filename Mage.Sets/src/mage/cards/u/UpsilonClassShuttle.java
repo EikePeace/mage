@@ -18,9 +18,9 @@ import mage.target.common.TargetControlledCreaturePermanent;
  *
  * @author NinthWorld
  */
-public final class UpsilonclassShuttle extends CardImpl {
+public final class UpsilonClassShuttle extends CardImpl {
 
-    public UpsilonclassShuttle(UUID ownerId, CardSetInfo setInfo) {
+    public UpsilonClassShuttle(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{5}");
         
         this.subtype.add(SubType.STARSHIP);
@@ -39,12 +39,12 @@ public final class UpsilonclassShuttle extends CardImpl {
         this.addAbility(ability);
     }
 
-    public UpsilonclassShuttle(final UpsilonclassShuttle card) {
+    public UpsilonClassShuttle(final UpsilonClassShuttle card) {
         super(card);
     }
 
     @Override
-    public UpsilonclassShuttle copy() {
-        return new UpsilonclassShuttle(this);
+    public UpsilonClassShuttle copy() {
+        return new UpsilonClassShuttle(this);
     }
 }
