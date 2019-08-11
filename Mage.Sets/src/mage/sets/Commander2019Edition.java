@@ -183,13 +183,14 @@ public final class Commander2019Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Naya Charm", 195, Rarity.UNCOMMON, mage.cards.n.NayaCharm.class));
         cards.add(new SetCardInfo("Naya Panorama", 263, Rarity.COMMON, mage.cards.n.NayaPanorama.class));
         cards.add(new SetCardInfo("Nightmare Unmaking", 20, Rarity.RARE, mage.cards.n.NightmareUnmaking.class));
-        cards.add(new SetCardInfo("Nightshade Assassin", 123, Rarity.COMMON, mage.cards.n.NightshadeAssassin.class));
+        cards.add(new SetCardInfo("Nightshade Assassin", 123, Rarity.UNCOMMON, mage.cards.n.NightshadeAssassin.class));
         cards.add(new SetCardInfo("Ob Nixilis Reignited", 124, Rarity.MYTHIC, mage.cards.o.ObNixilisReignited.class));
         cards.add(new SetCardInfo("Ohran Frostfang", 33, Rarity.RARE, mage.cards.o.OhranFrostfang.class));
         cards.add(new SetCardInfo("Oona's Grace", 91, Rarity.COMMON, mage.cards.o.OonasGrace.class));
         cards.add(new SetCardInfo("Opulent Palace", 264, Rarity.UNCOMMON, mage.cards.o.OpulentPalace.class));
         cards.add(new SetCardInfo("Overseer of the Damned", 125, Rarity.RARE, mage.cards.o.OverseerOfTheDamned.class));
         cards.add(new SetCardInfo("Overwhelming Stampede", 175, Rarity.RARE, mage.cards.o.OverwhelmingStampede.class));
+        cards.add(new SetCardInfo("Pendant of Prosperity", 56, Rarity.RARE, mage.cards.p.PendantOfProsperity.class));
         cards.add(new SetCardInfo("Phyrexian Rebirth", 68, Rarity.RARE, mage.cards.p.PhyrexianRebirth.class));
         cards.add(new SetCardInfo("Plaguecrafter", 126, Rarity.UNCOMMON, mage.cards.p.Plaguecrafter.class));
         cards.add(new SetCardInfo("Plains", 288, Rarity.LAND, mage.cards.basiclands.Plains.class, NON_FULL_USE_VARIOUS));
@@ -206,6 +207,7 @@ public final class Commander2019Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Ral Zarek", 198, Rarity.MYTHIC, mage.cards.r.RalZarek.class));
         cards.add(new SetCardInfo("Rampaging Baloths", 176, Rarity.RARE, mage.cards.r.RampagingBaloths.class));
         cards.add(new SetCardInfo("Ray of Distortion", 72, Rarity.COMMON, mage.cards.r.RayOfDistortion.class));
+        cards.add(new SetCardInfo("Rayami, First of the Fallen", 48, Rarity.MYTHIC, mage.cards.r.RayamiFirstOfTheFallen.class));
         cards.add(new SetCardInfo("Reality Shift", 92, Rarity.UNCOMMON, mage.cards.r.RealityShift.class));
         cards.add(new SetCardInfo("Refuse // Cooperate", 199, Rarity.RARE, mage.cards.r.RefuseCooperate.class));
         cards.add(new SetCardInfo("Reliquary Tower", 268, Rarity.UNCOMMON, mage.cards.r.ReliquaryTower.class));
