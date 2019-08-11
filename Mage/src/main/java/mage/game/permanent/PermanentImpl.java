@@ -5,6 +5,7 @@ import mage.MageObjectReference;
 import mage.ObjectColor;
 import mage.abilities.Abilities;
 import mage.abilities.Ability;
+import mage.abilities.SpellAbility;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.RestrictionEffect;
@@ -234,6 +235,10 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         }
     }
 
+    /**
+     * @param game can be null, e.g. for cards viewer
+     * @return
+     */
     @Override
     public List<String> getRules(Game game) {
         try {
@@ -261,7 +266,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
 
             // restrict hints
             List<String> restrictHints = new ArrayList<>();
-            if (HintUtils.RESTRICT_HINTS_ENABLE) {
+            if (game != null && HintUtils.RESTRICT_HINTS_ENABLE) {
                 for (Map.Entry<RestrictionEffect, Set<Ability>> entry : game.getContinuousEffects().getApplicableRestrictionEffects(this, game).entrySet()) {
                     for (Ability ability : entry.getValue()) {
                         if (!entry.getKey().applies(this, ability, game)) {
@@ -884,7 +889,13 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         }
         for (MarkedDamageInfo mdi : markedDamage) {
             Ability source = null;
-            if (mdi.sourceObject instanceof Permanent) {
+            if (mdi.sourceObject instanceof PermanentToken) {
+                /* Tokens dont have a spellAbility. We must make a phony one as the source so the events in addCounters
+                 * can trace the source back to an object/controller.
+                 */
+                source = new SpellAbility(null, ((PermanentToken) mdi.sourceObject).name);
+                source.setSourceId(((PermanentToken) mdi.sourceObject).objectId);
+            } else if (mdi.sourceObject instanceof Permanent) {
                 source = ((Permanent) mdi.sourceObject).getSpellAbility();
             }
             addCounters(mdi.counter, source, game);
