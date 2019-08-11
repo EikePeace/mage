@@ -351,7 +351,7 @@ public final class StarWars extends ExpansionSet {
         cards.add(new SetCardInfo("Underworld Slums", 251, Rarity.COMMON, mage.cards.u.UnderworldSlums.class));
         cards.add(new SetCardInfo("Unity of the Droids", 220, Rarity.UNCOMMON, mage.cards.u.UnityOfTheDroids.class));
         cards.add(new SetCardInfo("Unruly Sureshot", 95, Rarity.UNCOMMON, mage.cards.u.UnrulySureshot.class));
-        cards.add(new SetCardInfo("Upsilon-class Shuttle", 414, Rarity.COMMON, mage.cards.u.UpsilonclassShuttle.class));
+        cards.add(new SetCardInfo("Upsilon-class Shuttle", 414, Rarity.COMMON, mage.cards.u.UpsilonClassShuttle.class));
         cards.add(new SetCardInfo("V-Wing", 126, Rarity.COMMON, mage.cards.v.VWing.class));
         cards.add(new SetCardInfo("Vader's Command", 314, Rarity.RARE, mage.cards.v.VadersCommand.class));
         cards.add(new SetCardInfo("Vapor Snag", 62, Rarity.COMMON, mage.cards.v.VaporSnag.class));
