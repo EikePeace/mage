@@ -9,6 +9,10 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class DawnheraldCleric extends CardImpl {
     public DawnheraldCleric(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{W}{W}");

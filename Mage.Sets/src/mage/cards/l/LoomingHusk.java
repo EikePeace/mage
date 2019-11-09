@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class LoomingHusk extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class LoomingHusk extends CardImpl {
 
     public LoomingHusk(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{5}{B}");
@@ -30,4 +34,5 @@ public class LoomingHusk extends CardImpl {
     public LoomingHusk copy(){
         return new LoomingHusk(this);
     }
+
 }

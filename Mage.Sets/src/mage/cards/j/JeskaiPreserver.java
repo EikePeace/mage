@@ -14,7 +14,7 @@ import java.util.UUID;
  *
  * @author jbfitz
  */
-public class JeskaiPreserver extends CardImpl {
+public final class JeskaiPreserver extends CardImpl {
     public JeskaiPreserver(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{U}");
         this.subtype.add(SubType.BIRD);

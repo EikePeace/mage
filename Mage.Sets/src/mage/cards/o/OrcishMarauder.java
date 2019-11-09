@@ -11,7 +11,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class OrcishMarauder extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class OrcishMarauder extends CardImpl {
     public OrcishMarauder(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}");
         this.subtype.add(SubType.ORC);

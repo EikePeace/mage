@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class InnerflameInitiate extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class InnerflameInitiate extends CardImpl {
     public InnerflameInitiate(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{R}");
         this.subtype.add(SubType.HUMAN);

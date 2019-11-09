@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class SavageSwordsman extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class SavageSwordsman extends CardImpl {
     public SavageSwordsman(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}");
         this.subtype.add(SubType.HUMAN);

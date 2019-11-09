@@ -12,7 +12,7 @@ import java.util.UUID;
  *
  * @author jbfitz
  */
-public class FinalVerdict extends CardImpl {
+public final class FinalVerdict extends CardImpl {
     public FinalVerdict(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{W}{W}");
 

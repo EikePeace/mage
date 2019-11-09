@@ -8,7 +8,11 @@ import mage.target.common.TargetCreaturePermanent;
 
 import java.util.UUID;
 
-public class Flameblast extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class Flameblast extends CardImpl {
 
     public Flameblast(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{R}");

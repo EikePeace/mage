@@ -14,7 +14,11 @@ import mage.constants.Zone;
 
 import java.util.UUID;
 
-public class Ruinbringer extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class Ruinbringer extends CardImpl {
     public Ruinbringer(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{R}");
         this.subtype.add(SubType.HUMAN);

@@ -9,8 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class SpeakerOfDestinies extends CardImpl {
-
     public SpeakerOfDestinies(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{G}");
         this.subtype.add(SubType.HUMAN);
@@ -31,5 +34,4 @@ public final class SpeakerOfDestinies extends CardImpl {
     public SpeakerOfDestinies copy(){
         return new SpeakerOfDestinies(this);
     }
-
 }

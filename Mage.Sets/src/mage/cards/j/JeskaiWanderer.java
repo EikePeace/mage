@@ -13,7 +13,7 @@ import java.util.UUID;
  *
  * @author jbfitz
  */
-public class JeskaiWanderer extends CardImpl {
+public final class JeskaiWanderer extends CardImpl {
     public JeskaiWanderer(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{U}");
         this.subtype.add(SubType.HUMAN);

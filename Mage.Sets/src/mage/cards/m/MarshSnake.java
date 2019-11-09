@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class MarshSnake extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class MarshSnake extends CardImpl {
     public MarshSnake(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{B}");
         this.subtype.add(SubType.SNAKE);

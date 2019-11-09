@@ -13,6 +13,10 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class TriumphantBattleseraph extends CardImpl {
     public TriumphantBattleseraph(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}{W}");

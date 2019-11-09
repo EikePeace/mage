@@ -10,7 +10,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class IronhideDisciple extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class IronhideDisciple extends CardImpl {
     public IronhideDisciple(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{R}{R}");
         this.subtype.add(SubType.MINOTAUR);

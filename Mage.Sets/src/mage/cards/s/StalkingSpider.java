@@ -10,8 +10,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class StalkingSpider extends CardImpl {
-
     public StalkingSpider(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{G}{G}");
         this.subtype.add(SubType.SPIDER);
@@ -31,5 +34,4 @@ public final class StalkingSpider extends CardImpl {
     public StalkingSpider copy(){
         return new StalkingSpider(this);
     }
-
 }

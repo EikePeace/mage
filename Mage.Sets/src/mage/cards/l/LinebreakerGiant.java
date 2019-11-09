@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class LinebreakerGiant extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class LinebreakerGiant extends CardImpl {
     public LinebreakerGiant(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}{R}");
         this.subtype.add(SubType.GIANT);

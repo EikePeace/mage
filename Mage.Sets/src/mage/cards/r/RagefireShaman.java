@@ -13,8 +13,11 @@ import mage.constants.Zone;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class RagefireShaman extends CardImpl {
-
     public RagefireShaman(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}{G}");
         this.subtype.add(SubType.MINOTAUR);
@@ -37,5 +40,4 @@ public final class RagefireShaman extends CardImpl {
     public RagefireShaman copy(){
         return new RagefireShaman(this);
     }
-
 }

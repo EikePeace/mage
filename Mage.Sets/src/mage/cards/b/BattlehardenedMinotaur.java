@@ -9,7 +9,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class BattlehardenedMinotaur extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class BattlehardenedMinotaur extends CardImpl {
     public BattlehardenedMinotaur(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}{R}");
         this.subtype.add(SubType.MINOTAUR);

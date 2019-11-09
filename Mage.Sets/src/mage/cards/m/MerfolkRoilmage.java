@@ -16,7 +16,7 @@ import java.util.UUID;
  *
  * @author jbfitz
  */
-public class MerfolkRoilmage extends CardImpl {
+public final class MerfolkRoilmage extends CardImpl {
     public MerfolkRoilmage(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{U}{U}");
         this.subtype.add(SubType.MERFOLK);

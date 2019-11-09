@@ -9,6 +9,10 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class LumberingColossus extends CardImpl {
     public LumberingColossus(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{7}");

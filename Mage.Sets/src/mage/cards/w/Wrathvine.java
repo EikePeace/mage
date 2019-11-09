@@ -10,8 +10,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
+/**
+ *
+ * @author jbfitz
+ */
 public final class Wrathvine extends CardImpl {
-
     public Wrathvine(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{G}{G}");
         this.subtype.add(SubType.ELEMENTAL);
@@ -31,5 +34,4 @@ public final class Wrathvine extends CardImpl {
     public Wrathvine copy(){
         return new Wrathvine(this);
     }
-
 }

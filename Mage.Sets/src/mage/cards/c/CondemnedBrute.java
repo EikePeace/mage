@@ -8,7 +8,11 @@ import mage.constants.SubType;
 
 import java.util.UUID;
 
-public class CondemnedBrute extends CardImpl {
+/**
+ *
+ * @author jbfitz
+ */
+public final class CondemnedBrute extends CardImpl {
     public CondemnedBrute(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{B}");
         this.subtype.add(SubType.ZOMBIE);
