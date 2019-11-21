@@ -1,7 +1,6 @@
 
 package mage.cards.r;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -17,6 +16,8 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.target.TargetPermanent;
 
+import java.util.UUID;
+
 /**
  *
  * @author jeffwadsworth
@@ -31,7 +32,7 @@ public final class RuinGhost extends CardImpl {
         this.toughness = new MageInt(1);
 
         // {W}, {tap}: Exile target land you control, then return it to the battlefield under your control.
-        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new ExileTargetForSourceEffect(), new ManaCostsImpl("{W"));
+        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new ExileTargetForSourceEffect(), new ManaCostsImpl("{W}"));
         ability.addCost(new TapSourceCost());
         ability.addEffect(new ReturnToBattlefieldUnderYourControlTargetEffect(true));
         ability.addTarget(new TargetPermanent(new FilterControlledLandPermanent()));

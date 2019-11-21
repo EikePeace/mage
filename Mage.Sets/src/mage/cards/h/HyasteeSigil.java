@@ -18,7 +18,7 @@ import java.util.UUID;
 
 public final class HyasteeSigil extends CardImpl {
     public HyasteeSigil(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "[1}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{U}");
         this.addAbility(new EntersBattlefieldTriggeredAbility(new DrawCardSourceControllerEffect(1)));
         Ability ability = new SimpleActivatedAbility(new DrawCardSourceControllerEffect(1), new ManaCostsImpl("{2}{U}"));
         ability.addCost(new SacrificeSourceCost());
