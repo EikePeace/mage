@@ -431,6 +431,7 @@ public enum SubType {
     TIBALT("Tibalt", SubTypeSet.PlaneswalkerType),
     UGIN("Ugin", SubTypeSet.PlaneswalkerType),
     URZA("Urza", SubTypeSet.PlaneswalkerType, true), // Unstable
+    VAEN("Vaen", SubTypeSet.PlaneswalkerType, true), // CC18
     VENSER("Venser", SubTypeSet.PlaneswalkerType),
     VIVIEN("Vivien", SubTypeSet.PlaneswalkerType),
     VRASKA("Vraska", SubTypeSet.PlaneswalkerType),

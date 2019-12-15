@@ -22,7 +22,7 @@ public final class OrcishMarauder extends CardImpl {
         this.subtype.add(SubType.WARRIOR);
 
         this.power = new MageInt(2);
-        this.power = new MageInt(2);
+        this.toughness = new MageInt(2);
 
         this.addAbility(HasteAbility.getInstance());
         this.addAbility(new BattleCryAbility());

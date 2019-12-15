@@ -3,6 +3,7 @@ package mage.cards.s;
 import mage.MageInt;
 import mage.abilities.keyword.DeathtouchAbility;
 import mage.abilities.keyword.FlashAbility;
+import mage.abilities.keyword.ReachAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -24,6 +25,7 @@ public final class StalkingSpider extends CardImpl {
 
         this.addAbility(FlashAbility.getInstance());
         this.addAbility(DeathtouchAbility.getInstance());
+        this.addAbility(ReachAbility.getInstance());
     }
 
     public StalkingSpider(final StalkingSpider card){

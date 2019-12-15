@@ -26,7 +26,7 @@ public final class SuljetTheCogMind extends CardImpl {
     }
 
     public SuljetTheCogMind(UUID ownerId, CardSetInfo SetInfo){
-        super(ownerId, SetInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{5}{U}{W}");
+        super(ownerId, SetInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{5}{W}{U}");
 
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.ARTIFICER);

@@ -19,8 +19,8 @@ public final class GoodAsNew extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{G}");
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(filter));
         this.getSpellAbility().addEffect(new ReturnFromGraveyardToHandTargetEffect());
-        this.getSpellAbility().addEffect(new ExileSourceEffect());
         this.getSpellAbility().addEffect(new RechargeEffect());
+        this.getSpellAbility().addEffect(new ExileSourceEffect());
     }
 
     public GoodAsNew(final GoodAsNew card) {

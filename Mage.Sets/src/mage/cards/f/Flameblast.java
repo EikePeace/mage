@@ -19,7 +19,7 @@ public final class Flameblast extends CardImpl {
 
         // Flameblast deals 3 damage to target creature
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
-        this.getSpellAbility().addEffect(new DamageTargetEffect(4));
+        this.getSpellAbility().addEffect(new DamageTargetEffect(3));
     }
 
     public Flameblast(final Flameblast card){
