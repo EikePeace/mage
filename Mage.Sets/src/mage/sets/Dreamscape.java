@@ -44,6 +44,7 @@ public final class Dreamscape extends ExpansionSet {
         cards.add(new SetCardInfo("Yemma's Mandate", 201, Rarity.RARE, mage.cards.y.YemmasMandate.class));
         cards.add(new SetCardInfo("Reev, Equinox Prophet", 220, Rarity.MYTHIC, mage.cards.r.ReevEquinoxProphet.class));
         cards.add(new SetCardInfo("Dreamsteel Servitor", 230, Rarity.COMMON, mage.cards.d.DreamsteelServitor.class));
+        cards.add(new SetCardInfo("Blurred Horizons", 237, Rarity.RARE, mage.cards.b.BlurredHorizons.class));
         cards.add(new SetCardInfo("Plains", 251, Rarity.LAND, mage.cards.basiclands.Plains.class));
         cards.add(new SetCardInfo("Island", 252, Rarity.LAND, mage.cards.basiclands.Island.class));
         cards.add(new SetCardInfo("Swamp", 253, Rarity.LAND, mage.cards.basiclands.Swamp.class));
