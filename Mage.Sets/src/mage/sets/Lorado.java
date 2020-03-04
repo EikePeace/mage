@@ -103,6 +103,7 @@ public final class Lorado extends ExpansionSet {
         cards.add(new SetCardInfo("Hoarding Dragon", 130, Rarity.RARE, mage.cards.h.HoardingDragon.class));
         cards.add(new SetCardInfo("Wrangle", 151, Rarity.COMMON, mage.cards.w.Wrangle.class));
         cards.add(new SetCardInfo("Cultivate", 155, Rarity.COMMON, mage.cards.c.Cultivate.class));
+        cards.add(new SetCardInfo("Expedition Corps", 160, Rarity.MYTHIC, mage.cards.e.ExpeditionCorps.class));
         cards.add(new SetCardInfo("Ironhoof Ox", 164, Rarity.COMMON, mage.cards.i.IronhoofOx.class));
         cards.add(new SetCardInfo("Joint Assault", 165, Rarity.COMMON, mage.cards.j.JointAssault.class));
         cards.add(new SetCardInfo("Naturalize", 174, Rarity.COMMON, mage.cards.n.Naturalize.class));
