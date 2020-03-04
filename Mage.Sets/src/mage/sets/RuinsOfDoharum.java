@@ -29,7 +29,9 @@ public final class RuinsOfDoharum extends ExpansionSet {
 
         cards.add(new SetCardInfo("Cancel", 41, Rarity.COMMON, mage.cards.c.Cancel.class));
         cards.add(new SetCardInfo("Disdainful Stroke", 42, Rarity.COMMON, mage.cards.d.DisdainfulStroke.class));
+
         cards.add(new SetCardInfo("Buried Ruin", 245, Rarity.UNCOMMON, mage.cards.b.BuriedRuin.class));
+
         cards.add(new SetCardInfo("Plains", 250, Rarity.LAND, mage.cards.basiclands.Plains.class));
         cards.add(new SetCardInfo("Island", 251, Rarity.LAND, mage.cards.basiclands.Island.class));
         cards.add(new SetCardInfo("Swamp", 252, Rarity.LAND, mage.cards.basiclands.Swamp.class));
