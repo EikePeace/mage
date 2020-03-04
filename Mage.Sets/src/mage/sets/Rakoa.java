@@ -18,7 +18,7 @@ public final class Rakoa extends ExpansionSet {
     }
 
     private Rakoa() {
-        super("Rakoa", "Rakoa", ExpansionSet.buildDate(2018, 8, 30), SetType.CUSTOM_SET);
+        super("Rakoa", "RAK", ExpansionSet.buildDate(2018, 8, 30), SetType.CUSTOM_SET);
         this.hasBoosters = true;
         this.hasBasicLands = true;
         this.numBoosterLands = 1;

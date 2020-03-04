@@ -2,7 +2,6 @@ package mage.cards.c;
 
 import java.util.UUID;
 
-import mage.abilities.effects.common.continuous.BecomesChosenCreatureTypeTargetEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureTypeTargetEffect;
 import mage.abilities.effects.common.continuous.GainControlTargetEffect;
 import mage.cards.CardImpl;
@@ -19,7 +18,7 @@ import mage.target.common.TargetCreaturePermanent;
  *
  * @author NinthWorld
  */
-public final class Conscription extends CardImpl {
+public final class SwsConscription extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature with power 2 or less");
 
@@ -27,7 +26,7 @@ public final class Conscription extends CardImpl {
         filter.add(new PowerPredicate(ComparisonType.FEWER_THAN, 3));
     }
 
-    public Conscription(UUID ownerId, CardSetInfo setInfo) {
+    public SwsConscription(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{U}{U}");
         
 
@@ -38,12 +37,12 @@ public final class Conscription extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public Conscription(final Conscription card) {
+    public SwsConscription(final SwsConscription card) {
         super(card);
     }
 
     @Override
-    public Conscription copy() {
-        return new Conscription(this);
+    public SwsConscription copy() {
+        return new SwsConscription(this);
     }
 }
