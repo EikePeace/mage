@@ -69,7 +69,7 @@ public final class Lorado extends ExpansionSet {
         cards.add(new SetCardInfo("Aven Dealer", 40, Rarity.COMMON, mage.cards.a.AvenDealer.class));
         cards.add(new SetCardInfo("Aven Deputy", 41, Rarity.UNCOMMON, mage.cards.a.AvenDeputy.class));
         cards.add(new SetCardInfo("Bulletproof Barrier", 42, Rarity.UNCOMMON, mage.cards.b.BulletproofBarrier.class)); //TODO Fix Sacrifice Ability
-        cards.add(new SetCardInfo("Call your Bluff", 43, Rarity.COMMON, mage.cards.c.CallYourBluff.class));
+        cards.add(new SetCardInfo("Call Your Bluff", 43, Rarity.COMMON, mage.cards.c.CallYourBluff.class));
         cards.add(new SetCardInfo("Career Criminal", 44, Rarity.UNCOMMON, mage.cards.c.CareerCriminal.class));
         cards.add(new SetCardInfo("Carnival Illusionist", 45, Rarity.RARE, mage.cards.c.CarnivalIllusionist.class));
         cards.add(new SetCardInfo("Claim Jumper", 46, Rarity.UNCOMMON, mage.cards.c.ClaimJumper.class));
@@ -80,36 +80,61 @@ public final class Lorado extends ExpansionSet {
         cards.add(new SetCardInfo("Expel", 51, Rarity.UNCOMMON, mage.cards.e.Expel.class));
         cards.add(new SetCardInfo("Firstfeather Stormwing", 52, Rarity.COMMON, mage.cards.f.FirstfeatherStormwing.class));
         cards.add(new SetCardInfo("Foretell", 53, Rarity.COMMON, mage.cards.f.Foretell.class));
+        //cards.add(new SetCardInfo("Gaile Hannidy", 54, Rarity.MYTHIC, mage.cards.g.GaileHannidy.class));
         cards.add(new SetCardInfo("Giant Catfish", 55, Rarity.COMMON, mage.cards.g.GiantCatfish.class));
         cards.add(new SetCardInfo("Gone Fishin'", 56, Rarity.COMMON, mage.cards.g.GoneFishin.class));
         cards.add(new SetCardInfo("Hasty Retreat", 57, Rarity.UNCOMMON, mage.cards.h.HastyRetreat.class));
         cards.add(new SetCardInfo("Horned Serpent", 58, Rarity.COMMON, mage.cards.h.HornedSerpent.class));
         cards.add(new SetCardInfo("Hyastee Sigil", 59, Rarity.COMMON, mage.cards.h.HyasteeSigil.class));
+        //cards.add(new SetCardInfo("Hyastee Sphinx", 60, Rarity.RARE, mage.cards.h.HyasteeSphinx.class));
         cards.add(new SetCardInfo("Lost in the Mist", 61, Rarity.COMMON, mage.cards.l.LostInTheMist.class));
         cards.add(new SetCardInfo("Mana Heist", 62, Rarity.RARE, mage.cards.m.ManaHeist.class));
         cards.add(new SetCardInfo("Manastorm Twister", 63, Rarity.UNCOMMON, mage.cards.m.ManastormTwister.class));
-        cards.add(new SetCardInfo("Mother Owls Herald", 64, Rarity.MYTHIC, mage.cards.m.MotherOwlsHerald.class));
+        cards.add(new SetCardInfo("Mother Owl's Herald", 64, Rarity.MYTHIC, mage.cards.m.MotherOwlsHerald.class));
+        //cards.add(new SetCardInfo("Nimble Spellslinger", 65, Rarity.COMMON, mage.cards.n.NimbleSpellslinger.class));
+        //cards.add(new SetCardInfo("Pan the River", 66, Rarity.UNCOMMON, mage.cards.p.PanTheRiver.class));
         cards.add(new SetCardInfo("Shellback Deputy", 67, Rarity.COMMON, mage.cards.s.ShellbackDeputy.class));
+
         cards.add(new SetCardInfo("Bad Blood", 77, Rarity.COMMON, mage.cards.b.BadBlood.class));
         cards.add(new SetCardInfo("Blightwing Wildshaper", 78, Rarity.COMMON, mage.cards.b.BlightwingWildshaper.class));
+        //cards.add(new SetCardInfo("Bloodshot Coachthief", 79, Rarity.RARE, mage.cards.b.BloodshotCoachthief.class));
         //cards.add(new SetCardInfo("Bloodshot Enforcer", 80, Rarity.COMMON, mage.cards.b.BloodshotEnforcer.class));
         cards.add(new SetCardInfo("Chupacabra", 81, Rarity.COMMON, mage.cards.c.Chupacabra.class));
         cards.add(new SetCardInfo("Coat with Venom", 82, Rarity.COMMON, mage.cards.c.CoatWithVenom.class));
         cards.add(new SetCardInfo("Dadgum Vermints", 83, Rarity.COMMON, mage.cards.d.DadgumVermints.class));
+
         cards.add(new SetCardInfo("Tar Snare", 105, Rarity.COMMON, mage.cards.t.TarSnare.class));
+
         cards.add(new SetCardInfo("Gamble", 123, Rarity.MYTHIC, mage.cards.g.Gamble.class));
+        //cards.add(new SetCardInfo("Goblin Express", 124, Rarity.RARE, mage.cards.g.GoblinExpress.class));
         cards.add(new SetCardInfo("Goblin Roughrider", 125, Rarity.COMMON, mage.cards.g.GoblinRoughrider.class));
         cards.add(new SetCardInfo("Goblin Sharpshooter", 126, Rarity.RARE, mage.cards.g.GoblinSharpshooter.class));
+        //cards.add(new SetCardInfo("Greenskin Gambler", 127, Rarity.UNCOMMON, mage.cards.g.GreenskinGambler.class));
+        //cards.add(new SetCardInfo("Greenskin Geologist", 128, Rarity.COMMON, mage.cards.g.GreenskinGeologist.class));
+        //cards.add(new SetCardInfo("Guns Blazing", 129, Rarity.COMMON, mage.cards.g.GunsBlazing.class));
         cards.add(new SetCardInfo("Hoarding Dragon", 130, Rarity.RARE, mage.cards.h.HoardingDragon.class));
+
         cards.add(new SetCardInfo("Wrangle", 151, Rarity.COMMON, mage.cards.w.Wrangle.class));
+        //cards.add(new SetCardInfo("Campfire", 152, Rarity.COMMON, mage.cards.c.Campfire.class));
+        //cards.add(new SetCardInfo("Centaur Desperado", 153, Rarity.UNCOMMON, mage.cards.c.CentaurDesperado.class));
+        //cards.add(new SetCardInfo("Centaur Fieldhand", 154, Rarity.COMMON, mage.cards.c.CentaurFieldhand.class));
         cards.add(new SetCardInfo("Cultivate", 155, Rarity.COMMON, mage.cards.c.Cultivate.class));
+
         cards.add(new SetCardInfo("Expedition Corps", 160, Rarity.MYTHIC, mage.cards.e.ExpeditionCorps.class));
+        //cards.add(new SetCardInfo("Final Showdown", 161, Rarity.RARE, mage.cards.f.FinalShowdown.class));
+        //cards.add(new SetCardInfo("Home on the Range", 162, Rarity.UNCOMMON, mage.cards.h.HomeOnTheRange.class));
+        //cards.add(new SetCardInfo("Hyastee Courser", 163, Rarity.COMMON, mage.cards.h.HyasteeCourser.class));
         cards.add(new SetCardInfo("Ironhoof Ox", 164, Rarity.COMMON, mage.cards.i.IronhoofOx.class));
         cards.add(new SetCardInfo("Joint Assault", 165, Rarity.COMMON, mage.cards.j.JointAssault.class));
+
         cards.add(new SetCardInfo("Naturalize", 174, Rarity.COMMON, mage.cards.n.Naturalize.class));
+
         cards.add(new SetCardInfo("Settle", 180, Rarity.UNCOMMON, mage.cards.s.Settle.class));
-        //cards.add(new SetCardInfo("Sheriff Josiah Woods", 201, Rarity.RARE, mage.cards.s.SheriffJosiahWoods.class));
+
+        cards.add(new SetCardInfo("Selfless Engineer", 225, Rarity.RARE, mage.cards.s.SelflessEngineer.class));
+
         cards.add(new SetCardInfo("Trading Post", 237, Rarity.RARE, mage.cards.t.TradingPost.class));
+
         cards.add(new SetCardInfo("Plains", 252, Rarity.LAND, mage.cards.basiclands.Plains.class));
         cards.add(new SetCardInfo("Island", 253, Rarity.LAND, mage.cards.basiclands.Island.class));
         cards.add(new SetCardInfo("Swamp", 254, Rarity.LAND, mage.cards.basiclands.Swamp.class));

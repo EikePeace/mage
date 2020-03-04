@@ -31,7 +31,7 @@ public final class CustomCore2018 extends ExpansionSet {
         cards.add(new SetCardInfo("Angel of Mercy", 2, Rarity.COMMON, mage.cards.a.AngelOfMercy.class));
         cards.add(new SetCardInfo("Angelic Vindicator", 3, Rarity.RARE, mage.cards.a.AngelicVindicator.class));
         cards.add(new SetCardInfo("Angelic Wall", 4, Rarity.COMMON, mage.cards.a.AngelicWall.class));
-        // Archangel of Salvation
+        //cards.add(new SetCardInfo("Archangel of Salvation", 5, Rarity.MYTHIC, mage.cards.a.ArchangelOfSalvation.class));
         cards.add(new SetCardInfo("Attended Knight", 6, Rarity.COMMON, mage.cards.a.AttendedKnight.class));
         cards.add(new SetCardInfo("Auramancer", 7, Rarity.COMMON, mage.cards.a.Auramancer.class));
         cards.add(new SetCardInfo("Aven Stormblade", 8, Rarity.COMMON, mage.cards.a.AvenStormblade.class));
