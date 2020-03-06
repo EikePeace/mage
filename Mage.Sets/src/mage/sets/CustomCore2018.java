@@ -1,21 +1,16 @@
 package mage.sets;
 
-
 import mage.cards.ExpansionSet;
 import mage.constants.Rarity;
 import mage.constants.SetType;
 
 /**
- *
  * @author Fenhl
  */
 public final class CustomCore2018 extends ExpansionSet {
-
     private static final CustomCore2018 instance = new CustomCore2018();
 
-    public static CustomCore2018 getInstance() {
-        return instance;
-    }
+    public static CustomCore2018 getInstance() { return instance; }
 
     private CustomCore2018() {
         super("Custom Core 2018", "CC18", ExpansionSet.buildDate(2018, 1, 12), SetType.CUSTOM_SET);
@@ -151,7 +146,7 @@ public final class CustomCore2018 extends ExpansionSet {
         cards.add(new SetCardInfo("Final Flame", 122, Rarity.RARE, mage.cards.f.FinalFlame.class));
         cards.add(new SetCardInfo("Flameblast", 123, Rarity.COMMON, mage.cards.f.Flameblast.class));
         cards.add(new SetCardInfo("Goblin Pyromaniac", 124, Rarity.COMMON, mage.cards.g.GoblinPyromaniac.class));
-        cards.add(new SetCardInfo("Goblin Ragemonger", 152, Rarity.RARE, mage.cards.g.GoblinRagemonger.class));
+        cards.add(new SetCardInfo("Goblin Ragemonger", 125, Rarity.RARE, mage.cards.g.GoblinRagemonger.class));
         cards.add(new SetCardInfo("Goblin War Paint", 126, Rarity.COMMON, mage.cards.g.GoblinWarPaint.class));
         cards.add(new SetCardInfo("Hellkite Patriarch", 127, Rarity.RARE, mage.cards.h.HellkitePatriarch.class));
         //cards.add(new SetCardInfo("Ignite Revelation", 128, Rarity.UNCOMMON, mage.cards.i.IgniteRevelation.class));
@@ -245,7 +240,7 @@ public final class CustomCore2018 extends ExpansionSet {
         cards.add(new SetCardInfo("Burnished Hart", 216, Rarity.UNCOMMON, mage.cards.b.BurnishedHart.class));
         cards.add(new SetCardInfo("Cobbled Wings", 217, Rarity.COMMON, mage.cards.c.CobbledWings.class));
         cards.add(new SetCardInfo("Demonmail Hauberk", 218, Rarity.UNCOMMON, mage.cards.d.DemonmailHauberk.class));
-        cards.add(new SetCardInfo("Emerald Soulstone", 219,  Rarity.UNCOMMON, mage.cards.e.EmeraldSoulstone.class));
+        cards.add(new SetCardInfo("Emerald Soulstone", 219, Rarity.UNCOMMON, mage.cards.e.EmeraldSoulstone.class));
         cards.add(new SetCardInfo("Guardian Automaton", 220, Rarity.COMMON, mage.cards.g.GuardianAutomaton.class));
         cards.add(new SetCardInfo("Jet Soulstone", 221, Rarity.UNCOMMON, mage.cards.j.JetSoulstone.class));
         cards.add(new SetCardInfo("Lumbering Colossus", 222, Rarity.UNCOMMON, mage.cards.l.LumberingColossus.class));
