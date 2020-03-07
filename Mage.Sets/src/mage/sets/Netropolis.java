@@ -82,7 +82,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Hacker Prodigy", 58, Rarity.COMMON, mage.cards.h.HackerProdigy.class));
         //cards.add(new SetCardInfo("Masq Agent", 59, Rarity.UNCOMMON, mage.cards.m.MasqAgent.class));
         //cards.add(new SetCardInfo("Masq Maven", 60, Rarity.RARE, mage.cards.m.MasqMaven.class));
-        //cards.add(new SetCardInfo("Mat Harden, Detective", 61, Rarity.RARE, mage.cards.m.MatHardenDetective.class));
+        cards.add(new SetCardInfo("Mat Harden, Detective", 61, Rarity.RARE, mage.cards.m.MatHardenDetective.class));
         //cards.add(new SetCardInfo("Minimize", 62, Rarity.COMMON, mage.cards.m.Minimize.class));
         //cards.add(new SetCardInfo("Moderator's Discretion", 63, Rarity.UNCOMMON, mage.cards.m.ModeratorsDiscretion.class));
         //cards.add(new SetCardInfo("Net Run", 64, Rarity.COMMON, mage.cards.n.NetRun.class));
