@@ -128,8 +128,8 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Hilaback Outriders", 102, Rarity.COMMON, mage.cards.h.HilabackOutriders.class));
         //cards.add(new SetCardInfo("Imperial Brutality", 103, Rarity.UNCOMMON, mage.cards.i.ImperialBrutality.class));
         //cards.add(new SetCardInfo("Imperial Confidant", 104, Rarity.RARE, mage.cards.i.ImperialConfidant.class));
-        //cards.add(new SetCardInfo("Inishtu, Desert Healer", "105a", Rarity.MYTHIC, mage.cards.i.InishtuDesertHealer.class));
-        //cards.add(new SetCardInfo("Inishtu, Herald of the Dead", "105b", Rarity.MYTHIC, mage.cards.i.InishtuHeraldOfTheDead.class));
+        cards.add(new SetCardInfo("Inishtu, Desert Healer", "105a", Rarity.MYTHIC, mage.cards.i.InishtuDesertHealer.class));
+        cards.add(new SetCardInfo("Inishtu, Herald of the Dead", "105b", Rarity.MYTHIC, mage.cards.i.InishtuHeraldOfTheDead.class));
         //cards.add(new SetCardInfo("Into the Lion's Den", 106, Rarity.COMMON, mage.cards.i.IntoTheLionsDen.class));
         //cards.add(new SetCardInfo("Life's Worth", 107, Rarity.UNCOMMON, mage.cards.l.LifesWorth.class));
         //cards.add(new SetCardInfo("Merchant of Flesh", 108, Rarity.UNCOMMON, mage.cards.m.MerchantOfFlesh.class));

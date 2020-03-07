@@ -29,7 +29,7 @@ public final class EkebramChroniclerOfAges extends CardImpl {
         this.color.setBlue(true);
 
         this.nightCard = true;
-        this.setTransformable(true);
+        this.transformable = true;
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(5);
