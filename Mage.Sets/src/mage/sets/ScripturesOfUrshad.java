@@ -78,7 +78,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Ekebram the Scholar", "53a", Rarity.MYTHIC, mage.cards.e.EkebramTheScholar.class));
         cards.add(new SetCardInfo("Ekebram, Chronicler of Ages", "53b", Rarity.MYTHIC, mage.cards.e.EkebramChroniclerOfAges.class));
         //cards.add(new SetCardInfo("Ekebram's Scholar", 54, Rarity.COMMON, mage.cards.e.EkebramsScholar.class));
-        //cards.add(new SetCardInfo("Emissary of Dark Tides", 55, Rarity.RARE, mage.cards.e.EmissaryOfDarkTides.class));
+        cards.add(new SetCardInfo("Emissary of Dark Tides", 55, Rarity.RARE, mage.cards.e.EmissaryOfDarkTides.class));
         //cards.add(new SetCardInfo("Epic of Ekebram", 56, Rarity.RARE, mage.cards.e.EpicOfEkebram.class));
         //cards.add(new SetCardInfo("Gilded Authority", 57, Rarity.UNCOMMON, mage.cards.g.GildedAuthority.class));
         //cards.add(new SetCardInfo("Glimpse of Fate", 58, Rarity.UNCOMMON, mage.cards.g.GlimpseOfFate.class));
