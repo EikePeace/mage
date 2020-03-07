@@ -15,7 +15,7 @@ public final class FlamingSarimanok extends CardImpl {
     public FlamingSarimanok(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{R}");
         this.subtype.add(SubType.ELEMENTAL);
-        this.subtype.add(BIRD);
+        this.subtype.add(SubType.BIRD);
 
         this.power = new MageInt(2);
         this.power = new MageInt(2);

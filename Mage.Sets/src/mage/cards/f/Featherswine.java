@@ -14,9 +14,9 @@ import java.util.UUID;
  * @author EikePeace
  */
 
-public final class FeatherSwine extends CardImpl {
+public final class Featherswine extends CardImpl {
 
-    public FeatherSwine(UUID ownerId, CardSetInfo setInfo){
+    public Featherswine(UUID ownerId, CardSetInfo setInfo){
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{W}");
         this.subtype.add(SubType.BOAR);
         this.power = new MageInt(1);
@@ -26,10 +26,10 @@ public final class FeatherSwine extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
     }
 
-    public FeatherSwine (final FeatherSwine card){super(card);}
+    public Featherswine(final Featherswine card){super(card);}
 
     @Override
-    public FeatherSwine copy() {
-        return new FeatherSwine(this);
+    public Featherswine copy() {
+        return new Featherswine(this);
     }
 }

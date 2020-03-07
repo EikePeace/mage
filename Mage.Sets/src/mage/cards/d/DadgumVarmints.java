@@ -17,7 +17,7 @@ import java.util.UUID;
  *
  * @author EikePeace
  */
-public final class DadgumVermints extends CardImpl {
+public final class DadgumVarmints extends CardImpl {
 
     private static final FilterLandPermanent filter = new FilterLandPermanent("a land");
 
@@ -25,7 +25,7 @@ public final class DadgumVermints extends CardImpl {
         filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
-    public DadgumVermints(UUID ownerId, CardSetInfo cardSetInfo) {
+    public DadgumVarmints(UUID ownerId, CardSetInfo cardSetInfo) {
         super(ownerId, cardSetInfo, new CardType[] {CardType.CREATURE}, "{1}{B}");
         this.subtype.add(SubType.SQUIRREL);
         this.power = new MageInt(1);
@@ -37,12 +37,12 @@ public final class DadgumVermints extends CardImpl {
         this.addAbility(ability);
             }
 
-    public DadgumVermints(final DadgumVermints card) {
+    public DadgumVarmints(final DadgumVarmints card) {
         super(card);
     }
 
     @Override
-    public DadgumVermints copy() {
-        return new DadgumVermints(this);
+    public DadgumVarmints copy() {
+        return new DadgumVarmints(this);
     }
 }
