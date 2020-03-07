@@ -105,7 +105,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Splinter of Anku", 79, Rarity.COMMON, mage.cards.s.SplinterOfAnku.class));
         //cards.add(new SetCardInfo("Turn to Salt", 80, Rarity.COMMON, mage.cards.t.TurnToSalt.class));
         //cards.add(new SetCardInfo("Wealthy Merchants", 81, Rarity.COMMON, mage.cards.w.WealthyMerchants.class));
-        //cards.add(new SetCardInfo("Writing", 82, Rarity.UNCOMMON, mage.cards.w.Writing.class));
+        cards.add(new SetCardInfo("Writing", 82, Rarity.UNCOMMON, mage.cards.w.Writing.class));
         //cards.add(new SetCardInfo("Adorned Naga", 83, Rarity.COMMON, mage.cards.a.AdornedNaga.class));
         //cards.add(new SetCardInfo("Anatomy", 84, Rarity.UNCOMMON, mage.cards.a.Anatomy.class));
         //cards.add(new SetCardInfo("Ashen Persecutor", 85, Rarity.RARE, mage.cards.a.AshenPersecutor.class));
