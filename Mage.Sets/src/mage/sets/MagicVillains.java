@@ -93,8 +93,8 @@ public final class MagicVillains extends ExpansionSet {
         //cards.add(new SetCardInfo("Sedraxis Portal", 68, Rarity.UNCOMMON, mage.cards.s.SedraxisPortal.class));
         //cards.add(new SetCardInfo("Somber Visitant", 69, Rarity.COMMON, mage.cards.s.SomberVisitant.class));
         cards.add(new SetCardInfo("Strategic Planning", 70, Rarity.COMMON, mage.cards.s.StrategicPlanning.class));
-        //cards.add(new SetCardInfo("Tezzeret of Tidehollow", "71a", Rarity.MYTHIC, mage.cards.t.TezzeretOfTidehollow.class));
-        //cards.add(new SetCardInfo("Tezzeret the Opportunist", "71b", Rarity.MYTHIC, mage.cards.t.TezzeretTheOpportunist.class));
+        cards.add(new SetCardInfo("Tezzeret of Tidehollow", "71a", Rarity.MYTHIC, mage.cards.t.TezzeretOfTidehollow.class));
+        cards.add(new SetCardInfo("Tezzeret the Opportunist", "71b", Rarity.MYTHIC, mage.cards.t.TezzeretTheOpportunist.class));
         cards.add(new SetCardInfo("Tezzeret's Ambition", 72, Rarity.COMMON, mage.cards.t.TezzeretsAmbition.class));
         //cards.add(new SetCardInfo("Tezzeret's Duplicity", 73, Rarity.UNCOMMON, mage.cards.t.TezzeretsDuplicity.class));
         //cards.add(new SetCardInfo("Tezzeret's Grasp", 74, Rarity.RARE, mage.cards.t.TezzeretsGrasp.class));

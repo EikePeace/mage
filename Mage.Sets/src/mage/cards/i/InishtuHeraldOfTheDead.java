@@ -26,6 +26,7 @@ public final class InishtuHeraldOfTheDead extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "");
         this.addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.GOD);
+        this.color.setBlack(true);
 
         this.nightCard = true;
         this.transformable = true;
