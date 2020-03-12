@@ -25,7 +25,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Aridland Camaar", 1, Rarity.COMMON, mage.cards.a.AridlandCamaar.class));
         //cards.add(new SetCardInfo("Aspect of Darutu", 2, Rarity.RARE, mage.cards.a.AspectOfDarutu.class));
         //cards.add(new SetCardInfo("Calming Dromoryx", 3, Rarity.RARE, mage.cards.c.CalmingDromoryx.class));
-        //cards.add(new SetCardInfo("Conscription", 4, Rarity.UNCOMMON, mage.cards.c.Conscription.class));
+        cards.add(new SetCardInfo("Conscription", 4, Rarity.UNCOMMON, mage.cards.c.Conscription.class));
         //cards.add(new SetCardInfo("Court Sponsor", 5, Rarity.UNCOMMON, mage.cards.c.CourtSponsor.class));
         //cards.add(new SetCardInfo("Cycle of Creation", 6, Rarity.MYTHIC, mage.cards.c.CycleOfCreation.class));
         cards.add(new SetCardInfo("Divine Verdict", 7, Rarity.COMMON, mage.cards.d.DivineVerdict.class));
@@ -48,7 +48,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Long Journey", 24, Rarity.COMMON, mage.cards.l.LongJourney.class));
         //cards.add(new SetCardInfo("Marble Row Healer", 25, Rarity.COMMON, mage.cards.m.MarbleRowHealer.class));
         cards.add(new SetCardInfo("Master of Marble Row", 26, Rarity.MYTHIC, mage.cards.m.MasterOfMarbleRow.class));
-        //cards.add(new SetCardInfo("Medicine", 27, Rarity.UNCOMMON, mage.cards.m.Medicine.class));
+        cards.add(new SetCardInfo("Medicine", 27, Rarity.UNCOMMON, mage.cards.m.Medicine.class));
         //cards.add(new SetCardInfo("Queen Hannaru", "28a", Rarity.MYTHIC, mage.cards.q.QueenHannaru.class));
         //cards.add(new SetCardInfo("Hannaru the Conqueror", "28b", Rarity.MYTHIC, mage.cards.h.HannaruTheConqueror.class));
         //cards.add(new SetCardInfo("Rabudan Chiseler", 29, Rarity.COMMON, mage.cards.r.RabudanChiseler.class));
@@ -70,7 +70,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Aven Supervisor", 45, Rarity.COMMON, mage.cards.a.AvenSupervisor.class));
         //cards.add(new SetCardInfo("Azutahn Hydromancer", 46, Rarity.COMMON, mage.cards.a.AzutahnHydromancer.class));
         //cards.add(new SetCardInfo("Azutah's Abundance", 47, Rarity.UNCOMMON, mage.cards.a.AzutahsAbundance.class));
-        //cards.add(new SetCardInfo("Cartography", 48, Rarity.RARE, mage.cards.c.Cartography.class));
+        cards.add(new SetCardInfo("Cartography", 48, Rarity.RARE, mage.cards.c.Cartography.class));
         //cards.add(new SetCardInfo("Consult the Scriptures", 49, Rarity.COMMON, mage.cards.c.ConsultTheScriptures.class));
         //cards.add(new SetCardInfo("Dehydrate", 50, Rarity.COMMON, mage.cards.d.Dehydrate.class));
         //cards.add(new SetCardInfo("Delugic Surger", 51, Rarity.COMMON, mage.cards.d.DelugicSurger.class));
@@ -107,7 +107,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Wealthy Merchants", 81, Rarity.COMMON, mage.cards.w.WealthyMerchants.class));
         cards.add(new SetCardInfo("Writing", 82, Rarity.UNCOMMON, mage.cards.w.Writing.class));
         //cards.add(new SetCardInfo("Adorned Naga", 83, Rarity.COMMON, mage.cards.a.AdornedNaga.class));
-        //cards.add(new SetCardInfo("Anatomy", 84, Rarity.UNCOMMON, mage.cards.a.Anatomy.class));
+        cards.add(new SetCardInfo("Anatomy", 84, Rarity.UNCOMMON, mage.cards.a.Anatomy.class));
         //cards.add(new SetCardInfo("Ashen Persecutor", 85, Rarity.RARE, mage.cards.a.AshenPersecutor.class));
         //cards.add(new SetCardInfo("Behead", 86, Rarity.COMMON, mage.cards.b.Behead.class));
         //cards.add(new SetCardInfo("Bloodstained Ziggurat", 87, Rarity.COMMON, mage.cards.b.BloodstainedZiggurat.class));
@@ -190,7 +190,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Unbound Annihilus", 162, Rarity.RARE, mage.cards.u.UnboundAnnihilus.class));
         //cards.add(new SetCardInfo("Urud Stingswoop", 163, Rarity.UNCOMMON, mage.cards.u.UrudStingswoop.class));
         //cards.add(new SetCardInfo("Urudi Warlord", 164, Rarity.COMMON, mage.cards.u.UrudiWarlord.class));
-        //cards.add(new SetCardInfo("Agriculture", 165, Rarity.UNCOMMON, mage.cards.a.Agriculture.class));
+        cards.add(new SetCardInfo("Agriculture", 165, Rarity.UNCOMMON, mage.cards.a.Agriculture.class));
         //cards.add(new SetCardInfo("Borsuppa Drover", 166, Rarity.UNCOMMON, mage.cards.b.BorsuppaDrover.class));
         //cards.add(new SetCardInfo("Caprin Outlander", 167, Rarity.COMMON, mage.cards.c.CaprinOutlander.class));
         //cards.add(new SetCardInfo("Collapse the Pillars", 168, Rarity.COMMON, mage.cards.c.CollapseThePillars.class));
@@ -205,7 +205,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Heartland's Protection", 177, Rarity.UNCOMMON, mage.cards.h.HeartlandsProtection.class));
         //cards.add(new SetCardInfo("Hila Emergence", 178, Rarity.RARE, mage.cards.h.HilaEmergence.class));
         //cards.add(new SetCardInfo("Humble Shepherd", 179, Rarity.UNCOMMON, mage.cards.h.HumbleShepherd.class));
-        //cards.add(new SetCardInfo("Husbandry", 180, Rarity.RARE, mage.cards.h.Husbandry.class));
+        cards.add(new SetCardInfo("Husbandry", 180, Rarity.RARE, mage.cards.h.Husbandry.class));
         //cards.add(new SetCardInfo("Jobiah, Devoted Farmer", "181a", Rarity.MYTHIC, mage.cards.j.JobiahDevotedFarmer.class));
         //cards.add(new SetCardInfo("Jobiah the World-Shepherd", "181b", Rarity.MYTHIC, mage.cards.j.JobiahTheWorldShepherd.class));
         //cards.add(new SetCardInfo("Lush Delta", 182, Rarity.UNCOMMON, mage.cards.l.LushDelta.class));
