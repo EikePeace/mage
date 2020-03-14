@@ -62,7 +62,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Solemn Offering", 37, Rarity.COMMON, mage.cards.s.SolemnOffering.class));
         //cards.add(new SetCardInfo("Spirit of the Harvest", 38, Rarity.UNCOMMON, mage.cards.s.SpiritOfTheHarvest.class));
         //cards.add(new SetCardInfo("Sustaining Crops", 39, Rarity.COMMON, mage.cards.s.SustainingCrops.class));
-        //cards.add(new SetCardInfo("Theocracy", 40, Rarity.RARE, mage.cards.t.Theocracy.class));
+        cards.add(new SetCardInfo("Theocracy", 40, Rarity.RARE, mage.cards.t.Theocracy.class));
         //cards.add(new SetCardInfo("Tithe Official", 41, Rarity.UNCOMMON, mage.cards.t.TitheOfficial.class));
         //cards.add(new SetCardInfo("Warden of Harshapal Tower", 42, Rarity.UNCOMMON, mage.cards.w.WardenOfHarshapalTower.class));
         //cards.add(new SetCardInfo("Water into Wine", 43, Rarity.UNCOMMON, mage.cards.w.WaterIntoWine.class));
@@ -145,8 +145,8 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Stingbrood Warlord", 118, Rarity.UNCOMMON, mage.cards.s.StingbroodWarlord.class));
         //cards.add(new SetCardInfo("Subjugator of Empires", 119, Rarity.MYTHIC, mage.cards.s.SubjugatorOfEmpires.class));
         //cards.add(new SetCardInfo("Suffocating Sands", 120, Rarity.COMMON, mage.cards.s.SuffocatingSands.class));
-        //cards.add(new SetCardInfo("Tradition", 121, Rarity.RARE, mage.cards.t.Tradition.class));
-        //cards.add(new SetCardInfo("Tyranny", 122, Rarity.UNCOMMON, mage.cards.t.Tyranny.class));
+        cards.add(new SetCardInfo("Tradition", 121, Rarity.RARE, mage.cards.t.Tradition.class));
+        cards.add(new SetCardInfo("Tyranny", 122, Rarity.UNCOMMON, mage.cards.t.Tyranny.class));
         //cards.add(new SetCardInfo("Under the Gun", 123, Rarity.RARE, mage.cards.u.UnderTheGun.class));
         //cards.add(new SetCardInfo("Wretched Lammasu", 124, Rarity.UNCOMMON, mage.cards.w.WretchedLammasu.class));
         cards.add(new SetCardInfo("Act of Treason", 125, Rarity.COMMON, mage.cards.a.ActOfTreason.class));
@@ -172,7 +172,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Kanaan Wardriver", 144, Rarity.UNCOMMON, mage.cards.k.KanaanWardriver.class));
         //cards.add(new SetCardInfo("Marauding Goliath", 145, Rarity.COMMON, mage.cards.m.MaraudingGoliath.class));
         //cards.add(new SetCardInfo("Marrow Cruncher", 146, Rarity.RARE, mage.cards.m.MarrowCruncher.class));
-        //cards.add(new SetCardInfo("Metallurgy", 147, Rarity.UNCOMMON, mage.cards.m.Metallurgy.class));
+        cards.add(new SetCardInfo("Metallurgy", 147, Rarity.UNCOMMON, mage.cards.m.Metallurgy.class));
         //cards.add(new SetCardInfo("Monstrous Hila", 148, Rarity.UNCOMMON, mage.cards.m.MonstrousHila.class));
         //cards.add(new SetCardInfo("Piercing Blow", 149, Rarity.COMMON, mage.cards.p.PiercingBlow.class));
         //cards.add(new SetCardInfo("Primordial Progenitor", 150, Rarity.COMMON, mage.cards.p.PrimordialProgenitor.class));
@@ -211,7 +211,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         //cards.add(new SetCardInfo("Lush Delta", 182, Rarity.UNCOMMON, mage.cards.l.LushDelta.class));
         //cards.add(new SetCardInfo("Mangrove Fisher", 183, Rarity.COMMON, mage.cards.m.MangroveFisher.class));
         //cards.add(new SetCardInfo("Multiculturalism", 184, Rarity.RARE, mage.cards.m.Multiculturalism.class));
-        //cards.add(new SetCardInfo("Mythology", 185, Rarity.MYTHIC, mage.cards.m.Mythology.class));
+        cards.add(new SetCardInfo("Mythology", 185, Rarity.MYTHIC, mage.cards.m.Mythology.class));
         //cards.add(new SetCardInfo("Naga Cultivator", 186, Rarity.COMMON, mage.cards.n.NagaCultivator.class));
         //cards.add(new SetCardInfo("Oasis Claimer", 187, Rarity.RARE, mage.cards.o.OasisClaimer.class));
         cards.add(new SetCardInfo("Pierce the Sky", 188, Rarity.COMMON, mage.cards.p.PierceTheSky.class));
