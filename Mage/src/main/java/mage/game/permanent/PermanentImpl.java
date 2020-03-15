@@ -856,6 +856,8 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         if (damageAmount > 0 && canDamage(game.getObject(sourceId), game)) {
             if (this.isPlaneswalker()) {
                 damageDone = damagePlaneswalker(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
+            } else if (this.hasSubtype(SubType.STRUCTURE, game)) {
+                damageDone = damageStructure(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
             } else {
                 damageDone = damageCreature(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
             }
@@ -973,6 +975,24 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
                 }
                 removeCounters(CounterType.LOYALTY.getName(), countersToRemove, game);
                 game.fireEvent(new DamagedPlaneswalkerEvent(objectId, sourceId, controllerId, actualDamage, combat));
+                return actualDamage;
+            }
+        }
+        return 0;
+    }
+
+    protected int damageStructure(int damage, UUID sourceId, Game game, boolean preventable, boolean combat, boolean markDamage, List<UUID> appliedEffects) {
+        GameEvent event = new DamageStructureEvent(objectId, sourceId, controllerId, damage, preventable, combat);
+        event.setAppliedEffects(appliedEffects);
+        if (!game.replaceEvent(event)) {
+            int actualDamage = event.getAmount();
+            if (actualDamage > 0) {
+                int countersToRemove = actualDamage;
+                if (countersToRemove > getCounters(game).getCount(CounterType.STABILITY)) {
+                    countersToRemove = getCounters(game).getCount(CounterType.STABILITY);
+                }
+                removeCounters(CounterType.STABILITY.getName(), countersToRemove, game);
+                game.fireEvent(new DamagedStructureEvent(objectId, sourceId, controllerId, actualDamage, combat));
                 return actualDamage;
             }
         }

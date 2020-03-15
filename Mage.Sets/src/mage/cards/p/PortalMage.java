@@ -48,8 +48,8 @@ public final class PortalMage extends CardImpl {
         Ability ability = new ConditionalTriggeredAbility(
                 new EntersBattlefieldTriggeredAbility(new PortalMageEffect(), true),
                 new IsStepCondition(PhaseStep.DECLARE_ATTACKERS, false),
-                "When {this} enters the battlefield during the declare attackers step, you may reselect which player or planeswalker target attacking creature is attacking. "
-                + "<i>(It can't attack its controller or its controller's planeswalkers.)</i>");
+                "When {this} enters the battlefield during the declare attackers step, you may reselect which player, planeswalker, or Structure target attacking creature is attacking. "
+                + "<i>(It can't attack its controller or its controller's planeswalkers or Structures.)</i>");
         ability.addTarget(new TargetCreaturePermanent(new FilterAttackingCreature()));
         this.addAbility(ability);
     }
@@ -68,7 +68,7 @@ class PortalMageEffect extends OneShotEffect {
 
     public PortalMageEffect() {
         super(Outcome.Benefit);
-        this.staticText = "you may reselect which player or planeswalker target attacking creature is attacking";
+        this.staticText = "you may reselect which player, planeswalker, or Structure target attacking creature is attacking";
     }
 
     public PortalMageEffect(final PortalMageEffect effect) {
@@ -103,7 +103,7 @@ class PortalMageEffect extends OneShotEffect {
                 Set<UUID> defenders = new LinkedHashSet<>();
                 for (UUID playerId : game.getCombat().getAttackablePlayers(game)) {
                     defenders.add(playerId);
-                    for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_PLANESWALKER, playerId, game)) {
+                    for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_PLANESWALKER_OR_STRUCTURE, playerId, game)) {
                         defenders.add(permanent.getId());
                     }
                 }

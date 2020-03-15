@@ -28,7 +28,7 @@ public final class CavalcadeOfCalamity extends CardImpl {
     public CavalcadeOfCalamity(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{R}");
 
-        // Whenever a creature you control with power 1 or less attacks, Cavalcade of Calamity deals 1 damage to the player or planeswalker that creature is attacking.
+        // Whenever a creature you control with power 1 or less attacks, Cavalcade of Calamity deals 1 damage to the player, planeswalker, or Structure that creature is attacking.
         this.addAbility(new AttacksAllTriggeredAbility(
                 new CavalcadeOfCalamityEffect(), false, filter,
                 SetTargetPointer.PERMANENT, false, false
@@ -49,7 +49,7 @@ class CavalcadeOfCalamityEffect extends OneShotEffect {
 
     CavalcadeOfCalamityEffect() {
         super(Outcome.Benefit);
-        staticText = "{this} deals 1 damage to the player or planeswalker that creature is attacking.";
+        staticText = "{this} deals 1 damage to the player, planeswalker, or Structure that creature is attacking.";
     }
 
     private CavalcadeOfCalamityEffect(final CavalcadeOfCalamityEffect effect) {

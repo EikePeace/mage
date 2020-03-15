@@ -279,6 +279,7 @@ public class GameEvent implements Serializable {
         OPTION_USED,
         DAMAGE_CREATURE, DAMAGED_CREATURE,
         DAMAGE_PLANESWALKER, DAMAGED_PLANESWALKER,
+        DAMAGE_STRUCTURE, DAMAGED_STRUCTURE,
         DESTROY_PERMANENT,
         /* DESTROY_PERMANENT_BY_LEGENDARY_RULE
          targetId    id of the permanent to destroy

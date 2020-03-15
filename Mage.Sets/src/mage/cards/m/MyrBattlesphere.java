@@ -46,7 +46,7 @@ public final class MyrBattlesphere extends CardImpl {
         // When Myr Battlesphere enters the battlefield, create four 1/1 colorless Myr artifact creature tokens.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CreateTokenEffect(new MyrToken(), 4), false));
 
-        // Whenever Myr Battlesphere attacks, you may tap X untapped Myr you control. If you do, Myr Battlesphere gets +X/+0 until end of turn and deals X damage to defending player.
+        // Whenever Myr Battlesphere attacks, you may tap X untapped Myr you control. If you do, Myr Battlesphere gets +X/+0 until end of turn and deals X damage to the player, planeswalker, or Structure it's attacking.
         this.addAbility(new MyrBattlesphereTriggeredAbility());
 
     }
@@ -95,7 +95,7 @@ class MyrBattlesphereTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever {this} attacks, you may tap X untapped Myr you control. If you do, {this} gets +X/+0 until end of turn and deals X damage to the player or planeswalker it's attacking.";
+        return "Whenever {this} attacks, you may tap X untapped Myr you control. If you do, {this} gets +X/+0 until end of turn and deals X damage to the player, planeswalker, or Structure it's attacking.";
     }
 }
 
@@ -110,7 +110,7 @@ class MyrBattlesphereEffect extends OneShotEffect {
 
     public MyrBattlesphereEffect() {
         super(Outcome.Damage);
-        staticText = "you may tap X untapped Myr you control. If you do, {this} gets +X/+0 until end of turn and deals X damage to the player or planeswalker it's attacking.";
+        staticText = "you may tap X untapped Myr you control. If you do, {this} gets +X/+0 until end of turn and deals X damage to the player, planeswalker, or Structure it's attacking.";
     }
 
     public MyrBattlesphereEffect(final MyrBattlesphereEffect effect) {

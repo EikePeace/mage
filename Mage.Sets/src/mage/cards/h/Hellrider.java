@@ -31,7 +31,7 @@ public final class Hellrider extends CardImpl {
         this.toughness = new MageInt(3);
 
         this.addAbility(HasteAbility.getInstance());
-        // Whenever a creature you control attacks, Hellrider deals 1 damage to defending player.
+        // Whenever a creature you control attacks, Hellrider deals 1 damage to the player, planeswalker, or Structure it's attacking.
         this.addAbility(new HellriderTriggeredAbility());
     }
 
@@ -78,6 +78,6 @@ class HellriderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever a creature you control attacks, {this} deals 1 damage to the player or planeswalker it's attacking.";
+        return "Whenever a creature you control attacks, {this} deals 1 damage to the player, planeswalker, or Structure it's attacking.";
     }
 }

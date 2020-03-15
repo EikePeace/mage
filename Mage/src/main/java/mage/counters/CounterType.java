@@ -124,6 +124,7 @@ public enum CounterType {
     SOOT("soot"),
     SPITE("spite"),
     SPORE("spore"),
+    STABILITY("stability"),
     STORAGE("storage"),
     STRIFE("strife"),
     STUDY("study"),

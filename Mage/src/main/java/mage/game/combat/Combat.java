@@ -1277,7 +1277,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                 }
             }
             defenders.add(defenderId);
-            for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_PLANESWALKER, defenderId, game)) {
+            for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_PLANESWALKER_OR_STRUCTURE, defenderId, game)) {
                 defenders.add(permanent.getId());
             }
         }

@@ -10,6 +10,7 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.*;
+import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.MulticoloredPredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
@@ -473,6 +474,12 @@ public final class StaticFilters {
 
     static {
         FILTER_PERMANENT_PLANESWALKERS.setLockedFilter(true);
+    }
+
+    public static final FilterPermanent FILTER_PERMANENT_PLANESWALKER_OR_STRUCTURE = new FilterPermanentPlaneswalkerOrStructure();
+
+    static {
+        FILTER_PERMANENT_PLANESWALKER_OR_STRUCTURE.setLockedFilter(true);
     }
 
     public static final FilterNonlandPermanent FILTER_PERMANENT_NON_LAND = new FilterNonlandPermanent();
