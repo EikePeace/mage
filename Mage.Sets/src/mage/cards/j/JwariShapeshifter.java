@@ -10,8 +10,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
 
 /**
@@ -23,8 +21,8 @@ public final class JwariShapeshifter extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Ally creature");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ALLY));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(SubType.ALLY.getPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
         filter.add(AnotherPredicate.instance); // needed because during enters_the_battlefield event the creature is already targetable although it shouldn't
     }
 

@@ -13,7 +13,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.CounterPredicate;
 
 import java.util.UUID;
@@ -28,7 +27,7 @@ public final class FortRedemptionRanger extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature you control with a +1/+1 counter on it.");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(AnotherPredicate.instance);
         filter.add(new CounterPredicate(CounterType.P1P1));
     }

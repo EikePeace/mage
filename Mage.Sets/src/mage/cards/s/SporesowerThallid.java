@@ -16,8 +16,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.SaprolingToken;
 
 /**
@@ -28,8 +26,8 @@ public final class SporesowerThallid extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Fungus you control");
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.FUNGUS));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.FUNGUS.getPredicate());
     }
 
     public SporesowerThallid(UUID ownerId, CardSetInfo setInfo) {

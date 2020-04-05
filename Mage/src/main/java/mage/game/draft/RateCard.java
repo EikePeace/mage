@@ -13,9 +13,6 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.target.Target;
 import mage.target.TargetPermanent;
-import mage.target.common.TargetAttackingCreature;
-import mage.target.common.TargetAttackingOrBlockingCreature;
-import mage.target.common.TargetCreaturePermanent;
 import mage.target.common.TargetPlayerOrPlaneswalker;
 import org.apache.log4j.Logger;
 
@@ -135,8 +132,9 @@ public final class RateCard {
     }
 
     private static int isEffectRemoval(Card card, Ability ability, Effect effect) {
+        // it's effect relates score, do not use custom outcome from ability
         if (effect.getOutcome() == Outcome.Removal) {
-            log.debug("Found removal: " + card.getName());
+            // found removal
             return 1;
         }
         //static List<Effect> removalEffects =[BoostTargetEffect,BoostEnchantedEffect]
@@ -147,13 +145,15 @@ public final class RateCard {
                 return 1;
             }
         }
-        if (effect instanceof FightTargetsEffect || effect instanceof DamageWithPowerTargetEffect) {
+        if (effect instanceof FightTargetsEffect
+                || effect instanceof DamageWithPowerFromOneToAnotherTargetEffect
+                || effect instanceof DamageWithPowerFromSourceToAnotherTargetEffect) {
             return 1;
         }
         if (effect.getOutcome() == Outcome.Damage || effect instanceof DamageTargetEffect) {
             for (Target target : ability.getTargets()) {
                 if (!(target instanceof TargetPlayerOrPlaneswalker)) {
-                    log.debug("Found damage dealer: " + card.getName());
+                    // found damage dealer
                     return 1;
                 }
             }
@@ -163,11 +163,8 @@ public final class RateCard {
                 effect instanceof ExileTargetEffect ||
                 effect instanceof ExileUntilSourceLeavesEffect) {
             for (Target target : ability.getTargets()) {
-                if (target instanceof TargetCreaturePermanent ||
-                        target instanceof TargetAttackingCreature ||
-                        target instanceof TargetAttackingOrBlockingCreature ||
-                        target instanceof TargetPermanent) {
-                    log.debug("Found destroyer/exiler: " + card.getName());
+                if (target instanceof TargetPermanent) {
+                    // found destroyer/exiler
                     return 1;
                 }
             }
@@ -192,22 +189,27 @@ public final class RateCard {
         // ratings from card rarity
         // some cards can have different rarity -- it's will be used from first set
         int newRating;
-        switch (card.getRarity()) {
-            case COMMON:
-                newRating = DEFAULT_NOT_RATED_CARD_RATING;
-                break;
-            case UNCOMMON:
-                newRating = DEFAULT_NOT_RATED_UNCOMMON_RATING;
-                break;
-            case RARE:
-                newRating = DEFAULT_NOT_RATED_RARE_RATING;
-                break;
-            case MYTHIC:
-                newRating = DEFAULT_NOT_RATED_MYTHIC_RATING;
-                break;
-            default:
-                newRating = DEFAULT_NOT_RATED_CARD_RATING;
-                break;
+        if (card.getRarity() != null) {
+            switch (card.getRarity()) {
+                case COMMON:
+                    newRating = DEFAULT_NOT_RATED_CARD_RATING;
+                    break;
+                case UNCOMMON:
+                    newRating = DEFAULT_NOT_RATED_UNCOMMON_RATING;
+                    break;
+                case RARE:
+                    newRating = DEFAULT_NOT_RATED_RARE_RATING;
+                    break;
+                case MYTHIC:
+                    newRating = DEFAULT_NOT_RATED_MYTHIC_RATING;
+                    break;
+                default:
+                    newRating = DEFAULT_NOT_RATED_CARD_RATING;
+                    break;
+            }
+        } else {
+            // tokens
+            newRating = DEFAULT_NOT_RATED_CARD_RATING;
         }
 
         int oldRating = baseRatings.getOrDefault(card.getName(), 0);
@@ -278,6 +280,7 @@ public final class RateCard {
             if (s.length == 2) {
                 Integer rating = Integer.parseInt(s[1].trim());
                 String name = s[0].trim();
+                name = name.replace("’", "'");
                 if (rating > max) {
                     max = rating;
                 }

@@ -1,9 +1,5 @@
-
 package mage.cards.r;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.DiesAttachedTriggeredAbility;
@@ -19,15 +15,17 @@ import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class ReinsOfTheVinesteed extends CardImpl {
@@ -87,7 +85,7 @@ class ReinsOfTheVinesteedEffect extends OneShotEffect {
             StringBuilder sb = new StringBuilder("creature that shares a creature type with the formerly attached creature: ");
             List<Predicate<MageObject>> subtypes = new ArrayList<>();
             for (SubType subtype : lastStateCreature.getSubtype(game)) {
-                subtypes.add(new SubtypePredicate(subtype));
+                subtypes.add(subtype.getPredicate());
                 sb.append(subtype).append(", ");
             }
             FILTER.add(Predicates.or(subtypes));
@@ -98,7 +96,7 @@ class ReinsOfTheVinesteedEffect extends OneShotEffect {
             if (controller != null
                     && controller.choose(Outcome.PutCardInPlay, target, source.getSourceId(), game)) {
                 Permanent targetPermanent = game.getPermanent(target.getFirstTarget());
-                if (!targetPermanent.cantBeAttachedBy(aura, game)) {
+                if (!targetPermanent.cantBeAttachedBy(aura, game, false)) {
                     game.getState().setValue("attachTo:" + aura.getId(), targetPermanent);
                     controller.moveCards(aura, Zone.BATTLEFIELD, source, game);
                     return targetPermanent.addAttachment(aura.getId(), game);

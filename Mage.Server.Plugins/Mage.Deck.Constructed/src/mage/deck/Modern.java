@@ -4,6 +4,7 @@ import mage.cards.ExpansionSet;
 import mage.cards.Sets;
 import mage.cards.decks.Constructed;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -15,7 +16,7 @@ public class Modern extends Constructed {
     public Modern() {
         super("Constructed - Modern");
 
-        Date cutoff = new GregorianCalendar(2003, 6, 28).getTime(); // Eight edition release date
+        Date cutoff = new GregorianCalendar(2003, Calendar.JULY, 28).getTime(); // Eight edition release date
         for (ExpansionSet set : Sets.getInstance().values()) {
             if (set.getSetType().isModernLegal() && (set.getReleaseDate().after(cutoff) || set.getReleaseDate().equals(cutoff))) {
                 setCodes.add(set.getCode());
@@ -43,6 +44,9 @@ public class Modern extends Constructed {
         banned.add("Hypergenesis");
         banned.add("Krark-Clan Ironworks");
         banned.add("Mental Misstep");
+        banned.add("Mox Opal");
+        banned.add("Mycosynth Lattice");
+        banned.add("Oko, Thief of Crowns");
         banned.add("Ponder");
         banned.add("Preordain");
         banned.add("Punishing Fire");

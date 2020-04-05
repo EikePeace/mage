@@ -15,9 +15,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -28,8 +26,8 @@ public final class KozileksReturn extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("an Eldrazi creature spell with converted mana cost 7 or greater");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ELDRAZI));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(SubType.ELDRAZI.getPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
         filter.add(new ConvertedManaCostPredicate(ComparisonType.MORE_THAN, 6));
     }
 

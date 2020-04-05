@@ -1,8 +1,5 @@
 package mage.cards.n;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
 import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
@@ -15,8 +12,8 @@ import mage.cards.*;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
+import mage.filter.common.FilterCreaturePlayerOrPlaneswalker;
 import mage.filter.common.FilterNonlandPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.players.Library;
 import mage.players.Player;
@@ -26,16 +23,24 @@ import mage.target.common.TargetCardInHand;
 import mage.target.common.TargetOpponent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
- *
  * @author Will
  */
 public final class NicolBolasGodPharaoh extends CardImpl {
 
-    private static final FilterPermanent opponentsNonlandPermanentsFilter = new FilterNonlandPermanent("non-land permanents your opponents control");
+    private static final FilterPermanent filter = new FilterNonlandPermanent();
+    private static final FilterCreaturePlayerOrPlaneswalker filter2
+            = new FilterCreaturePlayerOrPlaneswalker("opponent, creature an opponent controls, or planeswalker an opponent controls.");
 
     static {
-        opponentsNonlandPermanentsFilter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
+        filter2.getPlayerFilter().add(TargetController.OPPONENT.getPlayerPredicate());
+        filter2.getCreatureFilter().add(TargetController.OPPONENT.getControllerPredicate());
+        filter2.getPlaneswalkerFilter().add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public NicolBolasGodPharaoh(UUID ownerId, CardSetInfo setInfo) {
@@ -45,7 +50,7 @@ public final class NicolBolasGodPharaoh extends CardImpl {
 
         this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(7));
 
-        // +2: Target opponent exiles cards from the top of their library until he or she exiles a nonland card. Until end of turn, you may cast that card without paying its mana cost.
+        // +2: Target opponent exiles cards from the top of their library until they exile a nonland card. Until end of turn, you may cast that card without paying its mana cost.
         LoyaltyAbility ability = new LoyaltyAbility(new NicolBolasGodPharaohPlusTwoEffect(), 2);
         ability.addTarget(new TargetOpponent());
         this.addAbility(ability);
@@ -55,14 +60,15 @@ public final class NicolBolasGodPharaoh extends CardImpl {
 
         // -4: Nicol Bolas, God-Pharaoh deals 7 damage to any target.
         ability = new LoyaltyAbility(new DamageTargetEffect(7), -4);
-        ability.addTarget(new TargetAnyTarget());
+        ability.addTarget(new TargetAnyTarget(filter2));
         this.addAbility(ability);
 
         // -12: Exile each nonland permanent your opponents control.
-        this.addAbility(new LoyaltyAbility(new ExileAllEffect(opponentsNonlandPermanentsFilter), -12));
+        this.addAbility(new LoyaltyAbility(new ExileAllEffect(filter)
+                .setText("exile each nonland permanent your opponents control"), -12));
     }
 
-    public NicolBolasGodPharaoh(final NicolBolasGodPharaoh card) {
+    private NicolBolasGodPharaoh(final NicolBolasGodPharaoh card) {
         super(card);
     }
 
@@ -79,7 +85,7 @@ class NicolBolasGodPharaohPlusOneEffect extends OneShotEffect {
         this.staticText = "Each opponent exiles two cards from their hand.";
     }
 
-    NicolBolasGodPharaohPlusOneEffect(final NicolBolasGodPharaohPlusOneEffect effect) {
+    private NicolBolasGodPharaohPlusOneEffect(final NicolBolasGodPharaohPlusOneEffect effect) {
         super(effect);
     }
 
@@ -93,28 +99,35 @@ class NicolBolasGodPharaohPlusOneEffect extends OneShotEffect {
         Boolean applied = false;
         // Store for each player the cards to exile, that's important because all exile shall happen at the same time
         Map<UUID, Cards> cardsToExile = new HashMap<>();
+
         // Each player chooses 2 cards to discard
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
-            if (opponent != null) {
-                int numberOfCardsToExile = Math.min(2, opponent.getHand().size());
+            if (opponent == null) {
+                continue;
+            }
+            int numberOfCardsToExile = Math.min(2, opponent.getHand().size());
+            if (numberOfCardsToExile > 0) {
                 Target target = new TargetCardInHand(numberOfCardsToExile, new FilterCard());
                 target.setRequired(true);
                 if (opponent.chooseTarget(Outcome.Exile, target, source, game)) {
                     Cards cards = new CardsImpl(target.getTargets());
                     cardsToExile.put(opponentId, cards);
                 }
+            } else {
+                cardsToExile.put(opponentId, new CardsImpl());
             }
         }
+
         // Exile all chosen cards at the same time
         Cards cardsOpponentsChoseToExile = new CardsImpl();
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
-            if (opponent != null) {
-                cardsOpponentsChoseToExile.addAll(cardsToExile.get(opponentId));
-                opponent.moveCards(cardsOpponentsChoseToExile, Zone.EXILED, source, game);
-                applied = true;
+            if (opponent == null || !cardsToExile.containsKey(opponentId)) {
             }
+            cardsOpponentsChoseToExile.addAll(cardsToExile.get(opponentId));
+            opponent.moveCards(cardsOpponentsChoseToExile, Zone.EXILED, source, game);
+            applied = true;
         }
         return applied;
     }
@@ -122,14 +135,14 @@ class NicolBolasGodPharaohPlusOneEffect extends OneShotEffect {
 
 class NicolBolasGodPharaohPlusTwoEffect extends OneShotEffect {
 
-    public NicolBolasGodPharaohPlusTwoEffect() {
+    NicolBolasGodPharaohPlusTwoEffect() {
         super(Outcome.Detriment);
         this.staticText = "Target opponent exiles cards from the top of their "
-                + "library until he or she exiles a nonland card. Until end of turn, "
+                + "library until they exile a nonland card. Until end of turn, "
                 + "you may cast that card without paying its mana cost";
     }
 
-    public NicolBolasGodPharaohPlusTwoEffect(final NicolBolasGodPharaohPlusTwoEffect effect) {
+    private NicolBolasGodPharaohPlusTwoEffect(final NicolBolasGodPharaohPlusTwoEffect effect) {
         super(effect);
     }
 
@@ -141,37 +154,39 @@ class NicolBolasGodPharaohPlusTwoEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player opponent = game.getPlayer(targetPointer.getFirst(game, source));
-        if (opponent != null) {
-            Library library = opponent.getLibrary();
-            Card card;
-            do {
-                card = library.getFromTop(game);
-                if (card != null) {
-                    opponent.moveCards(card, Zone.EXILED, source, game);
-                    if (!card.isLand()) {
-                        ContinuousEffect effect = new NicolBolasGodPharaohFromExileEffect();
-                        effect.setTargetPointer(new FixedTarget(card.getId(), 
-                                game.getState().getZoneChangeCounter(card.getId())));
-                        game.addEffect(effect, source);
-                        break;
-                    }
-                }
-            } while (library.hasCards() 
-                    && card != null);
-            return true;
+        if (opponent == null) {
+            return false;
         }
-        return false;
+        Library library = opponent.getLibrary();
+        Card card;
+        do {
+            card = library.getFromTop(game);
+            if (card == null) {
+                continue;
+            }
+            opponent.moveCards(card, Zone.EXILED, source, game);
+            if (card.isLand()) {
+                continue;
+            }
+            ContinuousEffect effect = new NicolBolasGodPharaohFromExileEffect();
+            effect.setTargetPointer(new FixedTarget(card.getId(),
+                    game.getState().getZoneChangeCounter(card.getId())));
+            game.addEffect(effect, source);
+            break;
+        } while (library.hasCards()
+                && card != null);
+        return true;
     }
 }
 
 class NicolBolasGodPharaohFromExileEffect extends AsThoughEffectImpl {
 
-    public NicolBolasGodPharaohFromExileEffect() {
+    NicolBolasGodPharaohFromExileEffect() {
         super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.EndOfTurn, Outcome.Benefit);
         staticText = "You may cast card from exile";
     }
 
-    public NicolBolasGodPharaohFromExileEffect(final NicolBolasGodPharaohFromExileEffect effect) {
+    private NicolBolasGodPharaohFromExileEffect(final NicolBolasGodPharaohFromExileEffect effect) {
         super(effect);
     }
 
@@ -187,22 +202,24 @@ class NicolBolasGodPharaohFromExileEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        if (sourceId != null
-                && sourceId.equals(getTargetPointer().getFirst(game, source))
-                && affectedControllerId.equals(source.getControllerId())) {
-            Card card = game.getCard(sourceId);
-            if (card != null
-                    && game.getState().getZone(sourceId) == Zone.EXILED) {
-                Player controller = game.getPlayer(affectedControllerId);
-                if (controller != null) {
-                    controller.setCastSourceIdWithAlternateMana(
-                            sourceId,
-                            null,
-                            card.getSpellAbility().getCosts());
-                    return true;
-                }
-            }
+        if (sourceId == null
+                || !sourceId.equals(getTargetPointer().getFirst(game, source))
+                || !affectedControllerId.equals(source.getControllerId())) {
+            return false;
         }
-        return false;
+        Card card = game.getCard(sourceId);
+        if (card == null
+                || game.getState().getZone(sourceId) != Zone.EXILED) {
+            return false;
+        }
+        Player controller = game.getPlayer(affectedControllerId);
+        if (controller == null) {
+            return false;
+        }
+        controller.setCastSourceIdWithAlternateMana(
+                sourceId,
+                null,
+                card.getSpellAbility().getCosts());
+        return true;
     }
 }

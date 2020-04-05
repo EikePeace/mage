@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.common;
 
 import java.util.Set;
@@ -33,7 +32,7 @@ public class RevealLibraryPutIntoHandEffect extends OneShotEffect {
     }
 
     public RevealLibraryPutIntoHandEffect(int amountCards, FilterCard filter, Zone zoneToPutRest, boolean anyOrder) {
-        this(new StaticValue(amountCards), filter, zoneToPutRest, anyOrder);
+        this(StaticValue.get(amountCards), filter, zoneToPutRest, anyOrder);
     }
 
     public RevealLibraryPutIntoHandEffect(DynamicValue amountCards, FilterCard filter, Zone zoneToPutRest, boolean anyOrder) {
@@ -73,7 +72,7 @@ public class RevealLibraryPutIntoHandEffect extends OneShotEffect {
         Set<Card> cardsList = cards.getCards(game);
         Cards cardsToHand = new CardsImpl();
         for (Card card : cardsList) {
-            if (filter.match(card, game)) {
+            if (filter.match(card, source.getSourceId(), controller.getId(), game)) {
                 cardsToHand.add(card);
                 cards.remove(card);
             }

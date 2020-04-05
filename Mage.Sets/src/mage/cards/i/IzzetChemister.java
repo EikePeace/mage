@@ -1,7 +1,5 @@
-
 package mage.cards.i;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
@@ -12,11 +10,7 @@ import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ExileTargetEffect;
 import mage.abilities.keyword.HasteAbility;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
@@ -24,15 +18,15 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterOwnedCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.ExileZone;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
 import mage.target.common.TargetCardInExile;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801
  */
 public final class IzzetChemister extends CardImpl {
@@ -41,8 +35,8 @@ public final class IzzetChemister extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.INSTANT),
-                new CardTypePredicate(CardType.SORCERY))
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate())
         );
     }
 
@@ -83,7 +77,7 @@ public final class IzzetChemister extends CardImpl {
 
 class IzzetChemisterCastFromExileEffect extends OneShotEffect {
 
-    private UUID exileId;
+    private final UUID exileId;
 
     public IzzetChemisterCastFromExileEffect(UUID exileId, String description) {
         super(Outcome.PlayForFree);
@@ -106,7 +100,8 @@ class IzzetChemisterCastFromExileEffect extends OneShotEffect {
         ExileZone exile = game.getExile().getExileZone(exileId);
         Player controller = game.getPlayer(source.getControllerId());
         FilterCard filter = new FilterCard();
-        if (controller != null && exile != null) {
+        if (controller != null
+                && exile != null) {
             Cards cardsToExile = new CardsImpl();
             cardsToExile.addAll(exile.getCards(game));
             OuterLoop:
@@ -116,10 +111,15 @@ class IzzetChemisterCastFromExileEffect extends OneShotEffect {
                 }
                 TargetCardInExile target = new TargetCardInExile(0, 1, filter, exileId, false);
                 target.setNotTarget(true);
-                while (cardsToExile.count(filter, game) > 0 && controller.choose(Outcome.PlayForFree, cardsToExile, target, game)) {
+                while (controller.canRespond()
+                        && cardsToExile.count(filter, game) > 0
+                        && controller.choose(Outcome.PlayForFree, cardsToExile, target, game)) {
                     Card card = game.getCard(target.getFirstTarget());
                     if (card != null) {
-                        controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                        controller.cast(controller.chooseAbilityForCast(card, game, true), game, true,
+                                new MageObjectReference(source.getSourceObject(game), game));
+                        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                         cardsToExile.remove(card);
                     } else {
                         break OuterLoop;

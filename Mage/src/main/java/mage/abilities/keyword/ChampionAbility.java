@@ -3,6 +3,7 @@ package mage.abilities.keyword;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
@@ -21,8 +22,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -76,11 +75,11 @@ public class ChampionAbility extends StaticAbility {
 
         this.subtypes = subtypes;
         StringBuilder sb = new StringBuilder("another ");
-        ArrayList<Predicate<MageObject>> subtypesPredicates = new ArrayList<>();
+        List<Predicate<MageObject>> subtypesPredicates = new ArrayList<>();
         if (!subtypes.isEmpty()) {
             int i = 0;
             for (SubType subtype : this.subtypes) {
-                subtypesPredicates.add(new SubtypePredicate(subtype));
+                subtypesPredicates.add(subtype.getPredicate());
                 if (i == 0) {
                     sb.append(subtype);
                 } else {
@@ -97,7 +96,7 @@ public class ChampionAbility extends StaticAbility {
             filter.add(Predicates.or(subtypesPredicates));
         }
         if (requiresCreature) {
-            filter.add(new CardTypePredicate(CardType.CREATURE));
+            filter.add(CardType.CREATURE.getPredicate());
         }
         filter.add(AnotherPredicate.instance);
 

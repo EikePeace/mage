@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbility;
 import mage.abilities.common.OnEventTriggeredAbility;
@@ -10,19 +8,19 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class Monsoon extends CardImpl {
@@ -48,8 +46,9 @@ public final class Monsoon extends CardImpl {
 class MonsoonEffect extends OneShotEffect {
 
     private static final FilterPermanent filter = new FilterPermanent();
+
     static {
-        filter.add(new SubtypePredicate(SubType.ISLAND));
+        filter.add(SubType.ISLAND.getPredicate());
         filter.add(Predicates.not(TappedPredicate.instance));
     }
 
@@ -71,7 +70,7 @@ class MonsoonEffect extends OneShotEffect {
                 permanent.tap(game);
                 damage++;
             }
-            player.damage(damage, source.getSourceId(), game, false, true);
+            player.damage(damage, source.getSourceId(), game);
             return true;
         }
         return false;

@@ -6,7 +6,6 @@ import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.CopyEffect;
 import mage.abilities.effects.common.ReturnToBattlefieldUnderOwnerControlTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -23,6 +22,10 @@ import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
+import mage.MageObject;
+import mage.abilities.effects.ContinuousEffect;
+import mage.abilities.effects.common.CopyEffect;
+import mage.util.CardUtil;
 
 /**
  * @author spjspj
@@ -105,21 +108,23 @@ class IdentityThiefEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanent(source.getFirstTarget());
+        Permanent targetPermanent = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
         Player controller = game.getPlayer(source.getControllerId());
         Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
-        if (controller != null && permanent != null && sourcePermanent != null) {
-            CopyEffect copyEffect = new CopyEffect(Duration.EndOfTurn, permanent, source.getSourceId());
-            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
-                // Copy exiled permanent
-                game.addEffect(copyEffect, source);
-                // Create delayed triggered ability
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+        if (controller != null
+                && targetPermanent != null
+                && sourcePermanent != null) {
+            ContinuousEffect copyEffect = new CopyEffect(Duration.EndOfTurn, targetPermanent.getMainCard(), source.getSourceId());
+            copyEffect.setTargetPointer(new FixedTarget(sourcePermanent.getId()));
+            game.addEffect(copyEffect, source);
+            UUID exileZoneId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
+            if (controller.moveCardsToExile(targetPermanent, source, game, true, exileZoneId, sourcePermanent.getName())) {
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, true);
                 effect.setText("Return the exiled card to the battlefield under its owner's control at the beginning of the next end step");
                 effect.setTargetPointer(new FixedTarget(source.getFirstTarget(), game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);
-                return true;
             }
+            return true;
         }
         return false;
     }

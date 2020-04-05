@@ -1,7 +1,4 @@
-
 package mage.cards.e;
-
-import java.util.UUID;
 
 import mage.Mana;
 import mage.abilities.Ability;
@@ -12,41 +9,40 @@ import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.costs.mana.VariableManaCost;
 import mage.abilities.effects.ContinuousEffectImpl;
+import mage.abilities.effects.common.ManaEffect;
 import mage.abilities.effects.common.discard.DiscardTargetEffect;
-import mage.abilities.effects.mana.BasicManaEffect;
+import mage.abilities.hint.common.MyTurnHint;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Layer;
-import mage.constants.Outcome;
-import mage.constants.SubLayer;
-import mage.constants.SubType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPlayer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author Ketsuban
  */
 public final class EverythingamajigC extends CardImpl {
 
     public EverythingamajigC(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{5}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{5}");
 
         // Mana Screw
         // 1: Flip a coin. If you win the flip, add CC to your mana pool. Activate this ability only any time you could cast an instant.
         this.addAbility(new ManaScrewAbility());
 
         // Disrupting Scepter
-        // 3, T: Target player discards a card. Activate this ability only during your turn.
+        // 3, {T}: Target player discards a card. Activate this ability only during your turn.
         Ability ability = new ActivateIfConditionActivatedAbility(Zone.BATTLEFIELD, new DiscardTargetEffect(1), new GenericManaCost(3), MyTurnCondition.instance);
         ability.addTarget(new TargetPlayer());
         ability.addCost(new TapSourceCost());
+        ability.addHint(MyTurnHint.instance);
         this.addAbility(ability);
 
         // Chimeric Staff
@@ -68,7 +64,6 @@ class ManaScrewAbility extends ActivatedManaAbilityImpl {
 
     public ManaScrewAbility() {
         super(Zone.BATTLEFIELD, new ManaScrewEffect(), new GenericManaCost(1));
-        this.netMana.add(new Mana(0, 0, 0, 0, 0, 2, 0, 0));
     }
 
     public ManaScrewAbility(final ManaScrewAbility ability) {
@@ -95,16 +90,15 @@ class ManaScrewAbility extends ActivatedManaAbilityImpl {
     }
 }
 
-class ManaScrewEffect extends BasicManaEffect {
+class ManaScrewEffect extends ManaEffect {
 
     public ManaScrewEffect() {
-        super(Mana.ColorlessMana(2));
+        super();
         this.staticText = "Flip a coin. If you win the flip, add {C}{C}";
     }
 
     public ManaScrewEffect(final ManaScrewEffect effect) {
         super(effect);
-        this.manaTemplate = effect.manaTemplate.copy();
     }
 
     @Override
@@ -113,12 +107,19 @@ class ManaScrewEffect extends BasicManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null && player.flipCoin(source, game, true)) {
-            player.getManaPool().addMana(getMana(game, source), game, source);
+    public List<Mana> getNetMana(Game game, Ability source) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            Player player = getPlayer(game, source);
+            if (player != null && player.flipCoin(source, game, true)) {
+                return Mana.ColorlessMana(2);
+            }
         }
-        return true;
+        return new Mana();
     }
 }
 

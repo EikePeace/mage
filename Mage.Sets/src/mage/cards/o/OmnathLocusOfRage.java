@@ -15,8 +15,6 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.OmnathElementalToken;
 import mage.target.common.TargetAnyTarget;
 
@@ -29,8 +27,8 @@ public final class OmnathLocusOfRage extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Elemental you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ELEMENTAL));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.ELEMENTAL.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public OmnathLocusOfRage(UUID ownerId, CardSetInfo setInfo) {

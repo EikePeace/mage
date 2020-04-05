@@ -1,7 +1,5 @@
 package mage.cards.d;
 
-import java.util.Set;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.DiesAttachedTriggeredAbility;
@@ -15,25 +13,20 @@ import mage.abilities.keyword.EnchantAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AsThoughEffectType;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.ManaType;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.targetpointer.FixedTarget;
+import mage.util.CardUtil;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
- *
  * @author LevelX2
  */
 public final class DeadMansChest extends CardImpl {
@@ -41,7 +34,7 @@ public final class DeadMansChest extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public DeadMansChest(UUID ownerId, CardSetInfo setInfo) {
@@ -99,7 +92,7 @@ class DeadMansChestEffect extends OneShotEffect {
             if (owner != null && amount > 0) {
                 Set<Card> cards = owner.getLibrary().getTopCards(game, amount);
                 if (!cards.isEmpty()) {
-                    controller.moveCardsToExile(cards, source, game, true, source.getSourceId(), sourceObject.getLogName());
+                    controller.moveCardsToExile(cards, source, game, true, source.getSourceId(), sourceObject.getName());
                     for (Card card : cards) {
                         if (!card.isLand()) {
                             ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, Duration.Custom);
@@ -142,9 +135,7 @@ class DeadMansChestCastFromExileEffect extends AsThoughEffectImpl {
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
         if (objectId.equals(getTargetPointer().getFirst(game, source))) {
-            if (affectedControllerId.equals(source.getControllerId())) {
-                return true;
-            }
+            return affectedControllerId.equals(source.getControllerId());
         } else {
             if (((FixedTarget) getTargetPointer()).getTarget().equals(objectId)) {
                 // object has moved zone so effect can be discarted
@@ -178,15 +169,11 @@ class DeadMansChestSpendManaEffect extends AsThoughEffectImpl implements AsThoug
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        objectId = game.getCard(objectId).getMainCard().getId(); // for split cards
+        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
         if (objectId.equals(((FixedTarget) getTargetPointer()).getTarget())
                 && game.getState().getZoneChangeCounter(objectId) <= ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1) {
-            if (affectedControllerId.equals(source.getControllerId())) {
-                // if the card moved from exile to spell the zone change counter is increased by 1
-                if (game.getState().getZoneChangeCounter(objectId) == ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1) {
-                    return true;
-                }
-            }
+            // if the card moved from exile to spell the zone change counter is increased by 1 (effect must applies before and on stack, use isCheckPlayableMode?)
+            return affectedControllerId.equals(source.getControllerId());
         } else {
             if (((FixedTarget) getTargetPointer()).getTarget().equals(objectId)) {
                 // object has moved zone so effect can be discarted

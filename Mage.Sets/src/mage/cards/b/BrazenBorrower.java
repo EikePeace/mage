@@ -12,7 +12,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterNonlandPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -26,7 +25,7 @@ public final class BrazenBorrower extends AdventureCard {
             = new FilterNonlandPermanent("nonland permanent an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public BrazenBorrower(UUID ownerId, CardSetInfo setInfo) {
@@ -48,8 +47,8 @@ public final class BrazenBorrower extends AdventureCard {
 
         // Petty Theft
         // Return target nonland permanent an opponent controls to its owner's hand.
-        this.getAdventureSpellAbility().addEffect(new ReturnToHandTargetEffect());
-        this.getAdventureSpellAbility().addTarget(new TargetPermanent(filter));
+        this.getSpellCard().getSpellAbility().addEffect(new ReturnToHandTargetEffect());
+        this.getSpellCard().getSpellAbility().addTarget(new TargetPermanent(filter));
     }
 
     private BrazenBorrower(final BrazenBorrower card) {

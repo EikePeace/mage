@@ -13,8 +13,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -25,8 +23,8 @@ public final class MerfolkMistbinder extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Merfolk you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.MERFOLK));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.MERFOLK.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public MerfolkMistbinder(UUID ownerId, CardSetInfo setInfo) {

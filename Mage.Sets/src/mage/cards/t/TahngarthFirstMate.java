@@ -11,13 +11,13 @@ import mage.abilities.effects.common.continuous.GainControlTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
-import mage.filter.common.FilterPlayerOrPlaneswalker;
+import mage.filter.common.FilterPlayerPlaneswalkerOrStructure;
 import mage.filter.predicate.Predicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
-import mage.target.common.TargetPlayerOrPlaneswalker;
+import mage.target.common.TargetPlayerPlaneswalkerOrStructure;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
@@ -39,7 +39,7 @@ public final class TahngarthFirstMate extends CardImpl {
         // Tahngarth, First Mate can't be blocked by more than one creature.
         this.addAbility(new SimpleStaticAbility(new CantBeBlockedByMoreThanOneSourceEffect()));
 
-        // Whenever an opponent attacks with one or more creatures, if Tahngarth is tapped, you may have that opponent gain control of Tahngarth until end of combat. If you do, choose a player or planeswalker that opponent is attacking. Tahngarth is attacking that player or planeswalker.
+        // Whenever an opponent attacks with one or more creatures, if Tahngarth is tapped, you may have that opponent gain control of Tahngarth until end of combat. If you do, choose a player, planeswalker, or Structure that opponent is attacking. Tahngarth is attacking that permanent or player.
         this.addAbility(new TahngarthFirstMateTriggeredAbility());
     }
 
@@ -89,15 +89,15 @@ class TahngarthFirstMateTriggeredAbility extends TriggeredAbilityImpl {
     public String getRule() {
         return "Whenever an opponent attacks with one or more creatures, " +
                 "if {this} is tapped, you may have that opponent gain control of {this} until end of combat. " +
-                "If you do, choose a player or planeswalker that opponent is attacking. " +
-                "{this} is attacking that player or planeswalker.";
+                "If you do, choose a player, planeswalker, or Structure that opponent is attacking. " +
+                "{this} is attacking that permanent or player.";
     }
 }
 
 class TahngarthFirstMateEffect extends OneShotEffect {
 
-    private static final FilterPlayerOrPlaneswalker filter
-            = new FilterPlayerOrPlaneswalker("player or planeswalker active player is attacking");
+    private static final FilterPlayerPlaneswalkerOrStructure filter
+            = new FilterPlayerPlaneswalkerOrStructure("player, planeswalker, or Structure active player is attacking");
 
     static {
         filter.getPlayerFilter().add(TahngarthFirstMatePlayerPredicate.instance);
@@ -125,7 +125,7 @@ class TahngarthFirstMateEffect extends OneShotEffect {
         if (controller == null || player == null || permanent == null) {
             return false;
         }
-        TargetPlayerOrPlaneswalker target = new TargetPlayerOrPlaneswalker(filter);
+        TargetPlayerPlaneswalkerOrStructure target = new TargetPlayerPlaneswalkerOrStructure(filter);
         target.setNotTarget(true);
         if (!controller.choose(outcome, target, source.getSourceId(), game)) {
             return false;

@@ -13,13 +13,9 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.constants.Zone;
-import mage.counters.BoostCounter;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.permanent.token.GoatToken;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -35,11 +31,11 @@ public final class NaakiShepherd extends CardImpl {
     private static final FilterCreaturePermanent filterAnimal = new FilterCreaturePermanent("Boar, Goat, Horse, Ox, or Sheep");
     static {
         filterAnimal.add(Predicates.or(
-                new SubtypePredicate(SubType.BOAR),
-                new SubtypePredicate(SubType.GOAT),
-                new SubtypePredicate(SubType.HORSE),
-                new SubtypePredicate(SubType.OX),
-                new SubtypePredicate(SubType.SHEEP)
+                SubType.BOAR.getPredicate(),
+                SubType.GOAT.getPredicate(),
+                SubType.HORSE.getPredicate(),
+                SubType.OX.getPredicate(),
+                SubType.SHEEP.getPredicate()
                 ));
     }
 

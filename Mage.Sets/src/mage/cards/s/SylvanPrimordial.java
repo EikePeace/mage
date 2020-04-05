@@ -15,8 +15,6 @@ import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterLandCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -70,7 +68,7 @@ enum SylvanPrimordialAdjuster implements TargetAdjuster {
             if (opponent != null) {
                 FilterPermanent filter = new FilterPermanent("noncreature permanent from opponent " + opponent.getLogName());
                 filter.add(new ControllerIdPredicate(opponentId));
-                filter.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
+                filter.add(Predicates.not(CardType.CREATURE.getPredicate()));
                 TargetPermanent target = new TargetPermanent(0, 1, filter, false);
                 ability.addTarget(target);
             }
@@ -83,7 +81,7 @@ class SylvanPrimordialEffect extends OneShotEffect {
     private static final FilterLandCard filterForest = new FilterLandCard("Forest");
 
     static {
-        filterForest.add(new SubtypePredicate(SubType.FOREST));
+        filterForest.add(SubType.FOREST.getPredicate());
     }
 
     public SylvanPrimordialEffect() {

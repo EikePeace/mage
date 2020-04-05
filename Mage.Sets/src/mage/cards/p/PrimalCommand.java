@@ -1,4 +1,3 @@
-
 package mage.cards.p;
 
 import java.util.UUID;
@@ -15,9 +14,8 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.common.FilterCreatureCard;
+import mage.filter.StaticFilters;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -32,15 +30,15 @@ import mage.target.common.TargetCardInLibrary;
 public final class PrimalCommand extends CardImpl {
 
     private static final FilterPermanent filterNonCreature = new FilterPermanent("noncreature permanent");
+
     static {
-        filterNonCreature.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
+        filterNonCreature.add(Predicates.not(CardType.CREATURE.getPredicate()));
     }
 
     public PrimalCommand(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{3}{G}{G}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{G}{G}");
 
-
-        // Choose two - 
+        // Choose two -
         this.getSpellAbility().getModes().setMinModes(2);
         this.getSpellAbility().getModes().setMaxModes(2);
         // Target player gains 7 life;
@@ -56,12 +54,12 @@ public final class PrimalCommand extends CardImpl {
         mode = new Mode();
         mode.addEffect(new PrimalCommandShuffleGraveyardEffect());
         mode.addTarget(new TargetPlayer());
-        this.getSpellAbility().getModes().addMode(mode);        
+        this.getSpellAbility().getModes().addMode(mode);
         // or search your library for a creature card, reveal it, put it into your hand, then shuffle your library.
         mode = new Mode();
-        mode.addEffect(new SearchLibraryPutInHandEffect(new TargetCardInLibrary(new FilterCreatureCard()), true, true));
+        mode.addEffect(new SearchLibraryPutInHandEffect(new TargetCardInLibrary(StaticFilters.FILTER_CARD_CREATURE), true, true));
         this.getSpellAbility().getModes().addMode(mode);
-        
+
     }
 
     public PrimalCommand(final PrimalCommand card) {
@@ -94,9 +92,9 @@ class PrimalCommandShuffleGraveyardEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getFirstTarget());
         if (player != null) {
-            for (Card card: player.getGraveyard().getCards(game)) {
+            for (Card card : player.getGraveyard().getCards(game)) {
                 player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
-            }                 
+            }
             player.shuffleLibrary(source, game);
             return true;
         }

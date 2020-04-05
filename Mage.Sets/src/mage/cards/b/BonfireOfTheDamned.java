@@ -1,7 +1,5 @@
-
 package mage.cards.b;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
@@ -10,16 +8,15 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.filter.FilterPermanent;
-import mage.filter.common.FilterCreaturePermanent;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
-import mage.target.TargetPlayer;
 import mage.target.common.TargetPlayerOrPlaneswalker;
 
+import java.util.UUID;
+
 /**
- *
  * @author noxx
  */
 public final class BonfireOfTheDamned extends CardImpl {
@@ -27,7 +24,7 @@ public final class BonfireOfTheDamned extends CardImpl {
     public BonfireOfTheDamned(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{X}{X}{R}");
 
-        // Bonfire of the Damned deals X damage to target player and each creature he or she controls.
+        // Bonfire of the Damned deals X damage to target player and each creature they control.
         this.getSpellAbility().addEffect(new BonfireOfTheDamnedEffect());
         this.getSpellAbility().addTarget(new TargetPlayerOrPlaneswalker());
 
@@ -35,7 +32,7 @@ public final class BonfireOfTheDamned extends CardImpl {
         this.addAbility(new MiracleAbility(this, new ManaCostsImpl("{X}{R}")));
     }
 
-    public BonfireOfTheDamned(final BonfireOfTheDamned card) {
+    private BonfireOfTheDamned(final BonfireOfTheDamned card) {
         super(card);
     }
 
@@ -47,31 +44,35 @@ public final class BonfireOfTheDamned extends CardImpl {
 
 class BonfireOfTheDamnedEffect extends OneShotEffect {
 
-    private static FilterPermanent filter = new FilterCreaturePermanent();
-
-    public BonfireOfTheDamnedEffect() {
+    BonfireOfTheDamnedEffect() {
         super(Outcome.Damage);
-        staticText = "{this} deals X damage to target player or planeswalker and each creature that player or that planeswalker's controller controls";
+        staticText = "{this} deals X damage to target player or planeswalker " +
+                "and each creature that player or that planeswalker's controller controls";
     }
 
-    public BonfireOfTheDamnedEffect(final BonfireOfTheDamnedEffect effect) {
+    private BonfireOfTheDamnedEffect(final BonfireOfTheDamnedEffect effect) {
         super(effect);
     }
 
     @Override
     public boolean apply(Game game, Ability source) {
+        int damage = source.getManaCostsToPay().getX();
+        if (damage < 1) {
+            return false;
+        }
+        game.damagePlayerOrPlaneswalker(
+                source.getFirstTarget(), damage, source.getSourceId(), game, false, true
+        );
         Player player = game.getPlayerOrPlaneswalkerController(source.getFirstTarget());
-        if (player != null) {
-            int damage = source.getManaCostsToPay().getX();
-            if (damage > 0) {
-                player.damage(damage, source.getSourceId(), game, false, true);
-                for (Permanent perm : game.getBattlefield().getAllActivePermanents(filter, player.getId(), game)) {
-                    perm.damage(damage, source.getSourceId(), game, false, true);
-                }
-            }
+        if (player == null) {
             return true;
         }
-        return false;
+        for (Permanent perm : game.getBattlefield().getAllActivePermanents(
+                StaticFilters.FILTER_PERMANENT_CREATURE, player.getId(), game
+        )) {
+            perm.damage(damage, source.getSourceId(), game);
+        }
+        return true;
     }
 
     @Override

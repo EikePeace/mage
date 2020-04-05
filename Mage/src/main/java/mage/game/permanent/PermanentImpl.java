@@ -8,6 +8,7 @@ import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.Effect;
+import mage.abilities.effects.RequirementEffect;
 import mage.abilities.effects.RestrictionEffect;
 import mage.abilities.hint.Hint;
 import mage.abilities.hint.HintUtils;
@@ -28,6 +29,7 @@ import mage.game.command.CommandObject;
 import mage.game.events.*;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.token.SquirrelToken;
+import mage.game.permanent.token.Token;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
 import mage.players.Player;
@@ -37,6 +39,7 @@ import mage.util.GameLog;
 import mage.util.ThreadLocalStringBuilder;
 import org.apache.log4j.Logger;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -46,7 +49,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
 
     private static final Logger logger = Logger.getLogger(PermanentImpl.class);
 
-    static class MarkedDamageInfo {
+    static class MarkedDamageInfo implements Serializable {
 
         public MarkedDamageInfo(Counter counter, MageObject sourceObject) {
             this.counter = counter;
@@ -94,6 +97,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
     protected List<UUID> bandedCards = new ArrayList<>();
     protected Counters counters;
     protected List<MarkedDamageInfo> markedDamage;
+    protected int markedLifelink;
     protected int timesLoyaltyUsed = 0;
     protected Map<String, String> info;
     protected int createOrder;
@@ -130,6 +134,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         this.blocking = permanent.blocking;
         this.maxBlocks = permanent.maxBlocks;
         this.deathtouched = permanent.deathtouched;
+        this.markedLifelink = permanent.markedLifelink;
 
         for (Map.Entry<String, List<UUID>> entry : permanent.connectedCards.entrySet()) {
             this.connectedCards.put(entry.getKey(), entry.getValue());
@@ -267,33 +272,58 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
             // restrict hints
             List<String> restrictHints = new ArrayList<>();
             if (game != null && HintUtils.RESTRICT_HINTS_ENABLE) {
+                // restrict
                 for (Map.Entry<RestrictionEffect, Set<Ability>> entry : game.getContinuousEffects().getApplicableRestrictionEffects(this, game).entrySet()) {
                     for (Ability ability : entry.getValue()) {
-                        if (!entry.getKey().applies(this, ability, game)) {
-                            continue;
-                        }
-
                         if (!entry.getKey().canAttack(game, false) || !entry.getKey().canAttack(this, null, ability, game, false)) {
                             restrictHints.add(HintUtils.prepareText("Can't attack" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_RESTRICT));
                         }
-
                         if (!entry.getKey().canBlock(null, this, ability, game, false)) {
                             restrictHints.add(HintUtils.prepareText("Can't block" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_RESTRICT));
                         }
-
                         if (!entry.getKey().canBeUntapped(this, ability, game, false)) {
                             restrictHints.add(HintUtils.prepareText("Can't untapped" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_RESTRICT));
                         }
-
                         if (!entry.getKey().canUseActivatedAbilities(this, ability, game, false)) {
                             restrictHints.add(HintUtils.prepareText("Can't use activated abilities" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_RESTRICT));
                         }
-
                         if (!entry.getKey().canTransform(this, ability, game, false)) {
                             restrictHints.add(HintUtils.prepareText("Can't transform" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_RESTRICT));
                         }
                     }
                 }
+
+                // requirement
+                for (Map.Entry<RequirementEffect, Set<Ability>> entry : game.getContinuousEffects().getApplicableRequirementEffects(this, false, game).entrySet()) {
+                    for (Ability ability : entry.getValue()) {
+                        if (entry.getKey().mustAttack(game)) {
+                            restrictHints.add(HintUtils.prepareText("Must attack" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                        if (entry.getKey().mustBlock(game)) {
+                            restrictHints.add(HintUtils.prepareText("Must block" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                        if (entry.getKey().mustBlockAny(game)) {
+                            restrictHints.add(HintUtils.prepareText("Must block any" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                        if (entry.getKey().mustBlockAllAttackers(game)) {
+                            restrictHints.add(HintUtils.prepareText("Must block all attackers" + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+
+                        MageObject object = game.getObject(entry.getKey().mustAttackDefender(ability, game));
+                        if (object != null) {
+                            restrictHints.add(HintUtils.prepareText("Must attack defender " + object.getLogName() + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                        object = game.getObject(entry.getKey().mustBlockAttacker(ability, game));
+                        if (object != null) {
+                            restrictHints.add(HintUtils.prepareText("Must block attacker " + object.getLogName() + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                        object = game.getObject(entry.getKey().mustBlockAttackerIfElseUnblocked(ability, game));
+                        if (object != null) {
+                            restrictHints.add(HintUtils.prepareText("Must block attacker if able " + object.getLogName() + addSourceObjectName(game, ability), null, HintUtils.HINT_ICON_REQUIRE));
+                        }
+                    }
+                }
+
                 restrictHints.sort(String::compareTo);
             }
 
@@ -665,6 +695,13 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
     @Override
     public boolean changeControllerId(UUID controllerId, Game game) {
         Player newController = game.getPlayer(controllerId);
+        // For each control change compared to last controler send a GAIN_CONTROL replace event to be able to prevent the gain control (e.g. Guardian Beast)
+        if (beforeResetControllerId != controllerId) {
+            GameEvent gainControlEvent = GameEvent.getEvent(GameEvent.EventType.GAIN_CONTROL, this.getId(), null, controllerId);
+            if (game.replaceEvent(gainControlEvent)) {
+                return false;
+            }
+        }
 
         GameEvent loseControlEvent = GameEvent.getEvent(GameEvent.EventType.LOSE_CONTROL, this.getId(), null, controllerId);
 
@@ -819,6 +856,8 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         if (damageAmount > 0 && canDamage(game.getObject(sourceId), game)) {
             if (this.isPlaneswalker()) {
                 damageDone = damagePlaneswalker(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
+            } else if (this.hasSubtype(SubType.STRUCTURE, game)) {
+                damageDone = damageStructure(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
             } else {
                 damageDone = damageCreature(damageAmount, sourceId, game, preventable, combat, markDamage, appliedEffects);
             }
@@ -851,8 +890,12 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
                 }
                 if (source != null && sourceAbilities != null) {
                     if (sourceAbilities.containsKey(LifelinkAbility.getInstance().getId())) {
-                        Player player = game.getPlayer(sourceControllerId);
-                        player.gainLife(damageDone, game, sourceId);
+                        if (markDamage) {
+                            game.getPermanent(sourceId).markLifelink(damageDone);
+                        } else {
+                            Player player = game.getPlayer(sourceControllerId);
+                            player.gainLife(damageDone, game, sourceId);
+                        }
                     }
                     if (sourceAbilities.containsKey(DeathtouchAbility.getInstance().getId())) {
                         deathtouched = true;
@@ -878,12 +921,22 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
     }
 
     @Override
+    public void markLifelink(int damage) {
+        markedLifelink += damage;
+    }
+
+    @Override
     public int markDamage(int damageAmount, UUID sourceId, Game game, boolean preventable, boolean combat) {
         return damage(damageAmount, sourceId, game, preventable, combat, true, null);
     }
 
     @Override
     public int applyDamage(Game game) {
+        if (markedLifelink > 0) {
+            Player player = game.getPlayer(this.getControllerId());
+            player.gainLife(markedLifelink, game, this.getId());
+            markedLifelink = 0;
+        }
         if (markedDamage == null) {
             return 0;
         }
@@ -928,6 +981,24 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         return 0;
     }
 
+    protected int damageStructure(int damage, UUID sourceId, Game game, boolean preventable, boolean combat, boolean markDamage, List<UUID> appliedEffects) {
+        GameEvent event = new DamageStructureEvent(objectId, sourceId, controllerId, damage, preventable, combat);
+        event.setAppliedEffects(appliedEffects);
+        if (!game.replaceEvent(event)) {
+            int actualDamage = event.getAmount();
+            if (actualDamage > 0) {
+                int countersToRemove = actualDamage;
+                if (countersToRemove > getCounters(game).getCount(CounterType.STABILITY)) {
+                    countersToRemove = getCounters(game).getCount(CounterType.STABILITY);
+                }
+                removeCounters(CounterType.STABILITY.getName(), countersToRemove, game);
+                game.fireEvent(new DamagedStructureEvent(objectId, sourceId, controllerId, actualDamage, combat));
+                return actualDamage;
+            }
+        }
+        return 0;
+    }
+
     protected int damageCreature(int damage, UUID sourceId, Game game, boolean preventable, boolean combat, boolean markDamage, List<UUID> appliedEffects) {
         GameEvent event = new DamageCreatureEvent(objectId, sourceId, controllerId, damage, preventable, combat);
         event.setAppliedEffects(appliedEffects);
@@ -950,7 +1021,6 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
                         addCounters(CounterType.M1M1.createInstance(actualDamage), damageSourceAbility, game);
                     }
                 } else {
-                    // this.damage += actualDamage;
                     this.damage = CardUtil.addWithOverflowCheck(this.damage, actualDamage);
                 }
                 game.fireEvent(new DamagedCreatureEvent(objectId, sourceId, controllerId, actualDamage, combat));
@@ -963,7 +1033,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
     private int checkProtectionAbilities(GameEvent event, UUID sourceId, Game game) {
         MageObject source = game.getObject(sourceId);
         if (source != null && hasProtectionFrom(source, game)) {
-            GameEvent preventEvent = new GameEvent(GameEvent.EventType.PREVENT_DAMAGE, this.objectId, sourceId, this.controllerId, event.getAmount(), false);
+            GameEvent preventEvent = new PreventDamageEvent(this.objectId, sourceId, this.controllerId, event.getAmount(), ((DamageEvent) event).isCombatDamage());
             if (!game.replaceEvent(preventEvent)) {
                 int preventedDamage = event.getAmount();
                 event.setAmount(0);
@@ -1073,7 +1143,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
     }
 
     @Override
-    public boolean cantBeAttachedBy(MageObject source, Game game) {
+    public boolean cantBeAttachedBy(MageObject source, Game game, boolean silentMode) {
         for (ProtectionAbility ability : this.getAbilities(game).getProtectionAbilities()) {
             if (!(source.hasSubtype(SubType.AURA, game)
                     && !ability.removesAuras())
@@ -1082,7 +1152,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
                 return true;
             }
         }
-        return game.getContinuousEffects().preventedByRuleModification(GameEvent.getEvent(EventType.STAY_ATTACHED, objectId, source.getId(), null), null, game, false);
+        return game.getContinuousEffects().preventedByRuleModification(GameEvent.getEvent(EventType.STAY_ATTACHED, objectId, source.getId(), null), null, game, silentMode);
     }
 
     protected boolean canDamage(MageObject source, Game game) {
@@ -1533,7 +1603,7 @@ public abstract class PermanentImpl extends CardImpl implements Permanent {
         game.fireEvent(GameEvent.getEvent(GameEvent.EventType.FIGHTED_PERMANENT, fightTarget.getId(), getId(), source.getControllerId()));
         game.fireEvent(GameEvent.getEvent(GameEvent.EventType.FIGHTED_PERMANENT, getId(), fightTarget.getId(), source.getControllerId()));
         damage(fightTarget.getPower().getValue(), fightTarget.getId(), game, false, true);
-        fightTarget.damage(getPower().getValue(), getId(), game, false, true);
+        fightTarget.damage(getPower().getValue(), getId(), game);
         return true;
     }
 

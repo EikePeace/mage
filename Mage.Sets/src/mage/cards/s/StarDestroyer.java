@@ -18,8 +18,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreatureOrPlayer;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.permanent.token.TIEFighterToken;
 import mage.target.common.TargetCreatureOrPlayer;
 import mage.target.common.TargetCreaturePermanent;
@@ -34,8 +32,8 @@ public final class StarDestroyer extends CardImpl {
     private static final FilterCreatureOrPlayer filter3 = new FilterCreatureOrPlayer("non-Starship creature or player");
 
     static {
-        filter1.add(new CardTypePredicate(CardType.ARTIFACT));
-        filter3.getCreatureFilter().add(Predicates.not(new SubtypePredicate(SubType.STARSHIP)));
+        filter1.add(CardType.ARTIFACT.getPredicate());
+        filter3.getCreatureFilter().add(Predicates.not(SubType.STARSHIP.getPredicate()));
     }
 
     public StarDestroyer(UUID ownerId, CardSetInfo setInfo) {

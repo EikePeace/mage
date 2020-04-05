@@ -1,6 +1,5 @@
 package mage.cards.g;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.PutIntoGraveFromBattlefieldAllTriggeredAbility;
@@ -13,12 +12,13 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
+import mage.target.targetpointer.FixedTarget;
+
+import java.util.UUID;
 
 /**
- *
  * @author TheElk801
  */
 public final class GrimFeast extends CardImpl {
@@ -28,7 +28,7 @@ public final class GrimFeast extends CardImpl {
 
         // At the beginning of your upkeep, Grim Feast deals 1 damage to you.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(
-                new DamageControllerEffect(1), 
+                new DamageControllerEffect(1),
                 TargetController.YOU, false
         ));
 
@@ -51,7 +51,7 @@ class GrimFeastTriggeredAbility extends PutIntoGraveFromBattlefieldAllTriggeredA
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a creature");
 
     static {
-        filter.add(new OwnerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getOwnerPredicate());
     }
 
     public GrimFeastTriggeredAbility() {
@@ -69,7 +69,7 @@ class GrimFeastTriggeredAbility extends PutIntoGraveFromBattlefieldAllTriggeredA
 
     @Override
     public String getRule() {
-        return "Whenever a creature is put into an opponent’s graveyard from the battlefield, "
+        return "Whenever a creature is put into an opponent's graveyard from the battlefield, "
                 + "you gain life equal to its toughness.";
     }
 }
@@ -91,7 +91,7 @@ class GrimFeastEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent creature = game.getPermanentOrLKIBattlefield(targetPointer.getFirst(game, source));
+        Permanent creature = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
         if (creature == null) {
             return false;
         }

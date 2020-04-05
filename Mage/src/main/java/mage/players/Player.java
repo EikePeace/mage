@@ -20,6 +20,7 @@ import mage.counters.Counter;
 import mage.counters.Counters;
 import mage.designations.Designation;
 import mage.designations.DesignationType;
+import mage.filter.FilterMana;
 import mage.filter.FilterPermanent;
 import mage.game.Game;
 import mage.game.Graveyard;
@@ -210,13 +211,6 @@ public interface Player extends MageItem, Copyable<Player> {
      */
     boolean canRespond();
 
-    /**
-     * Called if other player left the game
-     *
-     * @param game
-     */
-    void otherPlayerLeftGame(Game game);
-
     ManaPool getManaPool();
 
     Set<UUID> getInRange();
@@ -310,7 +304,7 @@ public interface Player extends MageItem, Copyable<Player> {
     void useDeck(Deck deck, Game game);
 
     /**
-     * Called before each applyEffects, to rest all what can be applyed by
+     * Called before each applyEffects, to rest all what can be applied by
      * continuous effects
      */
     void reset();
@@ -324,6 +318,8 @@ public interface Player extends MageItem, Copyable<Player> {
     boolean cast(SpellAbility ability, Game game, boolean noMana, MageObjectReference reference);
 
     SpellAbility chooseSpellAbilityForCast(SpellAbility ability, Game game, boolean noMana);
+
+    SpellAbility chooseAbilityForCast(Card card, Game game, boolean noMana);
 
     boolean putInHand(Card card, Game game);
 
@@ -354,8 +350,9 @@ public interface Player extends MageItem, Copyable<Player> {
     boolean searchLibrary(TargetCardInLibrary target, Ability source, Game game, UUID targetPlayerId, boolean triggerEvents);
 
     /**
-     * Reveals all players' libraries. Useful for abilities like Jace, Architect of Thought's -8
-     * that have effects that require information from all libraries.
+     * Reveals all players' libraries. Useful for abilities like Jace, Architect
+     * of Thought's -8 that have effects that require information from all
+     * libraries.
      *
      * @param source
      * @param game
@@ -399,20 +396,17 @@ public interface Player extends MageItem, Copyable<Player> {
 
     boolean flipCoin(Ability source, Game game, boolean winnable);
 
-    boolean flipCoin(Ability source, Game game, boolean winnable, ArrayList<UUID> appliedEffects);
+    boolean flipCoin(Ability source, Game game, boolean winnable, List<UUID> appliedEffects);
 
     int rollDice(Game game, int numSides);
 
-    int rollDice(Game game, ArrayList<UUID> appliedEffects, int numSides);
+    int rollDice(Game game, List<UUID> appliedEffects, int numSides);
 
     PlanarDieRoll rollPlanarDie(Game game);
 
-    PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects);
+    PlanarDieRoll rollPlanarDie(Game game, List<UUID> appliedEffects);
 
-    PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides);
-
-    @Deprecated
-    void discard(int amount, Ability source, Game game);
+    PlanarDieRoll rollPlanarDie(Game game, List<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides);
 
     Card discardOne(boolean random, Ability source, Game game);
 
@@ -462,6 +456,9 @@ public interface Player extends MageItem, Copyable<Player> {
     /**
      * Adds the cards to the reveal window and adds the source object's id name
      * to the title bar of the revealed cards window
+     * <p>
+     * Warning, if you use it from continuous effect, then check with extra call
+     * isCanLookAtNextTopLibraryCard
      *
      * @param source
      * @param name
@@ -478,6 +475,9 @@ public interface Player extends MageItem, Copyable<Player> {
     /**
      * Adds the cards to the look window and adds the source object's id name to
      * the title bar of the lookedAt window
+     * <p>
+     * Warning, if you use it from continuous effect, then check with extra call
+     * isCanLookAtNextTopLibraryCard
      *
      * @param source
      * @param name
@@ -507,7 +507,7 @@ public interface Player extends MageItem, Copyable<Player> {
 
     boolean choose(Outcome outcome, Target target, UUID sourceId, Game game, Map<String, Serializable> options);
 
-    boolean choose(Outcome outcome, Cards cards, TargetCard target, Game game);
+    boolean choose(Outcome outcome, Cards cards, TargetCard target, Game game); // TODO: remove to use choose with "Ability source"
 
     boolean chooseTarget(Outcome outcome, Target target, Ability source, Game game);
 
@@ -633,7 +633,7 @@ public interface Player extends MageItem, Copyable<Player> {
 
     List<Ability> getPlayableOptions(Ability ability, Game game);
 
-    Set<UUID> getPlayableObjects(Game game, Zone zone);
+    Map<UUID, Integer> getPlayableObjects(Game game, Zone zone);
 
     LinkedHashMap<UUID, ActivatedAbility> getUseableActivatedAbilities(MageObject object, Zone zone, Game game);
 
@@ -659,7 +659,8 @@ public interface Player extends MageItem, Copyable<Player> {
      *
      * @param card
      * @param game
-     * @param abilitiesToActivate extra info about abilities that can be activated on NO option
+     * @param abilitiesToActivate extra info about abilities that can be
+     *                            activated on NO option
      * @return player looked at the card
      */
     boolean lookAtFaceDownCard(Card card, Game game, int abilitiesToActivate);
@@ -699,8 +700,8 @@ public interface Player extends MageItem, Copyable<Player> {
     void addCommanderId(UUID commanderId);
 
     /**
-     * Get the commanderIds of the player
-     * Deprecated, use game.getCommandersIds(xxx) instead
+     * Get the commanderIds of the player Deprecated, use
+     * game.getCommandersIds(xxx) instead
      *
      * @return
      */
@@ -821,6 +822,18 @@ public interface Player extends MageItem, Copyable<Player> {
     boolean moveCardToLibraryWithInfo(Card card, UUID sourceId, Game game, Zone fromZone, boolean toTop, boolean withName);
 
     /**
+     * Uses card.moveToZone and posts a inform message about moving the card to
+     * library into the game log
+     *
+     * @param card
+     * @param sourceId
+     * @param game
+     * @param fromZone if null, this info isn't postet
+     * @return
+     */
+    boolean moveCardToCommandWithInfo(Card card, UUID sourceId, Game game, Zone fromZone);
+
+    /**
      * Checks if the playerToCheckId is from an opponent in range
      *
      * @param playerToCheckId
@@ -846,11 +859,13 @@ public interface Player extends MageItem, Copyable<Player> {
      */
     void setCastSourceIdWithAlternateMana(UUID sourceId, ManaCosts<ManaCost> manaCosts, Costs<Cost> costs);
 
-    UUID getCastSourceIdWithAlternateMana();
+    Set<UUID> getCastSourceIdWithAlternateMana();
 
-    ManaCosts<ManaCost> getCastSourceIdManaCosts();
+    Map<UUID, ManaCosts<ManaCost>> getCastSourceIdManaCosts();
 
-    Costs<Cost> getCastSourceIdCosts();
+    Map<UUID, Costs<Cost>> getCastSourceIdCosts();
+
+    void clearCastSourceIdManaCosts();
 
     // permission handling to show hand cards
     void addPermissionToShowHandCards(UUID watcherUserId);
@@ -893,5 +908,11 @@ public interface Player extends MageItem, Copyable<Player> {
     void addDesignation(Designation designation);
 
     List<Designation> getDesignations();
+
+    void addPhyrexianToColors(FilterMana colors);
+
+    void removePhyrexianFromColors(FilterMana colors);
+
+    FilterMana getPhyrexianColors();
 
 }

@@ -13,8 +13,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
 
 /**
@@ -26,8 +24,8 @@ public final class HeraldOfDromoka extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("other Warrior creatures");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new SubtypePredicate(SubType.WARRIOR));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(SubType.WARRIOR.getPredicate());
         filter.add(AnotherPredicate.instance);
     }
 

@@ -1,18 +1,11 @@
-
 package mage.cards.t;
 
-import java.util.Set;
-import java.util.UUID;
 import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.condition.common.SpellMasteryCondition;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
@@ -23,8 +16,10 @@ import mage.players.Player;
 import mage.target.TargetCard;
 import mage.target.common.TargetOpponent;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class TalentOfTheTelepath extends CardImpl {
@@ -32,8 +27,12 @@ public final class TalentOfTheTelepath extends CardImpl {
     public TalentOfTheTelepath(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{U}{U}");
 
-        // Target opponent reveals the top seven cards of their library. You may cast an instant or sorcery card from among them without paying its mana cost. Then that player puts the rest into their graveyard.
-        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, you may cast up to two revealed instant and/or sorcery cards instead of one.
+        // Target opponent reveals the top seven cards of their library. 
+        // You may cast an instant or sorcery card from among them without paying 
+        // its mana cost. Then that player puts the rest into their graveyard.
+        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or 
+        // sorcery cards in your graveyard, you may cast up to two revealed instant 
+        // and/or sorcery cards instead of one.
         getSpellAbility().addEffect(new TalentOfTheTelepathEffect());
         getSpellAbility().addTarget(new TargetOpponent());
 
@@ -55,8 +54,12 @@ class TalentOfTheTelepathEffect extends OneShotEffect {
 
     public TalentOfTheTelepathEffect() {
         super(Outcome.PlayForFree);
-        this.staticText = "Target opponent reveals the top seven cards of their library. You may cast an instant or sorcery card from among them without paying its mana cost. Then that player puts the rest into their graveyard. "
-                + "<BR><i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, you may cast up to two revealed instant and/or sorcery cards instead of one.";
+        this.staticText = "Target opponent reveals the top seven cards of their "
+                + "library. You may cast an instant or sorcery card from among them "
+                + "without paying its mana cost. Then that player puts the rest into their graveyard. "
+                + "<BR><i>Spell mastery</i> &mdash; If there are two or more instant "
+                + "and/or sorcery cards in your graveyard, you may cast up to two "
+                + "revealed instant and/or sorcery cards instead of one.";
     }
 
     public TalentOfTheTelepathEffect(final TalentOfTheTelepathEffect effect) {
@@ -76,7 +79,8 @@ class TalentOfTheTelepathEffect extends OneShotEffect {
         if (targetOpponent != null && sourceObject != null) {
             Set<Card> allCards = targetOpponent.getLibrary().getTopCards(game, 7);
             Cards cards = new CardsImpl(allCards);
-            targetOpponent.revealCards(sourceObject.getIdName() + " - " + targetOpponent.getName() + "'s top library cards", cards, game);
+            targetOpponent.revealCards(sourceObject.getIdName() + " - "
+                    + targetOpponent.getName() + "'s top library cards", cards, game);
             for (Card card : allCards) {
                 if (filter.match(card, game)) {
                     cardsToCast.add(card);
@@ -90,19 +94,27 @@ class TalentOfTheTelepathEffect extends OneShotEffect {
                 }
                 Player controller = game.getPlayer(source.getControllerId());
                 if (controller != null) {
-
                     TargetCard target = new TargetCard(Zone.LIBRARY, filter); // zone should be ignored here
                     target.setNotTarget(true);
-                    while (numberOfSpells > 0
+                    while (controller.canRespond()
+                            && numberOfSpells > 0
                             && !cardsToCast.isEmpty()
-                            && controller.chooseUse(outcome, "Cast an instant or sorcery card from among them for free?", source, game)
-                            && controller.choose(outcome, cardsToCast, target, game)) {
+                            && controller.chooseUse(outcome, "Cast an instant or sorcery card "
+                            + "from among them for free?", source, game)
+                            && controller.choose(Outcome.PlayForFree, cardsToCast, target, game)) {
                         Card card = cardsToCast.get(target.getFirstTarget(), game);
                         if (card != null) {
-                            controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
-                            numberOfSpells--;
+                            game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                            Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
+                                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                             cardsToCast.remove(card);
-                            allCards.remove(card);
+                            if (cardWasCast) {
+                                numberOfSpells--;
+                                allCards.remove(card);
+                            }
+                        } else {
+                            break;
                         }
                         if (!controller.canRespond()) {
                             return false;

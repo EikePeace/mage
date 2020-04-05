@@ -13,9 +13,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 import java.util.UUID;
 
@@ -29,8 +27,8 @@ public final class FerocityOfTheWilds extends CardImpl {
 
     static {
         filter.add(AttackingPredicate.instance);
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(Predicates.not(new SubtypePredicate(SubType.HUMAN)));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(Predicates.not(SubType.HUMAN.getPredicate()));
     }
 
     public FerocityOfTheWilds(UUID ownerId, CardSetInfo setInfo) {

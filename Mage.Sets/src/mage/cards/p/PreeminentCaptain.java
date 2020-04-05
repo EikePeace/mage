@@ -1,6 +1,5 @@
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
@@ -14,14 +13,14 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCardInHand;
 
+import java.util.UUID;
+
 /**
- *
  * @author Rafbill
  */
 public final class PreeminentCaptain extends CardImpl {
@@ -55,7 +54,7 @@ class PreeminentCaptainEffect extends OneShotEffect {
     private static final FilterCreatureCard filter = new FilterCreatureCard("a soldier creature card");
 
     static {
-        filter.add(new SubtypePredicate(SubType.SOLDIER));
+        filter.add(SubType.SOLDIER.getPredicate());
     }
 
     public PreeminentCaptainEffect() {
@@ -72,7 +71,7 @@ class PreeminentCaptainEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         TargetCardInHand target = new TargetCardInHand(filter);
         if (controller != null && target.canChoose(controller.getId(), game)
-                && target.choose(getOutcome(), controller.getId(), source.getSourceId(), game)) {
+                && target.choose(outcome, controller.getId(), source.getSourceId(), game)) {
             if (!target.getTargets().isEmpty()) {
                 UUID cardId = target.getFirstTarget();
                 Card card = controller.getHand().get(cardId, game);

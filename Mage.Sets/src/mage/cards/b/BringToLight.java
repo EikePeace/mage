@@ -1,7 +1,5 @@
-
 package mage.cards.b;
 
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.common.ColorsOfManaSpentToCastCount;
@@ -15,15 +13,15 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInLibrary;
 import org.apache.log4j.Logger;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class BringToLight extends CardImpl {
@@ -71,7 +69,8 @@ class BringToLightEffect extends OneShotEffect {
         if (controller != null) {
             int numberColors = ColorsOfManaSpentToCastCount.getInstance().calculate(game, source, this);
             FilterCard filter = new FilterCard();
-            filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE), new CardTypePredicate(CardType.INSTANT), new CardTypePredicate(CardType.SORCERY)));
+            filter.add(Predicates.or(CardType.CREATURE.getPredicate(),
+                    CardType.INSTANT.getPredicate(), CardType.SORCERY.getPredicate()));
             filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, numberColors + 1));
             TargetCardInLibrary target = new TargetCardInLibrary(filter);
             controller.searchLibrary(target, source, game);
@@ -81,10 +80,13 @@ class BringToLightEffect extends OneShotEffect {
             }
             controller.shuffleLibrary(source, game);
             if (card != null) {
-                if (controller.chooseUse(outcome, "Cast " + card.getName() + " without paying its mana cost?", source, game)) {
-                    if (card.getSpellAbility() != null) {
-                        controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
-                    } else {
+                if (controller.chooseUse(Outcome.PlayForFree, "Cast " + card.getName()
+                        + " without paying its mana cost?", source, game)) {
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                    Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
+                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
+                    if (!cardWasCast) {
                         Logger.getLogger(BringToLightEffect.class).error("Bring to Light: spellAbility == null " + card.getName());
                     }
                 }

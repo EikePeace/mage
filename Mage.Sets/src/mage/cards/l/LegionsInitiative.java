@@ -18,9 +18,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.ExileZone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -71,8 +69,8 @@ class LegionsInitiativeExileEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterPermanent("all creatures you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public LegionsInitiativeExileEffect() {

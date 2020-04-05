@@ -14,6 +14,7 @@ import mage.constants.SuperType;
 import mage.game.draft.RateCard;
 import mage.game.permanent.token.Token;
 import mage.game.permanent.token.TokenImpl;
+import mage.sets.TherosBeyondDeath;
 import mage.watchers.Watcher;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -44,6 +45,8 @@ public class VerifyCardDataTest {
 
     private static final Logger logger = Logger.getLogger(VerifyCardDataTest.class);
 
+    private static final String FULL_ABILITIES_CHECK_SET_CODE = "THB"; // check all abilities and output cards with wrong abilities texts;
+
     // right now this is very noisy, and not useful enough to make any assertions on
     private static final boolean CHECK_SOURCE_TOKENS = false;
 
@@ -54,52 +57,81 @@ public class VerifyCardDataTest {
         skipCheckLists.put(listName, new LinkedHashSet<>());
     }
 
-    private static void skipListAddName(String listName, String set, String name) {
-        skipCheckLists.get(listName).add(set + " - " + name);
+    private static void skipListAddName(String listName, String set, String cardName) {
+        skipCheckLists.get(listName).add(set + " - " + cardName);
     }
 
-    private static boolean skipListHaveName(String listName, String set, String name) {
-        return skipCheckLists.get(listName).contains(set + " - " + name);
+    private static void skipListAddName(String listName, String set) {
+        skipCheckLists.get(listName).add(set);
     }
+
+    private static boolean skipListHaveName(String listName, String set, String cardName) {
+        return skipCheckLists.get(listName).contains(set + " - " + cardName)
+                || skipCheckLists.get(listName).contains(set);
+    }
+
+    private static boolean skipListHaveName(String listName, String set) {
+        return skipCheckLists.get(listName).contains(set);
+    }
+
+    private static final String SKIP_LIST_PT = "PT";
+    private static final String SKIP_LIST_COLOR = "COLOR";
+    private static final String SKIP_LIST_COST = "COST";
+    private static final String SKIP_LIST_SUPERTYPE = "SUPERTYPE";
+    private static final String SKIP_LIST_TYPE = "TYPE";
+    private static final String SKIP_LIST_SUBTYPE = "SUBTYPE";
+    private static final String SKIP_LIST_NUMBER = "NUMBER";
+    private static final String SKIP_LIST_MISSING_ABILITIES = "MISSING_ABILITIES";
+    private static final String SKIP_LIST_DOUBLE_RARE = "DOUBLE_RARE";
 
     static {
         // skip lists for checks (example: unstable cards with same name may have different stats)
+        // can be full set ignore list or set + cardname
 
         // power-toughness
-        skipListCreate("PT");
-        skipListAddName("PT", "UST", "Garbage Elemental");
-        skipListAddName("PT", "UST", "Infinity Elemental");
-        skipListAddName("PT", "UNH", "Old Fogey");
-        skipListAddName("PT", "MH1", "Ruination Rioter");
+        skipListCreate(SKIP_LIST_PT);
+        skipListAddName(SKIP_LIST_PT, "UST", "Garbage Elemental");
+        skipListAddName(SKIP_LIST_PT, "UST", "Infinity Elemental");
+        skipListAddName(SKIP_LIST_PT, "UNH", "Old Fogey");
 
         // color
-        skipListCreate("COLOR");
+        skipListCreate(SKIP_LIST_COLOR);
 
         // cost
-        skipListCreate("COST");
-        skipListAddName("COST", "KTK", "Erase");
-        skipListAddName("COST", "M13", "Erase");
-        skipListAddName("COST", "ULG", "Erase");
-        skipListAddName("COST", "H17", "Grimlock, Dinobot Leader");
-        skipListAddName("COST", "UST", "Everythingamajig");
+        skipListCreate(SKIP_LIST_COST);
+        skipListAddName(SKIP_LIST_COST, "KTK", "Erase");
+        skipListAddName(SKIP_LIST_COST, "M13", "Erase");
+        skipListAddName(SKIP_LIST_COST, "ULG", "Erase");
+        skipListAddName(SKIP_LIST_COST, "H17", "Grimlock, Dinobot Leader");
+        skipListAddName(SKIP_LIST_COST, "UST", "Everythingamajig");
+        skipListAddName(SKIP_LIST_COST, "THB", "Anax, Hardened in the Forge"); // until it's been corrected in MTGJSON
 
         // supertype
-        skipListCreate("SUPERTYPE");
+        skipListCreate(SKIP_LIST_SUPERTYPE);
 
         // type
-        skipListCreate("TYPE");
-        skipListAddName("TYPE", "UNH", "Old Fogey");
-        skipListAddName("TYPE", "UST", "capital offense");
+        skipListCreate(SKIP_LIST_TYPE);
+        skipListAddName(SKIP_LIST_TYPE, "UNH", "Old Fogey");
+        skipListAddName(SKIP_LIST_TYPE, "UST", "capital offense");
 
         // subtype
-        skipListCreate("SUBTYPE");
-        skipListAddName("SUBTYPE", "UGL", "Miss Demeanor");
+        skipListCreate(SKIP_LIST_SUBTYPE);
+        skipListAddName(SKIP_LIST_SUBTYPE, "UGL", "Miss Demeanor");
+        // the following are temporary
+        subtypesToIgnore.add("Noble");
+        skipListAddName(SKIP_LIST_SUBTYPE, "AER", "Ridgescale Tusker");
+        skipListAddName(SKIP_LIST_SUBTYPE, "ME3", "Lady Caleria");
+        skipListAddName(SKIP_LIST_SUBTYPE, "LEG", "Lady Caleria");
+
 
         // number
-        skipListCreate("NUMBER");
+        skipListCreate(SKIP_LIST_NUMBER);
 
         // missing abilities
-        skipListCreate("MISSING_ABILITIES");
+        skipListCreate(SKIP_LIST_MISSING_ABILITIES);
+
+        // double rare cards
+        skipListCreate(SKIP_LIST_DOUBLE_RARE);
     }
 
     private void warn(Card card, String message) {
@@ -116,13 +148,15 @@ public class VerifyCardDataTest {
 
     @Test
     public void verifyCards() throws IOException {
+        int cardIndex = 0;
         for (Card card : CardScanner.getAllCards()) {
+            cardIndex++;
             Set<String> tokens = findSourceTokens(card.getClass());
             if (card.isSplitCard()) {
-                check(((SplitCard) card).getLeftHalfCard(), null);
-                check(((SplitCard) card).getRightHalfCard(), null);
+                check(((SplitCard) card).getLeftHalfCard(), null, cardIndex);
+                check(((SplitCard) card).getRightHalfCard(), null, cardIndex);
             } else {
-                check(card, tokens);
+                check(card, tokens, cardIndex);
             }
         }
 
@@ -180,6 +214,66 @@ public class VerifyCardDataTest {
 
         if (doubleErrors.size() > 0) {
             Assert.fail("DB has duplicated card numbers, found errors: " + doubleErrors.size());
+        }
+    }
+
+    @Test
+    @Ignore // TODO: enable it after THB set will be completed
+    public void checkDoubleRareCardsInSets() {
+        // all basic sets after THB must have double rare cards (one normal, one bonus)
+        // ELD can have same rules, but xmage stores it as different sets (ELD and CELD)
+        Date startCheck = TherosBeyondDeath.getInstance().getReleaseDate();
+        Calendar cal = Calendar.getInstance();
+        cal.set(2050, Calendar.JANUARY, 1); // optimistic
+        Date endCheck = cal.getTime();
+
+        Collection<String> doubleErrors = new ArrayList<>();
+
+        Collection<ExpansionSet> sets = Sets.getInstance().values();
+        for (ExpansionSet set : sets) {
+            // only post THB sets must have double versions
+            if (set.getReleaseDate().before(startCheck)
+                    || set.getReleaseDate().after(endCheck)
+                    || !set.getSetType().isStandardLegal()) {
+                continue;
+            }
+
+            if (skipListHaveName(SKIP_LIST_DOUBLE_RARE, set.getCode())) {
+                continue;
+            }
+
+            Map<String, Integer> cardsList = new HashMap<>();
+            for (ExpansionSet.SetCardInfo checkCard : set.getSetCardInfo()) {
+                // only rare cards must have double versions
+                if (!checkCard.getRarity().equals(Rarity.RARE) && !checkCard.getRarity().equals(Rarity.MYTHIC)) {
+                    continue;
+                }
+
+                if (skipListHaveName(SKIP_LIST_DOUBLE_RARE, set.getCode(), checkCard.getName())) {
+                    continue;
+                }
+
+                String cardName = checkCard.getName();
+                cardsList.putIfAbsent(cardName, 0);
+                cardsList.compute(cardName, (k, v) -> v + 1);
+            }
+
+            cardsList.forEach((cardName, amount) -> {
+                if (amount != 2) {
+                    String error = "Error: found non duplicated rare card -"
+                            + " set (" + set.getCode() + " - " + set.getName() + ")"
+                            + " card (" + cardName + ")";
+                    doubleErrors.add(error);
+                }
+            });
+        }
+
+        for (String error : doubleErrors) {
+            System.out.println(error);
+        }
+
+        if (doubleErrors.size() > 0) {
+            Assert.fail("DB has non duplicated rare cards, found errors: " + doubleErrors.size());
         }
     }
 
@@ -401,27 +495,31 @@ public class VerifyCardDataTest {
                 doubleNames.put(card.getName(), count + 1);
             }
 
-            // check
+            // check double names
             for (ExpansionSet.SetCardInfo card : set.getSetCardInfo()) {
                 boolean cardHaveDoubleName = (doubleNames.getOrDefault(card.getName(), 0) > 1);
                 boolean cardHaveVariousSetting = card.getGraphicInfo() != null && card.getGraphicInfo().getUsesVariousArt();
 
                 if (cardHaveDoubleName && !cardHaveVariousSetting) {
-                    errorsList.add("error, founded double card names, but UsesVariousArt is not true: " + set.getCode() + " - " + set.getName() + " - " + card.getName() + " - " + card.getCardNumber());
+                    errorsList.add("error, founded double card names, but UsesVariousArt = false (missing NON_FULL_USE_VARIOUS, etc): "
+                            + set.getCode() + " - " + set.getName() + " - " + card.getName() + " - " + card.getCardNumber());
                 }
             }
         }
 
-        // 2. all planeswalkers must be legendary
         for (ExpansionSet set : sets) {
             for (ExpansionSet.SetCardInfo cardInfo : set.getSetCardInfo()) {
                 Card card = CardImpl.createCard(cardInfo.getCardClass(), new CardSetInfo(cardInfo.getName(), set.getCode(),
                         cardInfo.getCardNumber(), cardInfo.getRarity(), cardInfo.getGraphicInfo()));
                 Assert.assertNotNull(card);
 
+                // 2. all planeswalkers must be legendary
                 if (card.getCardType().contains(CardType.PLANESWALKER) && !card.getSuperType().contains(SuperType.LEGENDARY)) {
                     errorsList.add("error, planeswalker must have legendary type: " + set.getCode() + " - " + set.getName() + " - " + card.getName() + " - " + card.getCardNumber());
                 }
+
+                // 3. check that getMana works without NPE errors (it uses getNetMana with empty game param for AI score calcs)
+                card.getMana();
             }
         }
 
@@ -433,7 +531,7 @@ public class VerifyCardDataTest {
     }
 
     @Test
-    @Ignore // TODO: enable it on copy() methods removing
+    //@Ignore // TODO: enable it on copy() methods removing
     public void checkWatcherCopyMethods() {
 
         Collection<String> errorsList = new ArrayList<>();
@@ -443,6 +541,13 @@ public class VerifyCardDataTest {
         Set<Class<? extends Watcher>> watcherClassesList = reflections.getSubTypesOf(Watcher.class);
 
         for (Class<? extends Watcher> watcherClass : watcherClassesList) {
+
+            // only watcher class can be extended (e.g. final)
+            if (!watcherClass.getSuperclass().equals(Watcher.class)) {
+                errorsList.add("error, only Watcher class can be extended: " + watcherClass.getName());
+            }
+
+            // no copy methods
             try {
                 Method m = watcherClass.getMethod("copy");
                 if (!m.getGenericReturnType().getTypeName().equals("T")) {
@@ -451,6 +556,48 @@ public class VerifyCardDataTest {
             } catch (NoSuchMethodException e) {
                 errorsList.add("error, can't find copy() method in watcher class: " + watcherClass.getName());
             }
+
+            // no constructor for copy
+            try {
+                Constructor<? extends Watcher> constructor = watcherClass.getDeclaredConstructor(watcherClass);
+                errorsList.add("error, copy constructor is not allowed in watcher class: " + watcherClass.getName());
+            } catch (NoSuchMethodException e) {
+                // all fine, no needs in copy constructors
+            }
+
+            // errors on create
+            try {
+                List<?> constructors = Arrays.asList(watcherClass.getDeclaredConstructors());
+
+                Constructor<? extends Watcher> constructor = (Constructor<? extends Watcher>) constructors.get(0);
+
+                Object[] args = new Object[constructor.getParameterCount()];
+                for (int index = 0; index < constructor.getParameterTypes().length; index++) {
+                    Class<?> parameterType = constructor.getParameterTypes()[index];
+                    if (parameterType.getSimpleName().equalsIgnoreCase("boolean")) {
+                        args[index] = false;
+                    } else {
+                        args[index] = null;
+                    }
+
+                }
+
+                constructor.setAccessible(true);
+                Watcher w1 = constructor.newInstance(args);
+
+                // errors on copy
+                try {
+                    Watcher w2 = w1.copy();
+                    if (w2 == null) {
+                        errorsList.add("error, can't copy watcher with unknown error, look at error logs above: " + watcherClass.getName());
+                    }
+                } catch (Exception e) {
+                    errorsList.add("error, can't copy watcher: " + watcherClass.getName() + " (" + e.getMessage() + ")");
+                }
+            } catch (Exception e) {
+                errorsList.add("error, can't create watcher: " + watcherClass.getName() + " (" + e.getMessage() + ")");
+            }
+
         }
 
         printMessages(warningsList);
@@ -484,7 +631,7 @@ public class VerifyCardDataTest {
         }
 
         // tok file's data
-        ArrayList<CardDownloadData> tokFileTokens = DownloadPicturesService.getTokenCardUrls();
+        List<CardDownloadData> tokFileTokens = DownloadPicturesService.getTokenCardUrls();
         LinkedHashMap<String, String> tokDataClassesIndex = new LinkedHashMap<>();
         LinkedHashMap<String, String> tokDataNamesIndex = new LinkedHashMap<>();
         for (CardDownloadData tokData : tokFileTokens) {
@@ -580,13 +727,13 @@ public class VerifyCardDataTest {
         }
     }
 
-    private void check(Card card, Set<String> tokens) {
+    private void check(Card card, Set<String> tokens, int cardIndex) {
         JsonCard ref = MtgJson.card(card.getName());
         if (ref == null) {
             warn(card, "Missing card reference");
             return;
         }
-        checkAll(card, ref);
+        checkAll(card, ref, cardIndex);
         if (tokens != null) {
             JsonCard ref2 = null;
             if (card.isFlipCard()) {
@@ -614,21 +761,22 @@ public class VerifyCardDataTest {
         return options != null && options.contains(value);
     }
 
-    private void checkAll(Card card, JsonCard ref) {
+    private void checkAll(Card card, JsonCard ref, int cardIndex) {
         checkCost(card, ref);
         checkPT(card, ref);
         checkSubtypes(card, ref);
         checkSupertypes(card, ref);
         checkTypes(card, ref);
         checkColors(card, ref);
-        //checkNumbers(card, ref); // TODO: load data from allsets.json and check it (allcards.json do not have card numbers)
+        //checkNumbers(card, ref); // TODO: load data from AllPrintings.json and check it (allcards.json do not have card numbers)
         checkBasicLands(card, ref);
         checkMissingAbilities(card, ref);
-        checkWrongAbilitiesText(card, ref);
+        checkWrongSymbolsInRules(card);
+        checkWrongAbilitiesText(card, ref, cardIndex);
     }
 
     private void checkColors(Card card, JsonCard ref) {
-        if (skipListHaveName("COLOR", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_COLOR, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -653,7 +801,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkSubtypes(Card card, JsonCard ref) {
-        if (skipListHaveName("SUBTYPE", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_SUBTYPE, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -687,7 +835,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkSupertypes(Card card, JsonCard ref) {
-        if (skipListHaveName("SUPERTYPE", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_SUPERTYPE, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -698,7 +846,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkMissingAbilities(Card card, JsonCard ref) {
-        if (skipListHaveName("MISSING_ABILITIES", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_MISSING_ABILITIES, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -728,6 +876,18 @@ public class VerifyCardDataTest {
         }
     }
 
+    private void checkWrongSymbolsInRules(Card card) {
+        if (card.getName().contains("’")) {
+            fail(card, "card name", "card's names contains restricted symbol ’");
+        }
+
+        for (String rule : card.getRules()) {
+            if (rule.contains("’")) {
+                fail(card, "rules", "card's rules contains restricted symbol ’");
+            }
+        }
+    }
+
     private void checkLegalityFormats(Card card, JsonCard ref) {
         if (skipListHaveName("LEGALITY", card.getExpansionSetCode(), card.getName())) {
             return;
@@ -749,6 +909,7 @@ public class VerifyCardDataTest {
                 .replace("{this}", cardName)
                 .replace("{source}", cardName)
                 .replace("−", "-")
+                .replace("—", "-")
                 .replace("&mdash;", "-");
 
         // remove html marks
@@ -765,15 +926,20 @@ public class VerifyCardDataTest {
         // debug only: show direct card info (takes it from class file, not from db repository)
         String cardName = "Essence Capture";
         CardScanner.scan();
-        CardSetInfo testSet = new CardSetInfo("test", "test", "123", Rarity.COMMON);
+        CardSetInfo testSet = new CardSetInfo(cardName, "test", "123", Rarity.COMMON);
         CardInfo cardInfo = CardRepository.instance.findCard(cardName);
         Card card = CardImpl.createCard(cardInfo.getClassName(), testSet);
-        card.getRules().stream().forEach(System.out::println);
+        System.out.println(card.getName());
+        if (card instanceof SplitCard) {
+            card.getAbilities().getRules(card.getName()).stream().forEach(System.out::println);
+        } else {
+            card.getRules().stream().forEach(System.out::println);
+        }
     }
 
-    private void checkWrongAbilitiesText(Card card, JsonCard ref) {
+    private void checkWrongAbilitiesText(Card card, JsonCard ref, int cardIndex) {
         // checks missing or wrong text
-        if (!card.getExpansionSetCode().equals("M20")) {
+        if (!card.getExpansionSetCode().equals(FULL_ABILITIES_CHECK_SET_CODE)) {
             return;
         }
 
@@ -785,6 +951,10 @@ public class VerifyCardDataTest {
         // lands fix
         if (refText.startsWith("(") && refText.endsWith(")")) {
             refText = refText.substring(1, refText.length() - 1);
+        }
+        // planeswalker fix [-7]: xxx
+        if (refText.contains("[") && refText.contains("]")) {
+            refText = refText.replace("[", "").replace("]", "");
         }
 
         String[] refRules = refText.split("[\\$\\\n]"); // ref card's abilities can be splited by \n or $ chars
@@ -798,10 +968,11 @@ public class VerifyCardDataTest {
         }
 
         boolean isFine = true;
-        for (String cardRule : cardRules) {
+        for (int i = 0; i <= cardRules.length - 1; i++) {
             boolean isAbilityFounded = false;
             for (String refRule : refRules) {
-                if (cardRule.equals(refRule)) {
+                if (cardRules[i].equals(refRule)) {
+                    cardRules[i] = "+ " + cardRules[i];
                     isAbilityFounded = true;
                     break;
                 }
@@ -809,7 +980,8 @@ public class VerifyCardDataTest {
 
             if (!isAbilityFounded) {
                 isFine = false;
-                warn(card, "card ability can't be found in ref [" + card.getName() + ": " + cardRule + "]");
+                warn(card, "card ability can't be found in ref [" + card.getName() + ": " + cardRules[i] + "]");
+                cardRules[i] = "- " + cardRules[i];
             }
         }
 
@@ -817,7 +989,7 @@ public class VerifyCardDataTest {
         if (!isFine) {
             System.out.println();
 
-            System.out.println("Wrong card " + card.getName());
+            System.out.println("Wrong card " + cardIndex + ": " + card.getName());
             Arrays.sort(cardRules);
             for (String s : cardRules) {
                 System.out.println(s);
@@ -826,7 +998,7 @@ public class VerifyCardDataTest {
             System.out.println("ref:");
             Arrays.sort(refRules);
             for (String s : refRules) {
-                System.out.println(s);
+                System.out.println("  " + s);
             }
 
             System.out.println();
@@ -891,7 +1063,7 @@ public class VerifyCardDataTest {
 
 
     private void checkTypes(Card card, JsonCard ref) {
-        if (skipListHaveName("TYPE", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_TYPE, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -913,7 +1085,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkPT(Card card, JsonCard ref) {
-        if (skipListHaveName("PT", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_PT, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -933,7 +1105,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkCost(Card card, JsonCard ref) {
-        if (skipListHaveName("COST", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_COST, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 
@@ -951,7 +1123,7 @@ public class VerifyCardDataTest {
     }
 
     private void checkNumbers(Card card, JsonCard ref) {
-        if (skipListHaveName("NUMBER", card.getExpansionSetCode(), card.getName())) {
+        if (skipListHaveName(SKIP_LIST_NUMBER, card.getExpansionSetCode(), card.getName())) {
             return;
         }
 

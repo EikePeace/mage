@@ -1,7 +1,5 @@
-
 package mage.cards.r;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.effects.common.ManaEffect;
@@ -13,8 +11,9 @@ import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author Plopman
  */
 public final class RiteOfFlame extends CardImpl {
@@ -54,25 +53,18 @@ class RiteOfFlameManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        int count = 0;
-        for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
-            Player player = game.getPlayer(playerId);
-            if (player != null) {
-                count += player.getGraveyard().count(filter, game);
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            int count = 0;
+            for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
+                Player player = game.getPlayer(playerId);
+                if (player != null) {
+                    count += player.getGraveyard().count(filter, game);
+                }
             }
+            return Mana.RedMana(count + 2);
         }
-        return Mana.RedMana(count + 2);
+        return new Mana();
     }
 
     @Override

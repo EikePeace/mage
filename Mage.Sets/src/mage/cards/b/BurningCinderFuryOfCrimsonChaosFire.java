@@ -1,10 +1,5 @@
 package mage.cards.b;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
@@ -29,8 +24,9 @@ import mage.target.TargetPlayer;
 import mage.target.targetpointer.FixedTarget;
 import mage.watchers.Watcher;
 
+import java.util.*;
+
 /**
- *
  * @author L_J
  */
 public final class BurningCinderFuryOfCrimsonChaosFire extends CardImpl {
@@ -192,7 +188,7 @@ class BurningCinderFuryOfCrimsonChaosFireCondition implements Condition {
     }
 
     public String toString() {
-        return "if that player didn’t tap any nonland permanents that turn";
+        return "if that player didn't tap any nonland permanents that turn";
     }
 }
 
@@ -204,10 +200,6 @@ class BurningCinderFuryOfCrimsonChaosFireWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    public BurningCinderFuryOfCrimsonChaosFireWatcher(final BurningCinderFuryOfCrimsonChaosFireWatcher watcher) {
-        super(watcher);
-        this.tappedActivePlayerIds.addAll(watcher.tappedActivePlayerIds);
-    }
 
     @Override
     public void watch(GameEvent event, Game game) {
@@ -226,10 +218,5 @@ class BurningCinderFuryOfCrimsonChaosFireWatcher extends Watcher {
     @Override
     public void reset() {
         tappedActivePlayerIds.clear();
-    }
-
-    @Override
-    public BurningCinderFuryOfCrimsonChaosFireWatcher copy() {
-        return new BurningCinderFuryOfCrimsonChaosFireWatcher(this);
     }
 }

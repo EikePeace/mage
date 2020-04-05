@@ -1,5 +1,6 @@
 package mage.cards.t;
 
+import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
@@ -17,16 +18,12 @@ import mage.constants.*;
 import mage.filter.FilterSpell;
 import mage.filter.StaticFilters;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
 import mage.watchers.common.AttackedThisTurnWatcher;
-
-import java.util.UUID;
 
 /**
  * @author spjspj
@@ -39,9 +36,9 @@ public final class TaigamOjutaiMaster extends CardImpl {
     static {
         filter.add(
                 (Predicates.or(
-                        new CardTypePredicate(CardType.INSTANT),
-                        new CardTypePredicate(CardType.SORCERY),
-                        new SubtypePredicate(SubType.DRAGON)))
+                        CardType.INSTANT.getPredicate(),
+                        CardType.SORCERY.getPredicate(),
+                        SubType.DRAGON.getPredicate()))
         );
     }
 
@@ -153,7 +150,7 @@ class TaigamOjutaiMasterGainReboundEffect extends ContinuousEffectImpl {
     }
 
     private void addReboundAbility(Card card, Ability source, Game game) {
-        boolean found = card.getAbilities().stream().anyMatch(ability -> ability instanceof ReboundAbility);
+        boolean found = card.getAbilities(game).stream().anyMatch(ability -> ability instanceof ReboundAbility);
         if (!found) {
             Ability ability = new ReboundAbility();
             game.getState().addOtherAbility(card, ability);

@@ -13,8 +13,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.target.common.TargetCardInGraveyard;
 
 /**
@@ -25,8 +23,8 @@ public final class SilentSentinel extends CardImpl {
 
     private static final FilterCard filter = new FilterCard("enchantment card from your graveyard");
     static {
-        filter.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filter.add(new OwnerPredicate(TargetController.YOU));
+        filter.add(CardType.ENCHANTMENT.getPredicate());
+        filter.add(TargetController.YOU.getOwnerPredicate());
     }
 
     public SilentSentinel(UUID ownerId, CardSetInfo setInfo) {

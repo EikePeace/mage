@@ -13,7 +13,6 @@ import mage.abilities.effects.common.continuous.BecomesBasicLandTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.DependencyType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.SubType;
@@ -22,8 +21,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -40,7 +37,7 @@ public final class QuicksilverFountain extends CardImpl {
     public QuicksilverFountain(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{3}");
 
-        // At the beginning of each player's upkeep, that player puts a flood counter on target non-Island land he or she controls of their choice. That land is an Island for as long as it has a flood counter on it.
+        // At the beginning of each player's upkeep, that player puts a flood counter on target non-Island land they control of their choice. That land is an Island for as long as it has a flood counter on it.
         Ability ability = new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new QuicksilverFountainEffect(), TargetController.ANY, false, true);
         ability.addTarget(new TargetLandPermanent());
         ability.setTargetAdjuster(QuicksilverFountainAdjuster.instance);
@@ -70,8 +67,8 @@ enum QuicksilverFountainAdjuster implements TargetAdjuster {
         if (activePlayer != null) {
             ability.getTargets().clear();
             FilterLandPermanent filter = new FilterLandPermanent();
-            filter.add(Predicates.not(new SubtypePredicate(SubType.ISLAND)));
-            filter.add(new ControllerPredicate(TargetController.ACTIVE));
+            filter.add(Predicates.not(SubType.ISLAND.getPredicate()));
+            filter.add(TargetController.ACTIVE.getControllerPredicate());
             TargetLandPermanent target = new TargetLandPermanent(1, 1, filter, false);
             target.setTargetController(activePlayer.getId());
             ability.getTargets().add(target);
@@ -83,7 +80,9 @@ class QuicksilverFountainEffect extends OneShotEffect {
 
     public QuicksilverFountainEffect() {
         super(Outcome.Neutral);
-        staticText = "that player puts a flood counter on target non-Island land they control of their choice. That land is an Island for as long as it has a flood counter on it";
+        staticText = "that player puts a flood counter on target non-Island land "
+                + "they control of their choice. That land is an Island for as "
+                + "long as it has a flood counter on it";
     }
 
     public QuicksilverFountainEffect(final QuicksilverFountainEffect effect) {
@@ -96,9 +95,11 @@ class QuicksilverFountainEffect extends OneShotEffect {
         if (player != null) {
             Permanent landChosen = game.getPermanent(source.getFirstTarget());
             landChosen.addCounters(CounterType.FLOOD.createInstance(), source, game);
-            ContinuousEffect becomesBasicLandTargetEffect = new BecomesBasicLandTargetEffect(Duration.OneUse, SubType.ISLAND);
-            becomesBasicLandTargetEffect.addDependencyType(DependencyType.BecomeIsland);
-            ConditionalContinuousEffect effect = new ConditionalContinuousEffect(becomesBasicLandTargetEffect, new LandHasFloodCounterCondition(this), staticText);
+            ContinuousEffect becomesBasicLandTargetEffect
+                    = new BecomesBasicLandTargetEffect(Duration.OneUse, false, SubType.ISLAND);
+            ConditionalContinuousEffect effect
+                    = new ConditionalContinuousEffect(becomesBasicLandTargetEffect,
+                            new LandHasFloodCounterCondition(this), staticText);
             this.setTargetPointer(new FixedTarget(landChosen, game));
             effect.setTargetPointer(new FixedTarget(landChosen, game));
             game.addEffect(effect, source);
@@ -149,7 +150,7 @@ class AllLandsAreSubtypeCondition implements Condition {
     @Override
     public boolean apply(Game game, Ability source) {
         FilterLandPermanent filterLand = new FilterLandPermanent();
-        filterLand.add(new SubtypePredicate(subtype));
+        filterLand.add(subtype.getPredicate());
         int landCount = game.getBattlefield().getAllActivePermanents(CardType.LAND).size();
         return game.getBattlefield().getAllActivePermanents(filterLand, game).size() == landCount;
     }

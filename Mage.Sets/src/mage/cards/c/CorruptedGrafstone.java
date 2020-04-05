@@ -1,9 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -22,8 +18,11 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class CorruptedGrafstone extends CardImpl {
@@ -65,7 +64,11 @@ class CorruptedGrafstoneManaAbility extends ActivatedManaAbilityImpl {
 
     @Override
     public List<Mana> getNetMana(Game game) {
-        return ((CorruptedGrafstoneManaEffect) getEffects().get(0)).getNetMana(game, this);
+        List<Mana> netMana = new ArrayList<>();
+        if (game != null) {
+            return ((CorruptedGrafstoneManaEffect) getEffects().get(0)).getNetMana(game, this);
+        }
+        return netMana;
     }
 }
 
@@ -87,72 +90,6 @@ class CorruptedGrafstoneManaEffect extends ManaEffect {
     @Override
     public CorruptedGrafstoneManaEffect copy() {
         return new CorruptedGrafstoneManaEffect(this);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            player.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        Mana types = getManaTypesInGraveyard(game, source);
-        Choice choice = new ChoiceColor(true);
-        choice.getChoices().clear();
-        choice.setMessage("Pick a mana color");
-        if (types.getBlack() > 0) {
-            choice.getChoices().add("Black");
-        }
-        if (types.getRed() > 0) {
-            choice.getChoices().add("Red");
-        }
-        if (types.getBlue() > 0) {
-            choice.getChoices().add("Blue");
-        }
-        if (types.getGreen() > 0) {
-            choice.getChoices().add("Green");
-        }
-        if (types.getWhite() > 0) {
-            choice.getChoices().add("White");
-        }
-        if (!choice.getChoices().isEmpty()) {
-            Player player = game.getPlayer(source.getControllerId());
-            if (player != null) {
-                if (choice.getChoices().size() == 1) {
-                    choice.setChoice(choice.getChoices().iterator().next());
-                } else {
-                    if (!player.choose(outcome, choice, game)) {
-                        return null;
-                    }
-                }
-                Mana computedManaHere = new Mana();
-                switch (choice.getChoice()) {
-                    case "Black":
-                        computedManaHere.setBlack(1);
-                        break;
-                    case "Blue":
-                        computedManaHere.setBlue(1);
-                        break;
-                    case "Red":
-                        computedManaHere.setRed(1);
-                        break;
-                    case "Green":
-                        computedManaHere.setGreen(1);
-                        break;
-                    case "White":
-                        computedManaHere.setWhite(1);
-                        break;
-                }
-                return computedManaHere;
-            }
-        }
-        return null;
     }
 
     @Override
@@ -180,12 +117,67 @@ class CorruptedGrafstoneManaEffect extends ManaEffect {
         return netManas;
     }
 
-    private Mana getManaTypesInGraveyard(Game game, Ability source) {
+    @Override
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
+        Mana types = getManaTypesInGraveyard(game, source);
+        Choice choice = new ChoiceColor(true);
+        choice.getChoices().clear();
+        choice.setMessage("Pick a mana color");
+        if (types.getBlack() > 0) {
+            choice.getChoices().add("Black");
+        }
+        if (types.getRed() > 0) {
+            choice.getChoices().add("Red");
+        }
+        if (types.getBlue() > 0) {
+            choice.getChoices().add("Blue");
+        }
+        if (types.getGreen() > 0) {
+            choice.getChoices().add("Green");
+        }
+        if (types.getWhite() > 0) {
+            choice.getChoices().add("White");
+        }
+        if (!choice.getChoices().isEmpty()) {
+            Player player = game.getPlayer(source.getControllerId());
+            if (player != null) {
+                if (choice.getChoices().size() == 1) {
+                    choice.setChoice(choice.getChoices().iterator().next());
+                } else {
+                    if (!player.choose(outcome, choice, game)) {
+                        return mana;
+                    }
+                }
+                switch (choice.getChoice()) {
+                    case "Black":
+                        mana.setBlack(1);
+                        break;
+                    case "Blue":
+                        mana.setBlue(1);
+                        break;
+                    case "Red":
+                        mana.setRed(1);
+                        break;
+                    case "Green":
+                        mana.setGreen(1);
+                        break;
+                    case "White":
+                        mana.setWhite(1);
+                        break;
+                }
+            }
+        }
+        return mana;
+    }
 
-        if (source != null && source.getControllerId() != null) {
+    private Mana getManaTypesInGraveyard(Game game, Ability source) {
+        if (game != null && source != null && source.getControllerId() != null) {
             Player controller = game.getPlayer(source.getControllerId());
             Mana types = new Mana();
-
             if (controller != null) {
                 for (Card card : controller.getGraveyard().getCards(game)) {
                     if (card != null) {

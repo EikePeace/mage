@@ -18,7 +18,6 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -38,7 +37,7 @@ public final class LinessaZephyrMage extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("creature with converted mana cost X");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public LinessaZephyrMage(UUID ownerId, CardSetInfo setInfo) {
@@ -57,7 +56,7 @@ public final class LinessaZephyrMage extends CardImpl {
         ability.setTargetAdjuster(XCMCPermanentAdjuster.instance);
         this.addAbility(ability);
 
-        // Grandeur - Discard another card named Linessa, Zephyr Mage: Target player returns a creature he or she controls to its owner's hand, then repeats this process for an artifact, an enchantment, and a land.
+        // Grandeur - Discard another card named Linessa, Zephyr Mage: Target player returns a creature they control to its owner's hand, then repeats this process for an artifact, an enchantment, and a land.
         ability = new GrandeurAbility(new LinessaZephyrMageEffect(), "Linessa, Zephyr Mage");
         ability.addTarget(new TargetPlayer());
         this.addAbility(ability);
@@ -77,7 +76,7 @@ class LinessaZephyrMageEffect extends OneShotEffect {
 
     LinessaZephyrMageEffect() {
         super(Outcome.ReturnToHand);
-        this.staticText = "Target player returns a creature he or she controls to its owner's hand, then repeats this process for an artifact, an enchantment, and a land";
+        this.staticText = "Target player returns a creature they control to its owner's hand, then repeats this process for an artifact, an enchantment, and a land";
     }
 
     LinessaZephyrMageEffect(final LinessaZephyrMageEffect effect) {
@@ -95,7 +94,7 @@ class LinessaZephyrMageEffect extends OneShotEffect {
         if (controller != null) {
             Player targetPlayer = game.getPlayer(source.getFirstTarget());
             if (targetPlayer != null) {
-                // Target player returns a creature he or she controls to its owner's hand,
+                // Target player returns a creature they control to its owner's hand,
                 Target target = new TargetControlledCreaturePermanent();
                 target.setNotTarget(true);
                 if (target.choose(Outcome.ReturnToHand, targetPlayer.getId(), source.getSourceId(), game)) {
@@ -107,7 +106,7 @@ class LinessaZephyrMageEffect extends OneShotEffect {
 
                 // then repeats this process for an artifact,
                 FilterControlledPermanent filter = new FilterControlledPermanent("artifact you control");
-                filter.add(new CardTypePredicate(CardType.ARTIFACT));
+                filter.add(CardType.ARTIFACT.getPredicate());
                 target = new TargetControlledPermanent(filter);
                 target.setNotTarget(true);
                 if (target.choose(Outcome.ReturnToHand, targetPlayer.getId(), source.getSourceId(), game)) {
@@ -119,7 +118,7 @@ class LinessaZephyrMageEffect extends OneShotEffect {
 
                 // an enchantment,
                 filter = new FilterControlledPermanent("enchantment you control");
-                filter.add(new CardTypePredicate(CardType.ENCHANTMENT));
+                filter.add(CardType.ENCHANTMENT.getPredicate());
                 target = new TargetControlledPermanent(filter);
                 target.setNotTarget(true);
                 if (target.choose(Outcome.ReturnToHand, targetPlayer.getId(), source.getSourceId(), game)) {
@@ -131,7 +130,7 @@ class LinessaZephyrMageEffect extends OneShotEffect {
 
                 // and a land.
                 filter = new FilterControlledPermanent("land you control");
-                filter.add(new CardTypePredicate(CardType.LAND));
+                filter.add(CardType.LAND.getPredicate());
                 target = new TargetControlledPermanent(filter);
                 target.setNotTarget(true);
                 if (target.choose(Outcome.ReturnToHand, targetPlayer.getId(), source.getSourceId(), game)) {

@@ -20,8 +20,6 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.command.emblems.KothOfTheHammerEmblem;
 import mage.game.permanent.token.TokenImpl;
 import mage.target.common.TargetLandPermanent;
@@ -36,8 +34,8 @@ public final class KothOfTheHammer extends CardImpl {
     static final FilterLandPermanent filterCount = new FilterLandPermanent("Mountain you control");
 
     static {
-        filterCount.add(new SubtypePredicate(SubType.MOUNTAIN));
-        filterCount.add(new ControllerPredicate(TargetController.YOU));
+        filterCount.add(SubType.MOUNTAIN.getPredicate());
+        filterCount.add(TargetController.YOU.getControllerPredicate());
     }
 
     public KothOfTheHammer(UUID ownerId, CardSetInfo setInfo) {

@@ -1,7 +1,5 @@
-
 package mage.cards.d;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -10,16 +8,17 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetLandPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Styxo
  */
 public final class DwarvenDriller extends CardImpl {
@@ -31,7 +30,7 @@ public final class DwarvenDriller extends CardImpl {
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
 
-        // {tap}: Destroy target land unless its controller has Dwarven Driller deal 2 damage to him or her.
+        // {tap}: Destroy target land unless its controller has Dwarven Driller deal 2 damage to them.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new DwarvenDrillerEffect(), new TapSourceCost());
         ability.addTarget(new TargetLandPermanent());
         this.addAbility(ability);
@@ -51,7 +50,7 @@ class DwarvenDrillerEffect extends OneShotEffect {
 
     public DwarvenDrillerEffect() {
         super(Outcome.Detriment);
-        this.staticText = "Destroy target land unless its controller has {this} deal 2 damage to him or her";
+        this.staticText = "Destroy target land unless its controller has {this} deal 2 damage to them";
     }
 
     public DwarvenDrillerEffect(final DwarvenDrillerEffect effect) {
@@ -71,7 +70,7 @@ class DwarvenDrillerEffect extends OneShotEffect {
             if (player != null) {
                 String message = "Have Dwarven Driller do 2 damage to you?";
                 if (player.chooseUse(Outcome.Damage, message, source, game)) {
-                    player.damage(2, source.getSourceId(), game, false, true);
+                    player.damage(2, source.getSourceId(), game);
                 } else {
                     permanent.destroy(source.getId(), game, false);
                 }

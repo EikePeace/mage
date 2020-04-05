@@ -20,8 +20,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -32,8 +30,8 @@ public final class TerrorOfKruinPass extends CardImpl {
     private static final String ruleText = "Werewolves you control have menace. (They can't be blocked except by two or more creatures.)";
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Werewolf you control");
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.WEREWOLF));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.WEREWOLF.getPredicate());
     }
 
     public TerrorOfKruinPass(UUID ownerId, CardSetInfo setInfo) {

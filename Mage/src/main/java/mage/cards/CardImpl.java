@@ -1,6 +1,12 @@
 package mage.cards;
 
 import com.google.common.collect.ImmutableList;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import mage.MageObject;
 import mage.MageObjectImpl;
 import mage.Mana;
@@ -25,13 +31,6 @@ import mage.util.GameLog;
 import mage.util.SubTypeList;
 import mage.watchers.Watcher;
 import org.apache.log4j.Logger;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 public abstract class CardImpl extends MageObjectImpl implements Card {
 
@@ -230,7 +229,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
     @Override
     public List<String> getRules() {
         try {
-            return abilities.getRules(this.getName());
+            return getAbilities().getRules(this.getName());
         } catch (Exception e) {
             logger.info("Exception in rules generation for card: " + this.getName(), e);
         }
@@ -240,19 +239,12 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
     @Override
     public List<String> getRules(Game game) {
         try {
-            List<String> rules = getRules();
+            List<String> rules = getAbilities(game).getRules(getName());
             if (game != null) {
                 // debug state
-                CardState cardState = game.getState().getCardState(objectId);
-                if (cardState != null) {
-                    for (String data : cardState.getInfo().values()) {
-                        rules.add(data);
-                    }
-                    for (Ability ability : cardState.getAbilities()) {
-                        rules.add(ability.getRule());
-                    }
+                for (String data : game.getState().getCardState(objectId).getInfo().values()) {
+                    rules.add(data);
                 }
-
                 // ability hints
                 List<String> abilityHints = new ArrayList<>();
                 if (HintUtils.ABILITY_HINTS_ENABLE) {
@@ -267,7 +259,6 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
                 }
 
                 // restrict hints only for permanents, not cards
-
                 // total hints
                 if (!abilityHints.isEmpty()) {
                     rules.add(HintUtils.HINT_START_MARK);
@@ -301,14 +292,26 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
      */
     @Override
     public Abilities<Ability> getAbilities(Game game) {
-        Abilities<Ability> otherAbilities = game.getState().getAllOtherAbilities(objectId);
-        if (otherAbilities == null || otherAbilities.isEmpty()) {
+        if (game == null) {
+            return abilities; // deck editor with empty game
+        }
+        CardState cardState = game.getState().getCardState(this.getId());
+        if (!cardState.hasLostAllAbilities() && (cardState.getAbilities() == null || cardState.getAbilities().isEmpty())) {
             return abilities;
         }
         Abilities<Ability> all = new AbilitiesImpl<>();
-        all.addAll(abilities);
-        all.addAll(otherAbilities);
+        if (!cardState.hasLostAllAbilities()) {
+            all.addAll(abilities);
+        }
+        all.addAll(cardState.getAbilities());
         return all;
+    }
+
+    @Override
+    public void looseAllAbilities(Game game) {
+        CardState cardState = game.getState().getCardState(this.getId());
+        cardState.setLostAllAbilities(true);
+        cardState.getAbilities().clear();
     }
 
     /**
@@ -316,6 +319,7 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
      *
      * @param ability
      */
+    @Override
     public void addAbility(Ability ability) {
         ability.setSourceId(this.getId());
         abilities.add(ability);
@@ -495,18 +499,21 @@ public abstract class CardImpl extends MageObjectImpl implements Card {
             case STACK:
                 StackObject stackObject;
                 if (getSpellAbility() != null) {
-                    stackObject = game.getStack().getSpell(getSpellAbility().getId());
+                    stackObject = game.getStack().getSpell(getSpellAbility().getId(), false);
                 } else {
-                    stackObject = game.getStack().getSpell(this.getId());
+                    stackObject = game.getStack().getSpell(this.getId(), false);
                 }
                 if (stackObject == null && (this instanceof SplitCard)) { // handle if half of Split cast is on the stack
-                    stackObject = game.getStack().getSpell(((SplitCard) this).getLeftHalfCard().getId());
+                    stackObject = game.getStack().getSpell(((SplitCard) this).getLeftHalfCard().getId(), false);
                     if (stackObject == null) {
-                        stackObject = game.getStack().getSpell(((SplitCard) this).getRightHalfCard().getId());
+                        stackObject = game.getStack().getSpell(((SplitCard) this).getRightHalfCard().getId(), false);
                     }
                 }
+                if (stackObject == null && (this instanceof AdventureCard)) {
+                    stackObject = game.getStack().getSpell(((AdventureCard) this).getSpellCard().getId(), false);
+                }
                 if (stackObject == null) {
-                    stackObject = game.getStack().getSpell(getId());
+                    stackObject = game.getStack().getSpell(getId(), false);
                 }
                 if (stackObject != null) {
                     removed = game.getStack().remove(stackObject, game);

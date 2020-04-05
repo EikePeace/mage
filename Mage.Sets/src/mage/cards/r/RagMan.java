@@ -1,4 +1,3 @@
-
 package mage.cards.r;
 
 import mage.MageInt;
@@ -9,12 +8,13 @@ import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.RevealHandTargetEffect;
+import mage.abilities.hint.common.MyTurnHint;
 import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.filter.common.FilterCreatureCard;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
@@ -34,11 +34,12 @@ public final class RagMan extends CardImpl {
         this.power = new MageInt(2);
         this.toughness = new MageInt(1);
 
-        // {B}{B}{B}, {tap}: Target opponent reveals their hand and discards a creature card at random. Activate this ability only during your turn.
+        // {B}{B}{B}, {T}: Target opponent reveals their hand and discards a creature card at random. Activate this ability only during your turn.
         Ability ability = new ActivateIfConditionActivatedAbility(Zone.BATTLEFIELD, new RevealHandTargetEffect(), new ManaCostsImpl("{B}{B}{B}"), MyTurnCondition.instance);
         ability.addCost(new TapSourceCost());
         ability.addEffect(new RagManDiscardEffect());
         ability.addTarget(new TargetOpponent());
+        ability.addHint(MyTurnHint.instance);
         this.addAbility(ability);
     }
 
@@ -53,8 +54,6 @@ public final class RagMan extends CardImpl {
 }
 
 class RagManDiscardEffect extends OneShotEffect {
-
-    private static final FilterCreatureCard filter = new FilterCreatureCard();
 
     public RagManDiscardEffect() {
         super(Outcome.Discard);
@@ -77,7 +76,7 @@ class RagManDiscardEffect extends OneShotEffect {
             Cards creatureCardsInHand = new CardsImpl();
             for (UUID cardId : player.getHand()) {
                 Card card = player.getHand().get(cardId, game);
-                if (filter.match(card, game)) {
+                if (StaticFilters.FILTER_CARD_CREATURE.match(card, game)) {
                     creatureCardsInHand.add(card);
                 }
             }

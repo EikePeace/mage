@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.OnEventTriggeredAbility;
@@ -15,16 +13,15 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author anonymous
  */
 public final class ArchdemonOfGreed extends CardImpl {
@@ -32,12 +29,12 @@ public final class ArchdemonOfGreed extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("Human");
 
     static {
-        filter.add(new SubtypePredicate(SubType.HUMAN));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.HUMAN.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public ArchdemonOfGreed(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "");
         this.subtype.add(SubType.DEMON);
         this.color.setBlack(true);
 
@@ -95,10 +92,9 @@ public final class ArchdemonOfGreed extends CardImpl {
                             // sacrifice the chosen card
                             return humanSacrifice.sacrifice(source.getSourceId(), game);
                         }
-                    }         
-                    else {
+                    } else {
                         permanent.tap(game);
-                        player.damage(9, source.getSourceId(), game, false, true);
+                        player.damage(9, source.getSourceId(), game);
                     }
                 }
                 return true;

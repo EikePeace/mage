@@ -59,6 +59,7 @@ public class ModernCardRenderer extends CardRenderer {
 
     private static final Logger LOGGER = Logger.getLogger(ModernCardRenderer.class);
     private static final GlowText glowTextRenderer = new GlowText();
+    public static final Color MANA_ICONS_TEXT_COLOR = Color.DARK_GRAY; // text color of missing mana icons in IMAGE render mode
 
     ///////////////////////////////////////////////////////////////////////////
     // Textures for modern frame cards
@@ -215,9 +216,9 @@ public class ModernCardRenderer extends CardRenderer {
     // Processed mana cost string
     protected final String manaCostString;
 
-    public ModernCardRenderer(CardView card, boolean isTransformed) {
+    public ModernCardRenderer(CardView card) {
         // Pass off to parent
-        super(card, isTransformed);
+        super(card);
 
         // Mana cost string
         manaCostString = ManaSymbols.getStringManaCost(cardView.getManaCost());
@@ -453,13 +454,13 @@ public class ModernCardRenderer extends CardRenderer {
     }
 
     @Override
-    protected void drawFrame(Graphics2D g, BufferedImage image) {
+    protected void drawFrame(Graphics2D g, CardPanelAttributes attribs, BufferedImage image) {
         // Get the card colors to base the frame on
         ObjectColor frameColors = getFrameObjectColor();
 
         // Get the border paint
-        Color boxColor = getBoxColor(frameColors, cardView.getCardTypes(), isTransformed);
-        Color additionalBoxColor = getAdditionalBoxColor(frameColors, cardView.getCardTypes(), isTransformed);
+        Color boxColor = getBoxColor(frameColors, cardView.getCardTypes(), attribs.isTransformed);
+        Color additionalBoxColor = getAdditionalBoxColor(frameColors, cardView.getCardTypes(), attribs.isTransformed);
         Paint textboxPaint = getTextboxPaint(frameColors, cardView.getCardTypes(), cardWidth);
         Paint borderPaint = getBorderPaint(frameColors, cardView.getCardTypes(), cardWidth);
 
@@ -546,19 +547,16 @@ public class ModernCardRenderer extends CardRenderer {
                     cardWidth - totalContentInset - 1, typeLineY + boxHeight,
                     1, cardHeight - borderWidth * 3 - typeLineY - boxHeight);
             // Draw the type line
-            drawTypeLine(g, getCardTypeLine(),
+            drawTypeLine(g, attribs, getCardTypeLine(),
                     totalContentInset, typeLineY,
                     contentWidth, boxHeight, true);
         }
 
         // Draw the transform circle
-        int nameOffset = drawTransformationCircle(g, borderPaint);
-
-        // Draw the transform circle
-        nameOffset = drawTransformationCircle(g, borderPaint);
+        int nameOffset = drawTransformationCircle(g, attribs, borderPaint);
 
         // Draw the name line
-        drawNameLine(g, cardView.getDisplayName(), manaCostString,
+        drawNameLine(g, attribs, cardView.getDisplayName(), manaCostString,
                 totalContentInset + nameOffset, totalContentInset,
                 contentWidth - nameOffset, boxHeight);
 
@@ -624,10 +622,10 @@ public class ModernCardRenderer extends CardRenderer {
                     x, y, w, h,
                     contentInset,
                     borderPaint, boxColor);
-            drawTypeLine(g, getCardSuperTypeLine(),
+            drawTypeLine(g, attribs, getCardSuperTypeLine(),
                     totalContentInset + contentInset, typeLineY + boxHeight + (cardHeight - typeLineY - boxHeight - 4 - borderWidth * 3) / 2 - contentInset,
                     contentWidth / 2 - boxHeight, boxHeight - 4, false);
-            drawTypeLine(g, getCardSubTypeLine(),
+            drawTypeLine(g, attribs, getCardSubTypeLine(),
                     totalContentInset + 4 * contentWidth / 7 + boxHeight, typeLineY + boxHeight + (cardHeight - typeLineY - boxHeight - 4 - borderWidth * 3) / 2 - contentInset,
                     3 * contentWidth / 7 - boxHeight - contentInset, boxHeight - 4, true);
             drawRulesText(g, textboxKeywords, textboxRules,
@@ -650,7 +648,7 @@ public class ModernCardRenderer extends CardRenderer {
         }
 
         // Draw the bottom right stuff
-        drawBottomRight(g, borderPaint, boxColor);
+        drawBottomRight(g, attribs, borderPaint, boxColor);
     }
 
     public void drawZendikarCurvedFace(Graphics2D g2, BufferedImage image, int x, int y, int x2, int y2,
@@ -835,7 +833,7 @@ public class ModernCardRenderer extends CardRenderer {
     }
 
     // Draw the name line
-    protected void drawNameLine(Graphics2D g, String baseName, String manaCost, int x, int y, int w, int h) {
+    protected void drawNameLine(Graphics2D g, CardPanelAttributes attribs, String baseName, String manaCost, int x, int y, int w, int h) {
         // Width of the mana symbols
         int manaCostWidth;
         if (cardView.isAbility()) {
@@ -872,19 +870,19 @@ public class ModernCardRenderer extends CardRenderer {
             }
             if (breakIndex > 0) {
                 TextLayout layout = measure.getLayout(0, breakIndex);
-                g.setColor(getBoxTextColor());
+                g.setColor(getBoxTextColor(attribs));
                 layout.draw(g, x, y + boxTextOffset + boxTextHeight - 1);
             }
         }
 
         // Draw the mana symbols
         if (!cardView.isAbility() && !cardView.isFaceDown()) {
-            ManaSymbols.draw(g, manaCost, x + w - manaCostWidth, y + boxTextOffset, boxTextHeight, Color.black, 2);
+            ManaSymbols.draw(g, manaCost, x + w - manaCostWidth, y + boxTextOffset, boxTextHeight, ModernCardRenderer.MANA_ICONS_TEXT_COLOR, 2);
         }
     }
 
     // Draw the type line (color indicator, types, and expansion symbol)
-    protected void drawTypeLine(Graphics2D g, String baseTypeLine, int x, int y, int w, int h, boolean withSymbol) {
+    protected void drawTypeLine(Graphics2D g, CardPanelAttributes attribs, String baseTypeLine, int x, int y, int w, int h, boolean withSymbol) {
         // Draw expansion symbol
         int expansionSymbolWidth = 0;
         if (PreferencesDialog.getCachedValue(PreferencesDialog.KEY_CARD_RENDERING_SET_SYMBOL, "false").equals("false")) {
@@ -920,7 +918,7 @@ public class ModernCardRenderer extends CardRenderer {
             }
             if (breakIndex > 0) {
                 TextLayout layout = measure.getLayout(0, breakIndex);
-                g.setColor(getBoxTextColor());
+                g.setColor(getBoxTextColor(attribs));
                 layout.draw(g, x, y + (h - boxTextHeight) / 2 + boxTextHeight - 1);
             }
         }
@@ -972,7 +970,7 @@ public class ModernCardRenderer extends CardRenderer {
     }
 
     // Draw the P/T and/or Loyalty boxes
-    protected void drawBottomRight(Graphics2D g, Paint borderPaint, Color fill) {
+    protected void drawBottomRight(Graphics2D g, CardPanelAttributes attribs, Paint borderPaint, Color fill) {
         // No bottom right for abilities
         if (cardView.isAbility()) {
             return;
@@ -1029,7 +1027,7 @@ public class ModernCardRenderer extends CardRenderer {
                 }
                 defaultTextLight = true;
             } else {
-                defaultTextColor = getBoxTextColor();
+                defaultTextColor = getBoxTextColor(attribs);
                 defaultTextLight = !defaultTextColor.equals(Color.black);
             }
             g.setColor(defaultTextColor);
@@ -1172,7 +1170,7 @@ public class ModernCardRenderer extends CardRenderer {
         return layout;
     }
 
-    protected void drawRulesText(Graphics2D g, ArrayList<TextboxRule> keywords, ArrayList<TextboxRule> rules, int x, int y, int w, int h, boolean forceRules) {
+    protected void drawRulesText(Graphics2D g, List<TextboxRule> keywords, List<TextboxRule> rules, int x, int y, int w, int h, boolean forceRules) {
         // Gather all rules to render
         List<TextboxRule> allRules = new ArrayList<>(rules);
 
@@ -1256,24 +1254,24 @@ public class ModernCardRenderer extends CardRenderer {
         String symbs = symbol;
         int symbHeight = (int) (0.8 * h);
         int manaCostWidth = CardRendererUtils.getManaCostWidth(symbs, symbHeight);
-        ManaSymbols.draw(g, symbs, x + (w - manaCostWidth) / 2, y + (h - symbHeight) / 2, symbHeight, Color.black, 2);
+        ManaSymbols.draw(g, symbs, x + (w - manaCostWidth) / 2, y + (h - symbHeight) / 2, symbHeight, ModernCardRenderer.MANA_ICONS_TEXT_COLOR, 2);
     }
 
     private void drawBasicManaSymbol(Graphics2D g, int x, int y, int w, int h, String symbol) {
         String symbs = symbol;
         if (getSizedManaSymbol(symbol) != null) {
-            ManaSymbols.draw(g, symbs, x, y, w, Color.black, 2);
+            ManaSymbols.draw(g, symbs, x, y, w, ModernCardRenderer.MANA_ICONS_TEXT_COLOR, 2);
         }
         if (symbol.length() == 2) {
             String symbs2 = "" + symbol.charAt(1) + symbol.charAt(0);
             if (getSizedManaSymbol(symbs2) != null) {
-                ManaSymbols.draw(g, symbs2, x, y, w, Color.black, 2);
+                ManaSymbols.draw(g, symbs2, x, y, w, ModernCardRenderer.MANA_ICONS_TEXT_COLOR, 2);
             }
         }
     }
 
     // Get the first line of the textbox, the keyword string
-    private static String getKeywordRulesString(ArrayList<TextboxRule> keywords) {
+    private static String getKeywordRulesString(List<TextboxRule> keywords) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < keywords.size(); ++i) {
             builder.append(keywords.get(i).text);
@@ -1412,26 +1410,20 @@ public class ModernCardRenderer extends CardRenderer {
         return advance;
     }
 
-    // Draw the transformation circle if there is one, and return the
-    // horizontal width taken up into the content space by it.
-    protected boolean isNightCard() {
-        return isTransformed;
+    protected boolean isTransformCard(CardPanelAttributes attribs) {
+        return cardView.canTransform() || attribs.isTransformed;
     }
 
-    protected boolean isTransformCard() {
-        return cardView.canTransform() || isTransformed;
-    }
-
-    protected int drawTransformationCircle(Graphics2D g, Paint borderPaint) {
+    protected int drawTransformationCircle(Graphics2D g, CardPanelAttributes attribs, Paint borderPaint) {
         int transformCircleOffset = 0;
-        if (isTransformCard()) {
+        if (isTransformCard(attribs)) {
             transformCircleOffset = boxHeight - contentInset;
             g.setPaint(borderPaint);
             g.drawOval(borderWidth, totalContentInset, boxHeight - 1, boxHeight - 1);
             g.setColor(Color.black);
             g.fillOval(borderWidth + 1, totalContentInset + 1, boxHeight - 2, boxHeight - 2);
             g.setColor(Color.white);
-            if (isTransformed) {
+            if (attribs.isTransformed) {
                 g.fillArc(borderWidth + 3, totalContentInset + 3, boxHeight - 6, boxHeight - 6, 90, 270);
                 g.setColor(Color.black);
                 g.fillArc(borderWidth + 3 + 3, totalContentInset + 3, boxHeight - 6 - 3, boxHeight - 6, 90, 270);
@@ -1456,8 +1448,8 @@ public class ModernCardRenderer extends CardRenderer {
     }
 
     // Determine the color of the name / type line text
-    protected Color getBoxTextColor() {
-        if (isTransformed) {
+    protected Color getBoxTextColor(CardPanelAttributes attribs) {
+        if (attribs.isTransformed) {
             return Color.white;
         } else if (cardView.isAbility()) {
             return Color.white;

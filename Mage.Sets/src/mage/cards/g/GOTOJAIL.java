@@ -18,7 +18,6 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -36,7 +35,7 @@ public final class GOTOJAIL extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public GOTOJAIL(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +47,7 @@ public final class GOTOJAIL extends CardImpl {
         ability.addEffect(new CreateDelayedTriggeredAbilityEffect(new OnLeaveReturnExiledToBattlefieldAbility()));
         this.addAbility(ability);
 
-        // At the beginning of the upkeep of the exiled card's owner, that player rolls two six-sided dice. If he or she rolls doubles, sacrifice GO TO JAIL.
+        // At the beginning of the upkeep of the exiled card's owner, that player rolls two six-sided dice. If they roll doubles, sacrifice GO TO JAIL.
         this.addAbility(new GoToJailTriggeredAbility());
     }
 
@@ -131,7 +130,7 @@ class GoToJailUpkeepEffect extends OneShotEffect {
 
     public GoToJailUpkeepEffect() {
         super(Outcome.Sacrifice);
-        this.staticText = "that player rolls two six-sided dice. If he or she rolls doubles, sacrifice {this}";
+        this.staticText = "that player rolls two six-sided dice. If they roll doubles, sacrifice {this}";
     }
 
     public GoToJailUpkeepEffect(final GoToJailUpkeepEffect effect) {

@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.SubTypeSet;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -31,7 +30,7 @@ public final class GlobalRuin extends CardImpl {
     public GlobalRuin(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{4}{W}");
 
-        // Each player chooses from the lands he or she controls a land of each basic land type, then sacrifices the rest.
+        // Each player chooses from the lands they control a land of each basic land type, then sacrifices the rest.
         this.getSpellAbility().addEffect(new GlobalRuinDestroyLandEffect());
     }
 
@@ -49,7 +48,7 @@ class GlobalRuinDestroyLandEffect extends OneShotEffect {
 
     public GlobalRuinDestroyLandEffect() {
         super(Outcome.DestroyPermanent);
-        this.staticText = "Each player chooses from the lands he or she controls a land of each basic land type, then sacrifices the rest";
+        this.staticText = "Each player chooses from the lands they control a land of each basic land type, then sacrifices the rest";
     }
 
     public GlobalRuinDestroyLandEffect(final GlobalRuinDestroyLandEffect effect) {
@@ -70,7 +69,7 @@ class GlobalRuinDestroyLandEffect extends OneShotEffect {
             if(player != null) {
                 for (SubType landName : Arrays.stream(SubType.values()).filter(p -> p.getSubTypeSet() == SubTypeSet.BasicLandType).collect(Collectors.toSet())) {
                     FilterControlledLandPermanent filter = new FilterControlledLandPermanent(landName + " you control");
-                    filter.add(new SubtypePredicate(landName));
+                    filter.add(landName.getPredicate());
                     Target target = new TargetControlledPermanent(1, 1, filter, true);
                     if (target.canChoose(player.getId(), game)) {
                         player.chooseTarget(outcome, target, source, game);

@@ -16,7 +16,6 @@ import mage.constants.Outcome;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
@@ -29,7 +28,7 @@ public final class OmenOfFire extends CardImpl {
 
     private static final FilterPermanent filter = new FilterPermanent("Islands");
     static {
-        filter.add(new SubtypePredicate(SubType.ISLAND));
+        filter.add(SubType.ISLAND.getPredicate());
     }
 
     public OmenOfFire(UUID ownerId, CardSetInfo setInfo) {
@@ -38,7 +37,7 @@ public final class OmenOfFire extends CardImpl {
         // Return all Islands to their owners' hands.
         this.getSpellAbility().addEffect(new ReturnToHandFromBattlefieldAllEffect(filter));
         
-        // Each player sacrifices a Plains or a white permanent for each white permanent he or she controls.
+        // Each player sacrifices a Plains or a white permanent for each white permanent they control.
         this.getSpellAbility().addEffect(new OmenOfFireEffect());
     }
 
@@ -57,7 +56,7 @@ class OmenOfFireEffect extends OneShotEffect {
     private static final FilterPermanent filterWhite1 = new FilterPermanent("Plains or white permanent");
     static {
         filterWhite1.add(Predicates.or(
-                new SubtypePredicate(SubType.PLAINS),
+                SubType.PLAINS.getPredicate(),
                 new ColorPredicate(ObjectColor.WHITE)));
     }
 
@@ -68,7 +67,7 @@ class OmenOfFireEffect extends OneShotEffect {
 
     public OmenOfFireEffect() {
         super(Outcome.Detriment);
-        this.staticText = "Each player sacrifices a Plains or a white permanent for each white permanent he or she controls";
+        this.staticText = "Each player sacrifices a Plains or a white permanent for each white permanent they control";
     }
 
     public OmenOfFireEffect(final OmenOfFireEffect effect) {

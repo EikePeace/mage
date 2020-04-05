@@ -14,8 +14,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -27,8 +25,8 @@ public final class KariZevsExpertise extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("creature or Vehicle");
 
     static {
-        filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE),
-                new SubtypePredicate(SubType.VEHICLE)));
+        filter.add(Predicates.or(CardType.CREATURE.getPredicate(),
+                SubType.VEHICLE.getPredicate()));
     }
 
     public KariZevsExpertise(UUID ownerId, CardSetInfo setInfo) {

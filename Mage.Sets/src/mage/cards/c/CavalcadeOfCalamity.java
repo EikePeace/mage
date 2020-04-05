@@ -8,7 +8,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.PowerPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 
 import java.util.UUID;
@@ -22,14 +21,14 @@ public final class CavalcadeOfCalamity extends CardImpl {
             = new FilterCreaturePermanent("creaure you control with power 1 or less");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(new PowerPredicate(ComparisonType.FEWER_THAN, 2));
     }
 
     public CavalcadeOfCalamity(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{R}");
 
-        // Whenever a creature you control with power 1 or less attacks, Cavalcade of Calamity deals 1 damage to the player or planeswalker that creature is attacking.
+        // Whenever a creature you control with power 1 or less attacks, Cavalcade of Calamity deals 1 damage to the player, planeswalker, or Structure that creature is attacking.
         this.addAbility(new AttacksAllTriggeredAbility(
                 new CavalcadeOfCalamityEffect(), false, filter,
                 SetTargetPointer.PERMANENT, false, false
@@ -50,7 +49,7 @@ class CavalcadeOfCalamityEffect extends OneShotEffect {
 
     CavalcadeOfCalamityEffect() {
         super(Outcome.Benefit);
-        staticText = "{this} deals 1 damage to the player or planeswalker that creature is attacking.";
+        staticText = "{this} deals 1 damage to the player, planeswalker, or Structure that creature is attacking.";
     }
 
     private CavalcadeOfCalamityEffect(final CavalcadeOfCalamityEffect effect) {

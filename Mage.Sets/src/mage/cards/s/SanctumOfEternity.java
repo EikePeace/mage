@@ -6,6 +6,7 @@ import mage.abilities.condition.common.MyTurnCondition;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.effects.common.ReturnToHandTargetEffect;
+import mage.abilities.hint.common.MyTurnHint;
 import mage.abilities.mana.ColorlessManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -13,7 +14,6 @@ import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.filter.predicate.permanent.CommanderPredicate;
 import mage.target.TargetPermanent;
 
@@ -28,7 +28,7 @@ public final class SanctumOfEternity extends CardImpl {
 
     static {
         filter.add(CommanderPredicate.instance);
-        filter.add(new OwnerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getOwnerPredicate());
     }
 
     public SanctumOfEternity(UUID ownerId, CardSetInfo setInfo) {
@@ -45,6 +45,7 @@ public final class SanctumOfEternity extends CardImpl {
         );
         ability.addCost(new TapSourceCost());
         ability.addTarget(new TargetPermanent(filter));
+        ability.addHint(MyTurnHint.instance);
         this.addAbility(ability);
     }
 

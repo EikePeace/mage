@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
 import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
@@ -20,7 +18,6 @@ import mage.filter.FilterCard;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -28,8 +25,9 @@ import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.common.TargetOpponent;
 import mage.target.common.TargetOpponentOrPlaneswalker;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class AngrathMinotaurPirate extends CardImpl {
@@ -53,7 +51,7 @@ public final class AngrathMinotaurPirate extends CardImpl {
 
         // -3: Return target Pirate card from your graveyard to the battlefield.
         FilterCard filterPirateCard = new FilterCreatureCard("pirate card from your graveyard");
-        filterPirateCard.add(new SubtypePredicate(SubType.PIRATE));
+        filterPirateCard.add(SubType.PIRATE.getPredicate());
         Ability ability2 = new LoyaltyAbility(new ReturnFromGraveyardToBattlefieldTargetEffect()
                 .setText("Return target Pirate card from your graveyard to the battlefield"), -3);
         ability2.addTarget(new TargetCardInYourGraveyard(filterPirateCard));
@@ -101,7 +99,7 @@ class AngrathMinotaurPirateThirdAbilityEffect extends OneShotEffect {
                 powerSum += permanent.getPower().getValue();
             }
             game.applyEffects();
-            targetOpponent.damage(powerSum, source.getSourceId(), game, false, true);
+            targetOpponent.damage(powerSum, source.getSourceId(), game);
         }
         return true;
     }

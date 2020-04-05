@@ -12,7 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterNonlandPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.ExileZone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -30,7 +29,7 @@ public final class IxalansBinding extends CardImpl {
     private static final FilterNonlandPermanent filter = new FilterNonlandPermanent();
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public IxalansBinding(UUID ownerId, CardSetInfo setInfo) {
@@ -91,8 +90,8 @@ class IxalansBindingReplacementEffect extends ContinuousRuleModifyingEffectImpl 
                     }
                 }
                 if (exile != null) {
-                    for (Card crad : exile.getCards(game)) {
-                        if (crad.getName().equals(card.getName())) {
+                    for (Card e : exile.getCards(game)) {
+                        if (CardUtil.haveSameNames(e, card)) {
                             return true;
                         }
                     }

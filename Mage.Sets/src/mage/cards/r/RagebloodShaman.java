@@ -12,7 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -22,7 +21,7 @@ public final class RagebloodShaman extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent(SubType.MINOTAUR, "Minotaur creatures");
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
     
     public RagebloodShaman(UUID ownerId, CardSetInfo setInfo) {
@@ -36,7 +35,7 @@ public final class RagebloodShaman extends CardImpl {
         // Trample
         this.addAbility(TrampleAbility.getInstance());
         // Other Minotaur creatures you control get +1/+1 and have trample.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostControlledEffect(new StaticValue(1), new StaticValue(1), Duration.WhileOnBattlefield, filter, true)));
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostControlledEffect(StaticValue.get(1), StaticValue.get(1), Duration.WhileOnBattlefield, filter, true)));
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityControlledEffect(TrampleAbility.getInstance(), Duration.WhileOnBattlefield, filter, true)));
     }
 

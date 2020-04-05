@@ -12,14 +12,14 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,7 +30,9 @@ public final class CarpetOfFlowers extends CardImpl {
     public CarpetOfFlowers(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{G}");
 
-        // At the beginning of each of your main phases, if you haven't added mana with this ability this turn, you may add up to X mana of any one color, where X is the number of Islands target opponent controls.
+        // At the beginning of each of your main phases, if you haven't added mana 
+        // with this ability this turn, you may add up to X mana of any one color, 
+        // where X is the number of Islands target opponent controls.
         this.addAbility(new CarpetOfFlowersTriggeredAbility());
     }
 
@@ -73,26 +75,36 @@ class CarpetOfFlowersTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkInterveningIfClause(Game game) {
-        return !Boolean.TRUE.equals(game.getState().getValue(this.originalId.toString() + "addMana"));
+        return !Boolean.TRUE.equals(game.getState().getValue(this.originalId.toString()
+                + "addMana"
+                + game.getState().getZoneChangeCounter(sourceId)));
     }
 
     @Override
     public boolean resolve(Game game) {
         boolean value = super.resolve(game);
         if (value == true) {
-            game.getState().setValue(this.originalId.toString() + "addMana", Boolean.TRUE);
+            game.getState().setValue(this.originalId.toString()
+                            + "addMana"
+                            + game.getState().getZoneChangeCounter(sourceId),
+                    Boolean.TRUE);
         }
         return value;
     }
 
     @Override
     public void reset(Game game) {
-        game.getState().setValue(this.originalId.toString() + "addMana", Boolean.FALSE);
+        game.getState().setValue(this.originalId.toString()
+                        + "addMana"
+                        + game.getState().getZoneChangeCounter(sourceId),
+                Boolean.FALSE);
     }
 
     @Override
     public String getRule() {
-        return "At the beginning of each of your main phases, if you haven't added mana with this ability this turn, " + super.getRule();
+        return "At the beginning of each of your main phases, if "
+                + "you haven't added mana with this ability this turn, "
+                + super.getRule();
     }
 
 }
@@ -102,8 +114,8 @@ class CarpetOfFlowersEffect extends ManaEffect {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("Island ");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ISLAND));
-        filter.add(new CardTypePredicate(CardType.LAND));
+        filter.add(SubType.ISLAND.getPredicate());
+        filter.add(CardType.LAND.getPredicate());
     }
 
     CarpetOfFlowersEffect() {
@@ -116,22 +128,26 @@ class CarpetOfFlowersEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        if (game != null) {
+            int count = game.getBattlefield().count(filter, source.getSourceId(), source.getTargets().getFirstTarget(), game);
+            if (count > 0) {
+                netMana.add(Mana.AnyMana(count));
+            }
         }
-        return false;
+        return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Player controller = game.getPlayer(source.getControllerId());
         ChoiceColor choice = new ChoiceColor();
         if (controller != null && controller.choose(Outcome.Benefit, choice, game)) {
-            Mana mana = new Mana();
             int count = game.getBattlefield().count(filter, source.getSourceId(), source.getTargets().getFirstTarget(), game);
             if (count > 0) {
                 switch (choice.getChoice()) {
@@ -154,9 +170,8 @@ class CarpetOfFlowersEffect extends ManaEffect {
                         break;
                 }
             }
-            return mana;
         }
-        return null;
+        return mana;
     }
 
     @Override

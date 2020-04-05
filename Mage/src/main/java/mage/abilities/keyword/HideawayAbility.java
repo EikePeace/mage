@@ -1,6 +1,6 @@
-
 package mage.abilities.keyword;
 
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.StaticAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -23,8 +23,6 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetCard;
 import mage.util.CardUtil;
-
-import java.util.UUID;
 
 /**
  * @author LevelX2
@@ -62,7 +60,9 @@ public class HideawayAbility extends StaticAbility {
 
     @Override
     public String getRule() {
-        return "Hideaway <i>(This " + this.name + " enters the battlefield tapped. When it does, look at the top four cards of your library, exile one face down, then put the rest on the bottom of your library.)</i>";
+        return "Hideaway <i>(This " + this.name + " enters the battlefield tapped. "
+                + "When it does, look at the top four cards of your library, exile "
+                + "one face down, then put the rest on the bottom of your library.)</i>";
     }
 
     @Override
@@ -77,7 +77,8 @@ class HideawayExileEffect extends OneShotEffect {
 
     public HideawayExileEffect() {
         super(Outcome.Benefit);
-        this.staticText = "look at the top four cards of your library, exile one face down, then put the rest on the bottom of your library";
+        this.staticText = "look at the top four cards of your library, "
+                + "exile one face down, then put the rest on the bottom of your library";
     }
 
     public HideawayExileEffect(final HideawayExileEffect effect) {
@@ -92,20 +93,30 @@ class HideawayExileEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent hideawaySource = game.getPermanent(source.getSourceId());
-        if (hideawaySource == null || controller == null) {
+        
+        // LKI is required for this ruling
+        /*
+        If Watcher for Tomorrow leaves the battlefield before its 
+        triggered ability from hideaway resolves, its leaves-the-battlefield 
+        ability resolves and does nothing. Then its enters-the-battlefield 
+        ability resolves and you exile a card with no way to return it to your hand.
+        */
+        Permanent hideawaySource = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        if (hideawaySource == null 
+                || controller == null) {
             return false;
         }
-
         Cards cards = new CardsImpl();
         cards.addAll(controller.getLibrary().getTopCards(game, 4));
         if (!cards.isEmpty()) {
             TargetCard target1 = new TargetCard(Zone.LIBRARY, filter1);
+            target1.setNotTarget(true);
             if (controller.choose(Outcome.Detriment, cards, target1, game)) {
                 Card card = cards.get(target1.getFirstTarget(), game);
                 if (card != null) {
                     cards.remove(card);
-                    controller.moveCardToExileWithInfo(card, CardUtil.getCardExileZoneId(game, source),
+                    UUID exileId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
+                    controller.moveCardToExileWithInfo(card, exileId,
                             "Hideaway (" + hideawaySource.getIdName() + ')', source.getSourceId(), game, Zone.LIBRARY, false);
                     card.setFaceDown(true, game);
                 }
@@ -121,7 +132,7 @@ class HideawayLookAtFaceDownCardEffect extends AsThoughEffectImpl {
 
     public HideawayLookAtFaceDownCardEffect() {
         super(AsThoughEffectType.LOOK_AT_FACE_DOWN, Duration.EndOfGame, Outcome.Benefit);
-        staticText = "You may look at cards exiled with {this}";
+        staticText = "You may look at the cards exiled with {this}";
     }
 
     private HideawayLookAtFaceDownCardEffect(final HideawayLookAtFaceDownCardEffect effect) {

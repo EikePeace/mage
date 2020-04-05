@@ -1,7 +1,5 @@
-
 package mage.cards.e;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -16,12 +14,14 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
+import mage.util.CardUtil;
+
+import java.util.UUID;
 
 /**
  * @author Loki
@@ -31,11 +31,11 @@ public final class ExclusionRitual extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("nonland permanent");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
     }
 
     public ExclusionRitual(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{4}{W}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{4}{W}{W}");
 
         // Imprint - When Exclusion Ritual enters the battlefield, exile target nonland permanent.
         Ability ability = new EntersBattlefieldTriggeredAbility(new ExclusionRitualImprintEffect(), false);
@@ -108,7 +108,7 @@ class ExclusionRitualReplacementEffect extends ContinuousRuleModifyingEffectImpl
             if (!sourcePermanent.getImprinted().isEmpty()) {
                 Card imprintedCard = game.getCard(sourcePermanent.getImprinted().get(0));
                 if (imprintedCard != null) {
-                    return card.getName().equals(imprintedCard.getName());
+                    return CardUtil.haveSameNames(card, imprintedCard);
                 }
             }
         }

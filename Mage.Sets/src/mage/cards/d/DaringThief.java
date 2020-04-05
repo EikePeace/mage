@@ -19,8 +19,6 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -63,7 +61,7 @@ class TargetControlledPermanentSharingOpponentPermanentCardType extends TargetCo
     public TargetControlledPermanentSharingOpponentPermanentCardType() {
         super();
         this.filter = this.filter.copy();
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
         setTargetName("nonland permanent you control");
     }
 
@@ -133,7 +131,7 @@ class DaringThiefSecondTarget extends TargetPermanent {
     public DaringThiefSecondTarget() {
         super();
         this.filter = this.filter.copy();
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
         setTargetName("permanent an opponent controls that shares a card type with it");
     }
 

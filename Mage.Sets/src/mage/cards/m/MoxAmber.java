@@ -10,8 +10,6 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  *
@@ -27,10 +25,10 @@ public final class MoxAmber extends CardImpl {
         FilterPermanent filter = new FilterPermanent("legendary creatures and planeswalkers");
         filter.add(Predicates.or(
                 Predicates.and(
-                    new CardTypePredicate(CardType.CREATURE),
-                    new SupertypePredicate(SuperType.LEGENDARY)
+                    CardType.CREATURE.getPredicate(),
+                    SuperType.LEGENDARY.getPredicate()
                 ),
-            new CardTypePredicate(CardType.PLANESWALKER))
+            CardType.PLANESWALKER.getPredicate())
         );
         this.addAbility(new AnyColorPermanentTypesManaAbility(TargetController.YOU, filter));
     }

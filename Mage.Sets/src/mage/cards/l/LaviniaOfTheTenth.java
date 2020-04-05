@@ -17,9 +17,7 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -29,8 +27,8 @@ public final class LaviniaOfTheTenth  extends CardImpl {
 
     private static final FilterPermanent filterDetain = new FilterPermanent("each nonland permanent your opponents control with converted mana cost 4 or less");
     static {
-        filterDetain.add(new ControllerPredicate(TargetController.OPPONENT));
-        filterDetain.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filterDetain.add(TargetController.OPPONENT.getControllerPredicate());
+        filterDetain.add(Predicates.not(CardType.LAND.getPredicate()));
         filterDetain.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, 5));
     }
 

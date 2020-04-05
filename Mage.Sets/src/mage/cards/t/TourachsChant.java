@@ -1,40 +1,32 @@
-
 package mage.cards.t;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAllTriggeredAbility;
-import mage.abilities.costs.CostImpl;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.SacrificeSourceUnlessPaysEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.SetTargetPointer;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class TourachsChant extends CardImpl {
 
     private static final FilterPermanent filter = new FilterPermanent("a Forest");
 
-    static{
-        filter.add(new SubtypePredicate(SubType.FOREST));
+    static {
+        filter.add(SubType.FOREST.getPredicate());
     }
 
     public TourachsChant(UUID ownerId, CardSetInfo setInfo) {
@@ -43,9 +35,9 @@ public final class TourachsChant extends CardImpl {
         // At the beginning of your upkeep, sacrifice Tourach's Chant unless you pay {B}.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new SacrificeSourceUnlessPaysEffect(new ManaCostsImpl("{B}")), TargetController.YOU, false));
 
-        // Whenever a player puts a Forest onto the battlefield, Tourach's Chant deals 3 damage to that player unless he or she puts a -1/-1 counter on a creature he or she controls.
-        this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new TourachsChantEffect(), filter, false, SetTargetPointer.PLAYER, 
-                "Whenever a player puts a Forest onto the battlefield, {this} deals 3 damage to that player unless he or she puts a -1/-1 counter on a creature he or she controls."));
+        // Whenever a player puts a Forest onto the battlefield, Tourach's Chant deals 3 damage to that player unless they put a -1/-1 counter on a creature they control.
+        this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new TourachsChantEffect(), filter, false, SetTargetPointer.PLAYER,
+                "Whenever a player puts a Forest onto the battlefield, {this} deals 3 damage to that player unless they put a -1/-1 counter on a creature they control."));
     }
 
     public TourachsChant(final TourachsChant card) {
@@ -62,7 +54,7 @@ class TourachsChantEffect extends OneShotEffect {
 
     public TourachsChantEffect() {
         super(Outcome.Damage);
-        staticText = "{this} deals 3 damage to that player unless he or she puts a -1/-1 counter on a creature he or she controls";
+        staticText = "{this} deals 3 damage to that player unless they put a -1/-1 counter on a creature they control";
     }
 
     public TourachsChantEffect(final TourachsChantEffect effect) {
@@ -91,7 +83,7 @@ class TourachsChantEffect extends OneShotEffect {
                 }
             }
             if (!paid) {
-                player.damage(3, source.getSourceId(), game, false, true);
+                player.damage(3, source.getSourceId(), game);
             }
             return true;
         }

@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import java.util.Set;
@@ -15,10 +14,8 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.common.FilterCreatureCard;
-import mage.filter.common.FilterLandCard;
+import mage.filter.StaticFilters;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -53,8 +50,8 @@ class GuidedPassageEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard("noncreature, nonland card");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.CREATURE.getPredicate()));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
     }
 
     GuidedPassageEffect() {
@@ -96,8 +93,8 @@ class GuidedPassageEffect extends OneShotEffect {
             controller.chooseTarget(Outcome.Detriment, target, source, game);
             opponent = game.getPlayer(target.getFirstTarget());
         }
-        TargetCard target1 = new TargetCard(1, Zone.LIBRARY, new FilterCreatureCard());
-        TargetCard target2 = new TargetCard(1, Zone.LIBRARY, new FilterLandCard());
+        TargetCard target1 = new TargetCard(1, Zone.LIBRARY, StaticFilters.FILTER_CARD_CREATURE);
+        TargetCard target2 = new TargetCard(1, Zone.LIBRARY, StaticFilters.FILTER_CARD_LAND);
         TargetCard target3 = new TargetCard(1, Zone.LIBRARY, new FilterCard(filter));
         opponent.chooseTarget(Outcome.Detriment, cards, target1, source, game);
         opponent.chooseTarget(Outcome.Detriment, cards, target2, source, game);

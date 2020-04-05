@@ -16,9 +16,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.util.SubTypeList;
 
@@ -34,14 +31,15 @@ public final class EarlOfSquirrel extends CardImpl {
 
     static {
         filter.add(TokenPredicate.instance);
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter2.add(new SubtypePredicate(SubType.SQUIRREL));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter2.add(SubType.SQUIRREL.getPredicate());
     }
 
     public EarlOfSquirrel(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{G}{G}");
 
         this.subtype.add(SubType.SQUIRREL);
+        this.subtype.add(SubType.NOBLE);
         this.subtype.add(SubType.ADVISOR);
         this.power = new MageInt(4);
         this.toughness = new MageInt(4);

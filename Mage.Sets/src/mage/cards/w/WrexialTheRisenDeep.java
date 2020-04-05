@@ -15,7 +15,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.other.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
@@ -46,7 +45,10 @@ public final class WrexialTheRisenDeep extends CardImpl {
         // Swampwalk
         this.addAbility(new SwampwalkAbility());
 
-        // Whenever Wrexial, the Risen Deep deals combat damage to a player, you may cast target instant or sorcery card from that player's graveyard without paying its mana cost. If that card would be put into a graveyard this turn, exile it instead.
+        // Whenever Wrexial, the Risen Deep deals combat damage to a player, 
+        // you may cast target instant or sorcery card from that player's graveyard 
+        // without paying its mana cost. If that card would be put into a graveyard 
+        // this turn, exile it instead.
         this.addAbility(new WrexialTheRisenDeepTriggeredAbility());
     }
 
@@ -89,11 +91,12 @@ class WrexialTheRisenDeepTriggeredAbility extends TriggeredAbilityImpl {
         if (damagedPlayer == null) {
             return false;
         }
-        FilterCard filter = new FilterCard("target instant or sorcery card from " + damagedPlayer.getName() + "'s graveyard");
+        FilterCard filter = new FilterCard("target instant or sorcery card from "
+                + damagedPlayer.getName() + "'s graveyard");
         filter.add(new OwnerIdPredicate(damagedPlayer.getId()));
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.INSTANT),
-                new CardTypePredicate(CardType.SORCERY)));
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate()));
 
         Target target = new TargetCardInGraveyard(filter);
         this.getTargets().clear();
@@ -132,10 +135,14 @@ class WrexialTheRisenDeepEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         Card card = game.getCard(source.getFirstTarget());
-        if (controller == null || card == null) {
+        if (controller == null
+                || card == null) {
             return false;
         }
-        controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+        controller.cast(controller.chooseAbilityForCast(card, game, true),
+                game, true, new MageObjectReference(source.getSourceObject(game), game));
+        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
         game.addEffect(new WrexialReplacementEffect(card.getId()), source);
         return true;
     }

@@ -29,15 +29,18 @@ public class LookAtTopCardOfLibraryAnyTimeEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
-            return true;
+            return false;
         }
         Card topCard = controller.getLibrary().getFromTop(game);
         if (topCard == null) {
-            return true;
+            return false;
         }
         MageObject obj = source.getSourceObject(game);
         if (obj == null) {
-            return true;
+            return false;
+        }
+        if (!canLookAtNextTopLibraryCard(game)) {
+            return false;
         }
         controller.lookAtCards("Top card of " + obj.getIdName() + " controller's library", topCard, game);
         return true;

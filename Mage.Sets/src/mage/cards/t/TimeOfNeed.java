@@ -9,8 +9,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SuperType;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -21,8 +19,8 @@ public final class TimeOfNeed extends CardImpl {
     private static final FilterCard filter = new FilterCard("legendary creature card");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new SupertypePredicate(SuperType.LEGENDARY));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(SuperType.LEGENDARY.getPredicate());
     }
 
     public TimeOfNeed(UUID ownerId, CardSetInfo setInfo) {

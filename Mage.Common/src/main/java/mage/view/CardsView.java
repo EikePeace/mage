@@ -13,15 +13,30 @@ import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentToken;
 import mage.target.targetpointer.TargetPointer;
 import mage.util.GameLog;
+import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author BetaSteward_at_googlemail.com
  */
 public class CardsView extends LinkedHashMap<UUID, CardView> {
 
+    private static final Logger LOGGER = Logger.getLogger(CardsView.class);
+
     public CardsView() {
+    }
+
+    /**
+     * Uses for card render tests
+     *
+     * @param cardViews
+     */
+    public CardsView(List<CardView> cardViews) {
+        for (CardView view : cardViews) {
+            this.put(view.getId(), view);
+        }
     }
 
     public CardsView(Collection<? extends Card> cards) {
@@ -102,7 +117,7 @@ public class CardsView extends LinkedHashMap<UUID, CardView> {
                     } else if (isCard) {
                         sourceCardView = new CardView((Card) sourceObject);
                     } else {
-                        sourceCardView = new CardView(sourceObject);
+                        sourceCardView = new CardView(sourceObject, game);
                     }
                     abilityView = new AbilityView(ability, sourceObject.getName(), sourceCardView);
                 }
@@ -139,6 +154,11 @@ public class CardsView extends LinkedHashMap<UUID, CardView> {
                 }
                 this.put(ability.getId(), abilityView);
             }
+        }
+
+        if (this.size() != abilities.size()) {
+            LOGGER.error("Can't translate abilities list to cards view (need " + abilities.size() + ", but get " + this.size() + "). Abilities:\n"
+                    + abilities.stream().map(a -> a.getClass().getSimpleName() + " - " + a.getRule()).collect(Collectors.joining("\n")));
         }
     }
 

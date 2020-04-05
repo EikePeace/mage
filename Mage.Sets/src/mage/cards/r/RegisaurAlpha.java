@@ -16,8 +16,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.DinosaurToken;
 
 /**
@@ -29,8 +27,8 @@ public final class RegisaurAlpha extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Dinosaurs");
 
     static {
-        filter.add(new SubtypePredicate(SubType.DINOSAUR));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.DINOSAUR.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public RegisaurAlpha(UUID ownerId, CardSetInfo setInfo) {

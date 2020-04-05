@@ -16,9 +16,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.GolemToken;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -31,9 +28,9 @@ public final class VitalSplicer extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Golem you control");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new SubtypePredicate(SubType.GOLEM));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(SubType.GOLEM.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public VitalSplicer(UUID ownerId, CardSetInfo setInfo) {

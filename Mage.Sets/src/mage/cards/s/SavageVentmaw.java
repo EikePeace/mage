@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.Mana;
 import mage.abilities.Ability;
@@ -16,8 +14,9 @@ import mage.constants.SubType;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class SavageVentmaw extends CardImpl {
@@ -32,10 +31,8 @@ public final class SavageVentmaw extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
 
         // Whenever Savage Ventmaw attacks, add {R}{R}{R}{G}{G}{G}. Until end of turn, you don't lose this mana as steps and phases end.
-        Effect effect = new SavageVentmawManaEffect(new Mana(3, 3, 0, 0, 0, 0, 0, 0), "your", true);
-        effect.setText("add {R}{R}{R}{G}{G}{G}. Until end of turn, you don't lose this mana as steps and phases end");
+        Effect effect = new SavageVentmawManaEffect();
         this.addAbility(new AttacksTriggeredAbility(effect, false));
-
     }
 
     public SavageVentmaw(final SavageVentmaw card) {
@@ -51,19 +48,17 @@ public final class SavageVentmaw extends CardImpl {
 class SavageVentmawManaEffect extends ManaEffect {
 
     protected Mana mana;
-    protected boolean emptyOnlyOnTurnsEnd;
 
-    public SavageVentmawManaEffect(Mana mana, String textManaPoolOwner, boolean emptyOnTurnsEnd) {
+    public SavageVentmawManaEffect() {
         super();
-        this.mana = mana;
-        this.emptyOnlyOnTurnsEnd = emptyOnTurnsEnd;
-        this.staticText = (textManaPoolOwner.equals("their") ? "that player adds " : "add ") + mana.toString();
+        this.mana = new Mana(3, 3, 0, 0, 0, 0, 0, 0);
+        this.staticText = "add " + mana.toString() + ". Until end of turn, you don't lose this mana as steps and phases end";
     }
 
     public SavageVentmawManaEffect(final SavageVentmawManaEffect effect) {
         super(effect);
-        this.mana = effect.mana;
-        this.emptyOnlyOnTurnsEnd = effect.emptyOnlyOnTurnsEnd;
+        this.mana = effect.mana.copy();
+        this.staticText = effect.staticText;
     }
 
     @Override
@@ -72,17 +67,12 @@ class SavageVentmawManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            controller.getManaPool().addMana(getMana(game, source), game, source, emptyOnlyOnTurnsEnd);
-            return true;
-        }
-        return false;
+    protected void addManaToPool(Player player, Mana manaToAdd, Game game, Ability source) {
+        player.getManaPool().addMana(manaToAdd, game, source, true);
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         return mana.copy();
     }
 

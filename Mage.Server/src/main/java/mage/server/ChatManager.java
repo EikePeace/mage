@@ -2,9 +2,11 @@ package mage.server;
 
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
+import mage.game.Game;
 import mage.server.exceptions.UserNotFoundException;
 import mage.server.game.GameController;
 import mage.server.game.GameManager;
+import mage.server.game.GamesRoomManager;
 import mage.server.util.SystemUtil;
 import mage.view.ChatMessage.MessageColor;
 import mage.view.ChatMessage.MessageType;
@@ -19,6 +21,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -79,17 +82,9 @@ public enum ChatManager {
         }
     }
 
-    public void broadcast(UUID chatId, String userName, String message, MessageColor color, boolean withTime) {
-        this.broadcast(chatId, userName, message, color, withTime, MessageType.TALK);
-    }
-
-    public void broadcast(UUID chatId, String userName, String message, MessageColor color, boolean withTime, MessageType messageType) {
-        this.broadcast(chatId, userName, message, color, withTime, messageType, null);
-    }
-
     final Pattern cardNamePattern = Pattern.compile("\\[(.*?)\\]");
 
-    public void broadcast(UUID chatId, String userName, String message, MessageColor color, boolean withTime, MessageType messageType, SoundToPlay soundToPlay) {
+    public void broadcast(UUID chatId, String userName, String message, MessageColor color, boolean withTime, Game game, MessageType messageType, SoundToPlay soundToPlay) {
         ChatSession chatSession = chatSessions.get(chatId);
         if (chatSession != null) {
             if (message.startsWith("\\") || message.startsWith("/")) {
@@ -161,7 +156,7 @@ public enum ChatManager {
 
                 }
             }
-            chatSession.broadcast(userName, message, color, withTime, messageType, soundToPlay);
+            chatSession.broadcast(userName, message, color, withTime, game, messageType, soundToPlay);
         }
     }
 
@@ -199,7 +194,7 @@ public enum ChatManager {
             return true;
         }
         if (command.startsWith("GAME")) {
-            message += "<br/>" + GameManager.instance.getChatId(chatId);
+            message += "<br/>";
             ChatSession session = chatSessions.get(chatId);
             if (session != null && session.getInfo() != null) {
                 String gameId = session.getInfo();
@@ -220,7 +215,7 @@ public enum ChatManager {
             return true;
         }
         if (command.startsWith("FIX")) {
-            message += "<br/>" + GameManager.instance.getChatId(chatId);
+            message += "<br/>";
             ChatSession session = chatSessions.get(chatId);
             if (session != null && session.getInfo() != null) {
                 String gameId = session.getInfo();
@@ -230,7 +225,28 @@ public enum ChatManager {
                         if (entry.getKey().equals(id)) {
                             GameController controller = entry.getValue();
                             if (controller != null) {
-                                message += controller.attemptToFixGame();
+                                message += controller.attemptToFixGame(user);
+                                chatSessions.get(chatId).broadcastInfoToUser(user, message);
+                            }
+                        }
+                    }
+
+                }
+            }
+            return true;
+        }
+        if (command.equals("PINGS")) {
+            message += "<br/>";
+            ChatSession session = chatSessions.get(chatId);
+            if (session != null && session.getInfo() != null) {
+                String gameId = session.getInfo();
+                if (gameId.startsWith("Game ")) {
+                    UUID id = java.util.UUID.fromString(gameId.substring(5));
+                    for (Entry<UUID, GameController> entry : GameManager.instance.getGameController().entrySet()) {
+                        if (entry.getKey().equals(id)) {
+                            GameController controller = entry.getValue();
+                            if (controller != null) {
+                                message += controller.getPingsInfo();
                                 chatSessions.get(chatId).broadcastInfoToUser(user, message);
                             }
                         }
@@ -247,7 +263,7 @@ public enum ChatManager {
                 CardInfo cardInfo = CardRepository.instance.findPreferedCoreExpansionCard(cardName, true);
                 if (cardInfo != null) {
                     cardInfo.getRules();
-                    message = "<font color=orange>" + cardInfo.getName() + "</font>: Cost:" + cardInfo.getManaCosts().toString() + ",  Types:" + cardInfo.getTypes().toString() + ", ";
+                    message = "<font color=orange>" + cardInfo.getName() + "</font>: Cost:" + cardInfo.getManaCosts(CardInfo.ManaCostSide.ALL).toString() + ",  Types:" + cardInfo.getTypes().toString() + ", ";
                     for (String rule : cardInfo.getRules()) {
                         message = message + rule;
                     }
@@ -301,7 +317,7 @@ public enum ChatManager {
             getChatSessions()
                     .stream()
                     .filter(chat -> chat.hasUser(userId))
-                    .forEach(session -> session.broadcast(user.getName(), message, color, true, MessageType.TALK, null));
+                    .forEach(session -> session.broadcast(user.getName(), message, color, true, null, MessageType.TALK, null));
 
         });
     }
@@ -311,17 +327,32 @@ public enum ChatManager {
                 -> getChatSessions()
                 .stream()
                 .filter(chat -> chat.hasUser(userId))
-                .forEach(chatSession -> chatSession.broadcast(null, user.getName() + " has reconnected", MessageColor.BLUE, true, MessageType.STATUS, null)));
+                .forEach(chatSession -> chatSession.broadcast(null, user.getName() + " has reconnected", MessageColor.BLUE, true, null, MessageType.STATUS, null)));
 
     }
 
     public void sendLostConnectionMessage(UUID userId, DisconnectReason reason) {
-        UserManager.instance.getUser(userId).ifPresent(user
-                -> getChatSessions()
-                .stream()
-                .filter(chat -> chat.hasUser(userId))
-                .forEach(chatSession -> chatSession.broadcast(null, user.getName() + reason.getMessage(), MessageColor.BLUE, true, MessageType.STATUS, null)));
+        UserManager.instance.getUser(userId).ifPresent(user -> sendMessageToUserChats(userId, user.getName() + " " + reason.getMessage()));
+    }
 
+    /**
+     * Send message to all active waiting/tourney/game chats (but not in main lobby)
+     *
+     * @param userId
+     * @param message
+     */
+    public void sendMessageToUserChats(UUID userId, String message) {
+        UserManager.instance.getUser(userId).ifPresent(user -> {
+            List<ChatSession> chatSessions = getChatSessions().stream()
+                    .filter(chat -> !chat.getChatId().equals(GamesRoomManager.instance.getMainChatId())) // ignore main lobby
+                    .filter(chat -> chat.hasUser(userId))
+                    .collect(Collectors.toList());
+
+            if (chatSessions.size() > 0) {
+                logger.info("INFORM OPPONENTS by " + user.getName() + ": " + message);
+                chatSessions.forEach(chatSession -> chatSession.broadcast(null, message, MessageColor.BLUE, true, null, MessageType.STATUS, null));
+            }
+        });
     }
 
     public void removeUser(UUID userId, DisconnectReason reason) {

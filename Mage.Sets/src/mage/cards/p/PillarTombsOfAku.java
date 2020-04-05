@@ -1,24 +1,24 @@
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.SacrificeSourceEffect;
-import mage.constants.SuperType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
+import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801
  */
 public final class PillarTombsOfAku extends CardImpl {
@@ -28,7 +28,7 @@ public final class PillarTombsOfAku extends CardImpl {
 
         this.addSuperType(SuperType.WORLD);
 
-        // At the beginning of each player's upkeep, that player may sacrifice a creature. If that player doesn't, he or she loses 5 life and you sacrifice Pillar Tombs of Aku.
+        // At the beginning of each player's upkeep, that player may sacrifice a creature. If that player doesn't, they lose 5 life and you sacrifice Pillar Tombs of Aku.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(
                 new PillarTombsOfAkuEffect(),
                 TargetController.ANY,
@@ -51,7 +51,7 @@ class PillarTombsOfAkuEffect extends OneShotEffect {
     public PillarTombsOfAkuEffect() {
         super(Outcome.Benefit);
         this.staticText = "that player may sacrifice a creature. If that "
-                + "player doesn’t, they lose 5 life and you sacrifice {this}";
+                + "player doesn't, they lose 5 life and you sacrifice {this}";
     }
 
     public PillarTombsOfAkuEffect(final PillarTombsOfAkuEffect effect) {

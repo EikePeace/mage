@@ -1,7 +1,5 @@
-
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
@@ -13,26 +11,26 @@ import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class PublicExecution extends CardImpl {
-    
+
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
-    
+
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public PublicExecution(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{5}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{5}{B}");
 
         // Destroy target creature an opponent controls. Each other creature that player controls gets -2/-0 until end of turn.
         this.getSpellAbility().addEffect(new DestroyTargetEffect());
@@ -51,7 +49,7 @@ public final class PublicExecution extends CardImpl {
 }
 
 class PublicExecutionEffect extends OneShotEffect {
-    
+
     public PublicExecutionEffect() {
         super(Outcome.Benefit);
         staticText = "Each other creature that player controls gets -2/-0 until end of turn";
@@ -70,7 +68,7 @@ class PublicExecutionEffect extends OneShotEffect {
                 FilterCreaturePermanent filter = new FilterCreaturePermanent("each other creature that player controls");
                 filter.add(new ControllerIdPredicate(opponent));
                 filter.add(Predicates.not(new PermanentIdPredicate(target.getId())));
-                ContinuousEffect effect = new BoostAllEffect(-2,0, Duration.EndOfTurn, filter, false);
+                ContinuousEffect effect = new BoostAllEffect(-2, 0, Duration.EndOfTurn, filter, false);
                 game.addEffect(effect, source);
                 return true;
             }

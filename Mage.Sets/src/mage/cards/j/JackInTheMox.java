@@ -1,7 +1,5 @@
-
 package mage.cards.j;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
@@ -15,8 +13,11 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class JackInTheMox extends CardImpl {
@@ -63,22 +64,20 @@ class JackInTheMoxManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
-        }
-        return false;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        return new ArrayList<>();
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
             int amount = controller.rollDice(game, 6);
-            Mana mana = new Mana();
             switch (amount) {
                 case 1:
                     permanent.sacrifice(source.getSourceId(), game);
@@ -102,9 +101,8 @@ class JackInTheMoxManaEffect extends ManaEffect {
                 default:
                     break;
             }
-            return mana;
         }
-        return null;
+        return mana;
     }
 
     @Override

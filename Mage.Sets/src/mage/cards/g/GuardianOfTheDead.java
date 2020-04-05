@@ -3,27 +3,18 @@ package mage.cards.g;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.ExileFromGraveCost;
-import mage.abilities.costs.common.SacrificeTargetCost;
-import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.common.CantBeTargetedCardsGraveyardsEffect;
-import mage.abilities.effects.common.ExileCardFromOwnGraveyardControllerEffect;
-import mage.abilities.effects.common.continuous.BoostControlledEffect;
 import mage.abilities.effects.common.cost.CostModificationEffectImpl;
-import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.Filter;
-import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -77,13 +68,13 @@ class GuardianOfTheDeadExileFilterEffect extends CostModificationEffectImpl {
                 Filter filter = ExileCost.getTargets().get(0).getFilter();
                 filter.add(Predicates.not((
                         Predicates.or(
-                                new CardTypePredicate(CardType.CREATURE),
-                                new CardTypePredicate(CardType.ENCHANTMENT),
-                                new CardTypePredicate(CardType.ARTIFACT),
-                                new CardTypePredicate(CardType.INSTANT),
-                                new CardTypePredicate(CardType.SORCERY),
-                                new CardTypePredicate(CardType.PLANESWALKER),
-                                new CardTypePredicate(CardType.LAND)))));
+                                CardType.CREATURE.getPredicate(),
+                                CardType.ENCHANTMENT.getPredicate(),
+                                CardType.ARTIFACT.getPredicate(),
+                                CardType.INSTANT.getPredicate(),
+                                CardType.SORCERY.getPredicate(),
+                                CardType.PLANESWALKER.getPredicate(),
+                                CardType.LAND.getPredicate()))));
             }
         }
         return true;

@@ -6,6 +6,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.CopyPermanentEffect;
+import mage.abilities.effects.common.counter.AddCountersSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -15,7 +16,6 @@ import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.util.functions.ApplyToPermanent;
@@ -31,8 +31,8 @@ public final class SparkDouble extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.PLANESWALKER)));
+                CardType.CREATURE.getPredicate(),
+                CardType.PLANESWALKER.getPredicate()));
     }
 
     public SparkDouble(UUID ownerId, CardSetInfo setInfo) {
@@ -46,8 +46,8 @@ public final class SparkDouble extends CardImpl {
         // it enters with an additional loyalty counter on it if it’s a planeswalker, and it isn’t legendary if that permanent is legendary.
         Effect effect = new CopyPermanentEffect(filter, new SparkDoubleExceptEffectsApplyerToPermanent());
         effect.setText("as a copy of a creature or planeswalker you control, "
-                + "except it enters with an additional +1/+1 counter on it if it’s a creature, "
-                + "it enters with an additional loyalty counter on it if it’s a planeswalker, and it isn’t legendary if that permanent is legendary.");
+                + "except it enters with an additional +1/+1 counter on it if it's a creature, "
+                + "it enters with an additional loyalty counter on it if it's a planeswalker, and it isn't legendary if that permanent is legendary.");
         EntersBattlefieldAbility ability = new EntersBattlefieldAbility(effect, true);
         this.addAbility(ability);
     }
@@ -71,12 +71,16 @@ class SparkDoubleExceptEffectsApplyerToPermanent extends ApplyToPermanent {
 
     @Override
     public boolean apply(Game game, MageObject copyFromBlueprint, Ability source, UUID copyToObjectId) {
-        Permanent destCard = game.getPermanentEntering(copyToObjectId);
-        if (destCard == null) {
-            return false;
-        }
+        // copyToObjectId can be new token outside from game, don't use it
 
         // it isn’t legendary if that permanent is legendary
+        //
+        // Spark Double isn’t legendary if it copies a legendary permanent, and this exception is copiable. If something
+        // else copies Spark Double later, that copy also won’t be legendary. If you control two or more permanents
+        // with the same name but only one is legendary, the “legend rule” doesn’t apply.
+        // (2019-05-03)
+        //
+        // So, it's must make changes in blueprint (for farther copyable)
         copyFromBlueprint.getSuperType().remove(SuperType.LEGENDARY);
 
         // TODO: Blood Moon problem, can't apply on type changing effects (same as TeferisTimeTwist)
@@ -89,14 +93,17 @@ class SparkDoubleExceptEffectsApplyerToPermanent extends ApplyToPermanent {
         // doesn't get a +1/+1 counter. On the other hand, if Spark Double copies Gideon Blackblade during your turn,
         // Spark Double enters as a planeswalker creature and gets both kinds of counters.
 
-        // enters with an additional +1/+1 counter on it if it’s a creature
-        if (copyFromBlueprint.isCreature()) {
-            destCard.addCounters(CounterType.P1P1.createInstance(), source, game);
-        }
+        // counters only for original card, not copies
+        if (!isCopyOfCopy(source, copyToObjectId)) {
+            // enters with an additional +1/+1 counter on it if it’s a creature
+            if (copyFromBlueprint.isCreature()) {
+                new AddCountersSourceEffect(CounterType.P1P1.createInstance(), false).apply(game, source);
+            }
 
-        // enters with an additional loyalty counter on it if it’s a planeswalker
-        if (copyFromBlueprint.isPlaneswalker()) {
-            destCard.addCounters(CounterType.LOYALTY.createInstance(), source, game);
+            // enters with an additional loyalty counter on it if it’s a planeswalker
+            if (copyFromBlueprint.isPlaneswalker()) {
+                new AddCountersSourceEffect(CounterType.LOYALTY.createInstance(), false).apply(game, source);
+            }
         }
 
         return true;

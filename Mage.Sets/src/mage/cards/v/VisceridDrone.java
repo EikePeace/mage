@@ -18,9 +18,6 @@ import static mage.filter.StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetControlledPermanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -36,10 +33,10 @@ public final class VisceridDrone extends CardImpl {
     private static final FilterControlledPermanent filter3 = new FilterControlledPermanent("snow Swamp");
 
     static {
-        filter1.add(Predicates.not(new CardTypePredicate(CardType.ARTIFACT)));
-        filter2.add(new SubtypePredicate(SubType.SWAMP));
-        filter3.add(new SubtypePredicate(SubType.SWAMP));
-        filter3.add(new SupertypePredicate(SuperType.SNOW));
+        filter1.add(Predicates.not(CardType.ARTIFACT.getPredicate()));
+        filter2.add(SubType.SWAMP.getPredicate());
+        filter3.add(SubType.SWAMP.getPredicate());
+        filter3.add(SuperType.SNOW.getPredicate());
     }
 
     public VisceridDrone(UUID ownerId, CardSetInfo setInfo) {

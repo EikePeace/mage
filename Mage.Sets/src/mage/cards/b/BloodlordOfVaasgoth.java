@@ -11,8 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
@@ -27,8 +25,8 @@ public final class BloodlordOfVaasgoth extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("a Vampire creature spell");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new SubtypePredicate(SubType.VAMPIRE));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(SubType.VAMPIRE.getPredicate());
     }
 
     public BloodlordOfVaasgoth(UUID ownerId, CardSetInfo setInfo) {

@@ -2,13 +2,20 @@ package mage.abilities.effects;
 
 import mage.MageObjectReference;
 import mage.abilities.Ability;
+import mage.abilities.CompoundAbility;
 import mage.abilities.MageSingleton;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.DomainValue;
 import mage.abilities.dynamicvalue.common.SignInversionDynamicValue;
 import mage.abilities.dynamicvalue.common.StaticValue;
+import mage.abilities.keyword.ChangelingAbility;
 import mage.constants.*;
+import mage.filter.Filter;
+import mage.filter.predicate.Predicate;
+import mage.filter.predicate.Predicates;
 import mage.game.Game;
+import mage.game.stack.Spell;
+import mage.game.stack.StackObject;
 import mage.players.Player;
 import mage.target.targetpointer.TargetPointer;
 
@@ -161,8 +168,12 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
                     case PTChangingEffects_7:
                         this.affectedObjectsSet = true;
                 }
-            } else if (hasLayer(Layer.CopyEffects_1) || hasLayer(Layer.ControlChangingEffects_2) || hasLayer(Layer.TextChangingEffects_3)
-                    || hasLayer(Layer.TypeChangingEffects_4) || hasLayer(Layer.ColorChangingEffects_5) || hasLayer(Layer.AbilityAddingRemovingEffects_6)
+            } else if (hasLayer(Layer.CopyEffects_1)
+                    || hasLayer(Layer.ControlChangingEffects_2)
+                    || hasLayer(Layer.TextChangingEffects_3)
+                    || hasLayer(Layer.TypeChangingEffects_4)
+                    || hasLayer(Layer.ColorChangingEffects_5)
+                    || hasLayer(Layer.AbilityAddingRemovingEffects_6)
                     || hasLayer(Layer.PTChangingEffects_7)) {
                 this.affectedObjectsSet = true;
             }
@@ -178,7 +189,8 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
     @Override
     public void setStartingControllerAndTurnNum(Game game, UUID startingController, UUID activePlayerId) {
         this.startingControllerId = startingController;
-        this.startingTurnWasActive = activePlayerId != null && activePlayerId.equals(startingController); // you can't use "game" for active player cause it's called from tests/cheat too
+        this.startingTurnWasActive = activePlayerId != null
+                && activePlayerId.equals(startingController); // you can't use "game" for active player cause it's called from tests/cheat too
         this.yourTurnNumPlayed = 0;
     }
 
@@ -190,9 +202,11 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
     @Override
     public boolean isYourNextTurn(Game game) {
         if (this.startingTurnWasActive) {
-            return yourTurnNumPlayed == 1 && game.isActivePlayer(startingControllerId);
+            return yourTurnNumPlayed == 1
+                    && game.isActivePlayer(startingControllerId);
         } else {
-            return yourTurnNumPlayed == 0 && game.isActivePlayer(startingControllerId);
+            return yourTurnNumPlayed == 0
+                    && game.isActivePlayer(startingControllerId);
         }
     }
 
@@ -217,21 +231,25 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
         boolean canDelete = false;
         Player player = game.getPlayer(startingControllerId);
 
-        // discard on start of turn for leave player
+        // discard on start of turn for leaved player
         // 800.4i When a player leaves the game, any continuous effects with durations that last until that player's next turn
         // or until a specific point in that turn will last until that turn would have begun.
         // They neither expire immediately nor last indefinitely.
         switch (duration) {
             case UntilYourNextTurn:
             case UntilEndOfYourNextTurn:
-                canDelete = player == null || (!player.isInGame() && player.hasReachedNextTurnAfterLeaving());
+                canDelete = player == null
+                        || (!player.isInGame()
+                        && player.hasReachedNextTurnAfterLeaving());
         }
 
         // discard on another conditions (start of your turn)
         switch (duration) {
             case UntilYourNextTurn:
-                if (player != null && player.isInGame()) {
-                    canDelete = canDelete || this.isYourNextTurn(game);
+                if (player != null
+                        && player.isInGame()) {
+                    canDelete = canDelete
+                            || this.isYourNextTurn(game);
                 }
         }
 
@@ -298,7 +316,7 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
 
     @Override
     public Set<UUID> isDependentTo(List<ContinuousEffect> allEffectsInLayer) {
-        Set<UUID> dependentToEffects = new HashSet<UUID>();
+        Set<UUID> dependentToEffects = new HashSet<>();
         if (dependendToTypes != null) {
             for (ContinuousEffect effect : allEffectsInLayer) {
                 if (!effect.getId().equals(this.getId())) {
@@ -317,6 +335,11 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
     @Override
     public EnumSet<DependencyType> getDependencyTypes() {
         return dependencyTypes;
+    }
+
+    @Override
+    public EnumSet<DependencyType> getDependedToTypes() {
+        return dependendToTypes;
     }
 
     @Override
@@ -341,4 +364,68 @@ public abstract class ContinuousEffectImpl extends EffectImpl implements Continu
         return this;
     }
 
+    /**
+     * Auto-generates dependencies on different effects (what's apply first and
+     * what's apply second)
+     */
+    public void generateGainAbilityDependencies(Ability abilityToGain, Filter filterToSearch) {
+        this.addDependencyType(DependencyType.AddingAbility);
+        this.generateGainAbilityDependenciesFromAbility(abilityToGain);
+        this.generateGainAbilityDependenciesFromFilter(filterToSearch);
+    }
+
+    public void generateGainAbilityDependencies(CompoundAbility abilityToGain, Filter filterToSearch) {
+        this.addDependencyType(DependencyType.AddingAbility);
+        this.generateGainAbilityDependenciesFromAbility(abilityToGain);
+        this.generateGainAbilityDependenciesFromFilter(filterToSearch);
+    }
+
+    private void generateGainAbilityDependenciesFromAbility(CompoundAbility compoundAbility) {
+        if (compoundAbility == null) {
+            return;
+        }
+        for (Ability ability : compoundAbility) {
+            generateGainAbilityDependenciesFromAbility(ability);
+        }
+    }
+
+    private void generateGainAbilityDependenciesFromAbility(Ability ability) {
+        if (ability == null) {
+            return;
+        }
+
+        // 1. "Is all type" ability (changeling)
+        // make dependency
+        if (ability instanceof ChangelingAbility) {
+            this.addDependencyType(DependencyType.AddingCreatureType);
+        }
+    }
+
+    private void generateGainAbilityDependenciesFromFilter(Filter filter) {
+        if (filter == null) {
+            return;
+        }
+
+        // 1. "Is all type" ability (changeling)
+        // wait dependency
+        // extraPredicates from some filters is player related, you don't need it here
+        List<Predicate> list = new ArrayList<>();
+        Predicates.collectAllComponents(filter.getPredicates(), list);
+        if (list.stream().anyMatch(p -> p instanceof SubType.SubTypePredicate)) {
+            this.addDependedToType(DependencyType.AddingCreatureType);
+        }
+    }
+
+    public boolean canLookAtNextTopLibraryCard(Game game) {
+        // If the top card of your library changes while you’re casting a spell, playing a land, or activating an ability,
+        // you can’t look at the new top card until you finish doing so. This means that if you cast the top card of
+        // your library, you can’t look at the next one until you’re done paying for that spell. (2019-05-03)
+        if (!game.getStack().isEmpty()) {
+            StackObject stackObject = game.getStack().getFirst();
+            return !(stackObject instanceof Spell)
+                    || !Zone.LIBRARY.equals(((Spell) stackObject).getFromZone())
+                    || ((Spell) stackObject).isDoneActivatingManaAbilities();
+        }
+        return true;
+    }
 }

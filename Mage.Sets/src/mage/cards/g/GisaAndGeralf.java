@@ -14,7 +14,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.stack.Spell;
@@ -60,7 +59,7 @@ class GisaAndGeralfContinuousEffect extends ContinuousEffectImpl {
     private static final FilterCreatureCard filter = new FilterCreatureCard("Zombie creature card");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ZOMBIE));
+        filter.add(SubType.ZOMBIE.getPredicate());
     }
 
     GisaAndGeralfContinuousEffect() {
@@ -136,11 +135,6 @@ class GisaAndGeralfWatcher extends Watcher {
         super(WatcherScope.CARD);
     }
 
-    GisaAndGeralfWatcher(final GisaAndGeralfWatcher watcher) {
-        super(watcher);
-        this.abilityUsed = watcher.abilityUsed;
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.SPELL_CAST && event.getZone() == Zone.GRAVEYARD) {
@@ -149,11 +143,6 @@ class GisaAndGeralfWatcher extends Watcher {
                 abilityUsed = true;
             }
         }
-    }
-
-    @Override
-    public GisaAndGeralfWatcher copy() {
-        return new GisaAndGeralfWatcher(this);
     }
 
     @Override

@@ -10,6 +10,7 @@ import mage.constants.Zone;
 import mage.game.Game;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -45,8 +46,9 @@ public class SpectacleAbility extends SpellAbility {
 
     @Override
     public ActivationStatus canActivate(UUID playerId, Game game) {
-        if (OpponentsLostLifeCount.instance.calculate(game, playerId) > 0) {
-            return super.canActivate(playerId, game);
+        if (OpponentsLostLifeCount.instance.calculate(game, playerId) > 0
+                && super.canActivate(playerId, game).canActivate()) {
+            return ActivationStatus.getTrue();
         }
         return ActivationStatus.getFalse();
     }
@@ -55,7 +57,7 @@ public class SpectacleAbility extends SpellAbility {
     @SuppressWarnings("unchecked")
     public boolean activate(Game game, boolean noMana) {
         if (super.activate(game, noMana)) {
-            ArrayList<Integer> spectacleActivations = (ArrayList) game.getState().getValue(SPECTACLE_ACTIVATION_VALUE_KEY + getSourceId());
+            List<Integer> spectacleActivations = (ArrayList) game.getState().getValue(SPECTACLE_ACTIVATION_VALUE_KEY + getSourceId());
             if (spectacleActivations == null) {
                 spectacleActivations = new ArrayList<>(); // zoneChangeCounter
                 game.getState().setValue(SPECTACLE_ACTIVATION_VALUE_KEY + getSourceId(), spectacleActivations);

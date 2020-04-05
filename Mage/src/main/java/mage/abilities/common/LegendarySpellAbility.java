@@ -9,8 +9,6 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 
@@ -41,10 +39,10 @@ class LegendarySpellAbilityCheckEffect extends ContinuousRuleModifyingEffectImpl
     static {
         filter.add(
                 Predicates.and(
-                        new SupertypePredicate(SuperType.LEGENDARY),
+                        SuperType.LEGENDARY.getPredicate(),
                         Predicates.or(
-                                new CardTypePredicate(CardType.CREATURE),
-                                new CardTypePredicate(CardType.PLANESWALKER)
+                                CardType.CREATURE.getPredicate(),
+                                CardType.PLANESWALKER.getPredicate()
                         )
                 )
         );

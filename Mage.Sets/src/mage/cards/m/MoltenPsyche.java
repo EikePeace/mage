@@ -1,10 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.condition.common.MetalcraftCondition;
 import mage.abilities.effects.OneShotEffect;
@@ -19,8 +14,12 @@ import mage.game.events.GameEvent;
 import mage.players.Player;
 import mage.watchers.Watcher;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public final class MoltenPsyche extends CardImpl {
@@ -88,7 +87,7 @@ class MoltenPsycheEffect extends OneShotEffect {
                     if (game.isOpponent(controller, playerId)) {
                         Player player = game.getPlayer(playerId);
                         if (player != null && watcher != null) {
-                            player.damage(watcher.getDraws(playerId), source.getSourceId(), game, false, true);
+                            player.damage(watcher.getDraws(playerId), source.getSourceId(), game);
                         }
                     }
                 }
@@ -114,11 +113,6 @@ class MoltenPsycheWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    public MoltenPsycheWatcher(final MoltenPsycheWatcher watcher) {
-        super(watcher);
-        this.draws.putAll(watcher.draws);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.DREW_CARD) {
@@ -138,11 +132,6 @@ class MoltenPsycheWatcher extends Watcher {
 
     public int getDraws(UUID playerId) {
         return draws.getOrDefault(playerId, 0);
-    }
-
-    @Override
-    public MoltenPsycheWatcher copy() {
-        return new MoltenPsycheWatcher(this);
     }
 
 }

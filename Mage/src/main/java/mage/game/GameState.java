@@ -5,6 +5,7 @@ import mage.abilities.*;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.ContinuousEffects;
 import mage.abilities.effects.Effect;
+import mage.cards.AdventureCard;
 import mage.cards.Card;
 import mage.cards.SplitCard;
 import mage.constants.Zone;
@@ -48,6 +49,8 @@ import java.util.stream.Collectors;
 public class GameState implements Serializable, Copyable<GameState> {
 
     private static final ThreadLocalStringBuilder threadLocalBuilder = new ThreadLocalStringBuilder(1024);
+
+    public static final String COPIED_FROM_CARD_KEY = "CopiedFromCard";
 
     private final Players players;
     private final PlayerList playerList;
@@ -634,6 +637,10 @@ public class GameState implements Serializable, Copyable<GameState> {
      * Returns a list of all active players of the game in range of playerId,
      * also setting the playerId to the first/current player of the list. Also
      * returning the other players in turn order.
+     * <p>
+     * Not safe for continuous effects, see rule 800.4k (effects must work until
+     * end of turn even after player leaves) Use Player.InRange() to find active
+     * players list at the start of the turn
      *
      * @param playerId
      * @param game
@@ -644,7 +651,7 @@ public class GameState implements Serializable, Copyable<GameState> {
         Player currentPlayer = game.getPlayer(playerId);
         if (currentPlayer != null) {
             for (Player player : players.values()) {
-                if (!player.hasLeft() && !player.hasLost() && currentPlayer.getInRange().contains(player.getId())) {
+                if (player.isInGame() && currentPlayer.getInRange().contains(player.getId())) {
                     newPlayerList.add(player.getId());
                 }
             }
@@ -810,6 +817,9 @@ public class GameState implements Serializable, Copyable<GameState> {
         if (card.isSplitCard()) {
             removeCopiedCard(((SplitCard) card).getLeftHalfCard());
             removeCopiedCard(((SplitCard) card).getRightHalfCard());
+        }
+        if (card instanceof AdventureCard) {
+            removeCopiedCard(((AdventureCard) card).getSpellCard());
         }
     }
 
@@ -1159,13 +1169,23 @@ public class GameState implements Serializable, Copyable<GameState> {
         copiedCards.put(copiedCard.getId(), copiedCard);
         addCard(copiedCard);
         if (copiedCard.isSplitCard()) {
-            Card leftCard = ((SplitCard) copiedCard).getLeftHalfCard();
+            Card leftCard = ((SplitCard) copiedCard).getLeftHalfCard(); // TODO: must be new ID (bugs with same card copy)?
             copiedCards.put(leftCard.getId(), leftCard);
             addCard(leftCard);
             Card rightCard = ((SplitCard) copiedCard).getRightHalfCard();
             copiedCards.put(rightCard.getId(), rightCard);
             addCard(rightCard);
         }
+        if (copiedCard instanceof AdventureCard) {
+            Card spellCard = ((AdventureCard) copiedCard).getSpellCard();
+            copiedCards.put(spellCard.getId(), spellCard);
+            addCard(spellCard);
+        }
+
+        // copied cards removes from game after battlefield/stack leaves, so remember it here as workaround to fix freeze, see https://github.com/magefree/mage/issues/5437
+        // TODO: remove that workaround after LKI will be rewritten to support cross-steps/turns data transition and support copied cards
+        this.setValue(COPIED_FROM_CARD_KEY + copiedCard.getId(), cardToCopy.copy());
+
         return copiedCard;
     }
 

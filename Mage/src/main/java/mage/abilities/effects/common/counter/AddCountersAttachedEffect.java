@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.common.counter;
 
 import java.util.Locale;
@@ -23,7 +22,7 @@ public class AddCountersAttachedEffect extends OneShotEffect {
     private String textEnchanted;
 
     public AddCountersAttachedEffect(Counter counter, String textEnchanted) {
-        this(counter, new StaticValue(1), textEnchanted);
+        this(counter, StaticValue.get(1), textEnchanted);
     }
 
     /**
@@ -69,6 +68,9 @@ public class AddCountersAttachedEffect extends OneShotEffect {
     }
 
     private void setText() {
+        if (!staticText.isEmpty()) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         // put a +1/+1 counter on it
         sb.append("put ");

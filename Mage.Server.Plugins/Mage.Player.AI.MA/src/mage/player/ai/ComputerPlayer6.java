@@ -54,8 +54,11 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
     protected Combat combat;
     protected int currentScore;
     protected SimulationNode2 root;
-    private static final String FILE_WITH_INSTRUCTIONS = "config/ai.please.cast.this.txt";
-    private final List<String> suggested = new ArrayList<>();
+
+    private static final boolean AI_SUGGEST_BY_FILE_ENABLE = true; // old method to instruct AI to play cards (use cheat commands instead now)
+    private static final String AI_SUGGEST_BY_FILE_SOURCE = "config/ai.please.cast.this.txt";
+    private final List<String> suggestedActions = new ArrayList<>();
+
     protected Set<String> actionCache;
     private static final List<TreeOptimizer> optimizers = new ArrayList<>();
     protected int lastLoggedTurn = 0;
@@ -115,7 +118,12 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         }
 
         Player player = game.getPlayer(playerId);
-        logger.info(new StringBuilder("[").append(game.getPlayer(playerId).getName()).append("], life = ").append(player.getLife()).toString());
+        GameStateEvaluator2.PlayerEvaluateScore score = GameStateEvaluator2.evaluate(playerId, game);
+        logger.info(new StringBuilder("[").append(game.getPlayer(playerId).getName()).append("]")
+                .append(", life = ").append(player.getLife())
+                .append(", score = ").append(score.getTotalScore())
+                .append(" (").append(score.getPlayerInfoFull()).append(")")
+                .toString());
         StringBuilder sb = new StringBuilder("-> Hand: [");
         for (Card card : player.getHand().getCards(game)) {
             sb.append(card.getName()).append(';');
@@ -132,6 +140,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 if (permanent.isAttacking()) {
                     sb.append("(attacking)");
                 }
+                sb.append(':' + String.valueOf(GameStateEvaluator2.evaluatePermanent(permanent, game)));
                 sb.append(';');
             }
         }
@@ -165,8 +174,8 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 if (ability.isUsesStack()) {
                     usedStack = true;
                 }
-                if (!suggested.isEmpty() && !(ability instanceof PassAbility)) {
-                    Iterator<String> it = suggested.iterator();
+                if (!suggestedActions.isEmpty() && !(ability instanceof PassAbility)) {
+                    Iterator<String> it = suggestedActions.iterator();
                     while (it.hasNext()) {
                         String action = it.next();
                         Card card = game.getCard(ability.getSourceId());
@@ -197,13 +206,13 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 && Thread.interrupted()) {
             Thread.currentThread().interrupt();
             logger.debug("interrupted");
-            return GameStateEvaluator2.evaluate(playerId, game);
+            return GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
         }
         // Condition to stop deeper simulation
         if (depth <= 0
                 || SimulationNode2.nodeCount > maxNodes
                 || game.checkIfGameIsOver()) {
-            val = GameStateEvaluator2.evaluate(playerId, game);
+            val = GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
             if (logger.isTraceEnabled()) {
                 StringBuilder sb = new StringBuilder("Add Actions -- reached end state  <").append(val).append('>');
                 SimulationNode2 logNode = node;
@@ -227,7 +236,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
             }
             val = minimaxAB(node, depth - 1, alpha, beta);
         } else {
-            logger.trace("Add Action -- alpha: " + alpha + " beta: " + beta + " depth:" + depth + " step:" + game.getTurn().getStepType() + " for player:" + game.getPlayer(game.getPlayerList().get()).getName());
+            logger.trace("Add Action -- alpha: " + alpha + " beta: " + beta + " depth:" + depth + " step:" + game.getTurn().getStepType() + " for player:" + game.getPlayer(game.getActivePlayerId()).getName());
             if (allPassed(game)) {
                 if (!game.getStack().isEmpty()) {
                     resolve(node, depth, game);
@@ -237,20 +246,20 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
             }
 
             if (game.checkIfGameIsOver()) {
-                val = GameStateEvaluator2.evaluate(playerId, game);
+                val = GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
             } else if (stepFinished) {
                 logger.debug("Step finished");
-                int testScore = GameStateEvaluator2.evaluate(playerId, game);
+                int testScore = GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
                 if (game.isActivePlayer(playerId)) {
                     if (testScore < currentScore) {
                         // if score at end of step is worse than original score don't check further
                         //logger.debug("Add Action -- abandoning check, no immediate benefit");
                         val = testScore;
                     } else {
-                        val = GameStateEvaluator2.evaluate(playerId, game);
+                        val = GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
                     }
                 } else {
-                    val = GameStateEvaluator2.evaluate(playerId, game);
+                    val = GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
                 }
             } else if (!node.getChildren().isEmpty()) {
                 if (logger.isDebugEnabled()) {
@@ -286,7 +295,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 root = root.children.get(0);
             }
             logger.trace("Sim getNextAction -- game value:" + game.getState().getValue(true) + " test value:" + test.gameValue);
-            if (!suggested.isEmpty()) {
+            if (!suggestedActions.isEmpty()) {
                 return false;
             }
             if (root.playerId.equals(playerId)
@@ -442,7 +451,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 && Thread.interrupted()) {
             Thread.currentThread().interrupt();
             logger.info("interrupted");
-            return GameStateEvaluator2.evaluate(playerId, game);
+            return GameStateEvaluator2.evaluate(playerId, game).getTotalScore();
         }
         node.setGameValue(game.getState().getValue(true).hashCode());
         SimulatedPlayer2 currentPlayer = (SimulatedPlayer2) game.getPlayer(game.getPlayerList().get());
@@ -487,7 +496,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                 int val;
                 if (action instanceof PassAbility && sim.getStack().isEmpty()) {
                     // Stop to simulate deeper if PassAbility and stack is empty
-                    val = GameStateEvaluator2.evaluate(this.getId(), sim);
+                    val = GameStateEvaluator2.evaluate(this.getId(), sim).getTotalScore();
                 } else {
                     val = addActions(newNode, depth - 1, alpha, beta);
                 }
@@ -530,7 +539,9 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                             bestNode.setCombat(newNode.getChildren().get(0).getCombat());
                         }
                         if (depth == maxDepth) {
-                            logger.info("Sim Prio [" + depth + "] -- Saved best node yet <" + bestNode.getScore() + "> " + bestNode.getAbilities().toString());
+                            GameStateEvaluator2.PlayerEvaluateScore score = GameStateEvaluator2.evaluate(this.getId(), bestNode.game);
+                            String scoreInfo = " [" + score.getPlayerInfoShort() + "-" + score.getOpponentInfoShort() + "]";
+                            logger.info("Sim Prio [" + depth + "] -- Saved best node yet <" + bestNode.getScore() + scoreInfo + "> " + bestNode.getAbilities().toString());
                             node.children.clear();
                             node.children.add(bestNode);
                             node.setScore(bestNode.getScore());
@@ -915,10 +926,10 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         sim.setSimulation(true);
         for (Player copyPlayer : sim.getState().getPlayers().values()) {
             Player origPlayer = game.getState().getPlayers().get(copyPlayer.getId()).copy();
-            if (!suggested.isEmpty()) {
-                logger.debug(origPlayer.getName() + " suggested: " + suggested);
+            if (!suggestedActions.isEmpty()) {
+                logger.debug(origPlayer.getName() + " suggested: " + suggestedActions);
             }
-            SimulatedPlayer2 newPlayer = new SimulatedPlayer2(copyPlayer.getId(), copyPlayer.getId().equals(playerId), suggested);
+            SimulatedPlayer2 newPlayer = new SimulatedPlayer2(copyPlayer.getId(), copyPlayer.getId().equals(playerId), suggestedActions);
             newPlayer.restore(origPlayer);
             sim.getState().getPlayers().put(copyPlayer.getId(), newPlayer);
         }
@@ -930,7 +941,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         if (action instanceof PassAbility || action instanceof SpellAbility || action.getAbilityType() == AbilityType.MANA) {
             return false;
         }
-        int newVal = GameStateEvaluator2.evaluate(playerId, sim);
+        int newVal = GameStateEvaluator2.evaluate(playerId, sim).getTotalScore();
         SimulationNode2 test = node.getParent();
         while (test != null) {
             if (test.getPlayerId().equals(playerId)) {
@@ -939,7 +950,7 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
                         if (test.getParent() != null) {
                             Game prevGame = node.getGame();
                             if (prevGame != null) {
-                                int oldVal = GameStateEvaluator2.evaluate(playerId, prevGame);
+                                int oldVal = GameStateEvaluator2.evaluate(playerId, prevGame).getTotalScore();
                                 if (oldVal >= newVal) {
                                     return true;
                                 }
@@ -954,21 +965,24 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
     }
 
     protected final void getSuggestedActions() {
+        if (!AI_SUGGEST_BY_FILE_ENABLE) {
+            return;
+        }
         Scanner scanner = null;
         try {
-            File file = new File(FILE_WITH_INSTRUCTIONS);
+            File file = new File(AI_SUGGEST_BY_FILE_SOURCE);
             if (file.exists()) {
                 scanner = new Scanner(file);
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
                     if (line.startsWith("cast:")
                             || line.startsWith("play:")) {
-                        suggested.add(line.substring(5));
+                        suggestedActions.add(line.substring(5));
                     }
                 }
                 System.out.println("suggested::");
-                for (int i = 0; i < suggested.size(); i++) {
-                    System.out.println("    " + suggested.get(i));
+                for (int i = 0; i < suggestedActions.size(); i++) {
+                    System.out.println("    " + suggestedActions.get(i));
                 }
             }
         } catch (Exception e) {
@@ -986,13 +1000,13 @@ public class ComputerPlayer6 extends ComputerPlayer /*implements Player*/ {
         if (action != null
                 && (action.startsWith("cast:")
                 || action.startsWith("play:"))) {
-            suggested.add(action.substring(5));
+            suggestedActions.add(action.substring(5));
         }
     }
 
     @Override
     public int getActionCount() {
-        return suggested.size();
+        return suggestedActions.size();
     }
 
     protected String listTargets(Game game, Targets targets) {

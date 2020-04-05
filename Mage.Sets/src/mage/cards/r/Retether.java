@@ -1,10 +1,5 @@
-
 package mage.cards.r;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -17,16 +12,18 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.CanBeEnchantedByPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class Retether extends CardImpl {
@@ -53,8 +50,8 @@ class RetetherEffect extends OneShotEffect {
     private static final FilterCard filterAura = new FilterCard("Aura card from your graveyard");
 
     static {
-        filterAura.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filterAura.add(new SubtypePredicate(SubType.AURA));
+        filterAura.add(CardType.ENCHANTMENT.getPredicate());
+        filterAura.add(SubType.AURA.getPredicate());
     }
 
     public RetetherEffect() {
@@ -101,13 +98,13 @@ class RetetherEffect extends OneShotEffect {
                         }
                     }
                     if (target != null) {
-                        target.getFilter().add(new CardTypePredicate(CardType.CREATURE));
+                        target.getFilter().add(CardType.CREATURE.getPredicate());
                         target.setNotTarget(true);
                         if (target.canChoose(controller.getId(), game)) {
                             target.setTargetName("creature to enchant (" + aura.getLogName() + ')');
                             if (controller.choose(Outcome.PutCardInPlay, target, source.getSourceId(), game)) {
                                 Permanent permanent = game.getPermanent(target.getFirstTarget());
-                                if (permanent != null && !permanent.cantBeAttachedBy(aura, game)) {
+                                if (permanent != null && !permanent.cantBeAttachedBy(aura, game, true)) {
                                     auraMap.put(aura, permanent);
                                     game.getState().setValue("attachTo:" + aura.getId(), permanent);
                                     continue auraCardsInGraveyard;

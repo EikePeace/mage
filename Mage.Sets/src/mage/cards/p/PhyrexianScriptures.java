@@ -20,8 +20,6 @@ import mage.filter.FilterCard;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -34,8 +32,8 @@ public final class PhyrexianScriptures extends CardImpl {
     private static final FilterCard filter2 = new FilterCard("opponents' cards");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.ARTIFACT)));
-        filter2.add(new OwnerPredicate(TargetController.OPPONENT));
+        filter.add(Predicates.not(CardType.ARTIFACT.getPredicate()));
+        filter2.add(TargetController.OPPONENT.getOwnerPredicate());
     }
 
     public PhyrexianScriptures(UUID ownerId, CardSetInfo setInfo) {

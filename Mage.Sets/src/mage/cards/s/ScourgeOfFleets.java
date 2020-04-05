@@ -14,9 +14,7 @@ import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.mageobject.ToughnessPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -53,7 +51,7 @@ class ScourgeOfFleetsEffect extends OneShotEffect {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("number of Islands you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ISLAND));
+        filter.add(SubType.ISLAND.getPredicate());
     }
 
     public ScourgeOfFleetsEffect() {
@@ -76,7 +74,7 @@ class ScourgeOfFleetsEffect extends OneShotEffect {
         if (controller != null) {
             int islands = game.getBattlefield().count(filter, source.getSourceId(), source.getControllerId(), game);
             FilterPermanent creatureFilter = new FilterCreaturePermanent();
-            creatureFilter.add(new ControllerPredicate(TargetController.OPPONENT));
+            creatureFilter.add(TargetController.OPPONENT.getControllerPredicate());
             creatureFilter.add(new ToughnessPredicate(ComparisonType.FEWER_THAN, islands + 1));
             Cards cardsToHand = new CardsImpl();
             for (Permanent permanent : game.getBattlefield().getActivePermanents(creatureFilter, source.getControllerId(), source.getSourceId(), game)) {

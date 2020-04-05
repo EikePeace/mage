@@ -1,8 +1,5 @@
-
 package mage.cards.f;
 
-import java.util.StringTokenizer;
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldAllTriggeredAbility;
@@ -16,15 +13,16 @@ import mage.cards.CardsImpl;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.StringTokenizer;
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class FaerieArtisans extends CardImpl {
@@ -33,7 +31,7 @@ public final class FaerieArtisans extends CardImpl {
 
     static {
         filterNontoken.add(Predicates.not(TokenPredicate.instance));
-        filterNontoken.add(new ControllerPredicate(TargetController.OPPONENT));
+        filterNontoken.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public FaerieArtisans(UUID ownerId, CardSetInfo setInfo) {
@@ -46,6 +44,7 @@ public final class FaerieArtisans extends CardImpl {
 
         // Flying
         this.addAbility(FlyingAbility.getInstance());
+
         // Whenever a nontoken creature enters the battlefield under an opponent's control, create a token that's a copy of that creature except it's an artifact in addition to its other types. Then exile all other tokens created with Faerie Artisans.
         Ability ability = new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new FaerieArtisansEffect(), filterNontoken, false, SetTargetPointer.PERMANENT,
                 "Whenever a nontoken creature enters the battlefield under an opponent's control, create a token that's a copy of that creature except it's an artifact in addition to its other types. Then exile all other tokens created with {this}.");
@@ -81,7 +80,7 @@ class FaerieArtisansEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanentToCopy = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanentToCopy = game.getPermanentOrLKIBattlefield(targetPointer.getFixedTarget(game, source).getTarget());
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && permanentToCopy != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(null, CardType.ARTIFACT, false);

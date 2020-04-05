@@ -20,7 +20,6 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -40,7 +39,7 @@ public final class CyclopeanTomb extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent();
 
     static {
-        filter.add(Predicates.not(new SubtypePredicate(SubType.SWAMP)));
+        filter.add(Predicates.not(SubType.SWAMP.getPredicate()));
     }
 
     public CyclopeanTomb(UUID ownerId, CardSetInfo setInfo) {
@@ -191,20 +190,6 @@ class CyclopeanTombCounterWatcher extends Watcher {
 
     CyclopeanTombCounterWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    private CyclopeanTombCounterWatcher(final CyclopeanTombCounterWatcher watcher) {
-        super(watcher);
-        for (MageObjectReference mageObjectReference : watcher.counterData.keySet()) {
-            Set<MageObjectReference> miredLands = new HashSet<>();
-            miredLands.addAll(watcher.counterData.get(mageObjectReference));
-            counterData.put(mageObjectReference, miredLands);
-        }
-    }
-
-    @Override
-    public CyclopeanTombCounterWatcher copy() {
-        return new CyclopeanTombCounterWatcher(this);
     }
 
     @Override

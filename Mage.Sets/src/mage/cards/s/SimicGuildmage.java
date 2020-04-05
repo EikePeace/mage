@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageItem;
 import mage.abilities.Ability;
@@ -22,7 +20,6 @@ import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.AnotherTargetPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
@@ -33,8 +30,9 @@ import mage.target.Target;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author anonymous
  */
 public final class SimicGuildmage extends CardImpl {
@@ -42,7 +40,7 @@ public final class SimicGuildmage extends CardImpl {
     private static final FilterEnchantmentPermanent auraFilter = new FilterEnchantmentPermanent("Aura");
 
     static {
-        auraFilter.add(new SubtypePredicate(SubType.AURA));
+        auraFilter.add(SubType.AURA.getPredicate());
     }
 
     public SimicGuildmage(UUID ownerId, CardSetInfo setInfo) {
@@ -198,7 +196,7 @@ class MoveAuraEffect extends OneShotEffect {
                 Permanent permanentToAttachAura = game.getPermanent(chosenPermanentToAttachAuras.getFirstTarget());
                 if (permanentToAttachAura != null) {
                     // Check for protection
-                    if (permanentToAttachAura.cantBeAttachedBy(aura, game)) {
+                    if (permanentToAttachAura.cantBeAttachedBy(aura, game, true)) {
                         passed = false;
                     }
                     if (passed) {

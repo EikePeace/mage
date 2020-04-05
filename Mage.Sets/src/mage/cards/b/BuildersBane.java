@@ -1,4 +1,3 @@
-
 package mage.cards.b;
 
 import mage.abilities.Ability;
@@ -26,7 +25,7 @@ public final class BuildersBane extends CardImpl {
     public BuildersBane(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{X}{X}{R}");
 
-        // Destroy X target artifacts. Builder's Bane deals damage to each player equal to the number of artifacts he or she controlled put into a graveyard this way.
+        // Destroy X target artifacts. Builder's Bane deals damage to each player equal to the number of artifacts they controlled put into a graveyard this way.
         this.getSpellAbility().addTarget(new TargetArtifactPermanent());
         this.getSpellAbility().addEffect(new BuildersBaneEffect());
         this.getSpellAbility().setTargetAdjuster(BuildersBaneAdjuster.instance);
@@ -89,11 +88,11 @@ class BuildersBaneEffect extends OneShotEffect {
             }
         }
 
-        // Builder's Bane deals damage to each player equal to the number of artifacts he or she controlled put into a graveyard this way.
+        // Builder's Bane deals damage to each player equal to the number of artifacts they controlled put into a graveyard this way.
         for (Map.Entry<UUID, Integer> entry : destroyedArtifactPerPlayer.entrySet()) {
             Player player = game.getPlayer(entry.getKey());
             if (player != null) {
-                player.damage(entry.getValue(), source.getSourceId(), game, false, true);
+                player.damage(entry.getValue(), source.getSourceId(), game);
             }
         }
 

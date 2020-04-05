@@ -18,8 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -30,8 +28,8 @@ public final class EidolonOfCountlessBattles extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent();
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.CREATURE),
-                new SubtypePredicate(SubType.AURA)));
+                CardType.CREATURE.getPredicate(),
+                SubType.AURA.getPredicate()));
     }
     
     public EidolonOfCountlessBattles(UUID ownerId, CardSetInfo setInfo) {

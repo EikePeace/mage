@@ -15,7 +15,6 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.token.XenagosSatyrToken;
 import mage.players.Player;
@@ -120,9 +119,10 @@ class XenagosExileEffect extends OneShotEffect {
             exiledCards.addAll(controller.getLibrary().getTopCards(game, 7));
             controller.moveCards(exiledCards, Zone.EXILED, source, game);
             FilterCard filter = new FilterCard("creature and/or land cards to put onto the battlefield");
-            filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE),
-                    new CardTypePredicate(CardType.LAND)));
+            filter.add(Predicates.or(CardType.CREATURE.getPredicate(),
+                    CardType.LAND.getPredicate()));
             TargetCard target1 = new TargetCard(0, Integer.MAX_VALUE, Zone.EXILED, filter);
+            target1.setNotTarget(true);
             if (!exiledCards.isEmpty()
                     && target1.canChoose(source.getSourceId(), source.getControllerId(), game)
                     && controller.choose(Outcome.PutCardInPlay, exiledCards, target1, game)) {

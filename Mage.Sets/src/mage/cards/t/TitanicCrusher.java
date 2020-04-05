@@ -13,7 +13,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 import java.util.UUID;
@@ -26,7 +25,7 @@ public final class TitanicCrusher extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     public TitanicCrusher(UUID ownerId, CardSetInfo setInfo){

@@ -16,8 +16,7 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
+
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
@@ -61,7 +60,7 @@ class TargetControlledCreatureWithPowerGreaterOrLessThanOpponentPermanent extend
     public TargetControlledCreatureWithPowerGreaterOrLessThanOpponentPermanent() {
         super();
         this.filter = this.filter.copy();
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
         setTargetName("creature you control");
     }
 
@@ -96,8 +95,8 @@ class SpawnbrokerSecondTarget extends TargetPermanent {
     public SpawnbrokerSecondTarget() {
         super();
         this.filter = this.filter.copy();
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
         setTargetName("creature with power less than or equal to that creature's power an opponent controls");
     }
 

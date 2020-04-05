@@ -18,7 +18,6 @@ import mage.interfaces.callback.CallbackClient;
 import mage.interfaces.callback.ClientCallback;
 import mage.remote.ActionData;
 import mage.remote.Session;
-import mage.utils.CompressUtil;
 import mage.view.*;
 import mage.view.ChatMessage.MessageType;
 import org.apache.log4j.Logger;
@@ -44,8 +43,8 @@ public class CallbackClientImpl implements CallbackClient {
 
     @Override
     public synchronized void processCallback(final ClientCallback callback) {
+        callback.decompressData();
         SaveObjectUtil.saveObject(callback.getData(), callback.getMethod().toString());
-        callback.setData(CompressUtil.decompress(callback.getData()));
         SwingUtilities.invokeLater(() -> {
             try {
                 logger.debug(callback.getMessageId() + " -- " + callback.getMethod());
@@ -110,9 +109,9 @@ public class CallbackClientImpl implements CallbackClient {
                             }
                             // send the message to subchat if exists and it's not a game message
                             if (message.getMessageType() != MessageType.GAME && panel.getConnectedChat() != null) {
-                                panel.getConnectedChat().receiveMessage(message.getUsername(), message.getMessage(), message.getTime(), message.getMessageType(), ChatMessage.MessageColor.BLACK);
+                                panel.getConnectedChat().receiveMessage(message.getUsername(), message.getMessage(), message.getTime(), message.getTurnInfo(), message.getMessageType(), ChatMessage.MessageColor.BLACK);
                             } else {
-                                panel.receiveMessage(message.getUsername(), message.getMessage(), message.getTime(), message.getMessageType(), message.getColor());
+                                panel.receiveMessage(message.getUsername(), message.getMessage(), message.getTime(), message.getTurnInfo(), message.getMessageType(), message.getColor());
                             }
 
                         }
@@ -400,7 +399,8 @@ public class CallbackClientImpl implements CallbackClient {
         }
         switch (usedPanel.getChatType()) {
             case GAME:
-                usedPanel.receiveMessage("", new StringBuilder("You may use hot keys to play faster:")
+                usedPanel.receiveMessage("", new StringBuilder()
+                                .append("HOTKEYS:")
                                 .append("<br/>Turn mousewheel up (ALT-e) - enlarge image of card the mousepointer hovers over")
                                 .append("<br/>Turn mousewheel down (ALT-s) - enlarge original/alternate image of card the mousepointer hovers over")
                                 .append("<br/><b>")
@@ -430,25 +430,34 @@ public class CallbackClientImpl implements CallbackClient {
                                 .append("<br/><b>")
                                 .append(KeyEvent.getKeyText(PreferencesDialog.getCurrentControlKey(PreferencesDialog.KEY_CONTROL_SWITCH_CHAT)))
                                 .append("</b> - Switth in/out to chat text field")
+                                /*
                                 .append("<br/><b>")
                                 .append(KeyEvent.getKeyText(PreferencesDialog.getCurrentControlKey(PreferencesDialog.KEY_CONTROL_TOGGLE_MACRO)))
                                 .append("</b> - Toggle recording a sequence of actions to repeat. Will not pause if interrupted and can fail if a selected card changes such as when scrying top card to bottom.")
                                 .append("<br/><b>").append(System.getProperty("os.name").contains("Mac OS X") ? "Cmd" : "Ctrl").append(" + click</b> - Hold priority while casting a spell or activating an ability")
-                                .append("<br/>").append("Type <b>/FIX</b> message in chat to fix freezed game")
+                                 */
+                                .append("<br/>")
+                                .append("<br/>")
+                                .append("CHAT COMMANDS:")
+                                .append("<br/>").append("<b>/h username </b> - show player's stats (history)")
+                                .append("<br/>").append("<b>/w username message</b> - send private message to player (whisper)")
+                                .append("<br/>").append("<b>/pings</b> - show players and watchers ping")
+                                .append("<br/>").append("<b>/fix</b> - fix freezed game")
                                 .toString(),
-                        null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
+                        null, null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
                 break;
             case TOURNAMENT:
                 usedPanel.receiveMessage("", "On this panel you can see the players, their state and the results of the games of the tournament. Also you can chat with the competitors of the tournament.",
-                        null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
+                        null, null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
                 break;
             case TABLES:
-                usedPanel.receiveMessage("", new StringBuilder("Download card images by using the \"Images\" menu to the top right .")
-                                .append("<br/>Download icons and symbols by using the \"Symbols\" menu to the top right.")
-                                .append("<br/>\\list - Show a list of available chat commands.")
-                                .append("<br/>").append(IgnoreList.usage())
+                String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
+                usedPanel.receiveMessage("", new StringBuilder("Download card images by using the \"Images\" main menu.")
+                                .append("<br/>Download icons and symbols by using the \"Symbols\" main menu.")
+                                .append("<br/>\\list - show a list of available chat commands.")
+                                .append("<br/>").append(IgnoreList.usage(serverAddress))
                                 .append("<br/>Type <font color=green>\\w yourUserName profanity 0 (or 1 or 2)</font> to turn off/on the profanity filter").toString(),
-                        null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
+                        null, null, MessageType.USER_INFO, ChatMessage.MessageColor.BLUE);
                 break;
             default:
                 break;

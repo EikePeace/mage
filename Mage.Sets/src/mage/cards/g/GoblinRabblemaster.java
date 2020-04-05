@@ -18,7 +18,6 @@ import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.GoblinToken;
 import mage.watchers.common.AttackedThisTurnWatcher;
 
@@ -33,7 +32,7 @@ public final class GoblinRabblemaster extends CardImpl {
 
     static {
         otherGoblinFilter.add(AnotherPredicate.instance);
-        otherGoblinFilter.add(new ControllerPredicate(TargetController.YOU));
+        otherGoblinFilter.add(TargetController.YOU.getControllerPredicate());
 
         attackingFilter.add(AttackingPredicate.instance);
         attackingFilter.add(AnotherPredicate.instance);
@@ -55,7 +54,7 @@ public final class GoblinRabblemaster extends CardImpl {
         this.addAbility(new BeginningOfCombatTriggeredAbility(new CreateTokenEffect(new GoblinToken(true)), TargetController.YOU, false));
 
         // When Goblin Rabblemaster attacks, it gets +1/+0 until end of turn for each other attacking Goblin.
-        this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(new PermanentsOnBattlefieldCount(attackingFilter), new StaticValue(0), Duration.EndOfTurn, true), false));
+        this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(new PermanentsOnBattlefieldCount(attackingFilter), StaticValue.get(0), Duration.EndOfTurn, true), false));
     }
 
     public GoblinRabblemaster(final GoblinRabblemaster card) {

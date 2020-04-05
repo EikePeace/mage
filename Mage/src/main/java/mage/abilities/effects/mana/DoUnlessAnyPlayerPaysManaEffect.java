@@ -16,7 +16,6 @@ import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,14 +42,17 @@ public class DoUnlessAnyPlayerPaysManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        MageObject sourceObject = game.getObject(source.getSourceId());
-        if (controller != null && sourceObject != null) {
+    public List<Mana> getNetMana(Game game, Ability source) {
+        return manaEffect.getNetMana(game, source);
+    }
+
+    @Override
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game != null) {
+            Player controller = getPlayer(game, source);
+            MageObject sourceObject = game.getObject(source.getSourceId());
             String message = CardUtil.replaceSourceName(chooseUseText, sourceObject.getName());
-            boolean result = true;
-            boolean doEffect = true;
-            // check if any player is willing to pay
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.canRespond()
@@ -61,40 +63,12 @@ public class DoUnlessAnyPlayerPaysManaEffect extends ManaEffect {
                         if (!game.isSimulation()) {
                             game.informPlayers(player.getLogName() + " pays the cost to prevent the effect");
                         }
-                        doEffect = false;
-                        break;
+                        return mana;
                     }
                 }
             }
-            // do the effects if nobody paid
-            if (doEffect) {
-                return manaEffect.apply(game, source);
-            }
-            return result;
         }
-        return false;
-    }
-
-    @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        if (cost.canPay(source, source.getSourceId(), source.getControllerId(), game)) {
-            return manaEffect.getNetMana(game, source);
-        }
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Mana getMana(Game game, Ability source) {
-        return manaEffect.getMana(game, source);
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        return manaEffect.produceMana(netMana, game, source);
-    }
-
-    protected Player getPayingPlayer(Game game, Ability source) {
-        return game.getPlayer(source.getControllerId());
+        return manaEffect.produceMana(game, source);
     }
 
     @Override

@@ -11,7 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -36,8 +35,8 @@ public final class FinaleOfPromise extends CardImpl {
     static final FilterCard filterSorcery = new FilterCard("sorcery card from your graveyard");
 
     static {
-        filterInstant.add(new CardTypePredicate(CardType.INSTANT));
-        filterSorcery.add(new CardTypePredicate(CardType.SORCERY));
+        filterInstant.add(CardType.INSTANT.getPredicate());
+        filterSorcery.add(CardType.SORCERY.getPredicate());
     }
 
     public FinaleOfPromise(UUID ownerId, CardSetInfo setInfo) {
@@ -126,7 +125,8 @@ class FinaleOfPromiseEffect extends OneShotEffect {
                     .filter(Objects::nonNull)
                     .map(Card::getName)
                     .collect(Collectors.joining(" -> "));
-            if (!controller.chooseUse(Outcome.Detriment, "Cast cards by choose order: " + cardsOrder + "?", "Finale of Promise",
+            if (!controller.chooseUse(Outcome.Detriment, "Cast cards by choose order: " 
+                    + cardsOrder + "?", "Finale of Promise",
                     "Use that order", "Reverse", source, game)) {
                 Collections.reverse(cardsToCast);
             }
@@ -136,7 +136,10 @@ class FinaleOfPromiseEffect extends OneShotEffect {
         for (UUID id : cardsToCast) {
             Card card = game.getCard(id);
             if (card != null) {
-                controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                controller.cast(controller.chooseAbilityForCast(card, game, true),
+                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                 ContinuousEffect effect = new FinaleOfPromiseReplacementEffect();
                 effect.setTargetPointer(new FixedTarget(card.getId(), game.getState().getZoneChangeCounter(card.getId())));
                 game.addEffect(effect, source);
@@ -205,6 +208,7 @@ class FinaleOfPromiseReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
-        return zEvent.getToZone() == Zone.GRAVEYARD && event.getTargetId().equals(getTargetPointer().getFirst(game, source));
+        return zEvent.getToZone() == Zone.GRAVEYARD
+                && event.getTargetId().equals(getTargetPointer().getFirst(game, source));
     }
 }

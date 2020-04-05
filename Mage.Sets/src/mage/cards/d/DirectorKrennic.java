@@ -13,8 +13,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.permanent.token.TrooperToken2;
 import mage.target.TargetPermanent;
 
@@ -27,8 +25,8 @@ public final class DirectorKrennic extends CardImpl {
     private static final FilterPermanent filterLand = new FilterPermanent("basic land");
     
     static {
-        filterLand.add(new CardTypePredicate(CardType.LAND));
-        filterLand.add(new SupertypePredicate(SuperType.BASIC));
+        filterLand.add(CardType.LAND.getPredicate());
+        filterLand.add(SuperType.BASIC.getPredicate());
     }
     
     public DirectorKrennic(UUID ownerId, CardSetInfo setInfo) {

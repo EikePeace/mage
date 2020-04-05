@@ -6,18 +6,14 @@ import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.Effect;
-import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.CreateTokenEffect;
 import mage.abilities.effects.common.RechargeEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.game.permanent.token.CanisterToken;
 import mage.players.Player;
 
 import java.util.UUID;
@@ -64,7 +60,7 @@ class AetherAnimistStaticEffect extends ContinuousEffectImpl {
 
     static {
         filter.add(new NamePredicate("Canister"));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public AetherAnimistStaticEffect() {

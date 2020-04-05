@@ -15,8 +15,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -28,8 +26,8 @@ public final class SwiftWarden extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Merfolk you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.MERFOLK));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.MERFOLK.getPredicate());
     }
 
     public SwiftWarden(UUID ownerId, CardSetInfo setInfo) {

@@ -3,6 +3,7 @@ package org.mage.plugins.card.dl.sources;
 import mage.client.MageFrame;
 import mage.remote.Connection;
 import mage.remote.Connection.ProxyType;
+import mage.util.CardUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,7 +14,10 @@ import org.mage.plugins.card.images.CardDownloadData;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.util.*;
 import java.util.prefs.Preferences;
 
@@ -255,7 +259,7 @@ public enum MythicspoilerComSource implements CardImageSource {
         cardNameAliases.put("RIX-tetzimocdeathprimordial", "tetzimocprimaldeath");
         // <card name, card link>
         manualLinks = new HashMap<>();
-        HashMap<String, String> links = new HashMap<>();
+        Map<String, String> links = new HashMap<>();
         links.put("templeofaclazotz", "templeofaclazotz");
         links.put("conquerorsfoothold", "conquerorsfoothold");
         links.put("primalwellspring", "primalwellspring");
@@ -268,7 +272,7 @@ public enum MythicspoilerComSource implements CardImageSource {
         links.put("spitfirebastion", "spitfirebastion");
         manualLinks.put("XLN", links);
 
-        HashMap<String, String> linksRix = new HashMap<>();
+        Map<String, String> linksRix = new HashMap<>();
         linksRix.put("vaultofcatlacan", "vaultofcatlacan");
         linksRix.put("atzalcaveofeternity", "atzalcaveofeternity");
         linksRix.put("wingedtempleoforazca", "wingedtempleoforazca");
@@ -279,7 +283,7 @@ public enum MythicspoilerComSource implements CardImageSource {
         manualLinks.put("RIX", linksRix);
 
         cardNameAliasesStart = new HashMap<>();
-        HashSet<String> names = new HashSet<>();
+        Set<String> names = new HashSet<>();
         names.add("eldrazidevastator.jpg");
         cardNameAliasesStart.put("BFZ", names);
     }
@@ -298,7 +302,7 @@ public enum MythicspoilerComSource implements CardImageSource {
             Preferences prefs = MageFrame.getPreferences();
             Connection.ProxyType proxyType = Connection.ProxyType.valueByText(prefs.get("proxyType", "None"));
             for (String setName : setNames.split("\\^")) {
-                String URLSetName = URLEncoder.encode(setName, "UTF-8");
+                String URLSetName = CardUtil.urlEncode(setName);
                 String baseUrl = "http://mythicspoiler.com/" + URLSetName + '/';
 
                 Map<String, String> pageLinks = getSetLinksFromPage(cardSet, aliasesStart, prefs, proxyType, baseUrl, baseUrl);
@@ -446,10 +450,8 @@ public enum MythicspoilerComSource implements CardImageSource {
     }
 
     @Override
-    public ArrayList<String> getSupportedSets() {
-        ArrayList<String> supportedSetsCopy = new ArrayList<>();
-        supportedSetsCopy.addAll(supportedSets);
-        return supportedSetsCopy;
+    public List<String> getSupportedSets() {
+        return new ArrayList<>(supportedSets);
     }
 
 }

@@ -1,8 +1,5 @@
-
 package mage.cards.t;
 
-import java.util.List;
-import java.util.UUID;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -18,7 +15,6 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -29,8 +25,10 @@ import mage.target.TargetCard;
 import mage.target.TargetPlayer;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class ThoughtPrison extends CardImpl {
@@ -38,7 +36,7 @@ public final class ThoughtPrison extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("spell cast");
 
     public ThoughtPrison(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{5}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{5}");
 
         // Imprint - When Thought Prison enters the battlefield, you may have target player reveal their hand. If you do, choose a nonland card from it and exile that card.
         EntersBattlefieldTriggeredAbility ability = new EntersBattlefieldTriggeredAbility(new ThoughtPrisonImprintEffect(), true, "<i>Imprint</i> &mdash; ");
@@ -64,7 +62,7 @@ class ThoughtPrisonImprintEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard("nonland card");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
     }
 
     public ThoughtPrisonImprintEffect() {
@@ -198,7 +196,7 @@ class ThoughtPrisonDamageEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.damage(2, source.getSourceId(), game, false, true);
+            targetPlayer.damage(2, source.getSourceId(), game);
             return true;
         }
         return false;

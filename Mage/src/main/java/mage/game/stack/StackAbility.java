@@ -482,11 +482,6 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public void setCostModificationActive(boolean active) {
-        throw new UnsupportedOperationException("Not supported. Only neede for flashbacked spells");
-    }
-
-    @Override
     public boolean getWorksFaceDown() {
         return this.ability.getWorksFaceDown();
     }
@@ -584,7 +579,7 @@ public class StackAbility extends StackObjImpl implements Ability {
         game.getStack().push(newStackAbility);
         if (chooseNewTargets && !newAbility.getTargets().isEmpty()) {
             Player controller = game.getPlayer(newControllerId);
-            Outcome outcome = newAbility.getEffects().isEmpty() ? Outcome.Detriment : newAbility.getEffects().get(0).getOutcome();
+            Outcome outcome = newAbility.getEffects().getOutcome(newAbility);
             if (controller.chooseUse(outcome, "Choose new targets?", source, game)) {
                 newAbility.getTargets().clearChosen();
                 newAbility.getTargets().chooseTargets(outcome, newControllerId, newAbility, false, game, false);
@@ -654,7 +649,16 @@ public class StackAbility extends StackObjImpl implements Ability {
 
     @Override
     public Ability addHint(Hint hint) {
-        // only abilities supports addhint
-        return null;
+        throw new IllegalArgumentException("Stack ability is not supports hint adding");
+    }
+
+    @Override
+    public Ability addCustomOutcome(Outcome customOutcome) {
+        throw new IllegalArgumentException("Stack ability is not supports custom outcome adding");
+    }
+
+    @Override
+    public Outcome getCustomOutcome() {
+        return this.ability.getCustomOutcome();
     }
 }

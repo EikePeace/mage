@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -18,10 +17,8 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterCreatureCard;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -36,7 +33,7 @@ public final class ShadowbornDemon extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("non-Demon creature");
 
     static {
-        filter.add(Predicates.not(new SubtypePredicate(SubType.DEMON)));
+        filter.add(Predicates.not(SubType.DEMON.getPredicate()));
     }
 
     public ShadowbornDemon(UUID ownerId, CardSetInfo setInfo) {
@@ -83,7 +80,7 @@ class CreatureCardsInControllerGraveCondition implements Condition {
     @Override
     public boolean apply(Game game, Ability source) {
         Player p = game.getPlayer(source.getControllerId());
-        if (p != null && p.getGraveyard().count(new FilterCreatureCard(), game) >= value) {
+        if (p != null && p.getGraveyard().count(StaticFilters.FILTER_CARD_CREATURE, game) >= value) {
             return true;
         }
         return false;

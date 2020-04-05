@@ -1,8 +1,5 @@
 package mage.cards.b;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageInt;
 import mage.Mana;
 import mage.abilities.Abilities;
@@ -13,18 +10,12 @@ import mage.abilities.costs.CostImpl;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.common.ManaEffect;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
-import mage.constants.SubType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.choices.Choice;
 import mage.choices.ChoiceColor;
-import mage.constants.CardType;
-import mage.constants.ColoredManaSymbol;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -32,8 +23,11 @@ import mage.players.Player;
 import mage.target.common.TargetLandPermanent;
 import mage.util.CardUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class BenthicExplorers extends CardImpl {
@@ -41,7 +35,7 @@ public final class BenthicExplorers extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("tapped land an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
         filter.add(TappedPredicate.instance);
     }
 
@@ -87,7 +81,7 @@ class BenthicExplorersCost extends CostImpl {
     @Override
     public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
         if (target.choose(Outcome.Untap, controllerId, sourceId, game)) {
-            for (UUID targetId : (List<UUID>) target.getTargets()) {
+            for (UUID targetId : target.getTargets()) {
                 Permanent permanent = game.getPermanent(targetId);
                 if (permanent == null) {
                     return false;
@@ -124,20 +118,39 @@ class BenthicExplorersManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            //List<Mana> mana = getNetMana(game, source);
-            Mana manaToProduce = produceMana(true, game, source);
-            controller.getManaPool().addMana(manaToProduce, game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netManas = new ArrayList<>();
+        Mana types = getManaTypes(game, source);
+        if (types.getBlack() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.B));
         }
-        return false;
+        if (types.getRed() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.R));
+        }
+        if (types.getBlue() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.U));
+        }
+        if (types.getGreen() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.G));
+        }
+        if (types.getWhite() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.W));
+        }
+        if (types.getColorless() > 0) {
+            netManas.add(Mana.ColorlessMana(1));
+        }
+        if (types.getAny() > 0) {
+            netManas.add(Mana.AnyMana(1));
+        }
+        return netManas;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Mana types = getManaTypes(game, source);
         Choice choice = new ChoiceColor(true);
         choice.getChoices().clear();
@@ -176,7 +189,7 @@ class BenthicExplorersManaEffect extends ManaEffect {
             } else {
                 if (player == null
                         || !player.choose(Outcome.Neutral, choice, game)) {
-                    return null;
+                    return mana;
                 }
             }
             if (choice.getChoice() != null) {
@@ -225,34 +238,6 @@ class BenthicExplorersManaEffect extends ManaEffect {
         }
         System.out.println("The types : " + types.toString());
         return types;
-    }
-
-    @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        List<Mana> netManas = new ArrayList<>();
-        Mana types = getManaTypes(game, source);
-        if (types.getBlack() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.B));
-        }
-        if (types.getRed() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.R));
-        }
-        if (types.getBlue() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.U));
-        }
-        if (types.getGreen() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.G));
-        }
-        if (types.getWhite() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.W));
-        }
-        if (types.getColorless() > 0) {
-            netManas.add(Mana.ColorlessMana(1));
-        }
-        if (types.getAny() > 0) {
-            netManas.add(Mana.AnyMana(1));
-        }
-        return netManas;
     }
 
     @Override

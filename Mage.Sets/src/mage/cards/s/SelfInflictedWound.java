@@ -12,9 +12,7 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -30,7 +28,7 @@ public final class SelfInflictedWound extends CardImpl {
     public SelfInflictedWound(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{1}{B}");
 
-        // Target opponent sacrifices a green or white creature. If that player does, he or she loses 2 life.
+        // Target opponent sacrifices a green or white creature. If that player does, they lose 2 life.
         this.getSpellAbility().addTarget(new TargetOpponent());
         this.getSpellAbility().addEffect(new SelfInflictedWoundEffect());        
         
@@ -50,7 +48,7 @@ class SelfInflictedWoundEffect extends OneShotEffect {
 
     SelfInflictedWoundEffect() {
         super(Outcome.Sacrifice);
-        staticText = "Target opponent sacrifices a green or white creature. If that player does, he or she loses 2 life";
+        staticText = "Target opponent sacrifices a green or white creature. If that player does, they lose 2 life";
     }
 
     SelfInflictedWoundEffect(SelfInflictedWoundEffect effect) {
@@ -70,8 +68,8 @@ class SelfInflictedWoundEffect extends OneShotEffect {
             return false;
         }
         FilterControlledPermanent filter = new FilterControlledPermanent("a green or white creature");
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(Predicates.or(new ColorPredicate(ObjectColor.GREEN), new ColorPredicate(ObjectColor.WHITE)));
         TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
 

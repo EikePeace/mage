@@ -1,24 +1,21 @@
 package mage.abilities.effects;
 
+import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.constants.Outcome;
 import mage.target.targetpointer.TargetPointer;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author BetaSteward_at_googlemail.com
  */
 public class Effects extends ArrayList<Effect> {
 
-    public Effects() {
-    }
-
-    public Effects(Effect effect) {
-        this.add(effect);
+    public Effects(Effect... effects) {
+        for (Effect effect : effects) {
+            this.add(effect);
+        }
     }
 
     public Effects(final Effects effects) {
@@ -72,7 +69,18 @@ public class Effects extends ArrayList<Effect> {
                         nextRule = Character.toUpperCase(nextRule.charAt(0)) + nextRule.substring(1);
                     }
                 }
-                sbText.append(endString).append(nextRule);
+
+                String currentRule = endString + nextRule;
+                // fix dot in the combined effect like IfDoCost
+                if (sbText.length() > 0 && currentRule.length() > 0) {
+                    boolean prevTextEndsWithDot = sbText.charAt(sbText.length() - 1) == '.';
+                    boolean currentTextStartsWithDot = currentRule.startsWith(",") || currentRule.startsWith(".");
+                    if (prevTextEndsWithDot && currentTextStartsWithDot) {
+                        sbText.delete(sbText.length() - 1, sbText.length());
+                    }
+                }
+
+                sbText.append(currentRule);
             }
             lastRule = nextRule;
         }
@@ -89,7 +97,11 @@ public class Effects extends ArrayList<Effect> {
         return sbText.toString();
     }
 
-    public boolean hasOutcome(Outcome outcome) {
+    public boolean hasOutcome(Ability source, Outcome outcome) {
+        Outcome realOutcome = (source == null ? null : source.getCustomOutcome());
+        if (realOutcome != null) {
+            return realOutcome == outcome;
+        }
         for (Effect effect : this) {
             if (effect.getOutcome() == outcome) {
                 return true;
@@ -98,18 +110,40 @@ public class Effects extends ArrayList<Effect> {
         return false;
     }
 
-    public List<Outcome> getOutcomes() {
-        Set<Outcome> outcomes = new HashSet<>();
-        for (Effect effect : this) {
-            outcomes.add(effect.getOutcome());
-        }
-        return new ArrayList<>(outcomes);
+    /**
+     * @param source source ability for effects
+     * @return real outcome of ability
+     */
+    public Outcome getOutcome(Ability source) {
+        return getOutcome(source, Outcome.Detriment);
     }
 
-    public int getOutcomeTotal() {
+    public Outcome getOutcome(Ability source, Outcome defaultOutcome) {
+        Outcome realOutcome = (source == null ? null : source.getCustomOutcome());
+        if (realOutcome != null) {
+            return realOutcome;
+        }
+
+        if (!this.isEmpty()) {
+            return this.get(0).getOutcome();
+        }
+
+        return defaultOutcome;
+    }
+
+    /**
+     * @param source source ability for effects
+     * @return total score of outcome effects (plus/minus)
+     */
+    public int getOutcomeScore(Ability source) {
         int total = 0;
         for (Effect effect : this) {
-            if (effect.getOutcome().isGood()) {
+            // custom ability outcome must "rewrite" effect's outcome (it uses for AI desisions and card score... hmm, getOutcomeTotal used on 28.01.2020)
+            Outcome realOutcome = (source == null ? null : source.getCustomOutcome());
+            if (realOutcome == null) {
+                realOutcome = effect.getOutcome();
+            }
+            if (realOutcome.isGood()) {
                 total++;
             } else {
                 total--;

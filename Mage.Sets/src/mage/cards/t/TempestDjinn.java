@@ -16,8 +16,6 @@ import mage.constants.Duration;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  *
@@ -28,8 +26,8 @@ public final class TempestDjinn extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("basic Island you control");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.BASIC));
-        filter.add(new SubtypePredicate(SubType.ISLAND));
+        filter.add(SuperType.BASIC.getPredicate());
+        filter.add(SubType.ISLAND.getPredicate());
     }
 
     public TempestDjinn(UUID ownerId, CardSetInfo setInfo) {
@@ -44,7 +42,7 @@ public final class TempestDjinn extends CardImpl {
 
         // Tempest Djinn gets +1/+0 for each basic Island you control.
         PermanentsOnBattlefieldCount count = new PermanentsOnBattlefieldCount(filter);
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostSourceEffect(count, new StaticValue(0), Duration.WhileOnBattlefield)));
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostSourceEffect(count, StaticValue.get(0), Duration.WhileOnBattlefield)));
     }
 
     public TempestDjinn(final TempestDjinn card) {

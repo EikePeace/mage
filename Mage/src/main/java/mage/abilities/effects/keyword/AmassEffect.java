@@ -10,7 +10,6 @@ import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.ZombieArmyToken;
@@ -29,17 +28,17 @@ public class AmassEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterControlledPermanent("Army you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ARMY));
+        filter.add(SubType.ARMY.getPredicate());
     }
 
     private final DynamicValue amassNumber;
     private UUID amassedCreatureId = null;
 
     public AmassEffect(int amassNumber) {
-        this(new StaticValue(amassNumber));
+        this(StaticValue.get(amassNumber));
         staticText = "amass " + amassNumber + ". <i>(Put " + CardUtil.numberToText(amassNumber)
                 + " +1/+1 counter" + (amassNumber > 1 ? "s " : " ")
-                + "on an Army you control. If you don’t control one, "
+                + "on an Army you control. If you don't control one, "
                 + "create a 0/0 black Zombie Army creature token first.)</i>";
     }
 
@@ -47,7 +46,7 @@ public class AmassEffect extends OneShotEffect {
         super(Outcome.BoostCreature);
         this.amassNumber = amassNumber;
         staticText = "amass X, where X is the number of " + amassNumber.getMessage() + ". <i>(Put X +1/+1 counters"
-                + "on an Army you control. If you don’t control one, "
+                + "on an Army you control. If you don't control one, "
                 + "create a 0/0 black Zombie Army creature token first.)</i>";
     }
 

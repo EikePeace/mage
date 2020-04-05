@@ -14,8 +14,6 @@ import mage.constants.Outcome;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -57,8 +55,8 @@ class IwamoriOfTheOpenFistEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard("legendary creature card");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.LEGENDARY));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(SuperType.LEGENDARY.getPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public IwamoriOfTheOpenFistEffect() {

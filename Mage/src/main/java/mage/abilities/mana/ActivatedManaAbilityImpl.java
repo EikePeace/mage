@@ -1,8 +1,5 @@
 package mage.abilities.mana;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.costs.Cost;
@@ -14,8 +11,11 @@ import mage.constants.TimingRule;
 import mage.constants.Zone;
 import mage.game.Game;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public abstract class ActivatedManaAbilityImpl extends ActivatedAbilityImpl implements ManaAbility {
@@ -54,7 +54,7 @@ public abstract class ActivatedManaAbilityImpl extends ActivatedAbilityImpl impl
                 && null == game.getContinuousEffects().asThough(sourceId, AsThoughEffectType.ACTIVATE_AS_INSTANT, this, controllerId, game)) {
             return ActivationStatus.getFalse();
         }
-        // check if player is in the process of playing spell costs and he is no longer allowed to use activated mana abilities (e.g. because he started to use improvise)
+        // check if player is in the process of playing spell costs and they are no longer allowed to use activated mana abilities (e.g. because they started to use improvise)
         //20091005 - 605.3a
         return new ActivationStatus(costs.canPay(this, sourceId, controllerId, game), null);
 
@@ -63,6 +63,8 @@ public abstract class ActivatedManaAbilityImpl extends ActivatedAbilityImpl impl
     /**
      * Used to check the possible mana production to determine which spells
      * and/or abilities can be used. (player.getPlayable()).
+     * <p>
+     * Also used for deck's card mana cycle with game = null (score system, etc)
      *
      * @param game
      * @return
@@ -70,7 +72,7 @@ public abstract class ActivatedManaAbilityImpl extends ActivatedAbilityImpl impl
     @Override
     public List<Mana> getNetMana(Game game) {
         if (netMana.isEmpty()) {
-            ArrayList<Mana> dynamicNetMana = new ArrayList<>();
+            List<Mana> dynamicNetMana = new ArrayList<>();
             for (Effect effect : getEffects()) {
                 if (effect instanceof ManaEffect) {
                     List<Mana> effectNetMana = ((ManaEffect) effect).getNetMana(game, this);
@@ -81,7 +83,7 @@ public abstract class ActivatedManaAbilityImpl extends ActivatedAbilityImpl impl
             }
             return dynamicNetMana;
         }
-        ArrayList<Mana> netManaCopy = new ArrayList<>();
+        List<Mana> netManaCopy = new ArrayList<>();
         for (Mana mana : netMana) {
             netManaCopy.add(mana.copy());
         }

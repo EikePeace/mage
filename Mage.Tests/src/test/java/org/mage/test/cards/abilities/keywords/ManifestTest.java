@@ -213,8 +213,8 @@ public class ManifestTest extends CardTestPlayerBase {
         skipInitShuffling();
 
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerB, "Reality Shift", "Silvercoat Lion");
-        showBattlefield("A battle", 1, PhaseStep.POSTCOMBAT_MAIN, playerA);
-        showBattlefield("B battle", 1, PhaseStep.POSTCOMBAT_MAIN, playerB);
+        // showBattlefield("A battle", 1, PhaseStep.POSTCOMBAT_MAIN, playerA);
+        // showBattlefield("B battle", 1, PhaseStep.POSTCOMBAT_MAIN, playerB);
         castSpell(1, PhaseStep.POSTCOMBAT_MAIN, playerB, "Silence the Believers", EmptyNames.FACE_DOWN_CREATURE.toString());
 
         setStopAt(1, PhaseStep.END_TURN);
@@ -418,6 +418,7 @@ public class ManifestTest extends CardTestPlayerBase {
         activateAbility(2, PhaseStep.POSTCOMBAT_MAIN, playerB, "Sacrifice a creature");
         setChoice(playerB, EmptyNames.FACE_DOWN_CREATURE.toString());
 
+        setStrictChooseMode(true);
         setStopAt(2, PhaseStep.END_TURN);
         execute();
         assertAllCommandsUsed();

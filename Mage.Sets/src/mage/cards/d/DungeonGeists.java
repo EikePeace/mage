@@ -13,7 +13,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -31,7 +30,7 @@ public final class DungeonGeists extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public DungeonGeists(UUID ownerId, CardSetInfo setInfo) {
@@ -134,10 +133,6 @@ class DungeonGeistsWatcher extends Watcher {
         super(WatcherScope.CARD);
     }
 
-    DungeonGeistsWatcher(DungeonGeistsWatcher watcher) {
-        super(watcher);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.LOST_CONTROL && event.getPlayerId().equals(controllerId) && event.getTargetId().equals(sourceId)) {
@@ -157,10 +152,5 @@ class DungeonGeistsWatcher extends Watcher {
     @Override
     public void reset() {
         //don't reset condition each turn - only when this leaves the battlefield
-    }
-
-    @Override
-    public DungeonGeistsWatcher copy() {
-        return new DungeonGeistsWatcher(this);
     }
 }

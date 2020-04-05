@@ -12,8 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -25,9 +23,9 @@ public final class MasterOfEtherium extends CardImpl {
     private static final FilterCreaturePermanent filterBoosted = new FilterCreaturePermanent("artifact creatures");
 
     static {
-        filterCounted.add(new CardTypePredicate(CardType.ARTIFACT));
-        filterBoosted.add(new CardTypePredicate(CardType.ARTIFACT));
-        filterBoosted.add(new ControllerPredicate(TargetController.YOU));
+        filterCounted.add(CardType.ARTIFACT.getPredicate());
+        filterBoosted.add(CardType.ARTIFACT.getPredicate());
+        filterBoosted.add(TargetController.YOU.getControllerPredicate());
     }
 
     public MasterOfEtherium(UUID ownerId, CardSetInfo setInfo) {

@@ -11,8 +11,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -66,8 +64,8 @@ class ConsumingVaporsEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
 
         FilterControlledPermanent filter = new FilterControlledPermanent("creature");
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
         TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
 
         //A spell or ability could have removed the only legal target this player

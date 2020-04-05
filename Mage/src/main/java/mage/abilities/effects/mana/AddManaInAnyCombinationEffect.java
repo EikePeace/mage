@@ -1,9 +1,5 @@
-
 package mage.abilities.effects.mana;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.DynamicValue;
@@ -14,8 +10,11 @@ import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- *
  * @author LevelX2
  */
 public class AddManaInAnyCombinationEffect extends ManaEffect {
@@ -24,11 +23,11 @@ public class AddManaInAnyCombinationEffect extends ManaEffect {
     private final DynamicValue amount;
 
     public AddManaInAnyCombinationEffect(int amount) {
-        this(new StaticValue(amount), ColoredManaSymbol.B, ColoredManaSymbol.U, ColoredManaSymbol.R, ColoredManaSymbol.W, ColoredManaSymbol.G);
+        this(StaticValue.get(amount), ColoredManaSymbol.B, ColoredManaSymbol.U, ColoredManaSymbol.R, ColoredManaSymbol.W, ColoredManaSymbol.G);
     }
 
     public AddManaInAnyCombinationEffect(int amount, ColoredManaSymbol... coloredManaSymbols) {
-        this(new StaticValue(amount), coloredManaSymbols);
+        this(StaticValue.get(amount), coloredManaSymbols);
     }
 
     public AddManaInAnyCombinationEffect(DynamicValue amount, ColoredManaSymbol... coloredManaSymbols) {
@@ -65,18 +64,19 @@ public class AddManaInAnyCombinationEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            player.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        if (game != null) {
+            int amountOfManaLeft = amount.calculate(game, source, this);
+            if (amountOfManaLeft > 0) {
+                netMana.add(Mana.AnyMana(amountOfManaLeft));
+            }
         }
-        return false;
+        return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
             Mana mana = new Mana();
@@ -104,13 +104,6 @@ public class AddManaInAnyCombinationEffect extends ManaEffect {
         return null;
     }
 
-    @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        ArrayList<Mana> netMana = new ArrayList<>();
-        netMana.add(new Mana(0, 0, 0, 0, 0, 0, amount.calculate(game, source, this), 0));
-        return netMana;
-    }
-
     private String setText() {
         StringBuilder sb = new StringBuilder("Add ");
         sb.append(CardUtil.numberToText(amount.toString()));
@@ -127,7 +120,6 @@ public class AddManaInAnyCombinationEffect extends ManaEffect {
                 sb.append('{').append(coloredManaSymbol.toString()).append('}');
             }
         }
-        sb.append("");
         return sb.toString();
     }
 }

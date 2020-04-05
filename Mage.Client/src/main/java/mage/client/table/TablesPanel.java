@@ -64,6 +64,9 @@ public class TablesPanel extends javax.swing.JPanel {
     private static final Logger LOGGER = Logger.getLogger(TablesPanel.class);
     private static final int[] DEFAULT_COLUMNS_WIDTH = {35, 150, 100, 50, 120, 180, 80, 120, 80, 60, 40, 40, 60};
 
+    // ping timeout (warning, must be less than SERVER_TIMEOUTS_USER_INFORM_OPPONENTS_ABOUT_DISCONNECT_AFTER_SECS)
+    public static final int PING_SERVER_SECS = 20;
+
     // refresh timeouts for data downloads from server
     public static final int REFRESH_ACTIVE_TABLES_SECS = 5;
     public static final int REFRESH_FINISHED_TABLES_SECS = 30;
@@ -333,7 +336,7 @@ public class TablesPanel extends javax.swing.JPanel {
         filterButtons = new JToggleButton[]{btnStateWaiting, btnStateActive, btnStateFinished,
                 btnTypeMatch, btnTypeTourneyConstructed, btnTypeTourneyLimited,
                 btnFormatBlock, btnFormatStandard, btnFormatModern, btnFormatLegacy, btnFormatVintage, btnFormatPremodern, btnFormatCommander, btnFormatTinyLeader, btnFormatLimited, btnFormatOther,
-                btnSkillBeginner, btnSkillCasual, btnSkillSerious, btnRated, btnUnrated, btnOpen, btnPassword, btnFormatOathbreaker};
+                btnSkillBeginner, btnSkillCasual, btnSkillSerious, btnRated, btnUnrated, btnOpen, btnPassword, btnFormatOathbreaker, btnFormatPioneer};
 
         JComponent[] components = new JComponent[]{chatPanelMain, jSplitPane1, jScrollPaneTablesActive, jScrollPaneTablesFinished, jPanelTop, jPanelTables};
         for (JComponent component : components) {
@@ -815,7 +818,7 @@ public class TablesPanel extends javax.swing.JPanel {
             formatFilterList.add(RowFilter.regexFilter("^Constructed - Premodern", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatCommander.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Centurion Commander|^Penny Dreadful Commander|^Freeform Commander|^MTGO 1v1 Commander|^Duel Brawl|^Brawl|^Elder Cockatrice Highlander|^Custom Brawl", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Centurion Commander|^Penny Dreadful Commander|^Freeform Commander|^Freeform Unlimited Commander|^MTGO 1v1 Commander|^Duel Brawl|^Brawl|^Elder Custom Highlander|^Custom Brawl", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatTinyLeader.isSelected()) {
             formatFilterList.add(RowFilter.regexFilter("^Tiny", TablesTableModel.COLUMN_DECK_TYPE));
@@ -868,7 +871,7 @@ public class TablesPanel extends javax.swing.JPanel {
         // Hide games of ignored players
         java.util.List<RowFilter<Object, Object>> ignoreListFilterList = new ArrayList<>();
         String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
-        final Set<String> ignoreListCopy = IgnoreList.ignoreList(serverAddress);
+        final Set<String> ignoreListCopy = IgnoreList.getIgnoredUsers(serverAddress);
         if (!ignoreListCopy.isEmpty()) {
             ignoreListFilterList.add(new RowFilter<Object, Object>() {
                 @Override
@@ -967,8 +970,8 @@ public class TablesPanel extends javax.swing.JPanel {
         filterBar2 = new javax.swing.JToolBar();
         btnFormatBlock = new javax.swing.JToggleButton();
         btnFormatStandard = new javax.swing.JToggleButton();
-        btnFormatPioneer = new javax.swing.JToggleButton();
         btnFormatModern = new javax.swing.JToggleButton();
+        btnFormatPioneer = new javax.swing.JToggleButton();
         btnFormatLegacy = new javax.swing.JToggleButton();
         btnFormatVintage = new javax.swing.JToggleButton();
         btnFormatPremodern = new javax.swing.JToggleButton();
@@ -1246,18 +1249,6 @@ public class TablesPanel extends javax.swing.JPanel {
         });
         filterBar2.add(btnFormatStandard);
 
-        btnFormatPioneer.setSelected(true);
-        btnFormatPioneer.setText("Pioneer");
-        btnFormatPioneer.setToolTipText("Pioneer format.");
-        btnFormatPioneer.setFocusPainted(false);
-        btnFormatPioneer.setFocusable(false);
-        btnFormatPioneer.setRequestFocusEnabled(false);
-        btnFormatPioneer.setVerifyInputWhenFocusTarget(false);
-        btnFormatPioneer.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) { btnFilterActionPerformed(evt); }
-        });
-        filterBar2.add(btnFormatPioneer);
-
         btnFormatModern.setSelected(true);
         btnFormatModern.setText("Modern");
         btnFormatModern.setToolTipText("Modern format.");
@@ -1271,6 +1262,20 @@ public class TablesPanel extends javax.swing.JPanel {
             }
         });
         filterBar2.add(btnFormatModern);
+
+        btnFormatPioneer.setSelected(true);
+        btnFormatPioneer.setText("Pioneer");
+        btnFormatPioneer.setToolTipText("Pioneer format.");
+        btnFormatPioneer.setFocusPainted(false);
+        btnFormatPioneer.setFocusable(false);
+        btnFormatPioneer.setRequestFocusEnabled(false);
+        btnFormatPioneer.setVerifyInputWhenFocusTarget(false);
+        btnFormatPioneer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterActionPerformed(evt);
+            }
+        });
+        filterBar2.add(btnFormatPioneer);
 
         btnFormatLegacy.setSelected(true);
         btnFormatLegacy.setText("Legacy");
@@ -1621,7 +1626,7 @@ public class TablesPanel extends javax.swing.JPanel {
             options.setQuitRatio(100);
             options.setMinimumRating(0);
             String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
-            options.setBannedUsers(IgnoreList.ignoreList(serverAddress));
+            options.setBannedUsers(IgnoreList.getIgnoredUsers(serverAddress));
             table = SessionHandler.createTable(roomId, options);
 
             SessionHandler.joinTable(roomId, table.getTableId(), "Human", PlayerType.HUMAN, 1, testDeck, "");

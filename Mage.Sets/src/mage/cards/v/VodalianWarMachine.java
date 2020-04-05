@@ -4,7 +4,6 @@ package mage.cards.v;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mage.MageInt;
@@ -29,7 +28,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -49,7 +47,7 @@ public final class VodalianWarMachine extends CardImpl {
 
     static {
         filter.add(Predicates.not(TappedPredicate.instance));
-        filter.add(new SubtypePredicate(SubType.MERFOLK));
+        filter.add(SubType.MERFOLK.getPredicate());
     }
 
     public VodalianWarMachine(UUID ownerId, CardSetInfo setInfo) {
@@ -122,7 +120,7 @@ class VodalianWarMachineEffect extends OneShotEffect {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Merfolk tapped this turn to pay for its abilities");
 
     static {
-        filter.add(new SubtypePredicate(SubType.MERFOLK));
+        filter.add(SubType.MERFOLK.getPredicate());
     }
 
     public VodalianWarMachineEffect() {
@@ -160,23 +158,10 @@ class VodalianWarMachineEffect extends OneShotEffect {
 
 class VodalianWarMachineWatcher extends Watcher {
 
-    public Map<MageObjectReference, Set<MageObjectReference>> tappedMerfolkIds = new HashMap<>();
+    private Map<MageObjectReference, Set<MageObjectReference>> tappedMerfolkIds = new HashMap<>();
 
     public VodalianWarMachineWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    public VodalianWarMachineWatcher(final VodalianWarMachineWatcher watcher) {
-        super(watcher);
-        // We have for sure to use copied collections, but there is no need to copy the MageObjectReference objects.
-        for (Entry<MageObjectReference, Set<MageObjectReference>> entry : watcher.tappedMerfolkIds.entrySet()) {
-            this.tappedMerfolkIds.put(entry.getKey(), new HashSet<>(entry.getValue()));
-        }
-    }
-
-    @Override
-    public VodalianWarMachineWatcher copy() {
-        return new VodalianWarMachineWatcher(this);
     }
 
     public Set<MageObjectReference> getTappedMerfolkIds(Permanent permanent, Game game) {

@@ -5,8 +5,6 @@ package mage.filter.common;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -19,12 +17,12 @@ public class FilterPlaneswalkerPermanent extends FilterPermanent {
 
     public FilterPlaneswalkerPermanent(SubType subType) {
         this(subType.getDescription() + " planeswalker");
-        this.add(new SubtypePredicate(subType));
+        this.add(subType.getPredicate());
     }
 
     public FilterPlaneswalkerPermanent(String name) {
         super(name);
-        this.add(new CardTypePredicate(CardType.PLANESWALKER));
+        this.add(CardType.PLANESWALKER.getPredicate());
     }
 
     public FilterPlaneswalkerPermanent(final FilterPlaneswalkerPermanent filter) {

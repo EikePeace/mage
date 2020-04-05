@@ -1,22 +1,22 @@
-
 package mage.cards.b;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import static mage.filter.StaticFilters.FILTER_PERMANENT_CREATURES;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
 import mage.players.Player;
 
+import java.util.UUID;
+
+import static mage.filter.StaticFilters.FILTER_PERMANENT_CREATURES;
+
 /**
- *
  * @author ilcartographer
  */
 public final class BreakingPoint extends CardImpl {
@@ -24,7 +24,7 @@ public final class BreakingPoint extends CardImpl {
     public BreakingPoint(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{1}{R}{R}");
 
-        // Any player may have Breaking Point deal 6 damage to him or her. If no one does, destroy all creatures. Creatures destroyed this way can't be regenerated.
+        // Any player may have Breaking Point deal 6 damage to them. If no one does, destroy all creatures. Creatures destroyed this way can't be regenerated.
         this.getSpellAbility().addEffect(new BreakingPointDestroyEffect());
     }
 
@@ -42,7 +42,7 @@ class BreakingPointDestroyEffect extends OneShotEffect {
 
     public BreakingPointDestroyEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Any player may have {this} deal 6 damage to him or her. If no one does, destroy all creatures. Creatures destroyed this way can't be regenerated.";
+        this.staticText = "Any player may have {this} deal 6 damage to them. If no one does, destroy all creatures. Creatures destroyed this way can't be regenerated.";
     }
 
     public BreakingPointDestroyEffect(final BreakingPointDestroyEffect effect) {
@@ -73,8 +73,8 @@ class BreakingPointDestroyEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.chooseUse(Outcome.Detriment, "Have " + spell.getLogName() + " deal 6 damage to you?", source, game)) {
                     destroyCreatures = false;
-                    player.damage(6, source.getSourceId(), game, false, true);
-                    game.informPlayers(player.getLogName() + " has " + spell.getName() + " deal 6 to him or her");
+                    player.damage(6, source.getSourceId(), game);
+                    game.informPlayers(player.getLogName() + " has " + spell.getName() + " deal 6 to them");
                 }
             }
             if (destroyCreatures) {

@@ -194,11 +194,12 @@ class RobberOfTheRichSpendAnyManaEffect extends AsThoughEffectImpl implements As
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
+        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
         FixedTarget fixedTarget = ((FixedTarget) getTargetPointer());
         return source.isControlledBy(affectedControllerId)
                 && Objects.equals(objectId, fixedTarget.getTarget())
-                && fixedTarget.getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(objectId)
-                && game.getState().getZone(objectId) == Zone.STACK;
+                && game.getState().getZoneChangeCounter(objectId) <= fixedTarget.getZoneChangeCounter() + 1
+                && (game.getState().getZone(objectId) == Zone.STACK || game.getState().getZone(objectId) == Zone.EXILED);
     }
 
     @Override
@@ -215,15 +216,6 @@ class RobberOfTheRichWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    private RobberOfTheRichWatcher(final RobberOfTheRichWatcher watcher) {
-        super(watcher);
-        this.rogueAttackers.addAll(watcher.rogueAttackers);
-    }
-
-    @Override
-    public RobberOfTheRichWatcher copy() {
-        return new RobberOfTheRichWatcher(this);
-    }
 
     @Override
     public void watch(GameEvent event, Game game) {

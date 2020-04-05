@@ -1,5 +1,7 @@
 package mage.cards.l;
 
+import java.util.HashSet;
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
@@ -13,9 +15,6 @@ import mage.filter.predicate.permanent.CommanderPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
-
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * @author TheElk801
@@ -52,7 +51,7 @@ class LeadershipVacuumEffect extends OneShotEffect {
     }
 
     LeadershipVacuumEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.Detriment);
         staticText = "Target player returns each commander they control from the battlefield to the command zone.";
     }
 
@@ -71,9 +70,8 @@ class LeadershipVacuumEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        return player.moveCards(game.getBattlefield()
-                .getAllActivePermanents(filter, source.getFirstTarget(), game)
-                .stream()
-                .collect(Collectors.toSet()), Zone.COMMAND, source, game);
+        return player.moveCards(
+                new HashSet<>(game.getBattlefield().getAllActivePermanents(filter, player.getId(), game)),
+                Zone.COMMAND, source, game);
     }
 }

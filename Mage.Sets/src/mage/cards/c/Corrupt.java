@@ -1,8 +1,5 @@
-
-
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -12,21 +9,20 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public final class Corrupt extends CardImpl {
 
     public Corrupt(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{5}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{5}{B}");
 
         // Corrupt deals damage to any target equal to the number of Swamps you control. You gain life equal to the damage dealt this way.
         this.getSpellAbility().addTarget(new TargetAnyTarget());
@@ -49,8 +45,8 @@ class CorruptEffect extends OneShotEffect {
     private static final FilterLandPermanent filter = new FilterLandPermanent("Swamps");
 
     static {
-        filter.add(new SubtypePredicate(SubType.SWAMP));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.SWAMP.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public CorruptEffect() {
@@ -70,13 +66,11 @@ class CorruptEffect extends OneShotEffect {
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
                 damageDealt = permanent.damage(amount, source.getSourceId(), game, false, true);
-            }
-            else {
+            } else {
                 Player player = game.getPlayer(source.getFirstTarget());
                 if (player != null) {
-                    damageDealt = player.damage(amount, source.getSourceId(), game, false, true);
-                }
-                else
+                    damageDealt = player.damage(amount, source.getSourceId(), game);
+                } else
                     return false;
             }
             Player you = game.getPlayer(source.getControllerId());

@@ -1,10 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DrawCardTargetEffect;
@@ -20,16 +15,19 @@ import mage.players.Player;
 import mage.target.TargetPlayer;
 import mage.watchers.Watcher;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public final class CerebralVortex extends CardImpl {
 
     public CerebralVortex(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{1}{U}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{1}{U}{R}");
 
-        // Target player draws two cards, then Cerebral Vortex deals damage to that player equal to the number of cards he or she has drawn this turn.
+        // Target player draws two cards, then Cerebral Vortex deals damage to that player equal to the number of cards they have drawn this turn.
         this.getSpellAbility().addEffect(new DrawCardTargetEffect(2));
         this.getSpellAbility().addEffect(new CerebralVortexEffect());
         this.getSpellAbility().addTarget(new TargetPlayer());
@@ -47,28 +45,28 @@ public final class CerebralVortex extends CardImpl {
 }
 
 class CerebralVortexEffect extends OneShotEffect {
-    
+
     CerebralVortexEffect() {
         super(Outcome.Damage);
-        this.staticText = ", then Cerebral Vortex deals damage to that player equal to the number of cards he or she has drawn this turn";
+        this.staticText = ", then Cerebral Vortex deals damage to that player equal to the number of cards they have drawn this turn";
     }
-    
+
     CerebralVortexEffect(final CerebralVortexEffect effect) {
         super(effect);
     }
-    
+
     @Override
     public CerebralVortexEffect copy() {
         return new CerebralVortexEffect(this);
     }
-    
+
     @Override
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(this.getTargetPointer().getFirst(game, source));
         if (targetPlayer != null) {
             CerebralVortexWatcher watcher = game.getState().getWatcher(CerebralVortexWatcher.class);
             if (watcher != null) {
-                targetPlayer.damage(watcher.getDraws(targetPlayer.getId()), source.getSourceId(), game, false, true);
+                targetPlayer.damage(watcher.getDraws(targetPlayer.getId()), source.getSourceId(), game);
                 return true;
             }
         }
@@ -82,13 +80,6 @@ class CerebralVortexWatcher extends Watcher {
 
     CerebralVortexWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    CerebralVortexWatcher(final CerebralVortexWatcher watcher) {
-        super(watcher);
-        for (Entry<UUID, Integer> entry: watcher.draws.entrySet()) {
-            draws.put(entry.getKey(), entry.getValue());
-        }
     }
 
     @Override
@@ -110,10 +101,5 @@ class CerebralVortexWatcher extends Watcher {
 
     public int getDraws(UUID playerId) {
         return draws.getOrDefault(playerId, 0);
-    }
-
-    @Override
-    public CerebralVortexWatcher copy() {
-        return new CerebralVortexWatcher(this);
     }
 }

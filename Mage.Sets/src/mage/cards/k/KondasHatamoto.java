@@ -14,8 +14,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  *
@@ -28,8 +26,8 @@ public final class KondasHatamoto extends CardImpl {
     private static final String rule2 = "As long as you control a legendary Samurai, {this} has vigilance";
 
     static {
-        filter.add(new SupertypePredicate(SuperType.LEGENDARY));
-        filter.add(new SubtypePredicate(SubType.SAMURAI));
+        filter.add(SuperType.LEGENDARY.getPredicate());
+        filter.add(SubType.SAMURAI.getPredicate());
     }
 
     public KondasHatamoto (UUID ownerId, CardSetInfo setInfo) {

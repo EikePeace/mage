@@ -14,8 +14,6 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -76,8 +74,8 @@ class BoonweaverGiantEffect extends OneShotEffect {
         }
 
         FilterCard filter = new FilterCard("Aura card");
-        filter.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filter.add(new SubtypePredicate(SubType.AURA));
+        filter.add(CardType.ENCHANTMENT.getPredicate());
+        filter.add(SubType.AURA.getPredicate());
 
         Card card = null;
         Zone zone = null;

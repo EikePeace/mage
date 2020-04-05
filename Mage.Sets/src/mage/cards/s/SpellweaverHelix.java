@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -15,7 +14,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -30,11 +28,11 @@ import mage.util.CardUtil;
  * @author emerald000
  */
 public final class SpellweaverHelix extends CardImpl {
-    
+
     private static final FilterCard filter = new FilterCard("sorcery cards from a single graveyard");
 
     static {
-        filter.add(new CardTypePredicate(CardType.SORCERY));
+        filter.add(CardType.SORCERY.getPredicate());
     }
 
     public SpellweaverHelix(UUID ownerId, CardSetInfo setInfo) {
@@ -191,7 +189,10 @@ class SpellweaverHelixCastEffect extends OneShotEffect {
                             if (controller.chooseUse(Outcome.Copy, "Copy " + card.getIdName(), source, game)) {
                                 Card copy = game.copyCard(card, source, source.getControllerId());
                                 if (controller.chooseUse(Outcome.PlayForFree, "Cast " + copy.getIdName() + " without paying its mana cost?", source, game)) {
-                                    controller.cast(copy.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                    game.getState().setValue("PlayFromNotOwnHandZone" + copy.getId(), Boolean.TRUE);
+                                    controller.cast(controller.chooseAbilityForCast(copy, game, true),
+                                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                    game.getState().setValue("PlayFromNotOwnHandZone" + copy.getId(), null);
                                 }
                             }
                         }

@@ -21,8 +21,6 @@ import mage.constants.Zone;
 import mage.filter.Filter;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterEnchantmentPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.ExileZone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -68,7 +66,7 @@ class FlickerformEffect extends OneShotEffect {
     private static final FilterEnchantmentPermanent filter = new FilterEnchantmentPermanent();
 
     static {
-        filter.add(new SubtypePredicate(SubType.AURA));
+        filter.add(SubType.AURA.getPredicate());
     }
 
     public FlickerformEffect() {
@@ -123,8 +121,8 @@ class FlickerformReturnEffect extends OneShotEffect {
     private static final FilterCard filterAura = new FilterCard();
 
     static {
-        filterAura.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filterAura.add(new SubtypePredicate(SubType.AURA));
+        filterAura.add(CardType.ENCHANTMENT.getPredicate());
+        filterAura.add(SubType.AURA.getPredicate());
     }
 
     private final UUID enchantedCardId;

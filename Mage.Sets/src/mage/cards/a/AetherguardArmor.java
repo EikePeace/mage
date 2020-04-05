@@ -26,6 +26,7 @@ public final class AetherguardArmor extends CardImpl {
         this.subtype.add(SubType.EQUIPMENT);
 
         this.nightCard = true;
+        this.transformable = true;
 
         // Equipped creature gets +1/+2 and has hexproof.
         Ability ability = new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(1, 2));

@@ -12,8 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SupertypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -24,8 +22,8 @@ public final class WildernessElemental extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("nonbasic lands your opponents control");
 
     static {
-        filter.add(Predicates.not(new SupertypePredicate(SuperType.BASIC)));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(Predicates.not(SuperType.BASIC.getPredicate()));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public WildernessElemental(UUID ownerId, CardSetInfo setInfo) {

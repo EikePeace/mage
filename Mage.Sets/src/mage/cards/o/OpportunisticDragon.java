@@ -1,5 +1,6 @@
 package mage.cards.o;
 
+import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -15,13 +16,9 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
+import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
-
-import java.util.UUID;
 
 /**
  * @author TheElk801
@@ -32,10 +29,10 @@ public final class OpportunisticDragon extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.ARTIFACT),
-                new SubtypePredicate(SubType.HUMAN)
+                CardType.ARTIFACT.getPredicate(),
+                SubType.HUMAN.getPredicate()
         ));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public OpportunisticDragon(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +45,8 @@ public final class OpportunisticDragon extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
 
-        // When Opportunistic Dragon enters the battlefield, choose target Human or artifact an opponent controls. For as long as Opportunistic Dragon remains on the battlefield, gain control of that permanent, it loses all abilities, and it can't attack or block.
+        // When Opportunistic Dragon enters the battlefield, choose target Human or artifact an opponent controls.
+        // For as long as Opportunistic Dragon remains on the battlefield, gain control of that permanent, it loses all abilities, and it can't attack or block.
         Ability ability = new EntersBattlefieldTriggeredAbility(new OpportunisticDragonControlEffect());
         ability.addEffect(new OpportunisticDragonLoseAbilitiesEffect());
         ability.addEffect(new OpportunisticDragonAttackBlockEffect());
@@ -70,8 +68,8 @@ class OpportunisticDragonControlEffect extends GainControlTargetEffect {
 
     OpportunisticDragonControlEffect() {
         super(Duration.Custom);
-        staticText = "choose target Human or artifact an opponent controls. " +
-                "For as long as {this} remains on the battlefield, gain control of that permanent,";
+        staticText = "choose target Human or artifact an opponent controls. "
+                + "For as long as {this} remains on the battlefield, gain control of that permanent,";
     }
 
     private OpportunisticDragonControlEffect(final OpportunisticDragonControlEffect effect) {
@@ -136,11 +134,11 @@ class OpportunisticDragonAttackBlockEffect extends CantAttackBlockTargetEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
+    public boolean applies(Permanent permanent, Ability source, Game game) {
         if (source.getSourcePermanentIfItStillExists(game) == null) {
             discard();
             return false;
         }
-        return super.apply(game, source);
+        return super.applies(permanent, source, game); //To change body of generated methods, choose Tools | Templates.
     }
 }

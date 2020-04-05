@@ -16,8 +16,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.permanent.token.GolemToken;
 
 /**
@@ -28,8 +26,8 @@ public final class BladeSplicer extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Golem creatures");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new SubtypePredicate(SubType.GOLEM));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(SubType.GOLEM.getPredicate());
     }
 
     public BladeSplicer (UUID ownerId, CardSetInfo setInfo) {

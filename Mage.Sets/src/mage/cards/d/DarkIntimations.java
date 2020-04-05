@@ -18,9 +18,6 @@ import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
@@ -40,8 +37,8 @@ public final class DarkIntimations extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("a Bolas planeswalker spell");
 
     static {
-        filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new SubtypePredicate(SubType.BOLAS));
+        filter.add(CardType.PLANESWALKER.getPredicate());
+        filter.add(SubType.BOLAS.getPredicate());
     }
 
     public DarkIntimations(UUID ownerId, CardSetInfo setInfo) {
@@ -71,11 +68,11 @@ class DarkIntimationsEffect extends OneShotEffect {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.PLANESWALKER)));
+                CardType.CREATURE.getPredicate(),
+                CardType.PLANESWALKER.getPredicate()));
         filterCard.add(Predicates.or(
-                new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.PLANESWALKER)));
+                CardType.CREATURE.getPredicate(),
+                CardType.PLANESWALKER.getPredicate()));
     }
 
     public DarkIntimationsEffect() {
@@ -99,7 +96,7 @@ class DarkIntimationsEffect extends OneShotEffect {
             return false;
         }
         List<UUID> perms = new ArrayList<>();
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         for (UUID playerId : game.getOpponents(source.getControllerId())) {
             Player player = game.getPlayer(playerId);
             if (player != null) {

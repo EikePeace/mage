@@ -3,12 +3,9 @@ package mage.cards.g;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.condition.common.OpponentControlsPermanentCondition;
-import mage.abilities.decorator.ConditionalContinuousEffect;
-import mage.abilities.decorator.ConditionalTriggeredAbility;
+import mage.abilities.decorator.ConditionalContinuousRuleModifyingEffect;
 import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.DontUntapInControllersUntapStepEnchantedEffect;
-import mage.abilities.effects.common.UntapSourceEffect;
 import mage.abilities.keyword.EnchantAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -18,10 +15,8 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
-import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
-import javax.swing.text.ZoneView;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,10 +38,12 @@ public final class GoneFishin extends CardImpl {
         this.getSpellAbility().addEffect(new AttachEffect(Outcome.Tap));
         Ability ability = new EnchantAbility(auraTarget.getTargetName());
         this.addAbility(ability);
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousEffect(new DontUntapInControllersUntapStepEnchantedEffect(),
-                new GoneFishinCondition(),"unless that player controls a Fish")));
 
-
+        // Enchanted creature doesn't untap during its controller's untap step unless that player controls a Fish.
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousRuleModifyingEffect(new DontUntapInControllersUntapStepEnchantedEffect(),
+                new GoneFishinCondition())
+                .setText("Enchanted creature doesn't untap during its controller's untap step unless that player controls a Fish.")
+        ));
     }
 
 

@@ -22,7 +22,6 @@ import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -34,8 +33,8 @@ public final class RakdosTheDefiler extends CardImpl {
     private static final FilterPermanent damageToPlayerTriggerFilter = new FilterPermanent("the non-Demon permanents you control");
 
     static {
-        attackTriggerFilter.add(Predicates.not(new SubtypePredicate(SubType.DEMON)));
-        damageToPlayerTriggerFilter.add(Predicates.not(new SubtypePredicate(SubType.DEMON)));
+        attackTriggerFilter.add(Predicates.not(SubType.DEMON.getPredicate()));
+        damageToPlayerTriggerFilter.add(Predicates.not(SubType.DEMON.getPredicate()));
     }
 
     public RakdosTheDefiler(UUID ownerId, CardSetInfo setInfo) {
@@ -56,9 +55,9 @@ public final class RakdosTheDefiler extends CardImpl {
         Ability ability = new AttacksTriggeredAbility(effect, false);
         this.addAbility(ability);
 
-        // Whenever Rakdos deals combat damage to a player, that player sacrifices half the non-Demon permanents he or she controls, rounded up.
+        // Whenever Rakdos deals combat damage to a player, that player sacrifices half the non-Demon permanents they control, rounded up.
         effect = new SacrificeEffect(damageToPlayerTriggerFilter, new HalfValue(new PermanentsTargetOpponentControlsCount(damageToPlayerTriggerFilter), true), "");
-        effect.setText("that player sacrifices half the non-Demon permanents he or she controls, rounded up");
+        effect.setText("that player sacrifices half the non-Demon permanents they control, rounded up");
         ability = new DealsCombatDamageToAPlayerTriggeredAbility(effect, false, true);
         this.addAbility(ability);
     }

@@ -1,11 +1,9 @@
-
 package mage.abilities.effects.common.continuous;
 
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.cards.Card;
-import mage.constants.DependencyType;
 import mage.constants.Duration;
 import mage.constants.Layer;
 import mage.constants.Outcome;
@@ -14,7 +12,6 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class GainAbilitySourceEffect extends ContinuousEffectImpl implements SourceEffect {
@@ -48,7 +45,8 @@ public class GainAbilitySourceEffect extends ContinuousEffectImpl implements Sou
         if (noStaticText) {
             staticText = null;
         }
-        this.addDependencyType(DependencyType.AddingAbility);
+
+        this.generateGainAbilityDependencies(ability, null);
     }
 
     public GainAbilitySourceEffect(final GainAbilitySourceEffect effect) {

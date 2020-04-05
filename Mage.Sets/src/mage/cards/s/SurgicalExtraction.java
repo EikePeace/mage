@@ -12,17 +12,15 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInGraveyard;
-import mage.target.common.TargetCardInHand;
 import mage.target.common.TargetCardInLibrary;
 
 import java.util.List;
 import java.util.UUID;
+import mage.target.TargetCard;
 
 /**
  * @author North
@@ -32,7 +30,7 @@ public final class SurgicalExtraction extends CardImpl {
     private static final FilterCard filter = new FilterCard("card in a graveyard other than a basic land card");
 
     static {
-        filter.add(Predicates.not(Predicates.and(new CardTypePredicate(CardType.LAND), new SupertypePredicate(SuperType.BASIC))));
+        filter.add(Predicates.not(Predicates.and(CardType.LAND.getPredicate(), SuperType.BASIC.getPredicate())));
     }
 
     public SurgicalExtraction(UUID ownerId, CardSetInfo setInfo) {
@@ -104,7 +102,8 @@ class SurgicalExtractionEffect extends OneShotEffect {
 
                 // cards in Hand
                 filterNamedCard.setMessage("card named " + nameToSearch + " in the hand of " + owner.getName());
-                TargetCardInHand targetCardInHand = new TargetCardInHand(0, Integer.MAX_VALUE, filterNamedCard);
+                TargetCard targetCardInHand = new TargetCard(0, Integer.MAX_VALUE, Zone.HAND, filterNamedCard);
+                targetCardInHand.setNotTarget(true);
                 if (controller.chooseTarget(Outcome.Exile, owner.getHand(), targetCardInHand, source, game)) {
                     List<UUID> targets = targetCardInHand.getTargets();
                     for (UUID targetId : targets) {

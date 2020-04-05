@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import mage.abilities.Ability;
@@ -13,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -58,7 +56,7 @@ enum DraconicRoarAdjuster implements CostAdjuster {
     private static final FilterCard filter = new FilterCard("a Dragon card from your hand (you don't have to)");
 
     static {
-        filter.add(new SubtypePredicate(SubType.DRAGON));
+        filter.add(SubType.DRAGON.getPredicate());
     }
 
     @Override
@@ -98,7 +96,7 @@ class DraconicRoarEffect extends OneShotEffect {
                 if (permanent != null) {
                     Player player = game.getPlayer(permanent.getControllerId());
                     if (player != null) {
-                        player.damage(3, source.getSourceId(), game, false, true);
+                        player.damage(3, source.getSourceId(), game);
                     }
                 }
             }

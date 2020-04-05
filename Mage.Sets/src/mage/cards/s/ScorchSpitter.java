@@ -28,7 +28,7 @@ public final class ScorchSpitter extends CardImpl {
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
 
-        // Whenever Scorch Spitter attacks, it deals 1 damage to the player or planeswalker it's attacking.
+        // Whenever Scorch Spitter attacks, it deals 1 damage to the player, planeswalker, or Structure it's attacking.
         this.addAbility(new ScorchSpitterTriggeredAbility());
     }
 

@@ -11,8 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetSpell;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -25,9 +23,9 @@ public final class ForceStasis extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("instant or sorcery spell you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
-        filter.add(new CardTypePredicate(CardType.INSTANT));
-        filter.add(new CardTypePredicate(CardType.SORCERY));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
+        filter.add(CardType.INSTANT.getPredicate());
+        filter.add(CardType.SORCERY.getPredicate());
     }
 
     public ForceStasis(UUID ownerId, CardSetInfo setInfo) {

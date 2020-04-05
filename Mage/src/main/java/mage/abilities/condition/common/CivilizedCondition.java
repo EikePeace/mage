@@ -4,7 +4,6 @@ import mage.abilities.Ability;
 import mage.abilities.condition.Condition;
 import mage.constants.CardType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 
 /**
@@ -19,9 +18,9 @@ public enum CivilizedCondition implements Condition {
     private static final FilterPermanent filter3 = new FilterPermanent("enchantment");
 
     static {
-        filter.add(new CardTypePredicate(CardType.ARTIFACT));
-        filter2.add(new CardTypePredicate(CardType.CREATURE));
-        filter3.add(new CardTypePredicate(CardType.ENCHANTMENT));
+        filter.add(CardType.ARTIFACT.getPredicate());
+        filter2.add(CardType.CREATURE.getPredicate());
+        filter3.add(CardType.ENCHANTMENT.getPredicate());
     }
 
 

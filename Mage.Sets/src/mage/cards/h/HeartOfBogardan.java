@@ -1,7 +1,5 @@
-
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -21,8 +19,9 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetPlayerOrPlaneswalker;
 
+import java.util.UUID;
+
 /**
- *
  * @author emerald000 & L_J
  */
 public final class HeartOfBogardan extends CardImpl {
@@ -33,7 +32,7 @@ public final class HeartOfBogardan extends CardImpl {
         // Cumulative upkeep-Pay {2}.
         this.addAbility(new CumulativeUpkeepAbility(new ManaCostsImpl("{2}")));
 
-        // When a player doesn't pay Heart of Bogardan's cumulative upkeep, Heart of Bogardan deals X damage to target player and each creature he or she controls, where X is twice the number of age counters on Heart of Bogardan minus 2.
+        // When a player doesn't pay Heart of Bogardan's cumulative upkeep, Heart of Bogardan deals X damage to target player and each creature they control, where X is twice the number of age counters on Heart of Bogardan minus 2.
         this.addAbility(new HeartOfBogardanTriggeredAbility());
     }
 
@@ -102,7 +101,7 @@ class HeartOfBogardanEffect extends OneShotEffect {
         if (player != null && sourcePermanent != null) {
             int damage = sourcePermanent.getCounters(game).getCount(CounterType.AGE) * 2 - 2;
             if (damage > 0) {
-                player.damage(damage, source.getSourceId(), game, false, true);
+                player.damage(damage, source.getSourceId(), game);
                 for (Permanent perm : game.getBattlefield().getAllActivePermanents(new FilterCreaturePermanent(), player.getId(), game)) {
                     perm.damage(damage, source.getSourceId(), game, false, true);
                 }

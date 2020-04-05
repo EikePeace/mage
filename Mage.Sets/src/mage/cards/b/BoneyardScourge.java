@@ -16,8 +16,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -33,8 +31,8 @@ public final class BoneyardScourge extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a Dragon you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.DRAGON));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.DRAGON.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public BoneyardScourge(UUID ownerId, CardSetInfo setInfo) {

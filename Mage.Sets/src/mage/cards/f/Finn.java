@@ -2,21 +2,15 @@ package mage.cards.f;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldControlledTriggeredAbility;
 import mage.abilities.dynamicvalue.common.PermanentsOnBattlefieldCount;
 import mage.abilities.effects.common.GainLifeEffect;
 import mage.constants.*;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
-import mage.target.common.TargetCreaturePermanent;
 
 /**
  *
@@ -27,7 +21,7 @@ public final class Finn extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("{this} or another nontoken creature you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(Predicates.not(TokenPredicate.instance));
     }
 

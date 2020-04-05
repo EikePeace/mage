@@ -1,5 +1,8 @@
 package mage.cards.a;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.ReplacementEffectImpl;
@@ -10,18 +13,12 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.watchers.Watcher;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 /**
  * @author jeffwadsworth
@@ -33,7 +30,7 @@ public final class AbandonedSarcophagus extends CardImpl {
 
         // You may cast nonland cards with cycling from your graveyard.
         FilterCard filter = new FilterCard("nonland cards with cycling");
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
         filter.add(new AbilityPredicate(CyclingAbility.class));
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
                 new PlayFromNotOwnHandZoneAllEffect(filter,
@@ -114,7 +111,7 @@ class AbandonedSarcophagusReplacementEffect extends ReplacementEffectImpl {
                 || !card.isOwnedBy(controller.getId())) {
             return false;
         }
-        for (Ability ability : card.getAbilities()) {
+        for (Ability ability : card.getAbilities(game)) {
             if (ability instanceof CyclingAbility) {
                 cardHasCycling = true;
             }
@@ -136,13 +133,6 @@ class AbandonedSarcophagusWatcher extends Watcher {
 
     AbandonedSarcophagusWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    private AbandonedSarcophagusWatcher(final AbandonedSarcophagusWatcher watcher) {
-        super(watcher);
-        for (Entry<UUID, Cards> entry : watcher.cycledCardsThisTurn.entrySet()) {
-            cycledCardsThisTurn.put(entry.getKey(), entry.getValue().copy());
-        }
     }
 
     @Override
@@ -169,10 +159,5 @@ class AbandonedSarcophagusWatcher extends Watcher {
     public void reset() {
         super.reset();
         cycledCardsThisTurn.clear();
-    }
-
-    @Override
-    public AbandonedSarcophagusWatcher copy() {
-        return new AbandonedSarcophagusWatcher(this);
     }
 }

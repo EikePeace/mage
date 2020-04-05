@@ -1,23 +1,13 @@
-
 package mage.cards.d;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.WatcherScope;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -26,8 +16,11 @@ import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
 import mage.watchers.Watcher;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class Desolation extends CardImpl {
@@ -55,7 +48,7 @@ class DesolationEffect extends OneShotEffect {
     private static final FilterPermanent filterPlains = new FilterPermanent();
 
     static {
-        filterPlains.add(new SubtypePredicate(SubType.PLAINS));
+        filterPlains.add(SubType.PLAINS.getPredicate());
     }
 
     public DesolationEffect() {
@@ -75,7 +68,7 @@ class DesolationEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     FilterControlledPermanent filter = new FilterControlledPermanent("land");
-                    filter.add(new CardTypePredicate(CardType.LAND));
+                    filter.add(CardType.LAND.getPredicate());
                     filter.add(new ControllerIdPredicate(playerId));
                     TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
                     if (target.canChoose(player.getId(), game)) {
@@ -84,7 +77,7 @@ class DesolationEffect extends OneShotEffect {
                         if (permanent != null) {
                             permanent.sacrifice(source.getSourceId(), game);
                             if (filterPlains.match(permanent, game)) {
-                                player.damage(2, source.getSourceId(), game, false, true);
+                                player.damage(2, source.getSourceId(), game);
                             }
                         }
                     }
@@ -106,13 +99,9 @@ class DesolationWatcher extends Watcher {
     private final Set<UUID> tappedForManaThisTurnPlayers = new HashSet<>();
 
     public DesolationWatcher() {
-        super( WatcherScope.GAME);
+        super(WatcherScope.GAME);
     }
 
-    public DesolationWatcher(final DesolationWatcher watcher) {
-        super(watcher);
-        this.tappedForManaThisTurnPlayers.addAll(watcher.tappedForManaThisTurnPlayers);
-    }
 
     @Override
     public void watch(GameEvent event, Game game) {
@@ -131,10 +120,7 @@ class DesolationWatcher extends Watcher {
     }
 
     public Set<UUID> getPlayersTappedForMana() {
-        if (tappedForManaThisTurnPlayers != null) {
-            return tappedForManaThisTurnPlayers;
-        }
-        return new HashSet<>();
+        return tappedForManaThisTurnPlayers;
     }
 
     @Override
@@ -143,8 +129,4 @@ class DesolationWatcher extends Watcher {
         tappedForManaThisTurnPlayers.clear();
     }
 
-    @Override
-    public DesolationWatcher copy() {
-        return new DesolationWatcher(this);
-    }
 }

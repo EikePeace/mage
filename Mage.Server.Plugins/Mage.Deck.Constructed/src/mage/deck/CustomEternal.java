@@ -31,6 +31,7 @@ public class CustomEternal extends Constructed {
         codes.add("EAU");
         codes.add("SOU");
         codes.add("NET");
+        codes.add("VST");
         return codes;
     }
 }

@@ -16,9 +16,7 @@ import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -33,8 +31,8 @@ public final class SiegeDragon extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Walls your opponents control");
     
     static {
-        filter.add(new SubtypePredicate(SubType.WALL));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(SubType.WALL.getPredicate());
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
     
     public SiegeDragon(UUID ownerId, CardSetInfo setInfo) {
@@ -69,7 +67,7 @@ class SiegeDragonAttacksTriggeredAbility extends TriggeredAbilityImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("wall");
 
     static {
-        filter.add(new SubtypePredicate(SubType.WALL));
+        filter.add(SubType.WALL.getPredicate());
     }
 
     public SiegeDragonAttacksTriggeredAbility() {

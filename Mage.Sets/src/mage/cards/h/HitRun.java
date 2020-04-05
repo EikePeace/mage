@@ -1,7 +1,5 @@
-
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
@@ -15,7 +13,6 @@ import mage.constants.SpellAbilityType;
 import mage.filter.common.FilterAttackingCreature;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -23,8 +20,9 @@ import mage.target.TargetPlayer;
 import mage.target.common.TargetControlledPermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class HitRun extends SplitCard {
@@ -75,8 +73,8 @@ class HitEffect extends OneShotEffect {
         if (targetPlayer != null) {
             FilterControlledPermanent filter = new FilterControlledPermanent("artifact or creature");
             filter.add(Predicates.or(
-                    new CardTypePredicate(CardType.ARTIFACT),
-                    new CardTypePredicate(CardType.CREATURE)));
+                    CardType.ARTIFACT.getPredicate(),
+                    CardType.CREATURE.getPredicate()));
             TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
 
             if (target.canChoose(targetPlayer.getId(), game)) {
@@ -86,7 +84,7 @@ class HitEffect extends OneShotEffect {
                     permanent.sacrifice(source.getSourceId(), game);
                     int damage = permanent.getConvertedManaCost();
                     if (damage > 0) {
-                        targetPlayer.damage(damage, source.getSourceId(), game, false, true);
+                        targetPlayer.damage(damage, source.getSourceId(), game);
                     }
                 }
             }

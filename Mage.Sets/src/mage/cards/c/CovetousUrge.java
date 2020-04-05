@@ -14,10 +14,9 @@ import mage.game.Game;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.target.TargetCard;
-import mage.target.common.TargetCardInGraveyard;
-import mage.target.common.TargetCardInHand;
 import mage.target.common.TargetOpponent;
 import mage.target.targetpointer.FixedTarget;
+import mage.util.CardUtil;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -71,24 +70,25 @@ class CovetousUrgeEffect extends OneShotEffect {
             return false;
         }
         player.revealCards(source, player.getHand(), game);
-        if (!controller.chooseUse(outcome, "Choose a nonland card to exile?", source, game)) {
-            return false;
-        }
-        TargetCard target;
-        if (player.getGraveyard().isEmpty() || controller.chooseUse(outcome,
+
+        TargetCard target; // TODO: fix skip exile on wrong place (see Nicol Bolas, Dragon-God)
+        if (player.getGraveyard().isEmpty() || controller.chooseUse(Outcome.Benefit, // AI must use hand first
                 "Exile a nonland card from " + player.getName() + "'s hand or graveyard",
                 "", "Hand", "Graveyard", source, game)) {
             if (player.getHand().isEmpty()) {
                 return true;
             }
-            target = new TargetCardInHand(StaticFilters.FILTER_CARD_A_NON_LAND);
-            controller.choose(outcome, player.getHand(), target, game);
+            target = new TargetCard(Zone.HAND, StaticFilters.FILTER_CARD_A_NON_LAND);
+            controller.choose(Outcome.Exile, player.getHand(), target, game);
         } else {
-            target = new TargetCardInGraveyard(StaticFilters.FILTER_CARD_A_NON_LAND);
-            controller.choose(outcome, player.getGraveyard(), target, game);
+            target = new TargetCard(Zone.GRAVEYARD, StaticFilters.FILTER_CARD_A_NON_LAND);
+            controller.choose(Outcome.Exile, player.getGraveyard(), target, game);
         }
+
+        // use same player's zone for all Covetous Urge instances
+        UUID exileZone = CardUtil.getExileZoneId(controller.getId() + " - Covetous Urge", game);
         Card card = game.getCard(target.getFirstTarget());
-        if (card == null || !controller.moveCards(card, Zone.EXILED, source, game)) {
+        if (card == null || !controller.moveCardsToExile(card, source, game, true, exileZone, "Covetous Urge - can cast with any mana")) {
             return false;
         }
         if (card.getSpellAbility() == null) {
@@ -156,11 +156,12 @@ class CovetousUrgeSpendAnyManaEffect extends AsThoughEffectImpl implements AsTho
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
+        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
         FixedTarget fixedTarget = ((FixedTarget) getTargetPointer());
         return source.isControlledBy(affectedControllerId)
                 && Objects.equals(objectId, fixedTarget.getTarget())
-                && fixedTarget.getZoneChangeCounter() + 1 == game.getState().getZoneChangeCounter(objectId)
-                && game.getState().getZone(objectId) == Zone.STACK;
+                && game.getState().getZoneChangeCounter(objectId) <= fixedTarget.getZoneChangeCounter() + 1
+                && (game.getState().getZone(objectId) == Zone.STACK || game.getState().getZone(objectId) == Zone.EXILED);
     }
 
     @Override

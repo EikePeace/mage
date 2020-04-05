@@ -1,7 +1,4 @@
-
 package mage.cards.b;
-
-import java.util.UUID;
 
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
@@ -15,6 +12,8 @@ import mage.game.stack.StackObject;
 import mage.players.Player;
 import mage.target.TargetPlayer;
 
+import java.util.UUID;
+
 /**
  * @author dustinconrad
  */
@@ -23,7 +22,7 @@ public final class Browbeat extends CardImpl {
     public Browbeat(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{R}");
 
-        // Any player may have Browbeat deal 5 damage to him or her. If no one does, target player draws three cards.
+        // Any player may have Browbeat deal 5 damage to them. If no one does, target player draws three cards.
         this.getSpellAbility().addEffect(new BrowbeatDrawEffect());
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
@@ -42,7 +41,7 @@ class BrowbeatDrawEffect extends OneShotEffect {
 
     public BrowbeatDrawEffect() {
         super(Outcome.DrawCard);
-        staticText = "Any player may have {source} deal 5 damage to him or her. If no one does, target player draws three cards.";
+        staticText = "Any player may have {source} deal 5 damage to them. If no one does, target player draws three cards.";
     }
 
     public BrowbeatDrawEffect(final BrowbeatDrawEffect effect) {
@@ -72,8 +71,8 @@ class BrowbeatDrawEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.chooseUse(Outcome.Detriment, "Have " + spell.getLogName() + " deal 5 damage to you?", source, game)) {
                     drawCards = false;
-                    player.damage(5, source.getSourceId(), game, false, true);
-                    game.informPlayers(player.getLogName() + " has " + spell.getLogName() + " deal 5 to him or her");
+                    player.damage(5, source.getSourceId(), game);
+                    game.informPlayers(player.getLogName() + " has " + spell.getLogName() + " deal 5 to them");
                 }
             }
             if (drawCards) {

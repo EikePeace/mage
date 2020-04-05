@@ -3,6 +3,7 @@ package mage.abilities.hint;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author JayDi85
@@ -16,6 +17,7 @@ public class HintUtils {
     public static final String HINT_ICON_GOOD = "ICON_GOOD";
     public static final String HINT_ICON_BAD = "ICON_BAD";
     public static final String HINT_ICON_RESTRICT = "ICON_RESTRICT";
+    public static final String HINT_ICON_REQUIRE = "ICON_REQUIRE";
 
     //
     public static final String HINT_START_MARK = "<br/><hintstart/>"; // workaround to find hint text in rules list and shows it in html
@@ -45,7 +47,7 @@ public class HintUtils {
 
     public static void appendHints(List<String> destList, List<String> newHints) {
         // append only unique hints
-        HashSet<String> used = new HashSet<>();
+        Set<String> used = new HashSet<>();
         for (String s : newHints) {
             if (!used.contains(s)) {
                 destList.add(s);

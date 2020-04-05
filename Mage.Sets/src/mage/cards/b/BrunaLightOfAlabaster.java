@@ -18,8 +18,6 @@ import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
 import mage.filter.predicate.other.AuraPermanentCanAttachToPermanentId;
 import mage.game.Game;
@@ -83,11 +81,11 @@ class BrunaLightOfAlabasterEffect extends OneShotEffect {
         FilterPermanent filterAura = new FilterPermanent("Aura");
         FilterCard filterAuraCard = new FilterCard("Aura card");
 
-        filterAura.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filterAura.add(new SubtypePredicate(SubType.AURA));
+        filterAura.add(CardType.ENCHANTMENT.getPredicate());
+        filterAura.add(SubType.AURA.getPredicate());
         filterAura.add(new AuraPermanentCanAttachToPermanentId(bruna));
-        filterAuraCard.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filterAuraCard.add(new SubtypePredicate(SubType.AURA));
+        filterAuraCard.add(CardType.ENCHANTMENT.getPredicate());
+        filterAuraCard.add(SubType.AURA.getPredicate());
         filterAuraCard.add(new AuraCardCanAttachToPermanentId(bruna));
 
         if (controller == null) {

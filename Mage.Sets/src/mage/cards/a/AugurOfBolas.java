@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObject;
 import mage.abilities.Ability;
@@ -15,13 +13,14 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterInstantOrSorceryCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class AugurOfBolas extends CardImpl {
@@ -29,7 +28,7 @@ public final class AugurOfBolas extends CardImpl {
     private static final FilterCard filter = new FilterCard("an instant or sorcery card");
 
     static {
-        filter.add(Predicates.or(new CardTypePredicate(CardType.INSTANT), new CardTypePredicate(CardType.SORCERY)));
+        filter.add(Predicates.or(CardType.INSTANT.getPredicate(), CardType.SORCERY.getPredicate()));
     }
 
     public AugurOfBolas(UUID ownerId, CardSetInfo setInfo) {
@@ -82,9 +81,12 @@ class AugurOfBolasEffect extends OneShotEffect {
                 int number = topCards.count(new FilterInstantOrSorceryCard(), source.getSourceId(), source.getControllerId(), game);
                 if (number > 0) {
                     if (controller.chooseUse(outcome, "Reveal an instant or sorcery card from the looked at cards and put it into your hand?", source, game)) {
-                        Card card;
+                        Card card = null;
                         if (number == 1) {
-                            card = topCards.getCards(new FilterInstantOrSorceryCard(), source.getSourceId(), source.getControllerId(), game).iterator().next();
+                            Set<Card> cards = topCards.getCards(new FilterInstantOrSorceryCard(), source.getSourceId(), source.getControllerId(), game);
+                            if (!cards.isEmpty()) {
+                                card = cards.iterator().next();
+                            }
                         } else {
                             TargetCard target = new TargetCard(Zone.LIBRARY, new FilterInstantOrSorceryCard());
                             controller.chooseTarget(outcome, topCards, target, source, game);

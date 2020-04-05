@@ -35,12 +35,12 @@ public final class AuspicialSphinx extends CardImpl {
         // When Auspicial Sphinx enters the battlefield or deals combat damage to a player,
         // look at the top three cards of your library. Put one of them into your hand and
         // the rest on the bottom of your library in any order.
-        Effect effect = new LookLibraryAndPickControllerEffect(new StaticValue(3), false, new StaticValue(1), new FilterCard(), Zone.LIBRARY, false, false);
+        Effect effect = new LookLibraryAndPickControllerEffect(StaticValue.get(3), false, StaticValue.get(1), new FilterCard(), Zone.LIBRARY, false, false);
 
         this.addAbility(new EntersBattlefieldTriggeredAbility(effect, false));
 
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new LookLibraryAndPickControllerEffect
-                (new StaticValue(3), false, new StaticValue(1), new FilterCard(), Zone.LIBRARY, false, false), false));
+                (StaticValue.get(3), false, StaticValue.get(1), new FilterCard(), Zone.LIBRARY, false, false), false));
     }
 
 

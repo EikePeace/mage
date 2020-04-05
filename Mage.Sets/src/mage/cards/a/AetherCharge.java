@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.Effect;
@@ -13,15 +11,15 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetOpponentOrPlaneswalker;
 
+import java.util.UUID;
+
 /**
- *
  * @author escplan9 (Derek Monturo - dmontur1 at gmail dot com)
  */
 public final class AetherCharge extends CardImpl {
@@ -29,7 +27,7 @@ public final class AetherCharge extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("Beast you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.BEAST));
+        filter.add(SubType.BEAST.getPredicate());
     }
 
     public AetherCharge(UUID ownerId, CardSetInfo setInfo) {
@@ -69,7 +67,7 @@ class AetherChargeTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent permanent = game.getPermanent(event.getTargetId());
-        if (permanent.isCreature() && permanent.hasSubtype(SubType.BEAST, game)
+        if (permanent != null && permanent.isCreature() && permanent.hasSubtype(SubType.BEAST, game)
                 && permanent.isControlledBy(this.controllerId)) {
             Effect effect = this.getEffects().get(0);
             effect.setValue("damageSource", event.getTargetId());

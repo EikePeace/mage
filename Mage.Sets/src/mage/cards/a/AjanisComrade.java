@@ -15,8 +15,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -27,8 +25,8 @@ public final class AjanisComrade extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent();
 
     static {
-        filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new SubtypePredicate(SubType.AJANI));
+        filter.add(CardType.PLANESWALKER.getPredicate());
+        filter.add(SubType.AJANI.getPredicate());
     }
 
     public AjanisComrade(UUID ownerId, CardSetInfo setInfo) {

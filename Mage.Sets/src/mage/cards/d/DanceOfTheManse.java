@@ -12,9 +12,7 @@ import mage.cards.CardsImpl;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -59,10 +57,10 @@ enum DanceOfTheManseAdjuster implements TargetAdjuster {
         FilterCard filter = new FilterCard("artifact and/or non-Aura enchantment cards " +
                 "each with converted mana cost " + xValue + " or less from your graveyard");
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.ARTIFACT),
+                CardType.ARTIFACT.getPredicate(),
                 Predicates.and(
-                        new CardTypePredicate(CardType.ENCHANTMENT),
-                        Predicates.not(new SubtypePredicate(SubType.AURA))
+                        CardType.ENCHANTMENT.getPredicate(),
+                        Predicates.not(SubType.AURA.getPredicate())
                 )
         ));
         filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, xValue + 1));
@@ -101,6 +99,7 @@ class DanceOfTheManseEffect extends OneShotEffect {
                 .map(Target::getTargets)
                 .flatMap(Collection::stream)
                 .map(game::getCard)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet()));
         player.moveCards(cards, Zone.BATTLEFIELD, source, game);
         if (source.getManaCostsToPay().getX() < 6) {

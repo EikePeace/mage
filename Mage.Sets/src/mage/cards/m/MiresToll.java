@@ -10,8 +10,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPlayer;
 
 /**
@@ -23,8 +21,8 @@ public final class MiresToll extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("the number of Swamps you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.SWAMP));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.SWAMP.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
     
     public MiresToll(UUID ownerId, CardSetInfo setInfo) {

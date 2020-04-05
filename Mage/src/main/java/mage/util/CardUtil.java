@@ -3,19 +3,27 @@ package mage.util;
 import mage.MageObject;
 import mage.Mana;
 import mage.abilities.Ability;
-import mage.abilities.ActivatedAbility;
 import mage.abilities.SpellAbility;
 import mage.abilities.costs.VariableCost;
 import mage.abilities.costs.mana.*;
 import mage.cards.Card;
+import mage.constants.ColoredManaSymbol;
 import mage.constants.EmptyNames;
+import mage.constants.ManaType;
 import mage.filter.Filter;
+import mage.game.CardState;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.Token;
 import mage.util.functions.CopyTokenFunction;
+import org.junit.Assert;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -85,34 +93,117 @@ public final class CardUtil {
     }
 
     private static ManaCosts<ManaCost> adjustCost(ManaCosts<ManaCost> manaCosts, int reduceCount) {
-        int restToReduce = reduceCount;
         ManaCosts<ManaCost> adjustedCost = new ManaCostsImpl<>();
-        boolean updated = false;
-        for (ManaCost manaCost : manaCosts) {
-            if (manaCost instanceof SnowManaCost) {
-                adjustedCost.add(manaCost);
-                continue;
+
+        // nothing to change
+        if (reduceCount == 0) {
+            for (ManaCost manaCost : manaCosts) {
+                adjustedCost.add(manaCost.copy());
             }
-            Mana mana = manaCost.getOptions().get(0);
-            int colorless = mana != null ? mana.getGeneric() : 0;
-            if (restToReduce != 0 && colorless > 0) {
-                if ((colorless - restToReduce) > 0) {
-                    int newColorless = colorless - restToReduce;
-                    adjustedCost.add(new GenericManaCost(newColorless));
-                    restToReduce = 0;
-                } else {
-                    restToReduce -= colorless;
+            return adjustedCost;
+        }
+
+        // remove or save cost
+        if (reduceCount > 0) {
+            int restToReduce = reduceCount;
+
+            // first run - priority for single option costs (generic)
+            for (ManaCost manaCost : manaCosts) {
+                if (manaCost instanceof SnowManaCost) {
+                    adjustedCost.add(manaCost);
+                    continue;
                 }
-                updated = true;
-            } else {
-                adjustedCost.add(manaCost);
+
+                if (manaCost.getOptions().size() == 0) {
+                    adjustedCost.add(manaCost);
+                    continue;
+                }
+
+                // ignore monohybrid and other multi-option mana (for potential support)
+                if (manaCost.getOptions().size() > 1) {
+                    continue;
+                }
+
+                // generic mana reduce
+                Mana mana = manaCost.getOptions().get(0);
+                int colorless = mana != null ? mana.getGeneric() : 0;
+                if (restToReduce != 0 && colorless > 0) {
+                    if ((colorless - restToReduce) > 0) {
+                        // partly reduce
+                        int newColorless = colorless - restToReduce;
+                        adjustedCost.add(new GenericManaCost(newColorless));
+                        restToReduce = 0;
+                    } else {
+                        // full reduce - ignore cost
+                        restToReduce -= colorless;
+                    }
+                } else {
+                    // nothing to reduce
+                    adjustedCost.add(manaCost.copy());
+                }
+            }
+
+            // second run - priority for multi option costs (monohybrid)
+            //
+            // from Reaper King:
+            // If an effect reduces the cost to cast a spell by an amount of generic mana, it applies to a monocolored hybrid
+            // spell only if you’ve chosen a method of paying for it that includes generic mana.
+            // (2008-05-01)
+            // TODO: xmage don't use announce for hybrid mana (instead it uses auto-pay), so that's workaround uses first hybrid to reduce (see https://github.com/magefree/mage/issues/6130 )
+            for (ManaCost manaCost : manaCosts) {
+                if (manaCost.getOptions().size() <= 1) {
+                    continue;
+                }
+
+                if (manaCost instanceof MonoHybridManaCost) {
+                    // current implemention supports reduce from left to right hybrid cost without cost parts announce
+                    MonoHybridManaCost mono = (MonoHybridManaCost) manaCost;
+                    int colorless = mono.getOptions().get(1).getGeneric();
+                    if (restToReduce != 0 && colorless > 0) {
+                        if ((colorless - restToReduce) > 0) {
+                            // partly reduce
+                            int newColorless = colorless - restToReduce;
+                            adjustedCost.add(new MonoHybridManaCost(mono.getManaColor(), newColorless));
+                            restToReduce = 0;
+                        } else {
+                            // full reduce
+                            adjustedCost.add(new MonoHybridManaCost(mono.getManaColor(), 0));
+                            restToReduce -= colorless;
+                        }
+                    } else {
+                        // nothing to reduce
+                        adjustedCost.add(mono.copy());
+                    }
+                    continue;
+                }
+
+                // unsupported multi-option mana types for reduce (like HybridManaCost)
+                adjustedCost.add(manaCost.copy());
             }
         }
 
-        // for increasing spell cost effects
-        if (!updated && reduceCount < 0) {
-            adjustedCost.add(new GenericManaCost(-reduceCount));
+        // increase cost (add to first generic or add new)
+        if (reduceCount < 0) {
+            boolean added = false;
+            for (ManaCost manaCost : manaCosts) {
+                if (reduceCount != 0 && manaCost instanceof GenericManaCost) {
+                    // add increase cost to existing generic
+                    GenericManaCost gen = (GenericManaCost) manaCost;
+                    adjustedCost.add(new GenericManaCost(gen.getOptions().get(0).getGeneric() + -reduceCount));
+                    reduceCount = 0;
+                    added = true;
+                } else {
+                    // non-generic mana
+                    adjustedCost.add(manaCost.copy());
+                }
+            }
+            if (!added) {
+                // add increase cost as new
+                adjustedCost.add(new GenericManaCost(-reduceCount));
+            }
         }
+
+        // cost modifying effects requiring snow mana unnecessarily (fixes #6000)
         Filter filter = manaCosts.stream()
                 .filter(manaCost -> !(manaCost instanceof SnowManaCost))
                 .map(ManaCost::getSourceFilter)
@@ -490,20 +581,6 @@ public final class CardUtil {
     }
 
     /**
-     * Returns if the ability is used to check which cards are playable on hand.
-     * (Issue #457)
-     *
-     * @param ability - ability to check
-     * @return
-     */
-    public static boolean isCheckPlayableMode(Ability ability) {
-        if (ability instanceof ActivatedAbility) {
-            return ((ActivatedAbility) ability).isCheckPlayableMode();
-        }
-        return false;
-    }
-
-    /**
      * Adds tags to mark the additional info of a card (e.g. blue font color)
      *
      * @param text text body
@@ -560,12 +637,13 @@ public final class CardUtil {
     }
 
     /**
-     * Face down cards and their copy tokens don't have names and that's "empty" names is not equals
+     * Face down cards and their copy tokens don't have names and that's "empty"
+     * names is not equals
      */
     public static boolean haveSameNames(String name1, String name2, Boolean ignoreMtgRuleForEmptyNames) {
         if (ignoreMtgRuleForEmptyNames) {
             // simple compare for tests and engine
-            return name1 != null && name2 != null && name1.equals(name2);
+            return name1 != null && name1.equals(name2);
         } else {
             // mtg logic compare for game (empty names can't be same)
             return !haveEmptyName(name1) && !haveEmptyName(name2) && name1.equals(name2);
@@ -586,5 +664,87 @@ public final class CardUtil {
 
     public static boolean haveEmptyName(MageObject object) {
         return object == null || haveEmptyName(object.getName());
+    }
+
+    public static UUID getMainCardId(Game game, UUID objectId) {
+        Card card = game.getCard(objectId);
+        return card != null ? card.getMainCard().getId() : objectId;
+    }
+
+    public static String urlEncode(String data) {
+        if (data.isEmpty()) {
+            return "";
+        }
+
+        try {
+            return URLEncoder.encode(data, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+    }
+
+    public static String urlDecode(String encodedData) {
+        if (encodedData.isEmpty()) {
+            return "";
+        }
+
+        try {
+            return URLDecoder.decode(encodedData, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        }
+    }
+
+    /**
+     * Checks if a card had a given ability depending their historic cardState
+     *
+     * @param ability   the ability that is checked
+     * @param cardState the historic cardState (from LKI)
+     * @param cardId    the id of the card
+     * @param game
+     * @return
+     */
+    public static boolean cardHadAbility(Ability ability, CardState cardState, UUID cardId, Game game) {
+        Card card = game.getCard(cardId);
+        if (card != null) {
+            if (cardState != null) {
+                if (cardState.getAbilities().contains(ability)) { // Check other abilities (possibly given after lost of abilities)
+                    return true;
+                }
+                if (cardState.hasLostAllAbilities()) {
+                    return false; // Not allowed to check abilities of original card
+                }
+            }
+            return card.getAbilities().contains(ability); // check if the original card has the ability
+        }
+        return false;
+    }
+
+    public static List<String> concatManaSymbols(String delimeter, List<String> mana1, List<String> mana2) {
+        List<String> res = new ArrayList<>(mana1);
+        if (res.size() > 0 && mana2.size() > 0 && delimeter != null && !delimeter.isEmpty()) {
+            res.add(delimeter);
+        }
+        res.addAll(mana2);
+        return res;
+    }
+
+    public static ColoredManaSymbol manaTypeToColoredManaSymbol(ManaType manaType) {
+        switch (manaType) {
+            case BLACK:
+                return ColoredManaSymbol.B;
+            case BLUE:
+                return ColoredManaSymbol.U;
+            case GREEN:
+                return ColoredManaSymbol.G;
+            case RED:
+                return ColoredManaSymbol.R;
+            case WHITE:
+                return ColoredManaSymbol.W;
+            case GENERIC:
+            case COLORLESS:
+            default:
+                throw new IllegalArgumentException("Wrong mana type " + manaType);
+        }
     }
 }

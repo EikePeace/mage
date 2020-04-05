@@ -1,7 +1,5 @@
-
 package mage.game.permanent;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Abilities;
 import mage.abilities.Ability;
@@ -12,6 +10,8 @@ import mage.cards.Card;
 import mage.cards.LevelerCard;
 import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
+
+import java.util.UUID;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -87,6 +87,21 @@ public class PermanentCard extends PermanentImpl {
         } else {
             this.abilities = card.getAbilities().copy();
         }
+        // adventure cards must show adventure spell info on battlefield too
+        /*
+        if (card instanceof AdventureCard) {
+            // Adventure card spell abilities should not appear on permanents.
+            List<Ability> toRemove = new ArrayList<Ability>();
+            for (Ability ability : this.abilities) {
+                if (ability instanceof SpellAbility) {
+                    if (((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.ADVENTURE_SPELL) {
+                        toRemove.add(ability);
+                    }
+                }
+            }
+            toRemove.forEach(ability -> this.abilities.remove(ability));
+        }
+         */
         this.abilities.setControllerId(this.controllerId);
         this.abilities.setSourceId(objectId);
         this.cardType.clear();

@@ -1,23 +1,5 @@
-
-
- /*
- * ChatPanel.java
- *
- * Created on 15-Dec-2009, 11:04:31 PM
- */
 package mage.client.chat;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.swing.JTextField;
 import mage.client.MageFrame;
 import mage.client.SessionHandler;
 import mage.client.dialog.PreferencesDialog;
@@ -26,8 +8,17 @@ import mage.view.ChatMessage.MessageColor;
 import mage.view.ChatMessage.MessageType;
 import org.mage.card.arcane.ManaSymbols;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com, nantuko
  */
 public class ChatPanelBasic extends javax.swing.JPanel {
@@ -86,9 +77,9 @@ public class ChatPanelBasic extends javax.swing.JPanel {
 
         NONE, GAME, CHAT
     }
+
     /**
      * Controls the output start messages as the chat panel is created
-     *
      */
     protected ChatType chatType = ChatType.DEFAULT;
 
@@ -96,12 +87,11 @@ public class ChatPanelBasic extends javax.swing.JPanel {
 
         DEFAULT, GAME, TABLES, TOURNAMENT
     }
+
     protected boolean startMessageDone = false;
 
     /**
-     *
      * Creates new form ChatPanel
-     *
      */
     public ChatPanelBasic() {
         initComponents();
@@ -201,29 +191,28 @@ public class ChatPanelBasic extends javax.swing.JPanel {
             message = message.replaceAll("\\.", "");
             message = '.' + message + '.';
             matchPattern = profanity2Pattern.matcher(message);
-            if (matchPattern.find()) {
-                return true;
-            }
+            return matchPattern.find();
         }
         return false;
     }
+
+    Pattern cardNamePattern = Pattern.compile(".*<font bgcolor=orange.*?</font>.*");
 
     /**
      * Display message in the chat. Use different colors for timestamp, username
      * and message.
      *
-     * @param username message sender
-     * @param message message itself
-     * @param time timestamp
+     * @param username    message sender
+     * @param message     message itself
+     * @param time        timestamp
+     * @param turnInfo    game turn info, can be null for non game messages
      * @param messageType
-     * @param color Preferred color. Not used.
+     * @param color       Preferred color. Not used.
      */
-    Pattern cardNamePattern = Pattern.compile(".*<font bgcolor=orange.*?</font>.*");
-
-    public void receiveMessage(String username, String message, Date time, MessageType messageType, MessageColor color) {
+    public void receiveMessage(String username, String message, Date time, String turnInfo, MessageType messageType, MessageColor color) {
         StringBuilder text = new StringBuilder();
         if (time != null) {
-            text.append(getColoredText(TIMESTAMP_COLOR, timeFormatter.format(time) + ": "));
+            text.append(getColoredText(TIMESTAMP_COLOR, timeFormatter.format(time) + getTurnInfoPart(turnInfo) + ": "));
         }
         String userColor;
         String textColor;
@@ -288,6 +277,11 @@ public class ChatPanelBasic extends javax.swing.JPanel {
             text.append(getColoredText(textColor, ManaSymbols.replaceSymbolsWithHTML("<font color=black size=-2>" + username + ": Profanity detected.  To make it less strict, type: </font> <font color=green size=-2>/w " + SessionHandler.getUserName() + " profanity 1</font>", ManaSymbols.Type.CHAT)));
             this.txtConversation.append(text.toString());
         }
+    }
+
+    String getTurnInfoPart(String turnInfo) {
+        boolean canUse = Boolean.parseBoolean(PreferencesDialog.getCachedValue(PreferencesDialog.KEY_GAME_LOG_SHOW_TURN_INFO, "true"));
+        return (turnInfo == null || !canUse ? "" : ", " + turnInfo);
     }
 
     protected String getColoredText(String color, String text) {
@@ -383,16 +377,16 @@ public class ChatPanelBasic extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPaneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(txtMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPaneTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(txtMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPaneTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(txtMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPaneTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                .addGap(0, 0, 0)
+                                .addComponent(txtMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -414,7 +408,7 @@ public class ChatPanelBasic extends javax.swing.JPanel {
 
     private void txtMessageKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMessageKeyTyped
         handleKeyTyped(evt);
-}//GEN-LAST:event_txtMessageKeyTyped
+    }//GEN-LAST:event_txtMessageKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPaneTxt;

@@ -1,7 +1,5 @@
-
 package mage.cards.d;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldControlledTriggeredAbility;
 import mage.abilities.effects.Effect;
@@ -15,14 +13,14 @@ import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class DragonTempest extends CardImpl {
@@ -70,7 +68,7 @@ class DragonTempestDamageEffect extends OneShotEffect {
     private static final FilterControlledPermanent dragonFilter = new FilterControlledPermanent();
 
     static {
-        dragonFilter.add(new SubtypePredicate(SubType.DRAGON));
+        dragonFilter.add(SubType.DRAGON.getPredicate());
     }
 
     public DragonTempestDamageEffect() {
@@ -100,7 +98,7 @@ class DragonTempestDamageEffect extends OneShotEffect {
                 } else {
                     Player player = game.getPlayer(source.getTargets().getFirstTarget());
                     if (player != null) {
-                        player.damage(amount, damageSource.getId(), game, false, true);
+                        player.damage(amount, damageSource.getId(), game);
                     }
                 }
             }

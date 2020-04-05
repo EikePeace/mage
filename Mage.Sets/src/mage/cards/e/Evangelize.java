@@ -1,7 +1,5 @@
-
 package mage.cards.e;
 
-import java.util.UUID;
 import mage.abilities.effects.common.continuous.GainControlTargetEffect;
 import mage.abilities.keyword.BuybackAbility;
 import mage.cards.CardImpl;
@@ -11,8 +9,9 @@ import mage.constants.Duration;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.target.common.TargetOpponentsChoicePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class Evangelize extends CardImpl {
@@ -25,11 +24,11 @@ public final class Evangelize extends CardImpl {
         // Buyback {2}{W}{W}
         this.addAbility(new BuybackAbility("{2}{W}{W}"));
 
-        // Gain control of target creature of an opponent's choice that he or she controls.
+        // Gain control of target creature of an opponent's choice that they control.
         GainControlTargetEffect effect = new GainControlTargetEffect(Duration.EndOfGame);
-        effect.setText("Gain control of target creature of an opponent's choice he or she controls");
+        effect.setText("Gain control of target creature of an opponent's choice they control");
         this.getSpellAbility().addEffect(effect);
-        this.getSpellAbility().addTarget(new TargetOpponentsChoicePermanent(1, 1, filter, false, true));
+        this.getSpellAbility().addTarget(new TargetOpponentsChoicePermanent(1, 1, filter, false));
     }
 
     public Evangelize(final Evangelize card) {

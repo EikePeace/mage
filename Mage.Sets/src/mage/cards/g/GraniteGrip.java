@@ -11,8 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -25,8 +23,8 @@ public final class GraniteGrip extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("Mountain you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.MOUNTAIN));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.MOUNTAIN.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public GraniteGrip(UUID ownerId, CardSetInfo setInfo) {

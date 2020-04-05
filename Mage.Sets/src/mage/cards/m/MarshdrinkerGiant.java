@@ -13,8 +13,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.common.TargetLandPermanent;
 
 /**
@@ -27,9 +25,9 @@ public final class MarshdrinkerGiant extends CardImpl {
     
     static {
         filter.add(Predicates.or(
-                new SubtypePredicate(SubType.ISLAND),
-                new SubtypePredicate(SubType.SWAMP)));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+                SubType.ISLAND.getPredicate(),
+                SubType.SWAMP.getPredicate()));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public MarshdrinkerGiant(UUID ownerId, CardSetInfo setInfo) {

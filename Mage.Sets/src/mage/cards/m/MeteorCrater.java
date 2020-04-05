@@ -1,9 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -22,8 +18,11 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author anonymous
  */
 public final class MeteorCrater extends CardImpl {
@@ -64,18 +63,33 @@ class MeteorCraterEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netManas = new ArrayList<>();
+        Mana types = getManaTypes(game, source);
+        if (types.getBlack() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.B));
         }
-        return false;
+        if (types.getRed() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.R));
+        }
+        if (types.getBlue() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.U));
+        }
+        if (types.getGreen() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.G));
+        }
+        if (types.getWhite() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.W));
+        }
+        return netManas;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Mana types = getManaTypes(game, source);
         Choice choice = new ChoiceColor(true);
         choice.getChoices().clear();
@@ -111,7 +125,6 @@ class MeteorCraterEffect extends ManaEffect {
                 player.choose(outcome, choice, game);
             }
             if (choice.getChoice() != null) {
-                Mana mana = new Mana();
                 switch (choice.getChoice()) {
                     case "Black":
                         mana.setBlack(1);
@@ -129,53 +142,32 @@ class MeteorCraterEffect extends ManaEffect {
                         mana.setWhite(1);
                         break;
                 }
-                return mana;
             }
         }
-        return null;
-    }
-
-    @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        List<Mana> netManas = new ArrayList<>();
-        Mana types = getManaTypes(game, source);
-        if (types.getBlack() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.B));
-        }
-        if (types.getRed() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.R));
-        }
-        if (types.getBlue() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.U));
-        }
-        if (types.getGreen() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.G));
-        }
-        if (types.getWhite() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.W));
-        }
-        return netManas;
+        return mana;
     }
 
     private Mana getManaTypes(Game game, Ability source) {
-        List<Permanent> controlledPermanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
         Mana types = new Mana();
-        for (Permanent permanent : controlledPermanents) {
-            ObjectColor color = permanent.getColor(game);
-            if (color.isBlack()) {
-                types.add(Mana.BlackMana(1));
-            }
-            if (color.isBlue()) {
-                types.add(Mana.BlueMana(1));
-            }
-            if (color.isGreen()) {
-                types.add(Mana.GreenMana(1));
-            }
-            if (color.isRed()) {
-                types.add(Mana.RedMana(1));
-            }
-            if (color.isWhite()) {
-                types.add(Mana.WhiteMana(1));
+        if (game != null) {
+            List<Permanent> controlledPermanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
+            for (Permanent permanent : controlledPermanents) {
+                ObjectColor color = permanent.getColor(game);
+                if (color.isBlack()) {
+                    types.add(Mana.BlackMana(1));
+                }
+                if (color.isBlue()) {
+                    types.add(Mana.BlueMana(1));
+                }
+                if (color.isGreen()) {
+                    types.add(Mana.GreenMana(1));
+                }
+                if (color.isRed()) {
+                    types.add(Mana.RedMana(1));
+                }
+                if (color.isWhite()) {
+                    types.add(Mana.WhiteMana(1));
+                }
             }
         }
         return types;

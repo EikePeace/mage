@@ -14,8 +14,6 @@ import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -27,8 +25,8 @@ public final class VineshaperMystic extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Merfolk you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.MERFOLK));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.MERFOLK.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public VineshaperMystic(UUID ownerId, CardSetInfo setInfo) {

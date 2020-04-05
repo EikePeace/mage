@@ -9,10 +9,7 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
 import mage.abilities.hint.Hint;
-import mage.constants.AbilityType;
-import mage.constants.AbilityWord;
-import mage.constants.EffectType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Controllable;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -461,15 +458,6 @@ public interface Ability extends Controllable, Serializable {
      */
     String getGameLogMessage(Game game);
 
-    /**
-     * Used to deactivate cost modification logic of ability activation for some
-     * special handling (e.g. FlashbackAbility gets cost modifiaction twice
-     * because of how it's handled now)
-     *
-     * @param active execute no cost modification
-     */
-    void setCostModificationActive(boolean active);
-
     boolean activateAlternateOrAdditionalCosts(MageObject sourceObject, boolean noMana, Player controller, Game game);
 
     /**
@@ -530,4 +518,8 @@ public interface Ability extends Controllable, Serializable {
     List<Hint> getHints();
 
     Ability addHint(Hint hint);
+
+    Ability addCustomOutcome(Outcome customOutcome);
+
+    Outcome getCustomOutcome();
 }

@@ -12,8 +12,6 @@ import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.EnchantedPredicate;
 
 /**
@@ -27,10 +25,10 @@ public final class GreaterAuramancy extends CardImpl {
     private static final FilterPermanent filter2 = new FilterPermanent("Enchanted creatures");
     
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filter2.add(new ControllerPredicate(TargetController.YOU));
-        filter2.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(CardType.ENCHANTMENT.getPredicate());
+        filter2.add(TargetController.YOU.getControllerPredicate());
+        filter2.add(CardType.CREATURE.getPredicate());
         filter2.add(EnchantedPredicate.instance);
     }
 

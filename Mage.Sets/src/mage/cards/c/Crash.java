@@ -12,8 +12,6 @@ import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetControlledPermanent;
 
@@ -27,8 +25,8 @@ public final class Crash extends CardImpl {
     private static final FilterControlledPermanent alternativeCostFilter = new FilterControlledLandPermanent("a Mountain");
 
     static {
-        effectFilter.add(new CardTypePredicate(CardType.ARTIFACT));
-        alternativeCostFilter.add(new SubtypePredicate(SubType.MOUNTAIN));
+        effectFilter.add(CardType.ARTIFACT.getPredicate());
+        alternativeCostFilter.add(SubType.MOUNTAIN.getPredicate());
     }
 
     public Crash(UUID ownerId, CardSetInfo setInfo) {

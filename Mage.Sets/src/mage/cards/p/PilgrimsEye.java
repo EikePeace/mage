@@ -13,8 +13,6 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterCard;
 import mage.filter.StaticFilters;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 import java.util.UUID;
@@ -27,8 +25,8 @@ public final class PilgrimsEye extends CardImpl {
     private static final FilterCard filter = new FilterCard("basic land card");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.BASIC));
-        filter.add(new CardTypePredicate(CardType.LAND));
+        filter.add(SuperType.BASIC.getPredicate());
+        filter.add(CardType.LAND.getPredicate());
     }
 
     public PilgrimsEye (UUID ownerId, CardSetInfo setInfo) {

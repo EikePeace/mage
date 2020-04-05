@@ -13,7 +13,6 @@ import mage.constants.TimingRule;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -27,7 +26,7 @@ public final class YemmasMandate extends CardImpl {
     private static final FilterPermanent filter = new FilterCreaturePermanent("creature you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     public YemmasMandate(UUID ownerId, CardSetInfo setInfo) {

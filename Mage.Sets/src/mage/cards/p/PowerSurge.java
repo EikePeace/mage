@@ -1,18 +1,12 @@
-
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.WatcherScope;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.filter.predicate.Predicates;
@@ -22,8 +16,9 @@ import mage.game.events.GameEvent;
 import mage.players.Player;
 import mage.watchers.Watcher;
 
+import java.util.UUID;
+
 /**
- *
  * @author MTGfan
  */
 public final class PowerSurge extends CardImpl {
@@ -31,7 +26,7 @@ public final class PowerSurge extends CardImpl {
     public PowerSurge(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{R}{R}");
 
-        // At the beginning of each player's upkeep, Power Surge deals X damage to that player, where X is the number of untapped lands he or she controlled at the beginning of this turn.
+        // At the beginning of each player's upkeep, Power Surge deals X damage to that player, where X is the number of untapped lands they controlled at the beginning of this turn.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new PowerSurgeDamageEffect(), TargetController.ANY, false, true), new PowerSurgeWatcher());
     }
 
@@ -57,7 +52,7 @@ class PowerSurgeDamageEffect extends OneShotEffect {
 
     @Override
     public String getText(Mode mode) {
-        return "{this} deals X damage to that player where X is the number of untapped lands he or she controlled at the beginning of this turn";
+        return "{this} deals X damage to that player where X is the number of untapped lands they controlled at the beginning of this turn";
     }
 
     @Override
@@ -65,9 +60,9 @@ class PowerSurgeDamageEffect extends OneShotEffect {
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
             PowerSurgeWatcher watcher = game.getState().getWatcher(PowerSurgeWatcher.class);
-            if(watcher != null) {
+            if (watcher != null) {
                 int damage = watcher.getUntappedLandCount();
-                player.damage(damage, source.getSourceId(), game, false, true);
+                player.damage(damage, source.getSourceId(), game);
                 return true;
             }
         }
@@ -94,11 +89,6 @@ class PowerSurgeWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    public PowerSurgeWatcher(final PowerSurgeWatcher watcher) {
-        super(watcher);
-        untappedLandCount = watcher.untappedLandCount;
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.BEGINNING_PHASE_PRE
@@ -114,10 +104,5 @@ class PowerSurgeWatcher extends Watcher {
     @Override
     public void reset() {
         untappedLandCount = 0;
-    }
-
-    @Override
-    public PowerSurgeWatcher copy() {
-        return new PowerSurgeWatcher(this);
     }
 }

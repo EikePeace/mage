@@ -17,8 +17,6 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterPermanentCard;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInLibrary;
@@ -33,8 +31,8 @@ public final class LinSivviDefiantHero extends CardImpl {
     private static final FilterCard filter = new FilterCard("Rebel card from your graveyard");
 
     static {
-        filter.add(new OwnerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.REBEL));
+        filter.add(TargetController.YOU.getOwnerPredicate());
+        filter.add(SubType.REBEL.getPredicate());
     }
 
     static final String rule = "Put target Rebel card from your graveyard on the bottom of your library";
@@ -97,7 +95,7 @@ class LinSivviDefiantHeroEffect extends OneShotEffect {
 
         FilterPermanentCard filter = new FilterPermanentCard("Rebel permanent card with converted mana cost " + xCost + " or less");
         filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, xCost + 1));
-        filter.add(new SubtypePredicate(SubType.REBEL));
+        filter.add(SubType.REBEL.getPredicate());
         TargetCardInLibrary target = new TargetCardInLibrary(filter);
 
         if (controller.searchLibrary(target, source, game)) {

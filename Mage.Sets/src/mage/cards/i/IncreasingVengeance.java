@@ -11,8 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
@@ -30,9 +28,9 @@ public final class IncreasingVengeance extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.INSTANT),
-                new CardTypePredicate(CardType.SORCERY)));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate()));
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public IncreasingVengeance(UUID ownerId, CardSetInfo setInfo) {

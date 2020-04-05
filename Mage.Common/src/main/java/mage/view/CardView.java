@@ -10,6 +10,8 @@ import mage.abilities.SpellAbility;
 import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.keyword.AftermathAbility;
 import mage.cards.*;
+import mage.cards.mock.MockCard;
+import mage.cards.repository.CardInfo;
 import mage.constants.*;
 import mage.counters.Counter;
 import mage.counters.CounterType;
@@ -24,6 +26,7 @@ import mage.game.stack.Spell;
 import mage.game.stack.StackAbility;
 import mage.target.Target;
 import mage.target.Targets;
+import mage.util.CardUtil;
 import mage.util.SubTypeList;
 
 import java.util.*;
@@ -32,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  * @author BetaSteward_at_googlemail.com
  */
-public class CardView extends SimpleCardView implements SelectableObjectView {
+public class CardView extends SimpleCardView {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,6 +44,8 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     protected String name;
     @Expose
     protected String displayName;
+    @Expose
+    protected String displayFullName;
     @Expose
     protected List<String> rules;
     @Expose
@@ -56,7 +61,9 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     protected ObjectColor color;
     protected ObjectColor frameColor;
     protected FrameStyle frameStyle;
-    protected List<String> manaCost;
+    // can combine multiple costs for MockCard from deck editor or db (left/right, card/adventure)
+    protected List<String> manaCostLeft;
+    protected List<String> manaCostRight;
     protected int convertedManaCost;
     protected Rarity rarity;
 
@@ -104,9 +111,6 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     protected boolean rotate;
     protected boolean hideInfo; // controls if the tooltip window is shown (eg. controlled face down morph card)
 
-    protected boolean isPlayable;
-    protected boolean isChoosable;
-    protected boolean selected;
     protected boolean canAttack;
     protected boolean canBlock;
     protected boolean inViewerOnly;
@@ -117,9 +121,13 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this(card, null, false);
     }
 
-    public CardView(Card card, UUID cardId) {
+    public CardView(Card card, SimpleCardView simpleCardView) {
         this(card, null, false);
-        this.id = cardId;
+        this.id = simpleCardView.getId();
+
+        this.isPlayable = simpleCardView.isPlayable;
+        this.isChoosable = simpleCardView.isChoosable;
+        this.isSelected = simpleCardView.isSelected;
     }
 
     public CardView(Card card, Game game, UUID cardId) {
@@ -128,83 +136,77 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     }
 
     public CardView(CardView cardView) {
-        super(cardView.id, cardView.expansionSetCode, cardView.cardNumber, cardView.usesVariousArt, cardView.tokenSetCode, cardView.gameObject, cardView.tokenDescriptor);
-        this.originalCard = cardView.originalCard;
+        super(cardView);
 
+        // generetate new ID (TODO: why new ID?)
         this.id = UUID.randomUUID();
         this.parentId = cardView.parentId;
+
         this.name = cardView.name;
         this.displayName = cardView.displayName;
-        this.rules = cardView.rules;
+        this.displayFullName = cardView.displayFullName;
+        this.rules = new ArrayList<>(cardView.rules);
+
         this.power = cardView.power;
         this.toughness = cardView.toughness;
         this.loyalty = cardView.loyalty;
         this.startingLoyalty = cardView.startingLoyalty;
-        this.cardTypes = cardView.cardTypes;
-        this.subTypes = cardView.subTypes;
+        this.cardTypes = new HashSet<>(cardView.cardTypes);
+        this.subTypes = new SubTypeList(cardView.subTypes);
         this.superTypes = cardView.superTypes;
+
         this.color = cardView.color;
         this.frameColor = cardView.frameColor;
         this.frameStyle = cardView.frameStyle;
-        this.manaCost = cardView.manaCost;
+        this.manaCostLeft = new ArrayList<>(cardView.manaCostLeft);
+        this.manaCostRight = new ArrayList<>(cardView.manaCostRight);
         this.convertedManaCost = cardView.convertedManaCost;
         this.rarity = cardView.rarity;
 
         this.mageObjectType = cardView.mageObjectType;
-
         this.isAbility = cardView.isAbility;
         this.abilityType = cardView.abilityType;
         this.isToken = cardView.isToken;
-
-        this.ability = null;
+        this.ability = cardView.ability; // reference, not copy
         this.type = cardView.type;
 
         this.transformable = cardView.transformable;
-        if (cardView.secondCardFace != null) {
-            this.secondCardFace = new CardView(cardView.secondCardFace);
-        } else {
-            this.secondCardFace = null;
-        }
+        this.secondCardFace = cardView.secondCardFace == null ? null : new CardView(cardView.secondCardFace);
         this.transformed = cardView.transformed;
-
         this.flipCard = cardView.flipCard;
         this.faceDown = cardView.faceDown;
-
         this.alternateName = cardView.alternateName;
         this.originalName = cardView.originalName;
-        this.artRect = cardView.artRect;
 
         this.isSplitCard = cardView.isSplitCard;
         this.leftSplitName = cardView.leftSplitName;
-        this.leftSplitCosts = cardView.leftSplitCosts;
-        this.leftSplitRules = null;
+        this.leftSplitCosts = cardView.leftSplitCosts == null ? null : cardView.leftSplitCosts.copy();
+        this.leftSplitRules = cardView.leftSplitRules == null ? null : new ArrayList<>(cardView.leftSplitRules);
         this.leftSplitTypeLine = cardView.leftSplitTypeLine;
         this.rightSplitName = cardView.rightSplitName;
-        this.rightSplitCosts = cardView.rightSplitCosts;
-        this.rightSplitRules = null;
+        this.rightSplitCosts = cardView.rightSplitCosts == null ? null : cardView.rightSplitCosts.copy();
+        this.rightSplitRules = cardView.rightSplitRules == null ? null : new ArrayList<>(cardView.rightSplitRules);
         this.rightSplitTypeLine = cardView.rightSplitTypeLine;
 
-        this.targets = null;
-
+        this.artRect = cardView.artRect;
+        this.targets = cardView.targets == null ? null : new ArrayList<>(cardView.targets);
         this.pairedCard = cardView.pairedCard;
-        this.bandedCards = null;
+        this.bandedCards = cardView.bandedCards == null ? null : new ArrayList<>(cardView.bandedCards);
         this.paid = cardView.paid;
-        this.counters = null;
+        if (cardView.counters != null) {
+            this.counters = new ArrayList<>();
+            cardView.counters.forEach(c -> this.counters.add(new CounterView(c)));
+        }
 
         this.controlledByOwner = cardView.controlledByOwner;
-
         this.zone = cardView.zone;
-
         this.rotate = cardView.rotate;
         this.hideInfo = cardView.hideInfo;
 
-        this.isPlayable = cardView.isPlayable;
-        this.isChoosable = cardView.isChoosable;
-        this.selected = cardView.selected;
         this.canAttack = cardView.canAttack;
         this.canBlock = cardView.canBlock;
         this.inViewerOnly = cardView.inViewerOnly;
-        this.originalCard = cardView.originalCard.copy();
+        this.originalCard = cardView.originalCard == null ? null : cardView.originalCard.copy();
     }
 
     /**
@@ -276,6 +278,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
                 if (controlled) {
                     this.name = card.getName();
                     this.displayName = card.getName();
+                    this.displayFullName = card.getName();
                     this.alternateName = card.getName();
                 }
                 this.power = "2";
@@ -314,6 +317,15 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
                     break;
             }
         }
+
+        AdventureCard adventureCard = null;
+        AdventureCardSpell adventureCardSpell = null;
+        if (card instanceof AdventureCard) {
+            adventureCard = (AdventureCard) card;
+            adventureCardSpell = (AdventureCardSpell) adventureCard.getSpellCard();
+        }
+
+        String fullCardName;
         if (splitCard != null) {
             this.isSplitCard = true;
             leftSplitName = splitCard.getLeftHalfCard().getName();
@@ -324,16 +336,34 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
             rightSplitCosts = splitCard.getRightHalfCard().getManaCost();
             rightSplitRules = splitCard.getRightHalfCard().getRules(game);
             rightSplitTypeLine = getCardTypeLine(game, splitCard.getRightHalfCard());
+
+            fullCardName = card.getName(); // split card contains full name as normal
+            this.manaCostLeft = splitCard.getLeftHalfCard().getManaCost().getSymbols();
+            this.manaCostRight = splitCard.getRightHalfCard().getManaCost().getSymbols();
+        } else if (adventureCard != null) {
+            fullCardName = adventureCard.getName() + MockCard.ADVENTURE_NAME_SEPARATOR + adventureCardSpell.getName();
+            this.manaCostLeft = adventureCardSpell.getManaCost().getSymbols();
+            this.manaCostRight = adventureCard.getManaCost().getSymbols();
+        } else if (card instanceof MockCard) {
+            // deck editor cards
+            fullCardName = ((MockCard) card).getFullName(true);
+            this.manaCostLeft = ((MockCard) card).getManaCost(CardInfo.ManaCostSide.LEFT).getSymbols();
+            this.manaCostRight = ((MockCard) card).getManaCost(CardInfo.ManaCostSide.RIGHT).getSymbols();
+        } else {
+            fullCardName = card.getName();
+            this.manaCostLeft = card.getManaCost().getSymbols();
+            this.manaCostRight = new ArrayList<>();
         }
+        //this.manaCost = card.getManaCost().getSymbols();
 
         this.name = card.getImageName();
         this.displayName = card.getName();
+        this.displayFullName = fullCardName;
         if (game == null) {
             this.rules = card.getRules();
         } else {
             this.rules = card.getRules(game);
         }
-        this.manaCost = card.getManaCost().getSymbols();
         this.convertedManaCost = card.getManaCost().convertedManaCost();
 
         if (card instanceof Permanent) {
@@ -436,7 +466,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
                     artRect = ArtRect.SPLIT_FUSED;
                 } else if (spell.getCard() != null) {
                     SplitCard wholeCard = ((SplitCardHalf) spell.getCard()).getParentCard();
-                    Abilities<Ability> aftermathHalfAbilities = wholeCard.getRightHalfCard().getAbilities();
+                    Abilities<Ability> aftermathHalfAbilities = wholeCard.getRightHalfCard().getAbilities(game);
                     if (aftermathHalfAbilities.stream().anyMatch(ability -> ability instanceof AftermathAbility)) {
                         if (ty == SpellAbilityType.SPLIT_RIGHT) {
                             artRect = ArtRect.AFTERMATH_BOTTOM;
@@ -468,16 +498,15 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
 
         // Get starting loyalty
         this.startingLoyalty = "" + card.getStartingLoyalty();
-
-
     }
 
-    public CardView(MageObject object) {
+    public CardView(MageObject object, Game game) {
         super(object.getId(), "", "0", false, "", true, "");
         this.originalCard = null;
 
         this.name = object.getName();
         this.displayName = object.getName();
+        this.displayFullName = object.getName();
         if (object instanceof Permanent) {
             this.mageObjectType = MageObjectType.PERMANENT;
             this.power = Integer.toString(object.getPower().getValue());
@@ -492,7 +521,8 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.subTypes = object.getSubtype(null);
         this.superTypes = object.getSuperType();
         this.color = object.getColor(null);
-        this.manaCost = object.getManaCost().getSymbols();
+        this.manaCostLeft = object.getManaCost().getSymbols();
+        this.manaCostRight = new ArrayList<>();
         this.convertedManaCost = object.getManaCost().convertedManaCost();
         if (object instanceof PermanentToken) {
             this.mageObjectType = MageObjectType.TOKEN;
@@ -550,6 +580,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.mageObjectType = MageObjectType.EMBLEM;
         this.name = emblem.getName();
         this.displayName = name;
+        this.displayFullName = name;
         this.rules = emblem.getRules();
         // emblem images are always with common (black) symbol
         this.frameStyle = FrameStyle.M15_NORMAL;
@@ -564,6 +595,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.mageObjectType = MageObjectType.PLANE;
         this.name = plane.getName();
         this.displayName = name;
+        this.displayFullName = name;
         this.rules = plane.getRules();
         // Display the plane in landscape (similar to Fused cards)
         this.rotate = true;
@@ -579,6 +611,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.mageObjectType = MageObjectType.NULL;
         this.name = designation.getName();
         this.displayName = name;
+        this.displayFullName = name;
         this.rules = new ArrayList<>();
         this.rules.add(stackAbility.getRule(designation.getName()));
         this.frameStyle = FrameStyle.M15_NORMAL;
@@ -597,6 +630,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     private void fillEmpty(Card card, boolean controlled) {
         this.name = "Face Down";
         this.displayName = name;
+        this.displayFullName = name;
         this.rules = new ArrayList<>();
         this.power = "";
         this.toughness = "";
@@ -608,7 +642,8 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.color = new ObjectColor();
         this.frameColor = new ObjectColor();
         this.frameStyle = FrameStyle.M15_NORMAL;
-        this.manaCost = new ArrayList<>();
+        this.manaCostLeft = new ArrayList<>();
+        this.manaCostRight = new ArrayList<>();
         this.convertedManaCost = 0;
 
         // the controller can see more information (e.g. enlarged image) than other players for face down cards (e.g. Morph played face down)
@@ -644,6 +679,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.id = token.getId();
         this.name = token.getName();
         this.displayName = token.getName();
+        this.displayFullName = token.getName();
         this.rules = token.getAbilities().getRules(this.name);
         this.power = token.getPower().toString();
         this.toughness = token.getToughness().toString();
@@ -655,7 +691,8 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
         this.color = token.getColor(null);
         this.frameColor = token.getFrameColor(null);
         this.frameStyle = token.getFrameStyle();
-        this.manaCost = token.getManaCost().getSymbols();
+        this.manaCostLeft = token.getManaCost().getSymbols();
+        this.manaCostRight = new ArrayList<>();
         this.rarity = Rarity.SPECIAL;
         this.type = token.getTokenType();
         this.tokenDescriptor = token.getTokenDescriptor();
@@ -681,6 +718,10 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getDisplayFullName() {
+        return displayFullName;
     }
 
     public List<String> getRules() {
@@ -748,7 +789,7 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
     }
 
     public List<String> getManaCost() {
-        return manaCost;
+        return CardUtil.concatManaSymbols(CardInfo.SPLIT_MANA_SEPARATOR_FULL, this.manaCostLeft, this.manaCostRight);
     }
 
     public int getConvertedManaCost() {
@@ -962,30 +1003,6 @@ public class CardView extends SimpleCardView implements SelectableObjectView {
 
     public boolean hideInfo() {
         return hideInfo;
-    }
-
-    public boolean isPlayable() {
-        return isPlayable;
-    }
-
-    public void setPlayable(boolean isPlayable) {
-        this.isPlayable = isPlayable;
-    }
-
-    public boolean isChoosable() {
-        return isChoosable;
-    }
-
-    public void setChoosable(boolean isChoosable) {
-        this.isChoosable = isChoosable;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     public boolean isCanAttack() {

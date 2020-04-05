@@ -1,7 +1,5 @@
-
 package mage.cards.l;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -13,8 +11,9 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetNonBasicLandPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Styxo
  */
 public final class LavaBlister extends CardImpl {
@@ -22,7 +21,7 @@ public final class LavaBlister extends CardImpl {
     public LavaBlister(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{1}{R}");
 
-        // Destroy target nonbasic land unless its controller has Lava Blister deal 6 damage to him or her.
+        // Destroy target nonbasic land unless its controller has Lava Blister deal 6 damage to them.
         this.getSpellAbility().addTarget(new TargetNonBasicLandPermanent());
         this.getSpellAbility().addEffect(new LavaBlisterEffect());
     }
@@ -41,7 +40,7 @@ class LavaBlisterEffect extends OneShotEffect {
 
     public LavaBlisterEffect() {
         super(Outcome.Detriment);
-        this.staticText = "Destroy target nonbasic land unless its controller has {this} deal 6 damage to him or her";
+        this.staticText = "Destroy target nonbasic land unless its controller has {this} deal 6 damage to them";
     }
 
     public LavaBlisterEffect(final LavaBlisterEffect effect) {
@@ -61,7 +60,7 @@ class LavaBlisterEffect extends OneShotEffect {
             if (player != null) {
                 String message = "Have Lava Blister do 6 damage to you?";
                 if (player.chooseUse(Outcome.Damage, message, source, game)) {
-                    player.damage(6, source.getSourceId(), game, false, true);
+                    player.damage(6, source.getSourceId(), game);
                 } else {
                     permanent.destroy(source.getId(), game, false);
                 }

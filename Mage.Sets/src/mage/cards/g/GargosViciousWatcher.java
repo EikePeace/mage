@@ -13,13 +13,11 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
-import mage.game.stack.Spell;
 import mage.target.TargetPermanent;
+import mage.game.stack.Spell;
 
 import java.util.UUID;
 
@@ -31,7 +29,7 @@ public final class GargosViciousWatcher extends CardImpl {
     private static final FilterCard filter = new FilterCard("Hydra spells");
 
     static {
-        filter.add(new SubtypePredicate(SubType.HYDRA));
+        filter.add(SubType.HYDRA.getPredicate());
     }
 
     public GargosViciousWatcher(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +46,8 @@ public final class GargosViciousWatcher extends CardImpl {
         // Hydra spells you cast cost {4} less to cast.
         this.addAbility(new SimpleStaticAbility(new SpellsCostReductionControllerEffect(filter, 4)));
 
-        // Whenever a creature you control becomes the target of a spell, Gargos, Vicious Watcher fights up to one target creature you don't control.
+        // Whenever a creature you control becomes the target of a spell, Gargos, 
+        // Vicious Watcher fights up to one target creature you don't control.
         this.addAbility(new GargosViciousWatcherTriggeredAbility());
     }
 
@@ -67,7 +66,7 @@ class GargosViciousWatcherTriggeredAbility extends TriggeredAbilityImpl {
     private static final FilterPermanent filter = new FilterCreaturePermanent("creature you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     GargosViciousWatcherTriggeredAbility() {
@@ -92,18 +91,20 @@ class GargosViciousWatcherTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent permanent = game.getPermanent(event.getTargetId());
+        MageObject object = game.getObject(event.getSourceId());
         if (permanent == null
+                || object == null
                 || !permanent.isControlledBy(this.controllerId)
                 || !permanent.isCreature()) {
             return false;
         }
-        MageObject object = game.getObject(event.getSourceId());
-        return object instanceof Spell;
+        return object instanceof Spell; // must be a type of spell (instant, sorcery, or aura)
+        
     }
 
     @Override
     public String getRule() {
-        return "Whenever a creature you control becomes the target of a spell, " +
-                "{this} fights up to one target creature you don't control.";
+        return "Whenever a creature you control becomes the target of a spell, "
+                + "{this} fights up to one target creature you don't control.";
     }
 }

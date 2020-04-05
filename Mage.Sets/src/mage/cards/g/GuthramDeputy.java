@@ -9,7 +9,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 import java.util.UUID;
@@ -25,8 +24,8 @@ public final class GuthramDeputy extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new SubtypePredicate(SubType.EQUIPMENT),
-                new SubtypePredicate(SubType.AURA)
+                SubType.EQUIPMENT.getPredicate(),
+                SubType.AURA.getPredicate()
         ));
     }
 

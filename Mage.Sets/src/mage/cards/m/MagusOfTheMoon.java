@@ -10,7 +10,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -24,7 +23,7 @@ public final class MagusOfTheMoon extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent();
 
     static {
-        filter.add(Predicates.not(new SupertypePredicate(SuperType.BASIC)));
+        filter.add(Predicates.not(SuperType.BASIC.getPredicate()));
     }
 
     public MagusOfTheMoon(UUID ownerId, CardSetInfo setInfo) {
@@ -80,8 +79,7 @@ public final class MagusOfTheMoon extends CardImpl {
                         land.removeAllAbilities(source.getSourceId(), game);
                         land.getSubtype(game).removeAll(SubType.getLandTypes());
                         land.getSubtype(game).add(SubType.MOUNTAIN);
-                        break;
-                    case AbilityAddingRemovingEffects_6:
+                        // Mountains have the red mana ability intrinsically so the ability must be added in this layer
                         land.addAbility(new RedManaAbility(), source.getSourceId(), game);
                         break;
                 }
@@ -91,7 +89,7 @@ public final class MagusOfTheMoon extends CardImpl {
 
         @Override
         public boolean hasLayer(Layer layer) {
-            return layer == Layer.AbilityAddingRemovingEffects_6 || layer == Layer.TypeChangingEffects_4;
+            return layer == Layer.TypeChangingEffects_4;
         }
     }
 

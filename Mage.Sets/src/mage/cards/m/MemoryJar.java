@@ -1,8 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.Iterator;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -10,11 +7,7 @@ import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
@@ -23,18 +16,20 @@ import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.players.Player;
 
+import java.util.Iterator;
+import java.util.UUID;
+
 /**
- *
  * @author Plopman
  */
 public final class MemoryJar extends CardImpl {
 
     public MemoryJar(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{5}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{5}");
 
         // {T}, Sacrifice Memory Jar: Each player exiles all cards from their hand face down and draws seven cards.
         // At the beginning of the next end step, each player discards their hand and returns to their hand each
-        //card he or she exiled this way.
+        //card they exiled this way.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new MemoryJarEffect(), new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
@@ -55,7 +50,7 @@ class MemoryJarEffect extends OneShotEffect {
 
     public MemoryJarEffect() {
         super(Outcome.DrawCard);
-        staticText = "Each player exiles all cards from their hand face down and draws seven cards. At the beginning of the next end step, each player discards their hand and returns to their hand each card he or she exiled this way.";
+        staticText = "Each player exiles all cards from their hand face down and draws seven cards. At the beginning of the next end step, each player discards their hand and returns to their hand each card they exiled this way.";
     }
 
     public MemoryJarEffect(final MemoryJarEffect effect) {
@@ -69,9 +64,9 @@ class MemoryJarEffect extends OneShotEffect {
         for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                Cards hand = player.getHand();
-                while (!hand.isEmpty()) {
-                    Card card = hand.get(hand.iterator().next(), game);
+                Cards handCards = new CardsImpl(player.getHand());
+                for (UUID cardId : handCards) {
+                    Card card = handCards.get(cardId, game);
                     if (card != null) {
                         card.moveToExile(getId(), "Memory Jar", source.getSourceId(), game);
                         card.setFaceDown(true, game);
@@ -104,7 +99,7 @@ class MemoryJarDelayedEffect extends OneShotEffect {
 
     public MemoryJarDelayedEffect() {
         super(Outcome.DrawCard);
-        staticText = "At the beginning of the next end step, each player discards their hand and returns to their hand each card he or she exiled this way";
+        staticText = "At the beginning of the next end step, each player discards their hand and returns to their hand each card they exiled this way";
     }
 
     public MemoryJarDelayedEffect(final MemoryJarDelayedEffect effect) {
@@ -129,7 +124,7 @@ class MemoryJarDelayedEffect extends OneShotEffect {
                 }
             }
             //Return to hand
-            for (Iterator<Card> it = cards.getCards(game).iterator(); it.hasNext();) {
+            for (Iterator<Card> it = cards.getCards(game).iterator(); it.hasNext(); ) {
                 Card card = it.next();
                 card.moveToZone(Zone.HAND, source.getSourceId(), game, true);
             }

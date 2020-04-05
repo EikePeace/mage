@@ -1,9 +1,5 @@
-
 package mage.game.permanent.token;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
@@ -17,19 +13,21 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.game.Game;
-import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
- *
  * @author LoneFox
  */
 public final class BelzenlokDemonToken extends TokenImpl {
 
     static final private List<String> tokenImageSets = new ArrayList<>();
+
     static {
         tokenImageSets.addAll(Arrays.asList("DOM"));
     }
@@ -71,7 +69,7 @@ class BelzenlokDemonTokenEffect extends OneShotEffect {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("another creature");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
         filter.add(AnotherPredicate.instance);
     }
 
@@ -97,7 +95,7 @@ class BelzenlokDemonTokenEffect extends OneShotEffect {
         } else {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
-                controller.damage(6, source.getSourceId(), game, false, true);
+                controller.damage(6, source.getSourceId(), game);
             }
         }
         return true;

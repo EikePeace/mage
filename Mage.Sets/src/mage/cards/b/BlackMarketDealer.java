@@ -17,8 +17,6 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.TargetPlayer;
 import mage.target.common.TargetOpponentsCreaturePermanent;
 
@@ -33,8 +31,8 @@ public final class BlackMarketDealer extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a Rogue or Hunter creature you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(Predicates.or(new SubtypePredicate(SubType.ROGUE), new SubtypePredicate(SubType.HUNTER)));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(Predicates.or(SubType.ROGUE.getPredicate(), SubType.HUNTER.getPredicate()));
     }
 
     public BlackMarketDealer(UUID ownerId, CardSetInfo setInfo) {

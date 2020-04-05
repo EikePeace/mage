@@ -1,4 +1,3 @@
-
 package mage.cards.f;
 
 import java.util.UUID;
@@ -15,10 +14,8 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
+import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -31,12 +28,12 @@ public final class Filth extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("Swamp");
 
     static {
-        filter.add(new CardTypePredicate(CardType.LAND));
-        filter.add(new SubtypePredicate(SubType.SWAMP));
+        filter.add(CardType.LAND.getPredicate());
+        filter.add(SubType.SWAMP.getPredicate());
     }
 
     public Filth(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{B}");
         this.subtype.add(SubType.INCARNATION);
 
         this.power = new MageInt(2);
@@ -47,7 +44,7 @@ public final class Filth extends CardImpl {
 
         // As long as Filth is in your graveyard and you control a Swamp, creatures you control have swampwalk.
         ContinuousEffect effect = new GainAbilityControlledEffect(new SwampwalkAbility(),
-                Duration.WhileOnBattlefield, new FilterCreaturePermanent());
+                Duration.WhileOnBattlefield, StaticFilters.FILTER_PERMANENT_CREATURES);
         ConditionalContinuousEffect filthEffect = new ConditionalContinuousEffect(effect,
                 new PermanentsOnTheBattlefieldCondition(filter), ruleText);
         this.addAbility(new SimpleStaticAbility(Zone.GRAVEYARD, filthEffect));

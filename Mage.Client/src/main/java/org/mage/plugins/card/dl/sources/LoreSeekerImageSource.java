@@ -13,21 +13,22 @@ public enum LoreSeekerImageSource implements CardImageSource {
 
     private static final Set<String> supportedSets = new LinkedHashSet<String>() {
         {
-            add("AYR");
             add("DMS");
             add("ANK");
+            add("AYR");
             add("LDO");
             add("TSL");
             add("VLN");
             add("JAN");
+            add("NET");
             add("CC18");
             add("HLW");
             add("VST");
             add("DHM");
             add("RAK");
-            add("NET");
             add("EAU");
             add("SOU");
+            add("SRC");
         }
     };
 

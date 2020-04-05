@@ -14,8 +14,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 
 /**
@@ -35,9 +33,9 @@ public final class BorderlandBehemoth extends CardImpl {
         
         // Borderland Behemoth gets +4/+4 for each other Giant you control.
         FilterCreaturePermanent filter = new FilterCreaturePermanent("other Giant you control");
-        filter.add(new SubtypePredicate(SubType.GIANT));
+        filter.add(SubType.GIANT.getPredicate());
         filter.add(Predicates.not(new PermanentIdPredicate(this.getId())));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         DynamicValue xValue = new PermanentsOnBattlefieldCount(filter, 4);
         Effect effect = new BoostSourceEffect(xValue, xValue, Duration.WhileOnBattlefield, false);
         effect.setText("{this} gets +4/+4 for each other Giant you control");

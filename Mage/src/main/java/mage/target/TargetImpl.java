@@ -23,7 +23,7 @@ public abstract class TargetImpl implements Target {
     protected final Map<UUID, Integer> zoneChangeCounters = new HashMap<>();
 
     protected String targetName;
-    protected Zone zone;
+    protected Zone zone; // all targets will be filtered by that zone, don't use "multi-zone" filter
     protected int maxNumberOfTargets;
     protected int minNumberOfTargets;
     protected boolean required = true;
@@ -37,6 +37,7 @@ public abstract class TargetImpl implements Target {
 
     protected int targetTag; // can be set if other target check is needed (AnotherTargetPredicate)
     protected String chooseHint = null; // UI choose hints after target name
+    protected boolean shouldReportEvents = true;
 
     @Override
     public abstract TargetImpl copy();
@@ -65,6 +66,7 @@ public abstract class TargetImpl implements Target {
         this.abilityController = target.abilityController;
         this.targetTag = target.targetTag;
         this.chooseHint = target.chooseHint;
+        this.shouldReportEvents = target.shouldReportEvents;
     }
 
     @Override
@@ -213,12 +215,12 @@ public abstract class TargetImpl implements Target {
         //20100423 - 113.3
         if (getMaxNumberOfTargets() == 0 || targets.size() < getMaxNumberOfTargets()) {
             if (!targets.containsKey(id)) {
-                if (source != null && !skipEvent) {
+                if (source != null && !skipEvent && shouldReportEvents) {
                     if (!game.replaceEvent(GameEvent.getEvent(EventType.TARGET, id, source.getSourceId(), source.getControllerId()))) {
                         targets.put(id, 0);
                         rememberZoneChangeCounter(id, game);
                         chosen = targets.size() >= getNumberOfTargets();
-                        if (!skipEvent) {
+                        if (!skipEvent && shouldReportEvents) {
                             game.addSimultaneousEvent(GameEvent.getEvent(EventType.TARGETED, id, source.getSourceId(), source.getControllerId()));
                         }
                     }
@@ -251,12 +253,12 @@ public abstract class TargetImpl implements Target {
         if (targets.containsKey(id)) {
             amount += targets.get(id);
         }
-        if (source != null && !skipEvent) {
+        if (source != null && !skipEvent && shouldReportEvents) {
             if (!game.replaceEvent(GameEvent.getEvent(EventType.TARGET, id, source.getSourceId(), source.getControllerId()))) {
                 targets.put(id, amount);
                 rememberZoneChangeCounter(id, game);
                 chosen = targets.size() >= getNumberOfTargets();
-                if (!skipEvent) {
+                if (!skipEvent && shouldReportEvents) {
                     game.fireEvent(GameEvent.getEvent(EventType.TARGETED, id, source.getSourceId(), source.getControllerId()));
                 }
             }
@@ -449,9 +451,7 @@ public abstract class TargetImpl implements Target {
 
     @Override
     public List<UUID> getTargets() {
-        ArrayList<UUID> newList = new ArrayList<>();
-        newList.addAll(targets.keySet());
-        return newList;
+        return new ArrayList<>(targets.keySet());
     }
 
     @Override
@@ -550,5 +550,10 @@ public abstract class TargetImpl implements Target {
     public Target withChooseHint(String chooseHint) {
         this.chooseHint = chooseHint;
         return this;
+    }
+
+    @Override
+    public void setEventReporting(boolean shouldReport) {
+        this.shouldReportEvents = shouldReport;
     }
 }

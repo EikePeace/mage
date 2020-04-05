@@ -1,7 +1,5 @@
-
 package mage.cards.w;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.Effect;
@@ -18,14 +16,15 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class WarstormSurge extends CardImpl {
 
     public WarstormSurge(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{5}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{5}{R}");
 
         // Whenever a creature enters the battlefield under your control, it deals damage equal to its power to any target.
         Ability ability = new WarstormSurgeTriggeredAbility();
@@ -61,7 +60,8 @@ class WarstormSurgeTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent permanent = game.getPermanent(event.getTargetId());
-        if (permanent.isCreature()
+        if (permanent != null
+                && permanent.isCreature()
                 && permanent.isControlledBy(this.controllerId)) {
             Effect effect = this.getEffects().get(0);
             effect.setValue("damageSource", event.getTargetId());
@@ -111,7 +111,7 @@ class WarstormSurgeEffect extends OneShotEffect {
             }
             Player player = game.getPlayer(target);
             if (player != null) {
-                player.damage(amount, creature.getId(), game, false, true);
+                player.damage(amount, creature.getId(), game);
                 return true;
             }
         }

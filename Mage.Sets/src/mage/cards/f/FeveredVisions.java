@@ -1,8 +1,5 @@
-
 package mage.cards.f;
 
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -14,17 +11,19 @@ import mage.constants.TargetController;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author fireshoes
  */
 public final class FeveredVisions extends CardImpl {
 
     public FeveredVisions(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{1}{U}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{U}{R}");
 
         // At the beginning of each player's end step, that player draws a card. If the player is your opponent and has four or more cards in hand,
-        // Fevered Visions deals 2 damage to him or her.
+        // Fevered Visions deals 2 damage to that player.
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new FeveredVisionsEffect(), TargetController.ANY, false));
     }
 
@@ -42,7 +41,7 @@ class FeveredVisionsEffect extends OneShotEffect {
 
     public FeveredVisionsEffect() {
         super(Outcome.DrawCard);
-        staticText = "that player draws a card. If the player is your opponent and has four or more cards in hand, {this} deals 2 damage to him or her";
+        staticText = "that player draws a card. If the player is your opponent and has four or more cards in hand, {this} deals 2 damage to that player";
     }
 
     public FeveredVisionsEffect(final FeveredVisionsEffect effect) {
@@ -58,7 +57,7 @@ class FeveredVisionsEffect extends OneShotEffect {
             player.drawCards(1, game);
             Set<UUID> opponents = game.getOpponents(source.getControllerId());
             if (opponents.contains(player.getId()) && player.getHand().size() > 3) {
-                player.damage(2, source.getSourceId(), game, false, true);
+                player.damage(2, source.getSourceId(), game);
             }
             return true;
         }

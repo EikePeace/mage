@@ -20,7 +20,6 @@ import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterControlledEnchantmentPermanent;
 import mage.filter.common.FilterControlledPlaneswalkerPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -42,7 +41,7 @@ public final class CataclysmicGearhulk extends CardImpl {
         // Vigilance
         this.addAbility(VigilanceAbility.getInstance());
 
-        // When Cataclysmic Gearhulk enters the battlefield, each player chooses from among the non-land permanents he or she controls an artifact, a creature,
+        // When Cataclysmic Gearhulk enters the battlefield, each player chooses from among the non-land permanents they control an artifact, a creature,
         // an enchantment, and a planeswalker, then sacrifices the rest.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CataclysmicGearhulkEffect(), false));
     }
@@ -66,22 +65,22 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
 
     static {
         filterArtifact.add(Predicates.and(
-                new CardTypePredicate(CardType.ARTIFACT),
-                Predicates.not(new CardTypePredicate(CardType.LAND))));
+                CardType.ARTIFACT.getPredicate(),
+                Predicates.not(CardType.LAND.getPredicate())));
         filterCreature.add(Predicates.and(
-                new CardTypePredicate(CardType.CREATURE),
-                Predicates.not(new CardTypePredicate(CardType.LAND))));
+                CardType.CREATURE.getPredicate(),
+                Predicates.not(CardType.LAND.getPredicate())));
         filterEnchantment.add(Predicates.and(
-                new CardTypePredicate(CardType.ENCHANTMENT),
-                Predicates.not(new CardTypePredicate(CardType.LAND))));
+                CardType.ENCHANTMENT.getPredicate(),
+                Predicates.not(CardType.LAND.getPredicate())));
         filterPlaneswalker.add(Predicates.and(
-                new CardTypePredicate(CardType.PLANESWALKER),
-                Predicates.not(new CardTypePredicate(CardType.LAND))));
+                CardType.PLANESWALKER.getPredicate(),
+                Predicates.not(CardType.LAND.getPredicate())));
     }
 
     public CataclysmicGearhulkEffect() {
         super(Outcome.DestroyPermanent);
-        staticText = "Each player chooses from among the non-land permanents he or she controls an artifact, a creature, an enchantment, and a planeswalker, "
+        staticText = "Each player chooses from among the non-land permanents they control an artifact, a creature, an enchantment, and a planeswalker, "
                 + "then sacrifices the rest";
     }
 

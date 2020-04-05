@@ -12,7 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -47,7 +46,7 @@ public final class Hogtie extends CardImpl {
         private static final FilterPermanent filter = new FilterPermanent("creature");
 
         static {
-            filter.add(new CardTypePredicate(CardType.CREATURE));
+            filter.add(CardType.CREATURE.getPredicate());
         }
 
 

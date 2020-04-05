@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import mage.MageInt;
@@ -15,7 +14,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.other.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -44,7 +42,10 @@ public final class DiluvianPrimordial extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
 
-        // When Diluvian Primordial enters the battlefield, for each opponent, you may cast up to one target instant or sorcery card from that player's graveyard without paying its mana cost. If a card cast this way would be put into a graveyard this turn, exile it instead.
+        // When Diluvian Primordial enters the battlefield, for each opponent, 
+        // you may cast up to one target instant or sorcery card from that 
+        // player's graveyard without paying its mana cost. If a card cast this way 
+        // would be put into a graveyard this turn, exile it instead.
         Ability ability = new EntersBattlefieldTriggeredAbility(new DiluvianPrimordialEffect(), false);
         ability.setTargetAdjuster(DiluvianPrimordialAdjuster.instance);
         this.addAbility(ability);
@@ -71,9 +72,10 @@ enum DiluvianPrimordialAdjuster implements TargetAdjuster {
             if (opponent == null) {
                 continue;
             }
-            FilterCard filter = new FilterCard("instant or sorcery card from " + opponent.getLogName() + "'s graveyard");
+            FilterCard filter = new FilterCard("instant or sorcery card from "
+                    + opponent.getLogName() + "'s graveyard");
             filter.add(new OwnerIdPredicate(opponentId));
-            filter.add(Predicates.or(new CardTypePredicate(CardType.INSTANT), new CardTypePredicate(CardType.SORCERY)));
+            filter.add(Predicates.or(CardType.INSTANT.getPredicate(), CardType.SORCERY.getPredicate()));
             TargetCardInOpponentsGraveyard target = new TargetCardInOpponentsGraveyard(0, 1, filter);
             ability.addTarget(target);
         }
@@ -84,7 +86,10 @@ class DiluvianPrimordialEffect extends OneShotEffect {
 
     public DiluvianPrimordialEffect() {
         super(Outcome.PlayForFree);
-        this.staticText = "for each opponent, you may cast up to one target instant or sorcery card from that player's graveyard without paying its mana cost. If a card cast this way would be put into a graveyard this turn, exile it instead";
+        this.staticText = "for each opponent, you may cast up to one target "
+                + "instant or sorcery card from that player's graveyard without "
+                + "paying its mana cost. If a card cast this way would be put "
+                + "into a graveyard this turn, exile it instead";
     }
 
     public DiluvianPrimordialEffect(final DiluvianPrimordialEffect effect) {
@@ -104,8 +109,12 @@ class DiluvianPrimordialEffect extends OneShotEffect {
                 if (target instanceof TargetCardInOpponentsGraveyard) {
                     Card targetCard = game.getCard(target.getFirstTarget());
                     if (targetCard != null) {
-                        if (controller.chooseUse(outcome, "Cast " + targetCard.getLogName() + '?', source, game)) {
-                            if (controller.cast(targetCard.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game))) {
+                        if (controller.chooseUse(Outcome.PlayForFree, "Cast " + targetCard.getLogName() + '?', source, game)) {
+                            game.getState().setValue("PlayFromNotOwnHandZone" + targetCard.getId(), Boolean.TRUE);
+                            Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(targetCard, game, true),
+                                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game.getState().setValue("PlayFromNotOwnHandZone" + targetCard.getId(), null);
+                            if (cardWasCast) {
                                 ContinuousEffect effect = new DiluvianPrimordialReplacementEffect();
                                 effect.setTargetPointer(new FixedTarget(targetCard.getId(), game.getState().getZoneChangeCounter(targetCard.getId())));
                                 game.addEffect(effect, source);

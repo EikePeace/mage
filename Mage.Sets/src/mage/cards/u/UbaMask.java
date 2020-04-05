@@ -30,7 +30,7 @@ public final class UbaMask extends CardImpl {
         // If a player would draw a card, that player exiles that card face up instead.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new UbaMaskReplacementEffect()));
 
-        // Each player may play cards he or she exiled with Uba Mask this turn.
+        // Each player may play cards they exiled with Uba Mask this turn.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new UbaMaskPlayEffect()), new UbaMaskExiledCardsWatcher());
     }
 
@@ -93,7 +93,7 @@ class UbaMaskPlayEffect extends AsThoughEffectImpl {
 
     public UbaMaskPlayEffect() {
         super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.EndOfGame, Outcome.Benefit);
-        staticText = "Each player may play cards he or she exiled with {this} this turn";
+        staticText = "Each player may play cards they exiled with {this} this turn";
     }
 
     public UbaMaskPlayEffect(final UbaMaskPlayEffect effect) {
@@ -133,16 +133,6 @@ class UbaMaskExiledCardsWatcher extends Watcher {
 
     public UbaMaskExiledCardsWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    public UbaMaskExiledCardsWatcher(final UbaMaskExiledCardsWatcher watcher) {
-        super(watcher);
-        exiledCards.putAll(watcher.exiledCards);
-    }
-
-    @Override
-    public UbaMaskExiledCardsWatcher copy() {
-        return new UbaMaskExiledCardsWatcher(this);
     }
 
     @Override

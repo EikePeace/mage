@@ -1,6 +1,10 @@
 package mage.server.util;
 
+import mage.MageObject;
 import mage.abilities.Ability;
+import mage.abilities.ActivatedAbility;
+import mage.abilities.effects.ContinuousEffect;
+import mage.abilities.effects.Effect;
 import mage.cards.Card;
 import mage.cards.repository.CardCriteria;
 import mage.cards.repository.CardInfo;
@@ -13,6 +17,8 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.GameCommanderImpl;
+import mage.game.command.CommandObject;
+import mage.game.command.Plane;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.RandomUtil;
@@ -40,25 +46,38 @@ public final class SystemUtil {
     private static final String INIT_FILE_PATH = "config" + File.separator + "init.txt";
     private static final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(SystemUtil.class);
 
-    private static final String COMMAND_MANA_ADD = "@mana add";
-    private static final String COMMAND_LANDS_ADD = "@lands add";
-    private static final String COMMAND_RUN_CUSTOM_CODE = "@run custom code";
-    private static final String COMMAND_CLEAR_BATTLEFIELD = "@clear battlefield";
+    // replace ref group command like @group by real commands from that group
+    // example:
+    // [my group]
+    // command 1
+    // @another group
+    // [another group]
+    // command 2
+    // command 3
+    private static final String COMMAND_REF_PREFIX = "@";
+
+    // transform special group names from init.txt to special commands in choose dialog:
+    // [@mana add] -> MANA ADD
+    private static final String COMMAND_MANA_ADD = "@mana add"; // TODO: not implemented
+    private static final String COMMAND_LANDS_ADD = "@lands add"; // TODO: not implemented
+    private static final String COMMAND_RUN_CUSTOM_CODE = "@run custom code"; // TODO: not implemented
     private static final String COMMAND_SHOW_OPPONENT_HAND = "@show opponent hand";
     private static final String COMMAND_SHOW_OPPONENT_LIBRARY = "@show opponent library";
     private static final String COMMAND_SHOW_MY_HAND = "@show my hand";
     private static final String COMMAND_SHOW_MY_LIBRARY = "@show my library";
+    private static final String COMMAND_ACTIVATE_OPPONENT_ABILITY = "@activate opponent ability";
     private static final Map<String, String> supportedCommands = new HashMap<>();
 
     static {
+        // special commands names in choose dialog
         supportedCommands.put(COMMAND_MANA_ADD, "MANA ADD");
         supportedCommands.put(COMMAND_LANDS_ADD, "LANDS ADD");
         supportedCommands.put(COMMAND_RUN_CUSTOM_CODE, "RUN CUSTOM CODE");
-        supportedCommands.put(COMMAND_CLEAR_BATTLEFIELD, "CLAR BATTLEFIELD");
         supportedCommands.put(COMMAND_SHOW_OPPONENT_HAND, "SHOW OPPONENT HAND");
         supportedCommands.put(COMMAND_SHOW_OPPONENT_LIBRARY, "SHOW OPPONENT LIBRARY");
         supportedCommands.put(COMMAND_SHOW_MY_HAND, "SHOW MY HAND");
         supportedCommands.put(COMMAND_SHOW_MY_LIBRARY, "SHOW MY LIBRARY");
+        supportedCommands.put(COMMAND_ACTIVATE_OPPONENT_ABILITY, "ACTIVATE OPPONENT ABILITY");
     }
 
     private static final Pattern patternGroup = Pattern.compile("\\[(.+)\\]"); // [test new card]
@@ -76,7 +95,7 @@ public final class SystemUtil {
 
         String name;
         boolean isSpecialCommand;
-        ArrayList<String> commands = new ArrayList<>();
+        List<String> commands = new ArrayList<>();
 
         public CommandGroup(String name) {
             this(name, false);
@@ -105,14 +124,14 @@ public final class SystemUtil {
         }
     }
 
-    private static String getCardsListForSpecialInform(Game game, Set<UUID> cardsList, ArrayList<String> commandParams) {
+    private static String getCardsListForSpecialInform(Game game, Set<UUID> cardsList, List<String> commandParams) {
         return getCardsListForSpecialInform(game, cardsList.stream().collect(Collectors.toList()), commandParams);
     }
 
-    private static String getCardsListForSpecialInform(Game game, List<UUID> cardsList, ArrayList<String> commandParams) {
+    private static String getCardsListForSpecialInform(Game game, List<UUID> cardsList, List<String> commandParams) {
         // cards list with ext info
 
-        ArrayList<String> res = new ArrayList<>();
+        List<String> res = new ArrayList<>();
 
         for (UUID cardID : cardsList) {
             Card card = game.getCard(cardID);
@@ -233,8 +252,8 @@ public final class SystemUtil {
      * <br/>
      * <b>Implementation note:</b><br/>
      * 1. Read init.txt line by line<br/>
-     * 2. Parse line using for searching groups like: [group 1]
-     * 3. Parse line using the following format: line ::=
+     * 2. Parse line using for searching groups like: [group 1] 3. Parse line
+     * using the following format: line ::=
      * <zone>:<nickname>:<card name>:<amount><br/>
      * 4. If zone equals to 'hand', add card to player's library<br/>
      * 5a. Then swap added card with any card in player's hand<br/>
@@ -267,7 +286,7 @@ public final class SystemUtil {
             // 3. process system commands
             // 4. run commands from selected group
             // 1. parse
-            ArrayList<CommandGroup> groups = new ArrayList<>();
+            List<CommandGroup> groups = new ArrayList<>();
 
             try (Scanner scanner = new Scanner(f)) {
 
@@ -389,9 +408,79 @@ public final class SystemUtil {
                             game.informPlayer(feedbackPlayer, info);
                         }
                         break;
+
+                    case COMMAND_ACTIVATE_OPPONENT_ABILITY:
+                        // WARNING, maybe very bugged if called in wrong priority
+                        // uses choose triggered ability dialog to select it
+                        if (feedbackPlayer != null) {
+                            UUID savedPriorityPlayer = null;
+                            if (game.getActivePlayerId() != opponent.getId()) {
+                                savedPriorityPlayer = game.getActivePlayerId();
+                            }
+
+                            // change active player to find and play selected abilities (it's danger and buggy code)
+                            if (savedPriorityPlayer != null) {
+                                game.getState().setPriorityPlayerId(opponent.getId());
+                                game.firePriorityEvent(opponent.getId());
+                            }
+
+                            List<Ability> abilities = opponent.getPlayable(game, true);
+                            Map<String, String> choices = new HashMap<>();
+                            abilities.forEach(ability -> {
+                                MageObject object = ability.getSourceObject(game);
+                                choices.put(ability.getId().toString(), object.getName() + ": " + ability.toString());
+                            });
+                            // TODO: set priority for us?
+                            Choice choice = new ChoiceImpl();
+                            choice.setMessage("Choose playable ability to activate by opponent " + opponent.getName());
+                            choice.setKeyChoices(choices);
+                            if (feedbackPlayer.choose(Outcome.Detriment, choice, game) && choice.getChoiceKey() != null) {
+                                String needId = choice.getChoiceKey();
+                                Optional<Ability> ability = abilities.stream().filter(a -> a.getId().toString().equals(needId)).findFirst();
+                                if (ability.isPresent()) {
+                                    // TODO: set priority for player?
+                                    ActivatedAbility activatedAbility = (ActivatedAbility) ability.get();
+                                    game.informPlayers(feedbackPlayer.getLogName() + " as another player " + opponent.getLogName()
+                                            + " trying to force an activate ability: " + activatedAbility.getGameLogMessage(game));
+                                    if (opponent.activateAbility(activatedAbility, game)) {
+                                        game.informPlayers("Force to activate ability: DONE");
+                                    } else {
+                                        game.informPlayers("Force to activate ability: FAIL");
+                                    }
+                                }
+                            }
+                            // restore original priority player
+                            if (savedPriorityPlayer != null) {
+                                game.getState().setPriorityPlayerId(savedPriorityPlayer);
+                                game.firePriorityEvent(savedPriorityPlayer);
+                            }
+                        }
+                        break;
                 }
 
                 return;
+            }
+
+            // insert group refs as extra commands (only user defined groups allowed, no special)
+            Map<String, CommandGroup> otherGroupRefs = new HashMap<>();
+            for (CommandGroup group : groups) {
+                if (group != runGroup) {
+                    otherGroupRefs.putIfAbsent(COMMAND_REF_PREFIX + group.name, group);
+                }
+            }
+            for (int i = runGroup.commands.size() - 1; i >= 0; i--) {
+                String line = runGroup.commands.get(i);
+                // replace ref by real commands from another group
+                if (line.startsWith(COMMAND_REF_PREFIX)) {
+                    CommandGroup other = otherGroupRefs.getOrDefault(line, null);
+                    if (other != null && !other.isSpecialCommand) {
+                        logger.info("Replace ref group " + line + " by " + other.commands.size() + " commands");
+                        runGroup.commands.remove(i);
+                        runGroup.commands.addAll(i, other.commands);
+                    } else {
+                        logger.error("Can't find ref group: " + line);
+                    }
+                }
             }
 
             // 4. run commands
@@ -432,6 +521,23 @@ public final class SystemUtil {
                     }
                 } else if ("plane".equalsIgnoreCase(command.zone)) {
                     // eg: plane:Human:BantPlane:1
+                    // Steps: 1) Remove the last plane and set its effects to discarded
+                    for (CommandObject cobject : game.getState().getCommand()) {
+                        if (cobject instanceof Plane) {
+                            if (cobject.getAbilities() != null) {
+                                for (Ability ability : cobject.getAbilities()) {
+                                    for (Effect effect : ability.getEffects()) {
+                                        if (effect instanceof ContinuousEffect) {
+                                            ((ContinuousEffect) effect).discard();
+                                        }
+                                    }
+                                }
+                            }
+                            game.getState().removeTriggersOfSourceId(cobject.getId());
+                            game.getState().getCommand().remove(cobject);
+                            break;
+                        }
+                    }
                     Class<?> c = Class.forName("mage.game.command.planes." + command.cardName);
                     Constructor<?> cons = c.getConstructor();
                     Object plane = cons.newInstance();
@@ -483,12 +589,18 @@ public final class SystemUtil {
                     gameZone = Zone.LIBRARY;
                 } else if ("token".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.BATTLEFIELD;
+                } else if ("exiled".equalsIgnoreCase(command.zone)) {
+                    gameZone = Zone.EXILED;
+                } else if ("outside".equalsIgnoreCase(command.zone)) {
+                    gameZone = Zone.OUTSIDE;
                 } else if ("emblem".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.COMMAND;
                 } else if ("plane".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.COMMAND;
                 } else if ("commander".equalsIgnoreCase(command.zone)) {
                     gameZone = Zone.COMMAND;
+                } else if ("sideboard".equalsIgnoreCase(command.zone)) {
+                    gameZone = Zone.OUTSIDE;
                 } else {
                     logger.warn("Unknown zone [" + command.zone + "]: " + line);
                     continue;
@@ -527,6 +639,11 @@ public final class SystemUtil {
                     } else {
                         logger.fatal("Commander card can be used in commander game only: " + command.cardName);
                     }
+                } else if ("sideboard".equalsIgnoreCase(command.zone) && cardsToLoad.size() > 0) {
+                    // put to sideboard
+                    for (Card card : cardsToLoad) {
+                        player.getSideboard().add(card);
+                    }
                 } else {
                     // as other card
                     for (Card card : cardsToLoad) {
@@ -560,8 +677,17 @@ public final class SystemUtil {
                 break;
             case STACK:
                 card.cast(game, Zone.EXILED, card.getSpellAbility(), player.getId());
+                break;
+            case EXILED:
+                // nothing to do
+                break;
+            case OUTSIDE:
+                card.setZone(Zone.OUTSIDE, game);
+                game.getExile().getPermanentExile().remove(card);
+                break;
             default:
                 card.moveToZone(zone, null, game, false);
+                break;
         }
         logger.info("Added card to player's " + zone.toString() + ": " + card.getName() + ", player = " + player.getName());
     }

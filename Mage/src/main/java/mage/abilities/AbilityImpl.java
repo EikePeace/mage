@@ -1,17 +1,13 @@
 package mage.abilities;
 
 import mage.MageObject;
-import mage.Mana;
 import mage.abilities.costs.*;
 import mage.abilities.costs.common.PayLifeCost;
-import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.*;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ManaEffect;
-import mage.abilities.effects.mana.DynamicManaEffect;
 import mage.abilities.hint.Hint;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.cards.Card;
@@ -21,7 +17,6 @@ import mage.game.Game;
 import mage.game.command.Emblem;
 import mage.game.command.Plane;
 import mage.game.events.GameEvent;
-import mage.game.events.ManaEvent;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.game.stack.StackAbility;
@@ -57,7 +52,7 @@ public abstract class AbilityImpl implements Ability {
     protected ManaCosts<ManaCost> manaCostsToPay;
     protected Costs<Cost> costs;
     protected Costs<Cost> optionalCosts;
-    protected Modes modes;
+    protected Modes modes; // access to it by GetModes only (it's can be override by some abilities)
     protected Zone zone;
     protected String name;
     protected AbilityWord abilityWord;
@@ -65,16 +60,16 @@ public abstract class AbilityImpl implements Ability {
     protected boolean ruleAtTheTop = false;
     protected boolean ruleVisible = true;
     protected boolean ruleAdditionalCostsVisible = true;
-    protected boolean costModificationActive = true;
     protected boolean activated = false;
     protected boolean worksFaceDown = false;
     protected int sourceObjectZoneChangeCounter;
-    protected List<Watcher> watchers = new ArrayList<>();
+    protected List<Watcher> watchers = new ArrayList<>(); // access to it by GetWatchers only (it's can be override by some abilities)
     protected List<Ability> subAbilities = null;
     protected boolean canFizzle = true;
     protected TargetAdjuster targetAdjuster = null;
     protected CostAdjuster costAdjuster = null;
     protected List<Hint> hints = new ArrayList<>();
+    protected Outcome customOutcome = null; // uses for AI decisions instead effects
 
     public AbilityImpl(AbilityType abilityType, Zone zone) {
         this.id = UUID.randomUUID();
@@ -101,7 +96,7 @@ public abstract class AbilityImpl implements Ability {
         this.manaCostsToPay = ability.manaCostsToPay.copy();
         this.costs = ability.costs.copy();
         this.optionalCosts = ability.optionalCosts.copy();
-        for (Watcher watcher : ability.watchers) {
+        for (Watcher watcher : ability.getWatchers()) {
             watchers.add(watcher.copy());
         }
 
@@ -115,7 +110,6 @@ public abstract class AbilityImpl implements Ability {
         this.ruleAtTheTop = ability.ruleAtTheTop;
         this.ruleVisible = ability.ruleVisible;
         this.ruleAdditionalCostsVisible = ability.ruleAdditionalCostsVisible;
-        this.costModificationActive = ability.costModificationActive;
         this.worksFaceDown = ability.worksFaceDown;
         this.abilityWord = ability.abilityWord;
         this.sourceObjectZoneChangeCounter = ability.sourceObjectZoneChangeCounter;
@@ -125,6 +119,7 @@ public abstract class AbilityImpl implements Ability {
         for (Hint hint : ability.getHints()) {
             this.hints.add(hint.copy());
         }
+        this.customOutcome = ability.customOutcome;
     }
 
     @Override
@@ -203,7 +198,7 @@ public abstract class AbilityImpl implements Ability {
             /**
              * game.applyEffects() has to be done at least for every effect that
              * moves cards/permanent between zones, or changes control of
-             * objects so Static effects work as intened if dependant from the
+             * objects so Static effects work as intended if dependant from the
              * moved objects zone it is in Otherwise for example were static
              * abilities with replacement effects deactivated too late Example:
              * {@link org.mage.test.cards.replacement.DryadMilitantTest#testDiesByDestroy testDiesByDestroy}
@@ -262,8 +257,9 @@ public abstract class AbilityImpl implements Ability {
                 this.getManaCostsToPay().clear();
             }
         }
-        if (modes.getAdditionalCost() != null) {
-            modes.getAdditionalCost().addOptionalAdditionalModeCosts(this, game);
+
+        if (getModes().getAdditionalCost() != null) {
+            getModes().getAdditionalCost().addOptionalAdditionalModeCosts(this, game);
         }
         // 20130201 - 601.2b
         // If the spell has alternative or additional costs that will be paid as it's being cast such
@@ -312,12 +308,12 @@ public abstract class AbilityImpl implements Ability {
             // each target the spell requires. A spell may require some targets only if an alternative or
             // additional cost (such as a buyback or kicker cost), or a particular mode, was chosen for it;
             // otherwise, the spell is cast as though it did not require those targets. If the spell has a
-            // variable number of targets, the player announces how many targets he or she will choose before
-            // he or she announces those targets. The same target can't be chosen multiple times for any one
+            // variable number of targets, the player announces how many targets they will choose before
+            // they announce those targets. The same target can't be chosen multiple times for any one
             // instance of the word "target" on the spell. However, if the spell uses the word "target" in
             // multiple places, the same object, player, or zone can be chosen once for each instance of the
             // word "target" (as long as it fits the targeting criteria). If any effects say that an object
-            // or player must be chosen as a target, the player chooses targets so that he or she obeys the
+            // or player must be chosen as a target, the player chooses targets so that they obey the
             // maximum possible number of such effects without violating any rules or effects that say that
             // an object or player can't be chosen as a target. The chosen players, objects, and/or zones
             // each become a target of that spell. (Any abilities that trigger when those players, objects,
@@ -328,7 +324,7 @@ public abstract class AbilityImpl implements Ability {
                 sourceObject.adjustTargets(this, game);
             }
             if (!getTargets().isEmpty()) {
-                Outcome outcome = getEffects().isEmpty() ? Outcome.Detriment : getEffects().get(0).getOutcome();
+                Outcome outcome = getEffects().getOutcome(this);
                 // only activated abilities can be canceled by user (not triggered)
                 if (!getTargets().chooseTargets(outcome, this.controllerId, this, noMana, game, this instanceof ActivatedAbility)) {
                     // was canceled during targer selection
@@ -354,30 +350,9 @@ public abstract class AbilityImpl implements Ability {
         }
 
         //20101001 - 601.2e
-        if (costModificationActive) {
-
-            // TODO: replace all AdjustingSourceCosts abilities to continuus effect, see Affinity example
-            //20100716 - 601.2e
-            if (sourceObject != null) {
-                sourceObject.adjustCosts(this, game);
-                if (sourceObject instanceof Card) {
-                    for (Ability ability : ((Card) sourceObject).getAbilities(game)) {
-                        if (ability instanceof AdjustingSourceCosts) {
-                            ((AdjustingSourceCosts) ability).adjustCosts(this, game);
-                        }
-                    }
-                } else {
-                    for (Ability ability : sourceObject.getAbilities()) {
-                        if (ability instanceof AdjustingSourceCosts) {
-                            ((AdjustingSourceCosts) ability).adjustCosts(this, game);
-                        }
-                    }
-                }
-            }
-
+        if (sourceObject != null) {
+            sourceObject.adjustCosts(this, game); // still needed
             game.getContinuousEffects().costModification(this, game);
-        } else {
-            costModificationActive = true;
         }
 
         UUID activatorId = controllerId;
@@ -404,27 +379,6 @@ public abstract class AbilityImpl implements Ability {
             game.informPlayers(controller.getLogName() + " announces a value of " + xValue + " for " + variableManaCost.getText());
         }
         activated = true;
-        // fire if tapped for mana (may only fire now because else costs of ability itself can be payed with mana of abilities that trigger for that event
-        if (this.getAbilityType() == AbilityType.MANA) {
-            for (Cost cost : costs) {
-                if (cost instanceof TapSourceCost) {
-                    Mana mana = null;
-                    Effect effect = getEffects().get(0);
-                    if (effect instanceof DynamicManaEffect) {
-                        mana = ((DynamicManaEffect) effect).getMana(game, this);
-                    } else if (effect instanceof ManaEffect) {
-                        mana = ((ManaEffect) effect).getMana(game, this);
-                    }
-                    if (mana != null && mana.getAny() == 0) { // if mana == null or Any > 0 the event has to be fired in the mana effect to know which mana was produced
-                        ManaEvent event = new ManaEvent(GameEvent.EventType.TAPPED_FOR_MANA, sourceId, sourceId, controllerId, mana);
-                        if (!game.replaceEvent(event)) {
-                            game.fireEvent(event);
-                        }
-                    }
-                    break;
-                }
-            }
-        }
         return true;
     }
 
@@ -540,14 +494,14 @@ public abstract class AbilityImpl implements Ability {
 
     /**
      * 601.2b If a cost that will be paid as the spell is being cast includes
-     * Phyrexian mana symbols, the player announces whether he or she intends to
-     * pay 2 life or the corresponding colored mana cost for each of those
-     * symbols.
+     * Phyrexian mana symbols, the player announces whether they intend to pay 2
+     * life or the corresponding colored mana cost for each of those symbols.
      */
     private void handlePhyrexianManaCosts(Game game, UUID sourceId, Player controller) {
         Iterator<ManaCost> costIterator = manaCostsToPay.iterator();
         while (costIterator.hasNext()) {
             ManaCost cost = costIterator.next();
+
             if (cost instanceof PhyrexianManaCost) {
                 PhyrexianManaCost phyrexianManaCost = (PhyrexianManaCost) cost;
                 PayLifeCost payLifeCost = new PayLifeCost(2);
@@ -654,7 +608,7 @@ public abstract class AbilityImpl implements Ability {
     @Override
     public void setControllerId(UUID controllerId) {
         this.controllerId = controllerId;
-        for (Watcher watcher : watchers) {
+        for (Watcher watcher : getWatchers()) {
             watcher.setControllerId(controllerId);
         }
 
@@ -682,7 +636,7 @@ public abstract class AbilityImpl implements Ability {
                 subAbility.setSourceId(sourceId);
             }
         }
-        for (Watcher watcher : watchers) {
+        for (Watcher watcher : getWatchers()) {
             watcher.setSourceId(sourceId);
         }
 
@@ -755,7 +709,7 @@ public abstract class AbilityImpl implements Ability {
 
         watcher.setSourceId(this.sourceId);
         watcher.setControllerId(this.controllerId);
-        watchers.add(watcher);
+        getWatchers().add(watcher);
     }
 
     @Override
@@ -887,7 +841,7 @@ public abstract class AbilityImpl implements Ability {
         if (getModes().getMode() != null) {
             return getModes().getMode().getTargets();
         }
-        return null;
+        return new Targets();
     }
 
     @Override
@@ -970,7 +924,7 @@ public abstract class AbilityImpl implements Ability {
         } else {
             parameterSourceId = getSourceId();
         }
-        // check agains shortLKI for effects that move multiple object at the same time (e.g. destroy all)
+        // check against shortLKI for effects that move multiple object at the same time (e.g. destroy all)
         if (game.getShortLivingLKI(getSourceId(), getZone())) {
             return true;
         }
@@ -996,7 +950,9 @@ public abstract class AbilityImpl implements Ability {
                     return false;
                 }
                 return ((Permanent) object).isPhasedIn();
-            } else if (!object.getAbilities().contains(this)) {
+            } else if (object instanceof Card) {
+                return ((Card) object).getAbilities(game).contains(this);
+            } else if (!object.getAbilities().contains(this)) { // not sure which object it can still be
                 // check if it's an ability that is temporary gained to a card
                 Abilities<Ability> otherAbilities = game.getState().getAllOtherAbilities(this.getSourceId());
                 return otherAbilities != null && otherAbilities.contains(this);
@@ -1189,11 +1145,6 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
-    public void setCostModificationActive(boolean active) {
-        this.costModificationActive = active;
-    }
-
-    @Override
     public boolean getWorksFaceDown() {
         return worksFaceDown;
     }
@@ -1298,5 +1249,16 @@ public abstract class AbilityImpl implements Ability {
     public Ability addHint(Hint hint) {
         this.hints.add(hint);
         return this;
+    }
+
+    @Override
+    public Ability addCustomOutcome(Outcome customOutcome) {
+        this.customOutcome = customOutcome;
+        return this;
+    }
+
+    @Override
+    public Outcome getCustomOutcome() {
+        return this.customOutcome;
     }
 }

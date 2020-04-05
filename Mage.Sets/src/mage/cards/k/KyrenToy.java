@@ -1,7 +1,5 @@
-
 package mage.cards.k;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -21,8 +19,11 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class KyrenToy extends CardImpl {
@@ -78,24 +79,23 @@ public final class KyrenToy extends CardImpl {
         }
 
         @Override
-        public boolean apply(Game game, Ability source) {
-            Player controller = game.getPlayer(source.getControllerId());
-            if (controller != null) {
-                checkToFirePossibleEvents(getMana(game, source), game, source);
-                controller.getManaPool().addMana(getMana(game, source), game, source);
-                return true;
+        public List<Mana> getNetMana(Game game, Ability source) {
+            List<Mana> netMana = new ArrayList<>();
+            if (game != null) {
+                Permanent sourceObject = game.getPermanent(source.getSourceId());
+                if (sourceObject != null) {
+                    netMana.add(Mana.ColorlessMana(sourceObject.getCounters(game).getCount(CounterType.CHARGE) + 1));
+                    return netMana;
+                }
             }
-            return false;
+            return netMana;
         }
 
         @Override
-        public Mana produceMana(boolean netMana, Game game, Ability source) {
-            if (netMana) {
-                Permanent sourceObject = game.getPermanent(source.getSourceId());
-                if (sourceObject != null) {
-                    return new Mana(0, 0, 0, 0, 0, 0, 0, sourceObject.getCounters(game).getCount(CounterType.CHARGE) + 1);
-                }
-                return null;
+        public Mana produceMana(Game game, Ability source) {
+            Mana mana = new Mana();
+            if (game == null) {
+                return mana;
             }
             Player player = game.getPlayer(source.getControllerId());
             if (player != null) {
@@ -105,9 +105,9 @@ public final class KyrenToy extends CardImpl {
                         numberOfMana = ((RemoveVariableCountersSourceCost) cost).getAmount();
                     }
                 }
-                return new Mana(0, 0, 0, 0, 0, 0, 0, numberOfMana + 1);
+                return new Mana(Mana.ColorlessMana(numberOfMana + 1));
             }
-            return null;
+            return mana;
         }
 
         @Override

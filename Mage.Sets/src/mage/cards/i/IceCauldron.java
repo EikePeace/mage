@@ -1,7 +1,5 @@
-
 package mage.cards.i;
 
-import java.util.UUID;
 import mage.ConditionalMana;
 import mage.MageObjectReference;
 import mage.Mana;
@@ -22,15 +20,10 @@ import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AsThoughEffectType;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -38,8 +31,9 @@ import mage.target.TargetCard;
 import mage.target.targetpointer.FixedTarget;
 import mage.util.CardUtil;
 
+import java.util.UUID;
+
 /**
- *
  * @author L_J (based on jeffwadsworth)
  */
 public final class IceCauldron extends CardImpl {
@@ -76,7 +70,7 @@ class IceCauldronExileEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard("nonland card");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
     }
 
     public IceCauldronExileEffect() {
@@ -147,10 +141,8 @@ class IceCauldronCastFromExileEffect extends AsThoughEffectImpl {
                 && game.getState().getZone(objectId) == Zone.EXILED) {
             Player player = game.getPlayer(source.getControllerId());
             Card card = game.getCard(objectId);
-            if (player != null
-                    && card != null) {
-                return true;
-            }
+            return player != null
+                    && card != null;
         }
         return false;
     }
@@ -211,18 +203,11 @@ class IceCauldronAddManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
         }
-        return false;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
         Permanent iceCauldron = game.getPermanent(source.getSourceId());
         Player controller = game.getPlayer(source.getControllerId());
         if (iceCauldron != null && controller != null) {
@@ -241,8 +226,7 @@ class IceCauldronAddManaEffect extends ManaEffect {
                 }
             }
         }
-        return null;
-
+        return mana;
     }
 
 }
@@ -268,9 +252,7 @@ class IceCauldronManaCondition implements Condition {
     public boolean apply(Game game, Ability source) {
         if (source instanceof SpellAbility) {
             Card card = game.getCard(source.getSourceId());
-            if (card != null && card.equals(exiledCard)) {
-                return true;
-            }
+            return card != null && card.equals(exiledCard);
         }
         return false;
     }

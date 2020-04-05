@@ -14,8 +14,6 @@ import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.common.FilterNonlandPermanent;
 import mage.filter.predicate.Predicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
@@ -33,8 +31,8 @@ public final class AdmiralBeckettBrass extends CardImpl {
     private static final FilterNonlandPermanent filter2 = new FilterNonlandPermanent("nonland permanent controlled by a player who was dealt combat damage by three or more Pirates this turn");
 
     static {
-        filter.add(new SubtypePredicate(SubType.PIRATE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.PIRATE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter2.add(new ControllerDealtDamageByPiratesPredicate());
     }
 
@@ -74,27 +72,13 @@ class DamagedByPiratesWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    private DamagedByPiratesWatcher(final DamagedByPiratesWatcher watcher) {
-        super(watcher);
-        for (UUID playerId : watcher.damageSourceIds.keySet()) {
-            Set<UUID> creatures = new HashSet<>();
-            creatures.addAll(watcher.damageSourceIds.get(playerId));
-            this.damageSourceIds.put(playerId, creatures);
-        }
-    }
-
-    @Override
-    public DamagedByPiratesWatcher copy() {
-        return new DamagedByPiratesWatcher(this);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.DAMAGED_PLAYER) {
             if (((DamagedPlayerEvent) event).isCombatDamage()) {
                 Permanent creature = game.getPermanentOrLKIBattlefield(event.getSourceId());
                 if (creature != null && creature.hasSubtype(SubType.PIRATE, game)) {
-                    if (damageSourceIds.keySet().contains(event.getTargetId())) {
+                    if (damageSourceIds.containsKey(event.getTargetId())) {
                         damageSourceIds.get(event.getTargetId()).add(creature.getId());
                     } else {
                         Set<UUID> creatureSet = new HashSet<>();

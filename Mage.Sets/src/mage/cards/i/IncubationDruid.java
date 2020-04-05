@@ -73,20 +73,41 @@ class AnyColorLandsProduceManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        int manaAmount = getManaAmount(game, source);
+        List<Mana> netManas = new ArrayList<>();
+        Mana types = getManaTypes(game, source);
+        if (types.getRed() > 0) {
+            netManas.add(Mana.RedMana(manaAmount));
         }
-        return false;
+        if (types.getGreen() > 0) {
+            netManas.add(Mana.GreenMana(manaAmount));
+        }
+        if (types.getBlue() > 0) {
+            netManas.add(Mana.BlueMana(manaAmount));
+        }
+        if (types.getWhite() > 0) {
+            netManas.add(Mana.WhiteMana(manaAmount));
+        }
+        if (types.getBlack() > 0) {
+            netManas.add(Mana.BlackMana(manaAmount));
+        }
+        if (types.getColorless() > 0) {
+            netManas.add(Mana.ColorlessMana(manaAmount));
+        }
+        if (types.getAny() > 0) {
+            netManas.add(Mana.AnyMana(manaAmount));
+        }
+        return netManas;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        int manaAmount = getManaAmount(game, source);
+    public Mana produceMana(Game game, Ability source) {
         Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
+        int manaAmount = getManaAmount(game, source);
         Mana types = getManaTypes(game, source);
         Choice choice = new ChoiceColor(true);
         choice.getChoices().clear();
@@ -122,7 +143,7 @@ class AnyColorLandsProduceManaEffect extends ManaEffect {
             if (choice.getChoices().size() == 1) {
                 choice.setChoice(choice.getChoices().iterator().next());
             } else if (player == null || !player.choose(outcome, choice, game)) {
-                return null;
+                return mana;
             }
             if (choice.getChoice() != null) {
                 switch (choice.getChoice()) {
@@ -151,43 +172,16 @@ class AnyColorLandsProduceManaEffect extends ManaEffect {
     }
 
     @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        int manaAmount = getManaAmount(game, source);
-        List<Mana> netManas = new ArrayList<>();
-        Mana types = getManaTypes(game, source);
-        if (types.getRed() > 0) {
-            netManas.add(new Mana(manaAmount, 0, 0, 0, 0, 0, 0, 0));
-        }
-        if (types.getGreen() > 0) {
-            netManas.add(new Mana(0, manaAmount, 0, 0, 0, 0, 0, 0));
-        }
-        if (types.getBlue() > 0) {
-            netManas.add(new Mana(0, 0, manaAmount, 0, 0, 0, 0, 0));
-        }
-        if (types.getWhite() > 0) {
-            netManas.add(new Mana(0, 0, 0, manaAmount, 0, 0, 0, 0));
-        }
-        if (types.getBlack() > 0) {
-            netManas.add(new Mana(0, 0, 0, 0, manaAmount, 0, 0, 0));
-        }
-        if (types.getColorless() > 0) {
-            netManas.add(new Mana(0, 0, 0, 0, 0, 0, 0, manaAmount));
-        }
-        if (types.getAny() > 0) {
-            netManas.add(new Mana(0, 0, 0, 0, 0, 0, manaAmount, 0));
-        }
-        return netManas;
-    }
-
-    @Override
     public AnyColorLandsProduceManaEffect copy() {
         return new AnyColorLandsProduceManaEffect(this);
     }
 
     private int getManaAmount(Game game, Ability source) {
-        Permanent permanent = game.getPermanent(source.getSourceId());
-        if (permanent != null && permanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
-            return 3;
+        if (game != null) {
+            Permanent permanent = game.getPermanent(source.getSourceId());
+            if (permanent != null && permanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
+                return 3;
+            }
         }
         return 1;
     }

@@ -16,9 +16,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.combat.CombatGroup;
 import mage.game.permanent.Permanent;
@@ -35,10 +33,10 @@ public final class IbHalfheartGoblinTactician extends CardImpl {
     private static final FilterCreaturePermanent filterGoblin = new FilterCreaturePermanent("another Goblin you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.MOUNTAIN));
-        filterGoblin.add(new SubtypePredicate(SubType.GOBLIN));
+        filter.add(SubType.MOUNTAIN.getPredicate());
+        filterGoblin.add(SubType.GOBLIN.getPredicate());
         filterGoblin.add(AnotherPredicate.instance);
-        filterGoblin.add(new ControllerPredicate(TargetController.YOU));
+        filterGoblin.add(TargetController.YOU.getControllerPredicate());
     }
 
     public IbHalfheartGoblinTactician(UUID ownerId, CardSetInfo setInfo) {

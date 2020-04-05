@@ -17,7 +17,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -33,7 +32,7 @@ public final class OathOfChandra extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public OathOfChandra(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +47,7 @@ public final class OathOfChandra extends CardImpl {
         this.addAbility(ability);
         // At the beginning of each end step, if a planeswalker entered the battlefield under your control this turn, Oath of Chandra deals 2 damage to each opponent.
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(new BeginningOfEndStepTriggeredAbility(
-                new DamagePlayersEffect(Outcome.Damage, new StaticValue(2), TargetController.OPPONENT),
+                new DamagePlayersEffect(Outcome.Damage, StaticValue.get(2), TargetController.OPPONENT),
                 TargetController.ANY, false), OathOfChandraCondition.instance,
                 "At the beginning of each end step, if a planeswalker entered the battlefield under your control this turn, {this} deals 2 damage to each opponent."), new OathOfChandraWatcher());
     }
@@ -88,11 +87,6 @@ class OathOfChandraWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    public OathOfChandraWatcher(final OathOfChandraWatcher watcher) {
-        super(watcher);
-        this.players.addAll(watcher.players);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.ZONE_CHANGE) {
@@ -111,11 +105,6 @@ class OathOfChandraWatcher extends Watcher {
 
     public boolean enteredPlaneswalkerForPlayer(UUID playerId) {
         return players.contains(playerId);
-    }
-
-    @Override
-    public OathOfChandraWatcher copy() {
-        return new OathOfChandraWatcher(this);
     }
 
 }

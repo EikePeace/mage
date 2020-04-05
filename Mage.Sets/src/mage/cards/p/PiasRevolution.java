@@ -1,7 +1,5 @@
-
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.Effect;
@@ -14,7 +12,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterArtifactPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -23,8 +20,9 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Styxo
  */
 public final class PiasRevolution extends CardImpl {
@@ -32,7 +30,7 @@ public final class PiasRevolution extends CardImpl {
     public PiasRevolution(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{R}");
 
-        // Whenever a nontoken artifact is put into your graveyard from the battlefield, return that card to your hand unless target opponent has Pia's Revolution deal 3 damage to him or her.
+        // Whenever a nontoken artifact is put into your graveyard from the battlefield, return that card to your hand unless target opponent has Pia's Revolution deal 3 damage to them.
         Ability ability = new PiasRevolutionTriggeredAbility();
         ability.addTarget(new TargetOpponent());
         this.addAbility(ability);
@@ -52,7 +50,7 @@ class PiasRevolutionReturnEffect extends OneShotEffect {
 
     public PiasRevolutionReturnEffect() {
         super(Outcome.Benefit);
-        this.staticText = "return that card to your hand unless target opponent has {this} deal 3 damage to him or her";
+        this.staticText = "return that card to your hand unless target opponent has {this} deal 3 damage to them";
     }
 
     public PiasRevolutionReturnEffect(final PiasRevolutionReturnEffect effect) {
@@ -76,7 +74,7 @@ class PiasRevolutionReturnEffect extends OneShotEffect {
                     if (opponent.chooseUse(outcome,
                             "Have Pia's Revolution deal 3 damage to you to prevent that " + permanent.getIdName() + " returns to " + controller.getName() + "'s hand?",
                             source, game)) {
-                        opponent.damage(3, source.getSourceId(), game, false, true);
+                        opponent.damage(3, source.getSourceId(), game);
                     } else if (game.getState().getZone(permanent.getId()) == Zone.GRAVEYARD) {
                         controller.moveCards(game.getCard(permanentId), Zone.HAND, source, game);
                     }
@@ -94,7 +92,7 @@ class PiasRevolutionTriggeredAbility extends TriggeredAbilityImpl {
 
     static {
         filter.add(Predicates.not(TokenPredicate.instance));
-        filter.add(new OwnerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getOwnerPredicate());
     }
 
     public PiasRevolutionTriggeredAbility() {

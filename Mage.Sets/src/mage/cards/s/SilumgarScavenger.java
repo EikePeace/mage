@@ -16,7 +16,6 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -35,7 +34,7 @@ public final class SilumgarScavenger extends CardImpl {
 
     static {
         filter.add(AnotherPredicate.instance);
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public SilumgarScavenger(UUID ownerId, CardSetInfo setInfo) {
@@ -76,16 +75,6 @@ class SilumgarScavengerExploitedWatcher extends Watcher {
 
     SilumgarScavengerExploitedWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    private SilumgarScavengerExploitedWatcher(final SilumgarScavengerExploitedWatcher watcher) {
-        super(watcher);
-        this.exploitedPermanents.putAll(watcher.exploitedPermanents);
-    }
-
-    @Override
-    public SilumgarScavengerExploitedWatcher copy() {
-        return new SilumgarScavengerExploitedWatcher(this);
     }
 
     @Override

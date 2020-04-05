@@ -1,10 +1,5 @@
 package mage.cards.j;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
@@ -12,17 +7,8 @@ import mage.abilities.LoyaltyAbility;
 import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.BoostTargetEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.SuperType;
-import mage.constants.Zone;
+import mage.cards.*;
+import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.FilterPlayer;
 import mage.filter.common.FilterNonlandCard;
@@ -42,9 +28,9 @@ import mage.target.common.TargetOpponent;
 import mage.target.targetpointer.FixedTarget;
 import mage.util.CardUtil;
 
+import java.util.*;
+
 /**
- *
- *
  * @author LevelX2
  */
 public final class JaceArchitectOfThought extends CardImpl {
@@ -59,10 +45,12 @@ public final class JaceArchitectOfThought extends CardImpl {
         // +1: Until your next turn, whenever a creature an opponent controls attacks, it gets -1/-0 until end of turn.
         this.addAbility(new LoyaltyAbility(new JaceArchitectOfThoughtStartEffect1(), 1));
 
-        // -2: Reveal the top three cards of your library. An opponent separates those cards into two piles. Put one pile into your hand and the other on the bottom of your library in any order.
+        // -2: Reveal the top three cards of your library. An opponent separates those cards into two piles. 
+        // Put one pile into your hand and the other on the bottom of your library in any order.
         this.addAbility(new LoyaltyAbility(new JaceArchitectOfThoughtEffect2(), -2));
 
-        // -8: For each player, search that player's library for a nonland card and exile it, then that player shuffles their library. You may cast those cards without paying their mana costs.
+        // -8: For each player, search that player's library for a nonland card and exile it, 
+        // then that player shuffles their library. You may cast those cards without paying their mana costs.
         this.addAbility(new LoyaltyAbility(new JaceArchitectOfThoughtEffect3(), -8));
 
     }
@@ -81,7 +69,8 @@ class JaceArchitectOfThoughtStartEffect1 extends OneShotEffect {
 
     public JaceArchitectOfThoughtStartEffect1() {
         super(Outcome.UnboostCreature);
-        this.staticText = "Until your next turn, whenever a creature an opponent controls attacks, it gets -1/-0 until end of turn";
+        this.staticText = "Until your next turn, whenever a creature an opponent "
+                + "controls attacks, it gets -1/-0 until end of turn";
     }
 
     public JaceArchitectOfThoughtStartEffect1(final JaceArchitectOfThoughtStartEffect1 effect) {
@@ -138,7 +127,8 @@ class JaceArchitectOfThoughtDelayedTriggeredAbility extends DelayedTriggeredAbil
 
     @Override
     public boolean isInactive(Game game) {
-        return game.isActivePlayer(getControllerId()) && game.getTurnNum() != startingTurn;
+        return game.isActivePlayer(getControllerId())
+                && game.getTurnNum() != startingTurn;
     }
 
     @Override
@@ -151,7 +141,8 @@ class JaceArchitectOfThoughtEffect2 extends OneShotEffect {
 
     public JaceArchitectOfThoughtEffect2() {
         super(Outcome.DrawCard);
-        this.staticText = "Reveal the top three cards of your library. An opponent separates those cards into two piles. Put one pile into your hand and the other on the bottom of your library in any order";
+        this.staticText = "Reveal the top three cards of your library. An opponent separates those cards "
+                + "into two piles. Put one pile into your hand and the other on the bottom of your library in any order";
     }
 
     public JaceArchitectOfThoughtEffect2(final JaceArchitectOfThoughtEffect2 effect) {
@@ -223,7 +214,8 @@ class JaceArchitectOfThoughtEffect3 extends OneShotEffect {
 
     public JaceArchitectOfThoughtEffect3() {
         super(Outcome.PlayForFree);
-        this.staticText = "For each player, search that player's library for a nonland card and exile it, then that player shuffles their library. You may cast those cards without paying their mana costs";
+        this.staticText = "For each player, search that player's library for a nonland card and exile it, "
+                + "then that player shuffles their library. You may cast those cards without paying their mana costs";
     }
 
     public JaceArchitectOfThoughtEffect3(final JaceArchitectOfThoughtEffect3 effect) {
@@ -298,12 +290,19 @@ class JaceArchitectOfThoughtEffect3 extends OneShotEffect {
         }
         FilterCard filter = new FilterCard("card to cast without mana costs");
         TargetCardInExile target = new TargetCardInExile(filter, source.getSourceId());
-        while (jaceExileZone.count(filter, game) > 0
+        Cards cardsToChoose = new CardsImpl(jaceExileZone.getCards(game));
+        while (controller.canRespond()
+                && cardsToChoose.count(filter, game) > 0
                 && controller.chooseUse(Outcome.Benefit, "Cast another spell from exile zone for free?", source, game)) {
-            controller.choose(Outcome.PlayForFree, jaceExileZone, target, game);
+            controller.choose(Outcome.PlayForFree, cardsToChoose, target, game);
             Card card = game.getCard(target.getFirstTarget());
             if (card != null) {
-                if (controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game))) {
+                game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
+                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
+                cardsToChoose.remove(card);
+                if (cardWasCast) {
                     game.getExile().removeCard(card, game);
                 }
             }

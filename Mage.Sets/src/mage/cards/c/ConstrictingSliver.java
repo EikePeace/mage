@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import java.util.UUID;
@@ -10,13 +9,12 @@ import mage.abilities.common.delayed.OnLeaveReturnExiledToBattlefieldAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateDelayedTriggeredAbilityEffect;
 import mage.abilities.effects.common.ExileTargetEffect;
-import mage.abilities.effects.common.continuous.GainAbilityAllEffect;
+import mage.abilities.effects.common.continuous.GainAbilityControlledEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -31,7 +29,7 @@ public final class ConstrictingSliver extends CardImpl {
     private static final FilterCreaturePermanent filterTarget = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filterTarget.add(new ControllerPredicate(TargetController.OPPONENT));
+        filterTarget.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public ConstrictingSliver(UUID ownerId, CardSetInfo setInfo) {
@@ -47,9 +45,10 @@ public final class ConstrictingSliver extends CardImpl {
         ability.addTarget(new TargetCreaturePermanent(filterTarget));
         ability.addEffect(new CreateDelayedTriggeredAbilityEffect(new OnLeaveReturnExiledToBattlefieldAbility()));
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
-                new GainAbilityAllEffect(ability,
-                        Duration.WhileOnBattlefield, StaticFilters.FILTER_PERMANENT_CREATURE_SLIVERS,
-                        "Sliver creatures you control have \"When this creature enters the battlefield, you may exile target creature an opponent controls until this creature leaves the battlefield.\"")));
+                new GainAbilityControlledEffect(ability,
+                        Duration.WhileOnBattlefield, StaticFilters.FILTER_PERMANENT_CREATURE_SLIVERS)
+                        .setText("Sliver creatures you control have \"When this creature enters the battlefield, "
+                                + "you may exile target creature an opponent controls until this creature leaves the battlefield.\"")));
 
     }
 

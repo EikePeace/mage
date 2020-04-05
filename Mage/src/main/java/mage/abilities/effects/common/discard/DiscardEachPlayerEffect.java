@@ -18,6 +18,7 @@ import mage.target.common.TargetDiscard;
 import mage.util.CardUtil;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DiscardEachPlayerEffect extends OneShotEffect {
@@ -27,15 +28,15 @@ public class DiscardEachPlayerEffect extends OneShotEffect {
     private TargetController targetController;
 
     public DiscardEachPlayerEffect() {
-        this(new StaticValue(1), false);
+        this(StaticValue.get(1), false);
     }
 
     public DiscardEachPlayerEffect(TargetController targetController) {
-        this(new StaticValue(1), false, targetController);
+        this(StaticValue.get(1), false, targetController);
     }
 
     public DiscardEachPlayerEffect(int amount, boolean randomDiscard) {
-        this(new StaticValue(amount), randomDiscard);
+        this(StaticValue.get(amount), randomDiscard);
     }
 
     public DiscardEachPlayerEffect(DynamicValue amount, boolean randomDiscard) {
@@ -60,7 +61,7 @@ public class DiscardEachPlayerEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         // Store for each player the cards to discard, that's important because all discard shall happen at the same time
-        HashMap<UUID, Cards> cardsToDiscard = new HashMap<>();
+        Map<UUID, Cards> cardsToDiscard = new HashMap<>();
         if (controller != null) {
             // choose cards to discard
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {

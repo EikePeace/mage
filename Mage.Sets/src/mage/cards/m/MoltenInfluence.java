@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -14,8 +12,9 @@ import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.target.TargetSpell;
 
+import java.util.UUID;
+
 /**
- *
  * @author cbt33, LevelX2 (Quash)
  */
 public final class MoltenInfluence extends CardImpl {
@@ -23,7 +22,7 @@ public final class MoltenInfluence extends CardImpl {
     public MoltenInfluence(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{1}{R}");
 
-        // Counter target instant or sorcery spell unless its controller has Molten Influence deal 4 damage to him or her.
+        // Counter target instant or sorcery spell unless its controller has Molten Influence deal 4 damage to them.
         this.getSpellAbility().addTarget(new TargetSpell(StaticFilters.FILTER_SPELL_INSTANT_OR_SORCERY));
         this.getSpellAbility().addEffect(new MoltenInfluenceEffect());
 
@@ -43,7 +42,7 @@ class MoltenInfluenceEffect extends OneShotEffect {
 
     public MoltenInfluenceEffect() {
         super(Outcome.Detriment);
-        this.staticText = "Counter target instant or sorcery spell unless its controller has {this} deal 4 damage to him or her";
+        this.staticText = "Counter target instant or sorcery spell unless its controller has {this} deal 4 damage to them";
     }
 
     public MoltenInfluenceEffect(final MoltenInfluenceEffect effect) {
@@ -62,7 +61,7 @@ class MoltenInfluenceEffect extends OneShotEffect {
             Player player = game.getPlayer(spell.getControllerId());
             String message = "Have Molten Influence do 4 damage to you?";
             if (player != null && player.chooseUse(Outcome.Damage, message, source, game)) {
-                player.damage(4, source.getSourceId(), game, false, true);
+                player.damage(4, source.getSourceId(), game);
                 return true;
             } else {
                 return game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);

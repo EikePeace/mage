@@ -3,8 +3,6 @@ package mage.filter.common;
 
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -27,9 +25,9 @@ public class FilterControlledCreaturePermanent extends FilterControlledPermanent
     public FilterControlledCreaturePermanent(SubType subtype, String name) {
         super(name);
 
-        this.add(new CardTypePredicate(CardType.CREATURE));
+        this.add(CardType.CREATURE.getPredicate());
         if(subtype != null) {
-            this.add(new SubtypePredicate(subtype));
+            this.add(subtype.getPredicate());
         }
     }
 

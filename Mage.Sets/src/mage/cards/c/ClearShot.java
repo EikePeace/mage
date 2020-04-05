@@ -1,9 +1,7 @@
-
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.abilities.effects.Effect;
-import mage.abilities.effects.common.DamageWithPowerTargetEffect;
+import mage.abilities.effects.common.DamageWithPowerFromOneToAnotherTargetEffect;
 import mage.abilities.effects.common.continuous.BoostTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -11,12 +9,12 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class ClearShot extends CardImpl {
@@ -24,7 +22,7 @@ public final class ClearShot extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     public ClearShot(UUID ownerId, CardSetInfo setInfo) {
@@ -36,10 +34,9 @@ public final class ClearShot extends CardImpl {
         this.getSpellAbility().addEffect(effect);
 
         // It deals damage equal to its power to target creature you don't control.
-        effect = new DamageWithPowerTargetEffect();
-        effect.setText("It deals damage equal to its power to target creature you don't control");
-        this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
-        this.getSpellAbility().addEffect(effect);
+        this.getSpellAbility().addEffect(new DamageWithPowerFromOneToAnotherTargetEffect("It"));
+        this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter)); // second target
+
     }
 
     public ClearShot(final ClearShot card) {

@@ -16,8 +16,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  * @author JRHerlehy
@@ -28,8 +26,8 @@ public final class CabalStronghold extends CardImpl {
     private static final FilterControlledLandPermanent filter = new FilterControlledLandPermanent("basic Swamp you control");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.BASIC));
-        filter.add(new SubtypePredicate(SubType.SWAMP));
+        filter.add(SuperType.BASIC.getPredicate());
+        filter.add(SubType.SWAMP.getPredicate());
     }
 
     public CabalStronghold(UUID ownerId, CardSetInfo setInfo) {

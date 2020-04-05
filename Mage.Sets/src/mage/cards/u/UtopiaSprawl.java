@@ -1,7 +1,5 @@
-
 package mage.cards.u;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -23,8 +21,9 @@ import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Plopman
  */
 public final class UtopiaSprawl extends CardImpl {
@@ -101,29 +100,26 @@ class UtopiaSprawlEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
+    public Player getPlayer(Game game, Ability source) {
         Permanent enchantment = game.getPermanent(source.getSourceId());
         if (enchantment != null) {
             Permanent land = game.getPermanent(enchantment.getAttachedTo());
             if (land != null) {
-                Player player = game.getPlayer(land.getControllerId());
-                if (player != null) {
-                    player.getManaPool().addMana(getMana(game, source), game, source);
-                    return true;
-                }
+                return game.getPlayer(land.getControllerId());
             }
         }
-        return false;
+        return null;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
-        if (color != null) {
-            return new Mana(ColoredManaSymbol.lookup(color.toString().charAt(0)));
-        } else {
-            return null;
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
+            if (color != null) {
+                return new Mana(ColoredManaSymbol.lookup(color.toString().charAt(0)));
+            }
         }
+        return new Mana();
     }
 
     @Override

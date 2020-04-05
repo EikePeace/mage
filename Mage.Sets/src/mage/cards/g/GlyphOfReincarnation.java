@@ -1,27 +1,20 @@
-
 package mage.cards.g;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.CastOnlyDuringPhaseStepSourceAbility;
-import mage.abilities.common.delayed.AtTheEndOfCombatDelayedTriggeredAbility;
 import mage.abilities.condition.common.AfterCombatCondition;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.InfoEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.other.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -31,8 +24,11 @@ import mage.target.common.TargetCardInGraveyard;
 import mage.target.common.TargetCreaturePermanent;
 import mage.watchers.common.BlockedAttackerWatcher;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class GlyphOfReincarnation extends CardImpl {
@@ -40,7 +36,7 @@ public final class GlyphOfReincarnation extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Wall creature");
 
     static {
-        filter.add(new SubtypePredicate(SubType.WALL));
+        filter.add(SubType.WALL.getPredicate());
     }
 
     public GlyphOfReincarnation(UUID ownerId, CardSetInfo setInfo) {
@@ -69,7 +65,7 @@ class GlyphOfReincarnationEffect extends OneShotEffect {
 
     public GlyphOfReincarnationEffect() {
         super(Outcome.DestroyPermanent);
-        this.staticText = "Destroy all creatures that were blocked by target Wall this turn. They can’t be regenerated. For each creature that died this way, put a creature card from the graveyard of the player who controlled that creature the last time it became blocked by that Wall onto the battlefield under its owner’s control";
+        this.staticText = "Destroy all creatures that were blocked by target Wall this turn. They can't be regenerated. For each creature that died this way, put a creature card from the graveyard of the player who controlled that creature the last time it became blocked by that Wall onto the battlefield under its owner's control";
     }
 
     public GlyphOfReincarnationEffect(final GlyphOfReincarnationEffect effect) {

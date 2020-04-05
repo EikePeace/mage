@@ -18,8 +18,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -31,8 +29,8 @@ public final class GuardianOfTheGreatConduit extends CardImpl {
     private static final String rule = "As long as you control a Nissa planeswalker, {this} gets +2/+0";
 
     static {
-        filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new SubtypePredicate(SubType.NISSA));
+        filter.add(CardType.PLANESWALKER.getPredicate());
+        filter.add(SubType.NISSA.getPredicate());
     }
 
     public GuardianOfTheGreatConduit(UUID ownerId, CardSetInfo setInfo) {

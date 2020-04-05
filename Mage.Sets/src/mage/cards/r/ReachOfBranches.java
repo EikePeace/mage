@@ -12,8 +12,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.TreefolkShamanToken;
 
 /**
@@ -25,8 +23,8 @@ public final class ReachOfBranches extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("a Forest");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.FOREST));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.FOREST.getPredicate());
     }
 
     public ReachOfBranches(UUID ownerId, CardSetInfo setInfo) {

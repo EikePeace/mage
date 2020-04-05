@@ -15,8 +15,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -28,8 +26,8 @@ public final class JediStarfighter extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Jedi creatures you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.JEDI));
-               filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.JEDI.getPredicate());
+               filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public JediStarfighter(UUID ownerId, CardSetInfo setInfo) {

@@ -18,10 +18,8 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInLibrary;
@@ -71,8 +69,8 @@ class WoodlandBellowerEffect extends OneShotEffect {
         }
         FilterCard filter = new FilterCard("nonlegendary green creature card with converted mana cost 3 or less");
         filter.add(new ColorPredicate(ObjectColor.GREEN));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(Predicates.not(new SupertypePredicate(SuperType.LEGENDARY)));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(Predicates.not(SuperType.LEGENDARY.getPredicate()));
         filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, 4));
         TargetCardInLibrary target = new TargetCardInLibrary(filter);
         if (controller.searchLibrary(target, source, game)) {

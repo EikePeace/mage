@@ -10,7 +10,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SuperType;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -25,7 +24,7 @@ public final class EarlyHarvest extends CardImpl {
     public EarlyHarvest(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{1}{G}{G}");
 
-        // Target player untaps all basic lands he or she controls.
+        // Target player untaps all basic lands they control.
         this.getSpellAbility().addEffect(new UntapAllLandsTargetEffect());
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
@@ -44,12 +43,12 @@ class UntapAllLandsTargetEffect extends OneShotEffect {
     
     private static final FilterLandPermanent filter = new FilterLandPermanent();
     static {
-        filter.add(new SupertypePredicate(SuperType.BASIC));
+        filter.add(SuperType.BASIC.getPredicate());
     }
     
     public UntapAllLandsTargetEffect() {
         super(Outcome.Untap);
-        staticText = "Target player untaps all basic lands he or she controls";
+        staticText = "Target player untaps all basic lands they control";
     }
 
     public UntapAllLandsTargetEffect(final UntapAllLandsTargetEffect effect) {

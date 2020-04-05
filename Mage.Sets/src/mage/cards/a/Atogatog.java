@@ -12,8 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -25,8 +23,8 @@ public final class Atogatog extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("an Atog creature");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.ATOG));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.ATOG.getPredicate());
     }
 
     public Atogatog(UUID ownerId, CardSetInfo setInfo) {

@@ -11,8 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.TargetSpell;
 import mage.target.common.TargetControlledPermanent;
 
@@ -25,8 +23,8 @@ public final class Daze extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("an Island");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ISLAND));
-        filter.add(new CardTypePredicate(CardType.LAND));
+        filter.add(SubType.ISLAND.getPredicate());
+        filter.add(CardType.LAND.getPredicate());
     }
 
     public Daze(UUID ownerId, CardSetInfo setInfo) {

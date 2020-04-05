@@ -10,7 +10,7 @@ import mage.client.cards.Permanent;
 import mage.client.dialog.PreferencesDialog;
 import mage.client.plugins.MagePlugins;
 import mage.client.plugins.adapters.MageActionCallback;
-import mage.client.util.Config;
+import mage.client.util.ClientDefaultSettings;
 import mage.interfaces.PluginException;
 import mage.interfaces.plugin.CardPlugin;
 import mage.interfaces.plugin.CounterPlugin;
@@ -93,26 +93,26 @@ public enum Plugins implements MagePlugins {
     }
 
     @Override
-    public MagePermanent getMagePermanent(PermanentView card, BigCard bigCard, Dimension dimension, UUID gameId, boolean loadImage, int renderMode) {
+    public MagePermanent getMagePermanent(PermanentView card, BigCard bigCard, Dimension dimension, UUID gameId, boolean loadImage, int renderMode, boolean needFullPermanentRender) {
         if (cardPlugin != null) {
             mageActionCallback.refreshSession();
             mageActionCallback.setCardPreviewComponent(bigCard);
-            return cardPlugin.getMagePermanent(card, dimension, gameId, mageActionCallback, false, !MageFrame.isLite() && loadImage, renderMode);
+            return cardPlugin.getMagePermanent(card, dimension, gameId, mageActionCallback, false, !MageFrame.isLite() && loadImage, renderMode, needFullPermanentRender);
         } else {
-            return new Permanent(card, bigCard, Config.dimensions, gameId);
+            return new Permanent(card, bigCard, ClientDefaultSettings.dimensions, gameId);
         }
     }
 
     @Override
-    public MageCard getMageCard(CardView card, BigCard bigCard, Dimension dimension, UUID gameId, boolean loadImage, boolean previewable, int renderMode) {
+    public MageCard getMageCard(CardView card, BigCard bigCard, Dimension dimension, UUID gameId, boolean loadImage, boolean previewable, int renderMode, boolean needFullPermanentRender) {
         if (cardPlugin != null) {
             if (previewable) {
                 mageActionCallback.refreshSession();
                 mageActionCallback.setCardPreviewComponent(bigCard);
             }
-            return cardPlugin.getMageCard(card, dimension, gameId, mageActionCallback, false, !MageFrame.isLite() && loadImage, renderMode);
+            return cardPlugin.getMageCard(card, dimension, gameId, mageActionCallback, false, !MageFrame.isLite() && loadImage, renderMode, needFullPermanentRender);
         } else {
-            return new Card(card, bigCard, Config.dimensions, gameId);
+            return new Card(card, bigCard, ClientDefaultSettings.dimensions, gameId);
         }
     }
 

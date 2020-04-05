@@ -14,9 +14,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -27,7 +25,7 @@ public final class KnightExemplar extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Knight creatures");
 
     static {
-        filter.add(new SubtypePredicate(SubType.KNIGHT));
+        filter.add(SubType.KNIGHT.getPredicate());
     }
 
     public KnightExemplar(UUID ownerId, CardSetInfo setInfo) {
@@ -44,7 +42,7 @@ public final class KnightExemplar extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostControlledEffect(1, 1, Duration.WhileOnBattlefield, filter, true)));
         FilterCreaturePermanent indestructibleFilter = filter.copy();
         indestructibleFilter.add(AnotherPredicate.instance);
-        indestructibleFilter.add(new ControllerPredicate(TargetController.YOU));
+        indestructibleFilter.add(TargetController.YOU.getControllerPredicate());
         indestructibleFilter.setMessage("Other Knight creatures you control");
         Effect effect = new GainAbilityAllEffect(IndestructibleAbility.getInstance(), Duration.WhileOnBattlefield, indestructibleFilter, false);
         effect.setText("Other Knight creatures you control are indestructible");

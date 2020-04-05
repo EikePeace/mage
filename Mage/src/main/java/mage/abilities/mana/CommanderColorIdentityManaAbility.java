@@ -41,39 +41,6 @@ public class CommanderColorIdentityManaAbility extends ActivatedManaAbilityImpl 
     }
 
     @Override
-    public List<Mana> getNetMana(Game game) {
-        List<Mana> netManas = new ArrayList<>();
-        if (netMana.isEmpty() && game != null) {
-            Player controller = game.getPlayer(getControllerId());
-            if (controller != null) {
-                for (UUID commanderId : game.getCommandersIds(controller)) {
-                    Card commander = game.getCard(commanderId);
-                    if (commander != null) {
-                        FilterMana commanderMana = commander.getColorIdentity();
-                        if (commanderMana.isBlack()) {
-                            netMana.add(new Mana(ColoredManaSymbol.B));
-                        }
-                        if (commanderMana.isBlue()) {
-                            netMana.add(new Mana(ColoredManaSymbol.U));
-                        }
-                        if (commanderMana.isGreen()) {
-                            netMana.add(new Mana(ColoredManaSymbol.G));
-                        }
-                        if (commanderMana.isRed()) {
-                            netMana.add(new Mana(ColoredManaSymbol.R));
-                        }
-                        if (commanderMana.isWhite()) {
-                            netMana.add(new Mana(ColoredManaSymbol.W));
-                        }
-                    }
-                }
-            }
-        }
-        netManas.addAll(netMana);
-        return netManas;
-    }
-
-    @Override
     public boolean definesMana(Game game) {
         return true;
     }
@@ -97,19 +64,44 @@ class CommanderIdentityManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        if (game == null) {
+            return netMana;
+        }
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+            for (UUID commanderId : game.getCommandersIds(controller)) {
+                Card commander = game.getCard(commanderId);
+                if (commander != null) {
+                    FilterMana commanderMana = commander.getColorIdentity();
+                    if (commanderMana.isBlack()) {
+                        netMana.add(new Mana(ColoredManaSymbol.B));
+                    }
+                    if (commanderMana.isBlue()) {
+                        netMana.add(new Mana(ColoredManaSymbol.U));
+                    }
+                    if (commanderMana.isGreen()) {
+                        netMana.add(new Mana(ColoredManaSymbol.G));
+                    }
+                    if (commanderMana.isRed()) {
+                        netMana.add(new Mana(ColoredManaSymbol.R));
+                    }
+                    if (commanderMana.isWhite()) {
+                        netMana.add(new Mana(ColoredManaSymbol.W));
+                    }
+                }
+            }
         }
-        return false;
+        return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             Choice choice = new ChoiceImpl();
@@ -166,5 +158,4 @@ class CommanderIdentityManaEffect extends ManaEffect {
         }
         return mana;
     }
-
 }

@@ -24,7 +24,6 @@ import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -46,7 +45,7 @@ public final class KeeperOfTheDead extends CardImpl {
     static {
         filter.add(new KeeperOfDeadPredicate());
         filter2.add(Predicates.not(new ColorPredicate(ObjectColor.BLACK)));
-        filter3.add(new CardTypePredicate(CardType.CREATURE));
+        filter3.add(CardType.CREATURE.getPredicate());
     }
 
     public KeeperOfTheDead(UUID ownerId, CardSetInfo setInfo) {
@@ -57,7 +56,7 @@ public final class KeeperOfTheDead extends CardImpl {
         this.power = new MageInt(1);
         this.toughness = new MageInt(2);
 
-        // {B}, {T}: Choose target opponent who had at least two fewer creature cards in their graveyard than you did as you activated this ability. Destroy target nonblack creature he or she controls.
+        // {B}, {T}: Choose target opponent who had at least two fewer creature cards in their graveyard than you did as you activated this ability. Destroy target nonblack creature they control.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new KeeperOfTheDeadEffect(), new TapSourceCost());
         ability.addCost(new ManaCostsImpl("{B}"));
         ability.addTarget(new TargetPlayer(1, 1, false, filter));
@@ -80,7 +79,7 @@ class KeeperOfDeadPredicate implements ObjectSourcePlayerPredicate<ObjectSourceP
     private static final FilterCard filter = new FilterCard("creature cards");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     @Override

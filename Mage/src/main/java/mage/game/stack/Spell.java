@@ -1,5 +1,6 @@
 package mage.game.stack;
 
+import java.util.*;
 import mage.MageInt;
 import mage.MageObject;
 import mage.Mana;
@@ -15,10 +16,7 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.keyword.BestowAbility;
 import mage.abilities.keyword.MorphAbility;
 import mage.abilities.text.TextPart;
-import mage.cards.Card;
-import mage.cards.CardsImpl;
-import mage.cards.FrameStyle;
-import mage.cards.SplitCard;
+import mage.cards.*;
 import mage.constants.*;
 import mage.counters.Counter;
 import mage.counters.Counters;
@@ -33,8 +31,6 @@ import mage.game.permanent.PermanentCard;
 import mage.players.Player;
 import mage.util.GameLog;
 import mage.util.SubTypeList;
-
-import java.util.*;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -168,6 +164,13 @@ public class Spell extends StackObjImpl implements Card {
                 return "a card face down";
             }
         }
+
+        if (card instanceof AdventureCardSpell) {
+            AdventureCard adventureCard = ((AdventureCardSpell) card).getParentCard();
+            return GameLog.replaceNameByColoredName(card, getSpellAbility().toString(), adventureCard)
+                    + " as Adventure spell of " + GameLog.getColoredObjectIdName(adventureCard);
+        }
+
         return GameLog.replaceNameByColoredName(card, getSpellAbility().toString());
     }
 
@@ -421,7 +424,11 @@ public class Spell extends StackObjImpl implements Card {
     public String getIdName() {
         String idName;
         if (card != null) {
-            idName = card.getId().toString().substring(0, 3);
+            if (card instanceof AdventureCardSpell) {
+                idName = ((AdventureCardSpell) card).getParentCard().getId().toString().substring(0, 3);
+            } else {
+                idName = card.getId().toString().substring(0, 3);
+            }
         } else {
             idName = getId().toString().substring(0, 3);
         }
@@ -1035,6 +1042,11 @@ public class Spell extends StackObjImpl implements Card {
 
     public UUID getCommandedBy() {
         return commandedBy;
+    }
+
+    @Override
+    public void looseAllAbilities(Game game) {
+        throw new UnsupportedOperationException("Spells should not loose all abilities. Check if this operation is correct.");
     }
 
 }

@@ -1,4 +1,3 @@
-
 package mage.cards.t;
 
 import java.util.UUID;
@@ -19,7 +18,6 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -37,7 +35,7 @@ public final class TorrentialGearhulk extends CardImpl {
     private static final FilterCard filter = new FilterCard("instant card from your graveyard");
 
     static {
-        filter.add(new CardTypePredicate(CardType.INSTANT));
+        filter.add(CardType.INSTANT.getPredicate());
     }
 
     public TorrentialGearhulk(UUID ownerId, CardSetInfo setInfo) {
@@ -49,7 +47,8 @@ public final class TorrentialGearhulk extends CardImpl {
         // Flash
         this.addAbility(FlashAbility.getInstance());
 
-        // When Torrential Gearhulk enters the battlefield, you may cast target instant card from your graveyard without paying its mana cost.
+        // When Torrential Gearhulk enters the battlefield, you may cast target 
+        // instant card from your graveyard without paying its mana cost.
         // If that card would be put into your graveyard this turn, exile it instead.
         Ability ability = new EntersBattlefieldTriggeredAbility(new TorrentialGearhulkEffect());
         ability.addTarget(new TargetCardInYourGraveyard(filter));
@@ -69,7 +68,7 @@ public final class TorrentialGearhulk extends CardImpl {
 class TorrentialGearhulkEffect extends OneShotEffect {
 
     TorrentialGearhulkEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.PlayForFree);
         this.staticText = "you may cast target instant card from your graveyard without paying its mana cost. "
                 + "If that card would be put into your graveyard this turn, exile it instead";
     }
@@ -88,9 +87,13 @@ class TorrentialGearhulkEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
-            if (card != null && card.getSpellAbility() != null) {
+            if (card != null) {
                 if (controller.chooseUse(outcome, "Cast " + card.getLogName() + '?', source, game)) {
-                    if (controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game))) {
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                    Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
+                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
+                    if (cardWasCast) {
                         ContinuousEffect effect = new TorrentialGearhulkReplacementEffect(card.getId());
                         effect.setTargetPointer(new FixedTarget(card.getId(), game.getState().getZoneChangeCounter(card.getId())));
                         game.addEffect(effect, source);

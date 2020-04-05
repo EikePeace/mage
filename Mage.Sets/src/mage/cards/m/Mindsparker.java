@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -10,20 +8,16 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.FirstStrikeAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.SetTargetPointer;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class Mindsparker extends CardImpl {
@@ -32,15 +26,15 @@ public final class Mindsparker extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.INSTANT),
-                new CardTypePredicate(CardType.SORCERY)));
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate()));
         filter.add(Predicates.or(
                 new ColorPredicate(ObjectColor.WHITE),
                 new ColorPredicate(ObjectColor.BLUE)));
     }
 
     public Mindsparker(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{R}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{R}{R}");
         this.subtype.add(SubType.ELEMENTAL);
 
         this.power = new MageInt(3);
@@ -84,7 +78,7 @@ class MindsparkerEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.damage(2, source.getSourceId(), game, false, true);
+            targetPlayer.damage(2, source.getSourceId(), game);
             return true;
         }
         return false;

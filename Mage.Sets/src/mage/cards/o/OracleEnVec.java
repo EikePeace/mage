@@ -13,6 +13,7 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.RequirementEffect;
 import mage.abilities.effects.RestrictionEffect;
 import mage.abilities.effects.common.DestroyTargetEffect;
+import mage.abilities.hint.common.MyTurnHint;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
@@ -47,6 +48,7 @@ public final class OracleEnVec extends CardImpl {
         // destroy each of the chosen creatures that didn’t attack this turn. Activate this ability only during your turn.
         Ability ability = new ActivateIfConditionActivatedAbility(Zone.BATTLEFIELD, new OracleEnVecEffect(), new TapSourceCost(), MyTurnCondition.instance);
         ability.addTarget(new TargetOpponent());
+        ability.addHint(MyTurnHint.instance);
         this.addAbility(ability, new AttackedThisTurnWatcher());
     }
 
@@ -64,7 +66,7 @@ class OracleEnVecEffect extends OneShotEffect {
 
     OracleEnVecEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Target opponent chooses any number of creatures he or she controls. During that player's next turn, " +
+        this.staticText = "Target opponent chooses any number of creatures they control. During that player's next turn, " +
                 "the chosen creatures attack if able, and other creatures can't attack. At the beginning of that turn's end step, " +
                 "destroy each of the chosen creatures that didn't attack";
     }

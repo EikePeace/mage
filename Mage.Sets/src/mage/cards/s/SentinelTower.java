@@ -80,7 +80,7 @@ class SentinelTowerTriggeredAbility extends SpellCastAllTriggeredAbility {
             }
             for (Effect effect : this.getEffects()) {
                 if (effect instanceof DamageTargetEffect) {
-                    ((DamageTargetEffect) effect).setAmount(new StaticValue(damageToDeal));
+                    ((DamageTargetEffect) effect).setAmount(StaticValue.get(damageToDeal));
                     return true;
                 }
             }
@@ -103,16 +103,6 @@ class SentinelTowerWatcher extends Watcher {
     SentinelTowerWatcher() {
         super( WatcherScope.GAME);
         this.spellsThisTurn = new ArrayList<>();
-    }
-
-    SentinelTowerWatcher(final SentinelTowerWatcher effect) {
-        super(effect);
-        this.spellsThisTurn = effect.spellsThisTurn;
-    }
-
-    @Override
-    public SentinelTowerWatcher copy() {
-        return new SentinelTowerWatcher(this);
     }
 
     @Override

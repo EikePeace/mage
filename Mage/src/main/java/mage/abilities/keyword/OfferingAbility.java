@@ -1,5 +1,6 @@
 package mage.abilities.keyword;
 
+import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
@@ -9,15 +10,12 @@ import mage.abilities.effects.common.cost.CostModificationEffectImpl;
 import mage.cards.Card;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.util.CardUtil;
-
-import java.util.UUID;
 
 /**
  * 702.46. Offering # 702.46a Offering is a static ability of a card that
@@ -49,7 +47,7 @@ public class OfferingAbility extends StaticAbility {
      */
     public OfferingAbility(SubType subtype) {
         super(Zone.ALL, null);
-        filter.add(new SubtypePredicate(subtype));
+        filter.add(subtype.getPredicate());
         filter.setMessage(subtype.getDescription());
         this.addEffect(new OfferingAsThoughEffect());
     }
@@ -121,7 +119,7 @@ class OfferingAsThoughEffect extends AsThoughEffectImpl {
 
             if (game.getBattlefield().count(((OfferingAbility) source).getFilter(), source.getSourceId(), source.getControllerId(), game) > 0) {
 
-                if (CardUtil.isCheckPlayableMode(affectedAbility)) {
+                if (game.inCheckPlayableState()) {
                     return true;
                 }
                 FilterControlledCreaturePermanent filter = ((OfferingAbility) source).getFilter();
@@ -130,7 +128,7 @@ class OfferingAsThoughEffect extends AsThoughEffectImpl {
                     return false;
                 }
                 Player player = game.getPlayer(source.getControllerId());
-                if (player != null && !CardUtil.isCheckPlayableMode(affectedAbility)
+                if (player != null && !game.inCheckPlayableState()
                         && player.chooseUse(Outcome.Benefit, "Offer a " + filter.getMessage() + " to cast " + spellToCast.getName() + '?', source, game)) {
                     Target target = new TargetControlledCreaturePermanent(1, 1, filter, true);
                     player.chooseTarget(Outcome.Sacrifice, target, source, game);
@@ -193,7 +191,7 @@ class OfferingCostReductionEffect extends CostModificationEffectImpl {
 
     @Override
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
-        if (CardUtil.isCheckPlayableMode(abilityToModify)) { // Cost modifaction does not work correctly for checking available spells
+        if (game.inCheckPlayableState()) { // Cost modifaction does not work correctly for checking available spells
             return false;
         }
         if (abilityToModify.getId().equals(spellAbilityId) && abilityToModify instanceof SpellAbility) {

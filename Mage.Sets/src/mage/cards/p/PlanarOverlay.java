@@ -7,8 +7,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -26,7 +24,7 @@ public final class PlanarOverlay extends CardImpl {
     public PlanarOverlay(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{U}");
 
-        // Each player chooses a land he or she controls of each basic land type. Return those lands to their owners' hands.
+        // Each player chooses a land they control of each basic land type. Return those lands to their owners' hands.
         this.getSpellAbility().addEffect(new PlanarOverlayEffect());
     }
 
@@ -44,7 +42,7 @@ class PlanarOverlayEffect extends OneShotEffect {
 
     public PlanarOverlayEffect() {
         super(Outcome.ReturnToHand);
-        this.staticText = "Each player chooses a land he or she controls of each basic land type. Return those lands to their owners' hands";
+        this.staticText = "Each player chooses a land they control of each basic land type. Return those lands to their owners' hands";
     }
 
     public PlanarOverlayEffect(final PlanarOverlayEffect effect) {
@@ -66,8 +64,8 @@ class PlanarOverlayEffect extends OneShotEffect {
                 if (player != null) {
                     for (SubType landName : SubType.getBasicLands()) {
                         FilterLandPermanent filter = new FilterLandPermanent(landName + " to return to hand");
-                        filter.add(new SubtypePredicate(landName));
-                        filter.add(new ControllerPredicate(TargetController.YOU));
+                        filter.add(landName.getPredicate());
+                        filter.add(TargetController.YOU.getControllerPredicate());
                         Target target = new TargetLandPermanent(1, 1, filter, true);
                         if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                             player.chooseTarget(outcome, target, source, game);

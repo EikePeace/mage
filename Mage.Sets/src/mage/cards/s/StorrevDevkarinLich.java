@@ -13,7 +13,6 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -35,8 +34,8 @@ public final class StorrevDevkarinLich extends CardImpl {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.PLANESWALKER)
+                CardType.CREATURE.getPredicate(),
+                CardType.PLANESWALKER.getPredicate()
         ));
         filter.add(StorrevDevkarinLichPredicate.instance);
     }
@@ -93,11 +92,6 @@ class StorrevDevkarinLichWatcher extends Watcher {
         super(WatcherScope.GAME);
     }
 
-    private StorrevDevkarinLichWatcher(final StorrevDevkarinLichWatcher watcher) {
-        super(watcher);
-        this.cards.addAll(watcher.cards);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.BEGIN_COMBAT_STEP_PRE) {
@@ -112,10 +106,6 @@ class StorrevDevkarinLichWatcher extends Watcher {
         }
     }
 
-    @Override
-    public StorrevDevkarinLichWatcher copy() {
-        return new StorrevDevkarinLichWatcher(this);
-    }
 
     boolean wasPutInAGraveyardThisCombat(UUID cardId, Game game) {
         for (MageObjectReference mor : cards) {

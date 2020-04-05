@@ -10,10 +10,8 @@ import mage.abilities.Ability;
 import mage.abilities.effects.common.ManaEffect;
 import mage.abilities.mana.builder.ConditionalManaBuilder;
 import mage.game.Game;
-import mage.players.Player;
 
 /**
- *
  * @author LevelX2
  */
 public class AddConditionalManaEffect extends ManaEffect {
@@ -30,7 +28,7 @@ public class AddConditionalManaEffect extends ManaEffect {
 
     public AddConditionalManaEffect(final AddConditionalManaEffect effect) {
         super(effect);
-        this.mana = effect.mana;
+        this.mana = effect.mana.copy();
         this.manaBuilder = effect.manaBuilder;
     }
 
@@ -40,18 +38,12 @@ public class AddConditionalManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
-            player.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            return manaBuilder.setMana(mana, source, game).build();
+        } else {
+            return new Mana();
         }
-        return false;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        return manaBuilder.setMana(mana, source, game).build();
     }
 
     public Mana getMana() {

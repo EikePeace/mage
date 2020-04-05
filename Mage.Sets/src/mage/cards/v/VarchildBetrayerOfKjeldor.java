@@ -22,7 +22,6 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.token.SurvivorToken;
 
@@ -37,13 +36,9 @@ public final class VarchildBetrayerOfKjeldor extends CardImpl {
                     SubType.SURVIVOR,
                     "Survivors your opponents control"
             );
-    private static final FilterCreaturePermanent filter2
-            = new FilterCreaturePermanent(
-                    SubType.SURVIVOR, "all Survivors"
-            );
 
     static {
-        filter1.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter1.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public VarchildBetrayerOfKjeldor(UUID ownerId, CardSetInfo setInfo) {
@@ -74,7 +69,7 @@ public final class VarchildBetrayerOfKjeldor extends CardImpl {
 
         // When Varchild leaves the battlefield, gain control of all Survivors.
         this.addAbility(new LeavesBattlefieldTriggeredAbility(
-                new GainControlAllEffect(Duration.Custom, filter2), false
+                new GainControlAllEffect(Duration.Custom, new FilterCreaturePermanent(SubType.SURVIVOR, "all Survivors")), false
         ));
     }
 

@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -10,20 +8,19 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class AuraBarbs extends CardImpl {
 
     public AuraBarbs(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{2}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{2}{R}");
         this.subtype.add(SubType.ARCANE);
 
 
@@ -42,7 +39,7 @@ public final class AuraBarbs extends CardImpl {
 
     private static class AuraBarbsEffect extends OneShotEffect {
 
-    public AuraBarbsEffect() {
+        public AuraBarbsEffect() {
             super(Outcome.Detriment);
             staticText = "Each enchantment deals 2 damage to its controller, then each Aura attached to a creature deals 2 damage to the creature it's attached to";
         }
@@ -55,17 +52,17 @@ public final class AuraBarbs extends CardImpl {
         public boolean apply(Game game, Ability source) {
 
             FilterPermanent filterEnchantments = new FilterPermanent();
-            filterEnchantments.add(new CardTypePredicate(CardType.ENCHANTMENT));
+            filterEnchantments.add(CardType.ENCHANTMENT.getPredicate());
 
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filterEnchantments, source.getControllerId(), source.getSourceId(), game)) {
                 Player controller = game.getPlayer(permanent.getControllerId());
                 if (controller != null) {
-                    controller.damage(2, permanent.getId(), game, false, true);
+                    controller.damage(2, permanent.getId(), game);
                     game.informPlayers("2 damage assigned to " + controller.getLogName() + " from " + permanent.getName());
                 }
             }
 
-            filterEnchantments.add(new SubtypePredicate(SubType.AURA));
+            filterEnchantments.add(SubType.AURA.getPredicate());
             for (Permanent auraEnchantment : game.getBattlefield().getActivePermanents(filterEnchantments, source.getControllerId(), source.getSourceId(), game)) {
                 if (auraEnchantment.getAttachedTo() != null) {
                     Permanent attachedToCreature = game.getPermanent(auraEnchantment.getAttachedTo());

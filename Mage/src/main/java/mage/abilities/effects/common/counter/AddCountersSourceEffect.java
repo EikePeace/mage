@@ -1,7 +1,7 @@
-
 package mage.abilities.effects.common.counter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import mage.abilities.Ability;
@@ -32,7 +32,7 @@ public class AddCountersSourceEffect extends OneShotEffect {
     }
 
     public AddCountersSourceEffect(Counter counter, boolean informPlayers) {
-        this(counter, new StaticValue(0), informPlayers);
+        this(counter, StaticValue.get(0), informPlayers);
     }
 
     public AddCountersSourceEffect(Counter counter, DynamicValue amount, boolean informPlayers) {
@@ -80,7 +80,7 @@ public class AddCountersSourceEffect extends OneShotEffect {
                             countersToAdd--;
                         }
                         newCounter.add(countersToAdd);
-                        ArrayList<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects");
+                        List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects");
                         card.addCounters(newCounter, source, game, appliedEffects);
                         if (informPlayers && !game.isSimulation()) {
                             Player player = game.getPlayer(source.getControllerId());
@@ -96,7 +96,9 @@ public class AddCountersSourceEffect extends OneShotEffect {
                 if (permanent == null && source.getAbilityType() == AbilityType.STATIC) {
                     permanent = game.getPermanentEntering(source.getSourceId());
                 }
-                if (permanent != null) {
+                if (permanent != null
+                        && (source.getSourceObjectZoneChangeCounter() == 0 // from static ability
+                        || source.getSourceObjectZoneChangeCounter() == permanent.getZoneChangeCounter(game))) { // prevent to add counters to later source objects
                     if (counter != null) {
                         Counter newCounter = counter.copy();
                         int countersToAdd = amount.calculate(game, source, this);
@@ -106,7 +108,7 @@ public class AddCountersSourceEffect extends OneShotEffect {
                             }
                             newCounter.add(countersToAdd);
                             int before = permanent.getCounters(game).getCount(newCounter.getName());
-                            ArrayList<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects");
+                            List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects");
                             permanent.addCounters(newCounter, source, game, appliedEffects); // if used from a replacement effect, the basic event determines if an effect was already applied to an event
                             if (informPlayers && !game.isSimulation()) {
                                 int amountAdded = permanent.getCounters(game).getCount(newCounter.getName()) - before;

@@ -11,8 +11,10 @@ import mage.abilities.effects.common.ManaEffect;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author LevelX2
  */
 public class AddManaToManaPoolTargetControllerEffect extends ManaEffect {
@@ -27,12 +29,11 @@ public class AddManaToManaPoolTargetControllerEffect extends ManaEffect {
     /**
      * Adds mana to the mana pool of target pointer player
      *
-     * @param mana mana that will be added to the pool
+     * @param mana              mana that will be added to the pool
      * @param textManaPoolOwner text that references to the mana pool owner
-     * (e.g. "damaged player's")
-     * @param emptyOnTurnsEnd if set, the mana will empty only on end of
-     * turnstep
-     *
+     *                          (e.g. "damaged player's")
+     * @param emptyOnTurnsEnd   if set, the mana will empty only on end of
+     *                          turnstep
      */
     public AddManaToManaPoolTargetControllerEffect(Mana mana, String textManaPoolOwner, boolean emptyOnTurnsEnd) {
         super();
@@ -43,7 +44,7 @@ public class AddManaToManaPoolTargetControllerEffect extends ManaEffect {
 
     public AddManaToManaPoolTargetControllerEffect(final AddManaToManaPoolTargetControllerEffect effect) {
         super(effect);
-        this.mana = effect.mana;
+        this.mana = effect.mana.copy();
         this.emptyOnlyOnTurnsEnd = effect.emptyOnlyOnTurnsEnd;
     }
 
@@ -53,20 +54,24 @@ public class AddManaToManaPoolTargetControllerEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(getTargetPointer().getFirst(game, source));
-        if (player != null) {
-            player.getManaPool().addMana(getMana(game, source), game, source, emptyOnlyOnTurnsEnd);
-            return true;
-        }
-        return false;
+    public Player getPlayer(Game game, Ability source) {
+        return game.getPlayer(getTargetPointer().getFirst(game, source));
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        if (netMana) {
-            return null;
-        }
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        netMana.add(mana.copy());
+        return netMana;
+    }
+
+    @Override
+    public Mana produceMana(Game game, Ability source) {
         return mana.copy();
+    }
+
+    @Override
+    protected void addManaToPool(Player player, Mana manaToAdd, Game game, Ability source) {
+        player.getManaPool().addMana(manaToAdd, game, source, emptyOnlyOnTurnsEnd);
     }
 }

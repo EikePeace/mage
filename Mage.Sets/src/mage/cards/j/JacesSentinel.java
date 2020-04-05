@@ -12,9 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 import java.util.UUID;
 
@@ -26,9 +23,9 @@ public final class JacesSentinel extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("a Jace planeswalker");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new SubtypePredicate(SubType.JACE));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(CardType.PLANESWALKER.getPredicate());
+        filter.add(SubType.JACE.getPredicate());
     }
 
     public JacesSentinel(UUID ownerId, CardSetInfo setInfo) {

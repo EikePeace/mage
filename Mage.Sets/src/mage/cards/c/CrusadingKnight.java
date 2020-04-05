@@ -12,8 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -23,8 +21,8 @@ public final class CrusadingKnight extends CardImpl {
 
     private static final FilterLandPermanent swampFilter = new FilterLandPermanent("Swamp your opponent controls");
     static {
-      swampFilter.add(new SubtypePredicate(SubType.SWAMP));
-      swampFilter.add(new ControllerPredicate(TargetController.OPPONENT));
+      swampFilter.add(SubType.SWAMP.getPredicate());
+      swampFilter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public CrusadingKnight(UUID ownerId, CardSetInfo setInfo) {

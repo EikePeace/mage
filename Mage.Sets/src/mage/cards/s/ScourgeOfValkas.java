@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldControlledTriggeredAbility;
@@ -12,21 +10,17 @@ import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class ScourgeOfValkas extends CardImpl {
@@ -34,7 +28,7 @@ public final class ScourgeOfValkas extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("{this} or another Dragon");
 
     static {
-        filter.add(new SubtypePredicate(SubType.DRAGON));
+        filter.add(SubType.DRAGON.getPredicate());
     }
 
     private static final String rule = "Whenever {this} or another Dragon enters the battlefield under your control, it deals X damage to any target, where X is the number of Dragons you control.";
@@ -92,7 +86,7 @@ class ScourgeOfValkasDamageEffect extends OneShotEffect {
         Permanent enteringDragon = (Permanent) getValue("permanentEnteringBattlefield");
         if (controller != null && enteringDragon != null) {
             FilterPermanent filter = new FilterPermanent();
-            filter.add(new SubtypePredicate(SubType.DRAGON));
+            filter.add(SubType.DRAGON.getPredicate());
             int dragons = game.getBattlefield().countAll(filter, source.getControllerId(), game);
             if (dragons > 0) {
                 Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
@@ -102,7 +96,7 @@ class ScourgeOfValkasDamageEffect extends OneShotEffect {
                     Player player = game.getPlayer(getTargetPointer().getFirst(game, source));
                     if (player != null
                             && player.isInGame()) {
-                        player.damage(dragons, enteringDragon.getId(), game, false, true);
+                        player.damage(dragons, enteringDragon.getId(), game);
                     }
                 }
             }

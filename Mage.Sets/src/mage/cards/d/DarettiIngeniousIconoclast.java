@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import mage.abilities.Ability;
@@ -14,12 +13,9 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
-import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterArtifactCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.permanent.token.DarettiConstructToken;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCardInGraveyardOrBattlefield;
@@ -34,13 +30,11 @@ public final class DarettiIngeniousIconoclast extends CardImpl {
 
     private static final FilterPermanent filter
             = new FilterPermanent("artifact or creature (to destroy)");
-    private static final FilterCard filter2
-            = new FilterArtifactCard("artifact card in a graveyard or artifact on the battlefield");
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.ARTIFACT),
-                new CardTypePredicate(CardType.CREATURE)
+                CardType.ARTIFACT.getPredicate(),
+                CardType.CREATURE.getPredicate()
         ));
     }
 
@@ -72,7 +66,8 @@ public final class DarettiIngeniousIconoclast extends CardImpl {
                         .setText("Choose target artifact card in a graveyard or artifact on the battlefield. " +
                                 "Create three tokens that are copies of it"), -6
         );
-        ability.addTarget(new TargetCardInGraveyardOrBattlefield(filter2));
+        ability.addTarget(new TargetCardInGraveyardOrBattlefield(1, 1,
+                StaticFilters.FILTER_CARD_ARTIFACT, StaticFilters.FILTER_PERMANENT_ARTIFACT));
         this.addAbility(ability);
     }
 

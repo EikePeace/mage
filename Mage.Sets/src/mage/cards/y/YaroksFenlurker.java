@@ -75,7 +75,8 @@ class YaroksFenlurkerEffect extends OneShotEffect {
         Map<UUID, Cards> cardsToExile = new HashMap<>();
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
-            if (opponent == null) {
+            if (opponent == null
+                    || opponent.getHand().isEmpty()) {
                 continue;
             }
             int numberOfCardsToExile = Math.min(1, opponent.getHand().size());
@@ -89,7 +90,7 @@ class YaroksFenlurkerEffect extends OneShotEffect {
         Cards cardsOpponentsChoseToExile = new CardsImpl();
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
-            if (opponent == null) {
+            if (opponent == null || !cardsToExile.containsKey(opponentId)) {
                 continue;
             }
             cardsOpponentsChoseToExile.addAll(cardsToExile.get(opponentId));

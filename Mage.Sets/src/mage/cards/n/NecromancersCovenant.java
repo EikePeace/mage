@@ -1,4 +1,3 @@
-
 package mage.cards.n;
 
 import java.util.UUID;
@@ -12,9 +11,8 @@ import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
+import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.token.ZombieToken;
 import mage.players.Player;
@@ -29,11 +27,11 @@ public final class NecromancersCovenant extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("Zombies you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ZOMBIE));
+        filter.add(SubType.ZOMBIE.getPredicate());
     }
 
     public NecromancersCovenant(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{3}{W}{B}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{3}{W}{B}{B}");
 
         // When Necromancer's Covenant enters the battlefield, exile all creature cards from target player's graveyard, then create a 2/2 black Zombie creature token for each card exiled this way.
         Ability ability = new EntersBattlefieldTriggeredAbility(new NecromancersConvenantEffect(), false);
@@ -72,7 +70,7 @@ class NecromancersConvenantEffect extends OneShotEffect {
             return false;
         }
         int count = 0;
-        for (Card card : player.getGraveyard().getCards(new FilterCreatureCard(), game)) {
+        for (Card card : player.getGraveyard().getCards(StaticFilters.FILTER_CARD_CREATURE, game)) {
             if (card.moveToExile(source.getSourceId(), "Necromancer Covenant", source.getSourceId(), game)) {
                 count += 1;
             }

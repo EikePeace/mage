@@ -11,7 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.target.TargetPermanent;
@@ -25,7 +24,7 @@ public final class QuelaagChaosWitch extends CardImpl {
             = new FilterCreatureOrPlaneswalkerPermanent("creature or planeswalker an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public QuelaagChaosWitch(UUID ownerId, CardSetInfo setInfo){

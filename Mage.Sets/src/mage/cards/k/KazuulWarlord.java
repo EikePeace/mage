@@ -12,8 +12,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -24,8 +22,8 @@ public final class KazuulWarlord extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Ally creatures you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ALLY));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.ALLY.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public KazuulWarlord(UUID ownerId, CardSetInfo setInfo) {

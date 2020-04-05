@@ -15,8 +15,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -27,9 +25,9 @@ public final class SteelOverseer extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("artifact creature you control");
 
     static {
-        filter.add(new CardTypePredicate(CardType.ARTIFACT));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.ARTIFACT.getPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public SteelOverseer(UUID ownerId, CardSetInfo setInfo) {

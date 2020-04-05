@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -10,14 +8,9 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DoIfCostPaid;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.Zone;
-import mage.filter.common.FilterArtifactCard;
+import mage.constants.*;
+import mage.filter.common.FilterArtifactPermanent;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -26,14 +19,15 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPlayer;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class SludgeStrider extends CardImpl {
 
     public SludgeStrider(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT,CardType.CREATURE},"{1}{W}{U}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{1}{W}{U}{B}");
         this.subtype.add(SubType.INSECT);
 
         this.power = new MageInt(3);
@@ -58,9 +52,10 @@ public final class SludgeStrider extends CardImpl {
 
 class SludgeStriderTriggeredAbility extends TriggeredAbilityImpl {
 
-    private static final FilterArtifactCard filter = new FilterArtifactCard("another artifact under your control");
+    private static final FilterArtifactPermanent filter = new FilterArtifactPermanent("another artifact under your control");
+
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(AnotherPredicate.instance);
     }
 
@@ -94,9 +89,7 @@ class SludgeStriderTriggeredAbility extends TriggeredAbilityImpl {
                 if (permanent == null) {
                     permanent = (Permanent) game.getLastKnownInformation(targetId, Zone.BATTLEFIELD);
                 }
-                if (permanent != null && filter.match(permanent, getSourceId(), getControllerId(), game)) {
-                    return true;
-                }
+                return permanent != null && filter.match(permanent, getSourceId(), getControllerId(), game);
             }
         }
         return false;

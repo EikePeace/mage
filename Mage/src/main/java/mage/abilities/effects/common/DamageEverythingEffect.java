@@ -1,22 +1,20 @@
-
-
 package mage.abilities.effects.common;
 
-import java.util.List;
-import java.util.UUID;
-import mage.constants.Outcome;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.StaticValue;
 import mage.abilities.effects.OneShotEffect;
+import mage.constants.Outcome;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class DamageEverythingEffect extends OneShotEffect {
@@ -27,11 +25,11 @@ public class DamageEverythingEffect extends OneShotEffect {
     private String sourceName = "{source}";
 
     public DamageEverythingEffect(int amount) {
-        this(new StaticValue(amount), new FilterCreaturePermanent());
+        this(StaticValue.get(amount), new FilterCreaturePermanent());
     }
 
     public DamageEverythingEffect(int amount, String whoDealDamageName) {
-        this(new StaticValue(amount), new FilterCreaturePermanent());
+        this(StaticValue.get(amount), new FilterCreaturePermanent());
 
         this.sourceName = whoDealDamageName;
         setText(); // TODO: replace to @Override public String getText()
@@ -42,13 +40,13 @@ public class DamageEverythingEffect extends OneShotEffect {
     }
 
     public DamageEverythingEffect(int amount, FilterPermanent filter) {
-        this(new StaticValue(amount), filter);
+        this(StaticValue.get(amount), filter);
     }
 
     public DamageEverythingEffect(DynamicValue amount, FilterPermanent filter) {
         this(amount, filter, null);
     }
-    
+
     public DamageEverythingEffect(DynamicValue amount, FilterPermanent filter, UUID damageSource) {
         super(Outcome.Damage);
         this.amount = amount;
@@ -78,13 +76,13 @@ public class DamageEverythingEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int damage = amount.calculate(game, source, this);
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
-        for (Permanent permanent: permanents) {
-            permanent.damage(damage, damageSource == null ? source.getSourceId(): damageSource, game, false, true);
+        for (Permanent permanent : permanents) {
+            permanent.damage(damage, damageSource == null ? source.getSourceId() : damageSource, game, false, true);
         }
-        for (UUID playerId: game.getState().getPlayersInRange(source.getControllerId(), game)) {
+        for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                player.damage(damage, damageSource == null ? source.getSourceId(): damageSource, game, false, true);
+                player.damage(damage, damageSource == null ? source.getSourceId() : damageSource, game);
             }
         }
         return true;

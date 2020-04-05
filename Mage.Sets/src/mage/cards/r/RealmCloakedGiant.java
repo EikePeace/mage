@@ -9,7 +9,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 import java.util.UUID;
 
@@ -22,11 +21,11 @@ public final class RealmCloakedGiant extends AdventureCard {
             = new FilterCreaturePermanent("non-Giant creatures");
 
     static {
-        filter.add(Predicates.not(new SubtypePredicate(SubType.GIANT)));
+        filter.add(Predicates.not(SubType.GIANT.getPredicate()));
     }
 
     public RealmCloakedGiant(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, new CardType[]{CardType.SORCERY}, "{5}{W}{W}", "{5}{W}{W}", "{3}{W}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, new CardType[]{CardType.SORCERY}, "{5}{W}{W}", "Cast Off", "{3}{W}{W}");
 
         this.subtype.add(SubType.GIANT);
         this.power = new MageInt(7);
@@ -37,7 +36,7 @@ public final class RealmCloakedGiant extends AdventureCard {
 
         // Cast Off
         // Destroy all non-Giant creatures.
-        this.getAdventureSpellAbility().addEffect(new DestroyAllEffect(filter));
+        this.getSpellCard().getSpellAbility().addEffect(new DestroyAllEffect(filter));
     }
 
     private RealmCloakedGiant(final RealmCloakedGiant card) {

@@ -1,8 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.Set;
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -21,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -30,8 +26,10 @@ import mage.target.common.TargetAnyTarget;
 import mage.target.common.TargetCardInGraveyard;
 import mage.target.common.TargetDiscard;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class ChandraAblaze extends CardImpl {
@@ -131,7 +129,7 @@ class ChandraAblazeEffect2 extends OneShotEffect {
 
             Player player = game.getPlayer(targetPointer.getFirst(game, source));
             if (player != null) {
-                player.damage(4, source.getSourceId(), game, false, true);
+                player.damage(4, source.getSourceId(), game);
                 return true;
             }
         }
@@ -162,8 +160,8 @@ class ChandraAblazeEffect5 extends OneShotEffect {
             FilterCard filter = new FilterCard("red instant or sorcery card from your graveyard to play");
             filter.add(new ColorPredicate(ObjectColor.RED));
             filter.add(Predicates.or(
-                    new CardTypePredicate(CardType.INSTANT),
-                    new CardTypePredicate(CardType.SORCERY)));
+                    CardType.INSTANT.getPredicate(),
+                    CardType.SORCERY.getPredicate()));
 
             String message = "Play red instant or sorcery card from your graveyard without paying its mana cost?";
             Set<Card> cards = player.getGraveyard().getCards(filter, game);

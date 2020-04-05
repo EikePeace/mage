@@ -15,10 +15,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
-import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTargets;
 import mage.util.CardUtil;
@@ -51,8 +48,8 @@ class GhostwayEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterPermanent("each creature you control");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.CREATURE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public GhostwayEffect() {

@@ -16,7 +16,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.permanent.token.DragonToken2;
 
 /**
@@ -28,7 +27,7 @@ public final class SarkhanFireblood extends CardImpl {
     private static final FilterSpell filter = new FilterSpell("Dragon spells");
 
     static {
-        filter.add(new SubtypePredicate(SubType.DRAGON));
+        filter.add(SubType.DRAGON.getPredicate());
     }
 
     public SarkhanFireblood(UUID ownerId, CardSetInfo setInfo) {
@@ -47,7 +46,7 @@ public final class SarkhanFireblood extends CardImpl {
         // +1: Add two mana of any combination of colors. Spend this mana only to cast Dragon spells.
         this.addAbility(new LoyaltyAbility(
                 new AddConditionalManaOfAnyColorEffect(
-                        new StaticValue(2),
+                        StaticValue.get(2),
                         new ConditionalSpellManaBuilder(filter),
                         false
                 ), 1

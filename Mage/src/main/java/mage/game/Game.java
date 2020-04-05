@@ -96,7 +96,7 @@ public interface Game extends MageItem, Serializable {
 
     Map<UUID, Permanent> getPermanentsEntering();
 
-    Map<Zone, HashMap<UUID, MageObject>> getLKI();
+    Map<Zone, Map<UUID, MageObject>> getLKI();
 
     // Result must be checked for null. Possible errors search pattern: (\S*) = game.getCard.+\n(?!.+\1 != null)
     Card getCard(UUID cardId);
@@ -128,9 +128,7 @@ public interface Game extends MageItem, Serializable {
         return player.getInRange().stream()
                 .filter(opponentId -> !opponentId.equals(playerId))
                 .collect(Collectors.toSet());
-
     }
-
 
     default boolean isActivePlayer(UUID playerId) {
         return getActivePlayerId() != null && getActivePlayerId().equals(playerId);
@@ -202,9 +200,15 @@ public interface Game extends MageItem, Serializable {
 
     boolean isSimulation();
 
-    void setSimulation(boolean simulation);
+    void setSimulation(boolean checkPlayableState);
+
+    boolean inCheckPlayableState();
+
+    void setCheckPlayableState(boolean checkPlayableState);
 
     MageObject getLastKnownInformation(UUID objectId, Zone zone);
+
+    CardState getLastKnownInformationCard(UUID objectId, Zone zone);
 
     MageObject getLastKnownInformation(UUID objectId, Zone zone, int zoneChangeCounter);
 
@@ -263,7 +267,7 @@ public interface Game extends MageItem, Serializable {
 
     void fireInformEvent(String message);
 
-    void fireStatusEvent(String message, boolean withTime);
+    void fireStatusEvent(String message, boolean withTime, boolean withTurnInfo);
 
     void fireUpdatePlayersEvent();
 

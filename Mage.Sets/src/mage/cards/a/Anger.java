@@ -17,8 +17,6 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -31,8 +29,8 @@ public final class Anger extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("Mountain");
 
     static {
-        filter.add(new CardTypePredicate(CardType.LAND));
-        filter.add(new SubtypePredicate(SubType.MOUNTAIN));
+        filter.add(CardType.LAND.getPredicate());
+        filter.add(SubType.MOUNTAIN.getPredicate());
     }
 
     public Anger(UUID ownerId, CardSetInfo setInfo) {

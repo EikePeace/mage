@@ -1,4 +1,3 @@
-
 package mage.cards;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public interface Card extends MageObject {
 
     String getCardNumber();
 
-    Rarity getRarity();
+    Rarity getRarity(); // null for tokens
 
     void setOwnerId(UUID ownerId);
 
@@ -122,7 +121,6 @@ public interface Card extends MageObject {
     List<Mana> getMana();
 
     /**
-     *
      * @return true if there exists various art images for this card
      */
     boolean getUsesVariousArt();
@@ -132,6 +130,8 @@ public interface Card extends MageObject {
     Counters getCounters(GameState state);
 
     void addAbility(Ability ability);
+
+    void looseAllAbilities(Game game);
 
     boolean addCounters(Counter counter, Ability source, Game game);
 
@@ -149,9 +149,8 @@ public interface Card extends MageObject {
     Card copy();
 
     /**
-     *
-     * @return The main card of a split half card, otherwise the card itself is
-     * returned
+     * @return The main card of a split half card or adventure spell card,
+     * otherwise the card itself is returned
      */
     Card getMainCard();
 
@@ -169,7 +168,7 @@ public interface Card extends MageObject {
 
     boolean removeAttachment(UUID permanentId, Game game);
 
-    default boolean isOwnedBy(UUID controllerId){
+    default boolean isOwnedBy(UUID controllerId) {
         return getOwnerId().equals(controllerId);
     }
 }

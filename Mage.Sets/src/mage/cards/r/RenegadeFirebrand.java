@@ -17,8 +17,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -30,8 +28,8 @@ public final class RenegadeFirebrand extends CardImpl {
     private static final String rule = "As long as you control a Chandra planeswalker, {this} gets +1/+0";
 
     static {
-        filter.add(new CardTypePredicate(CardType.PLANESWALKER));
-        filter.add(new SubtypePredicate(SubType.CHANDRA));
+        filter.add(CardType.PLANESWALKER.getPredicate());
+        filter.add(SubType.CHANDRA.getPredicate());
     }
 
     public RenegadeFirebrand(UUID ownerId, CardSetInfo setInfo) {

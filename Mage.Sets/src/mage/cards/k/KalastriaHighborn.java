@@ -15,8 +15,6 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -30,8 +28,8 @@ public final class KalastriaHighborn extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Vampire you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.VAMPIRE));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.VAMPIRE.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public KalastriaHighborn(UUID ownerId, CardSetInfo setInfo) {

@@ -1,7 +1,5 @@
-
 package mage.cards.t;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -10,19 +8,19 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class Typhoon extends CardImpl {
 
     public Typhoon(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{2}{G}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{2}{G}");
 
         // Typhoon deals damage to each opponent equal to the number of Islands that player controls.
         this.getSpellAbility().addEffect(new TyphoonEffect());
@@ -39,10 +37,11 @@ public final class Typhoon extends CardImpl {
 }
 
 class TyphoonEffect extends OneShotEffect {
-    
+
     private static final FilterPermanent filter = new FilterPermanent();
-    static{
-        filter.add(new SubtypePredicate(SubType.ISLAND));
+
+    static {
+        filter.add(SubType.ISLAND.getPredicate());
     }
 
     TyphoonEffect() {
@@ -65,7 +64,7 @@ class TyphoonEffect extends OneShotEffect {
                         amount++;
                     }
                     if (amount > 0) {
-                        player.damage(amount, source.getSourceId(), game, false, true);
+                        player.damage(amount, source.getSourceId(), game);
                     }
                 }
             }

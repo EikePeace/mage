@@ -1,7 +1,5 @@
-
 package mage.cards.i;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -13,17 +11,18 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class InciteRebellion extends CardImpl {
 
     public InciteRebellion(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{4}{R}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{4}{R}{R}");
 
 
-        // For each player, Incite Rebellion deals damage to that player and each creature that player controls equal to the number of creatures he or she controls.
+        // For each player, Incite Rebellion deals damage to that player and each creature that player controls equal to the number of creatures they control.
         this.getSpellAbility().addEffect(new InciteRebellionEffect());
     }
 
@@ -43,7 +42,7 @@ class InciteRebellionEffect extends OneShotEffect {
 
     public InciteRebellionEffect() {
         super(Outcome.Detriment);
-        this.staticText = "For each player, {this} deals damage to that player and each creature that player controls equal to the number of creatures he or she controls";
+        this.staticText = "For each player, {this} deals damage to that player and each creature that player controls equal to the number of creatures they control";
     }
 
     public InciteRebellionEffect(final InciteRebellionEffect effect) {
@@ -59,16 +58,16 @@ class InciteRebellionEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            for (UUID playerId: game.getState().getPlayersInRange(controller.getId(), game)) {
+            for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int count = game.getBattlefield().countAll(filter, playerId, game);
                     if (count > 0) {
-                        player.damage(count, source.getSourceId(), game, false, true);
-                        for (Permanent permanent: game.getBattlefield().getAllActivePermanents(filter, playerId, game)) {
-                            permanent.damage(count, source.getSourceId(), game, false, true);
+                        player.damage(count, source.getSourceId(), game);
+                        for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, playerId, game)) {
+                            permanent.damage(count, source.getSourceId(), game);
                         }
-                   }
+                    }
                 }
             }
             return true;

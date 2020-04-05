@@ -14,11 +14,11 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInYourGraveyard;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -30,8 +30,8 @@ public final class KethisTheHiddenHand extends CardImpl {
     private static final FilterCard filter2 = new FilterCard("legendary cards from your graveyard");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.LEGENDARY));
-        filter2.add(new SupertypePredicate(SuperType.LEGENDARY));
+        filter.add(SuperType.LEGENDARY.getPredicate());
+        filter2.add(SuperType.LEGENDARY.getPredicate());
     }
 
     public KethisTheHiddenHand(UUID ownerId, CardSetInfo setInfo) {
@@ -89,6 +89,7 @@ class KethisTheHiddenHandEffect extends ContinuousEffectImpl {
         player.getGraveyard()
                 .stream()
                 .map(game::getCard)
+                .filter(Objects::nonNull)
                 .filter(Card::isLegendary)
                 .forEach(card -> affectedObjectList.add(new MageObjectReference(card, game)));
     }

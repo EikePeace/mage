@@ -1,19 +1,17 @@
 /**
  * GathererSymbols.java
- *
+ * <p>
  * Created on 25.08.2010
  */
 
 package org.mage.plugins.card.dl.sources;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import mage.client.constants.Constants;
 import org.mage.plugins.card.dl.DownloadJob;
+
+import java.io.File;
+import java.util.*;
+
 import static org.mage.plugins.card.dl.DownloadJob.fromURL;
 import static org.mage.plugins.card.dl.DownloadJob.toFile;
 import static org.mage.plugins.card.utils.CardImageUtils.getImagesDir;
@@ -36,19 +34,18 @@ public class DirectLinksForDownload implements Iterable<DownloadJob> {
         directLinks.put(cardbackFilename, backsideUrl);
     }
 
-    public static File outDir;
+    private File outDir;
 
     public DirectLinksForDownload() {
-        outDir = new File(getImagesDir() + Constants.RESOURCE_PATH_DEFAUL_IMAGES);
-
-        if (!outDir.exists()){
+        this.outDir = new File(getImagesDir() + Constants.RESOURCE_PATH_DEFAULT_IMAGES);
+        if (!outDir.exists()) {
             outDir.mkdirs();
         }
     }
 
     @Override
     public Iterator<DownloadJob> iterator() {
-        ArrayList<DownloadJob> jobs = new ArrayList<>();
+        List<DownloadJob> jobs = new ArrayList<>();
 
         for (Map.Entry<String, String> url : directLinks.entrySet()) {
             File dst = new File(outDir, url.getKey());

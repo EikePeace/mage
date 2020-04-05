@@ -15,7 +15,6 @@ import mage.constants.SuperType;
 import mage.filter.common.FilterAttackingCreature;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.game.combat.CombatGroup;
 import mage.game.permanent.Permanent;
@@ -32,7 +31,7 @@ public final class MercadiasDownfall extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{2}{R}");
 
         // Each attacking creature gets +1/+0 until end of turn for each nonbasic land defending player controls.
-        this.getSpellAbility().addEffect(new BoostAllEffect(new DefendersNonBasicLandCount(), new StaticValue(0), Duration.EndOfTurn, new FilterAttackingCreature(), true, rule));
+        this.getSpellAbility().addEffect(new BoostAllEffect(new DefendersNonBasicLandCount(), StaticValue.get(0), Duration.EndOfTurn, new FilterAttackingCreature(), true, rule));
 
     }
 
@@ -60,7 +59,7 @@ public final class MercadiasDownfall extends CardImpl {
                     }
                 }
                 FilterLandPermanent filter = new FilterLandPermanent("nonbasic land");
-                filter.add(Predicates.not(new SupertypePredicate(SuperType.BASIC)));
+                filter.add(Predicates.not(SuperType.BASIC.getPredicate()));
                 System.out.println("The number of nonbasic lands is " + game.getBattlefield().countAll(filter, defenderId, game));
                 return game.getBattlefield().countAll(filter, defenderId, game);
             }

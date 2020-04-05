@@ -1,10 +1,5 @@
 package mage.cards.o;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import mage.MageInt;
 import mage.Mana;
 import mage.abilities.Ability;
@@ -21,13 +16,13 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.*;
+
 /**
- *
  * @author LevelX2
  */
 public final class OrcishLumberjack extends CardImpl {
@@ -35,7 +30,7 @@ public final class OrcishLumberjack extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("a Forest");
 
     static {
-        filter.add(new SubtypePredicate(SubType.FOREST));
+        filter.add(SubType.FOREST.getPredicate());
     }
 
     public OrcishLumberjack(UUID ownerId, CardSetInfo setInfo) {
@@ -77,6 +72,7 @@ class OrcishLumberjackManaEffect extends ManaEffect {
 
     public OrcishLumberjackManaEffect(final OrcishLumberjackManaEffect effect) {
         super(effect);
+        netMana.addAll(effect.netMana);
     }
 
     @Override
@@ -85,23 +81,16 @@ class OrcishLumberjackManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public List<Mana> getNetMana(Game game, Ability source) {
         return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
+        Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
             Choice manaChoice = new ChoiceImpl();
@@ -110,11 +99,9 @@ class OrcishLumberjackManaEffect extends ManaEffect {
             choices.add("Green");
             manaChoice.setChoices(choices);
             manaChoice.setMessage("Select color of mana to add");
-
-            Mana mana = new Mana();
             for (int i = 0; i < 3; i++) {
                 if (!player.choose(Outcome.Benefit, manaChoice, game)) {
-                    return null;
+                    return mana;
                 }
                 switch (manaChoice.getChoice()) {
                     case "Green":
@@ -125,9 +112,8 @@ class OrcishLumberjackManaEffect extends ManaEffect {
                         break;
                 }
             }
-            return mana;
         }
-        return null;
+        return mana;
     }
 
 }

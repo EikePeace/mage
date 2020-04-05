@@ -1,4 +1,3 @@
-
 package mage.abilities.effects.common.cost;
 
 import java.util.LinkedHashSet;
@@ -6,7 +5,6 @@ import java.util.Set;
 import mage.MageObject;
 import mage.Mana;
 import mage.abilities.Ability;
-import mage.abilities.ActivatedAbility;
 import mage.abilities.SpellAbility;
 import mage.abilities.costs.mana.ManaCost;
 import mage.abilities.costs.mana.ManaCosts;
@@ -57,7 +55,8 @@ public class SpellsCostReductionControllerEffect extends CostModificationEffectI
         this.filter = filter;
         this.amount = amount;
         this.upTo = upTo;
-        this.staticText = filter.getMessage() + " you cast cost " + (upTo ? "up to " : "") + '{' + amount + "} less to cast";
+        this.staticText = (filter.getMessage().contains("you cast") ? filter.getMessage() : filter.getMessage() + " you cast")
+                + " cost " + (upTo ? "up to " : "") + '{' + amount + "} less to cast";
     }
 
     protected SpellsCostReductionControllerEffect(final SpellsCostReductionControllerEffect effect) {
@@ -85,7 +84,7 @@ public class SpellsCostReductionControllerEffect extends CostModificationEffectI
                         return false;
                     }
                     int reduce = reduceMax;
-                    if (!(abilityToModify instanceof ActivatedAbility) || !((ActivatedAbility) abilityToModify).isCheckPlayableMode()) {
+                    if (!game.inCheckPlayableState()) {
                         ChoiceImpl choice = new ChoiceImpl(false);
                         Set<String> set = new LinkedHashSet<>();
                         for (int i = 0; i <= amount; i++) {

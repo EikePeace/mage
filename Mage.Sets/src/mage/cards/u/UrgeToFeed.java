@@ -11,8 +11,6 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -49,9 +47,9 @@ class UrgeToFeedEffect extends OneShotEffect {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("untapped Vampire creatures you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(Predicates.not(TappedPredicate.instance));
-        filter.add(new SubtypePredicate(SubType.VAMPIRE));
+        filter.add(SubType.VAMPIRE.getPredicate());
     }
 
     public UrgeToFeedEffect() {

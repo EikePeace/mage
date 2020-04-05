@@ -13,8 +13,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -25,14 +23,15 @@ public final class JoragaBard extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Ally creatures you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.ALLY));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.ALLY.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public JoragaBard(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{G}");
         this.subtype.add(SubType.ELF);
         this.subtype.add(SubType.ROGUE);
+        this.subtype.add(SubType.BARD);
         this.subtype.add(SubType.ALLY);
 
         this.power = new MageInt(1);

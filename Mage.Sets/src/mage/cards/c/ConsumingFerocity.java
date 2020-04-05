@@ -1,7 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -11,27 +9,22 @@ import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.abilities.effects.common.continuous.BoostEnchantedEffect;
 import mage.abilities.effects.common.counter.AddCountersAttachedEffect;
-import mage.constants.Outcome;
-import mage.target.TargetPermanent;
 import mage.abilities.keyword.EnchantAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.SubType;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
+import mage.target.TargetPermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801
  */
 public final class ConsumingFerocity extends CardImpl {
@@ -39,7 +32,7 @@ public final class ConsumingFerocity extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("non-Wall creature");
 
     static {
-        filter.add(Predicates.not(new SubtypePredicate(SubType.WALL)));
+        filter.add(Predicates.not(SubType.WALL.getPredicate()));
     }
 
     public ConsumingFerocity(UUID ownerId, CardSetInfo setInfo) {
@@ -96,7 +89,7 @@ class ConsumingFerocityEffect extends OneShotEffect {
             if (creature.getCounters(game).getCount(CounterType.P1P0) > 2) {
                 Player player = game.getPlayer(creature.getControllerId());
                 if (player != null) {
-                    player.damage(creature.getPower().getValue(), creature.getId(), game, false, true);
+                    player.damage(creature.getPower().getValue(), creature.getId(), game);
                 }
                 effect = new DestroyTargetEffect(true);
                 effect.setTargetPointer(new FixedTarget(creature, game));

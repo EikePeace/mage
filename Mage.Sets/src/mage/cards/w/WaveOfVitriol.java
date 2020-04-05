@@ -15,8 +15,6 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -31,7 +29,7 @@ public final class WaveOfVitriol extends CardImpl {
     public WaveOfVitriol(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{5}{G}{G}");
 
-        // Each player sacrifices all artifacts, enchantments, and nonbasic lands he or she controls. For each land sacrificed this way, its controller may search their library for a basic land card and put it onto the battlefield tapped. Then each player who searched their library this way shuffles it.
+        // Each player sacrifices all artifacts, enchantments, and nonbasic lands they control. For each land sacrificed this way, its controller may search their library for a basic land card and put it onto the battlefield tapped. Then each player who searched their library this way shuffles it.
         this.getSpellAbility().addEffect(new WaveOfVitriolEffect());
 
     }
@@ -52,18 +50,18 @@ class WaveOfVitriolEffect extends OneShotEffect {
 
     static {
         filter.add(Predicates.or(
-                new CardTypePredicate(CardType.ARTIFACT),
-                new CardTypePredicate(CardType.ENCHANTMENT),
+                CardType.ARTIFACT.getPredicate(),
+                CardType.ENCHANTMENT.getPredicate(),
                 Predicates.and(
-                        new CardTypePredicate(CardType.LAND),
-                        Predicates.not(new SupertypePredicate(SuperType.BASIC))
+                        CardType.LAND.getPredicate(),
+                        Predicates.not(SuperType.BASIC.getPredicate())
                 )
         ));
     }
 
     public WaveOfVitriolEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Each player sacrifices all artifacts, enchantments, and nonbasic lands he or she controls. For each land sacrificed this way, its controller may search their library for a basic land card and put it onto the battlefield tapped. Then each player who searched their library this way shuffles it";
+        this.staticText = "Each player sacrifices all artifacts, enchantments, and nonbasic lands they control. For each land sacrificed this way, its controller may search their library for a basic land card and put it onto the battlefield tapped. Then each player who searched their library this way shuffles it";
     }
 
     public WaveOfVitriolEffect(final WaveOfVitriolEffect effect) {

@@ -8,8 +8,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -21,8 +19,8 @@ public final class SteelshapersGift extends CardImpl {
     private static final FilterCard filter = new FilterCard("Equipment card");
 
     static {
-        filter.add(new CardTypePredicate(CardType.ARTIFACT));
-        filter.add(new SubtypePredicate(SubType.EQUIPMENT));
+        filter.add(CardType.ARTIFACT.getPredicate());
+        filter.add(SubType.EQUIPMENT.getPredicate());
     }
 
     public SteelshapersGift(UUID ownerId, CardSetInfo setInfo) {

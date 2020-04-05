@@ -11,10 +11,8 @@ import mage.abilities.Ability;
 import mage.abilities.effects.common.ManaEffect;
 import mage.constants.ColoredManaSymbol;
 import mage.game.Game;
-import mage.players.Player;
 
 /**
- *
  * @author LevelX2
  */
 public class AddManaChosenColorEffect extends ManaEffect {
@@ -29,22 +27,14 @@ public class AddManaChosenColorEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
-            player.getManaPool().addMana(getMana(game, source), game, source);
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
+            if (color != null) {
+                return new Mana(ColoredManaSymbol.lookup(color.toString().charAt(0)));
+            }
         }
-        return true;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
-        if (color != null) {
-            return new Mana(ColoredManaSymbol.lookup(color.toString().charAt(0)));
-        } else {
-            return null;
-        }
+        return new Mana();
     }
 
     @Override

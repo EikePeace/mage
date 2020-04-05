@@ -15,8 +15,6 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
@@ -31,9 +29,9 @@ public final class IsolationZone extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("creature or enchantment an opponent controls");
 
     static {
-        filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.ENCHANTMENT)));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(Predicates.or(CardType.CREATURE.getPredicate(),
+                CardType.ENCHANTMENT.getPredicate()));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public IsolationZone(UUID ownerId, CardSetInfo setInfo) {

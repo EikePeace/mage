@@ -14,8 +14,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  *
@@ -26,8 +24,8 @@ public final class KashiTribeElite extends CardImpl {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("Legendary Snakes");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.LEGENDARY));
-        filter.add(new SubtypePredicate(SubType.SNAKE));
+        filter.add(SuperType.LEGENDARY.getPredicate());
+        filter.add(SubType.SNAKE.getPredicate());
     }
 
     public KashiTribeElite(UUID ownerId, CardSetInfo setInfo) {

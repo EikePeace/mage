@@ -54,6 +54,7 @@ public final class Commander2019Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Burning Vengeance", 135, Rarity.UNCOMMON, mage.cards.b.BurningVengeance.class));
         cards.add(new SetCardInfo("Burnished Hart", 211, Rarity.UNCOMMON, mage.cards.b.BurnishedHart.class));
         cards.add(new SetCardInfo("Call to the Netherworld", 108, Rarity.COMMON, mage.cards.c.CallToTheNetherworld.class));
+        cards.add(new SetCardInfo("Chainer, Nightmare Adept", 39, Rarity.MYTHIC, mage.cards.c.ChainerNightmareAdept.class));
         cards.add(new SetCardInfo("Champion of Stray Souls", 109, Rarity.MYTHIC, mage.cards.c.ChampionOfStraySouls.class));
         cards.add(new SetCardInfo("Chaos Warp", 136, Rarity.RARE, mage.cards.c.ChaosWarp.class));
         cards.add(new SetCardInfo("Chemister's Insight", 80, Rarity.UNCOMMON, mage.cards.c.ChemistersInsight.class));
@@ -159,6 +160,7 @@ public final class Commander2019Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Jace's Sanctum", 88, Rarity.RARE, mage.cards.j.JacesSanctum.class));
         cards.add(new SetCardInfo("Jungle Hollow", 254, Rarity.COMMON, mage.cards.j.JungleHollow.class));
         cards.add(new SetCardInfo("Jungle Shrine", 255, Rarity.UNCOMMON, mage.cards.j.JungleShrine.class));
+        cards.add(new SetCardInfo("K'rrik, Son of Yawgmoth", 18, Rarity.RARE, mage.cards.k.KrrikSonOfYawgmoth.class));
         cards.add(new SetCardInfo("Kadena's Silencer", 8, Rarity.RARE, mage.cards.k.KadenasSilencer.class));
         cards.add(new SetCardInfo("Kadena, Slinking Sorcerer", 45, Rarity.MYTHIC, mage.cards.k.KadenaSlinkingSorcerer.class));
         cards.add(new SetCardInfo("Kazandu Refuge", 256, Rarity.UNCOMMON, mage.cards.k.KazanduRefuge.class));
@@ -171,6 +173,7 @@ public final class Commander2019Edition extends ExpansionSet {
         cards.add(new SetCardInfo("Magmaquake", 148, Rarity.RARE, mage.cards.m.Magmaquake.class));
         cards.add(new SetCardInfo("Magus of the Wheel", 149, Rarity.RARE, mage.cards.m.MagusOfTheWheel.class));
         cards.add(new SetCardInfo("Malevolent Whispers", 150, Rarity.UNCOMMON, mage.cards.m.MalevolentWhispers.class));
+        cards.add(new SetCardInfo("Mandate of Peace", 4, Rarity.RARE, mage.cards.m.MandateOfPeace.class));
         cards.add(new SetCardInfo("Marisi, Breaker of the Coil", 46, Rarity.MYTHIC, mage.cards.m.MarisiBreakerOfTheCoil.class));
         cards.add(new SetCardInfo("Mass Diminish", 10, Rarity.RARE, mage.cards.m.MassDiminish.class));
         cards.add(new SetCardInfo("Memorial to Folly", 259, Rarity.UNCOMMON, mage.cards.m.MemorialToFolly.class));

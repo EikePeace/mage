@@ -240,9 +240,9 @@ public class CardPanelComponentImpl extends CardPanel {
         }
     }
 
-    public CardPanelComponentImpl(CardView newGameCard, UUID gameId, final boolean loadImage, ActionCallback callback, final boolean foil, Dimension dimension) {
+    public CardPanelComponentImpl(CardView newGameCard, UUID gameId, final boolean loadImage, ActionCallback callback, final boolean foil, Dimension dimension, boolean needFullPermanentRender) {
         // Call to super
-        super(newGameCard, gameId, loadImage, callback, foil, dimension);
+        super(newGameCard, gameId, loadImage, callback, foil, dimension, needFullPermanentRender);
 
         // Counter panel
         if (!newGameCard.isAbility()) {
@@ -362,7 +362,7 @@ public class CardPanelComponentImpl extends CardPanel {
     }
 
     private void setTitle(CardView card) {
-        titleText.setText(!displayTitleAnyway && hasImage ? "" : card.getName());
+        titleText.setText(!displayTitleAnyway && hasImage ? "" : card.getDisplayName());
     }
 
     private void setImage(BufferedImage srcImage) {
@@ -525,7 +525,7 @@ public class CardPanelComponentImpl extends CardPanel {
             int manaX = getCardXOffset() + getCardWidth() - manaMarginRight - manaWidth;
             int manaY = getCardYOffset() + manaMarginTop;
 
-            ManaSymbols.draw(g, manaCost, manaX, manaY, getSymbolWidth(), Color.black, symbolMarginX);
+            ManaSymbols.draw(g, manaCost, manaX, manaY, getSymbolWidth(), ModernCardRenderer.MANA_ICONS_TEXT_COLOR, symbolMarginX);
         }
     }
 
@@ -750,6 +750,7 @@ public class CardPanelComponentImpl extends CardPanel {
     }
 
     private BufferedImage getFaceDownImage() {
+        // TODO: add download default images
         if (isPermanent()) {
             if (((PermanentView) getGameCard()).isMorphed()) {
                 return ImageCache.getMorphImage();
@@ -774,11 +775,12 @@ public class CardPanelComponentImpl extends CardPanel {
         // Super
         super.update(card);
 
-        updatePTTexts(card);
-        setTitle(card);
+        // real card to show stores in getGameCard (e.g. after user clicks on night icon -- night card must be rendered)
+        updatePTTexts(getGameCard());
+        setTitle(getGameCard());
 
         // Summoning Sickness overlay
-        if (hasSickness() && card.isCreature() && isPermanent()) {
+        if (hasSickness() && getGameCard().isCreature() && isPermanent()) {
             getOverlayPanel().setVisible(true);
         } else {
             getOverlayPanel().setVisible(false);

@@ -26,7 +26,7 @@ public final class SoulBarrier extends CardImpl {
     public SoulBarrier(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{U}");
 
-        // Whenever an opponent casts a creature spell, Soul Barrier deals 2 damage to that player unless he or she pays {2}.
+        // Whenever an opponent casts a creature spell, Soul Barrier deals 2 damage to that player unless they pay {2}.
         this.addAbility(new SpellCastOpponentTriggeredAbility(Zone.BATTLEFIELD, new SoulBarrierEffect(),
                 StaticFilters.FILTER_SPELL_A_CREATURE, false, SetTargetPointer.PLAYER));
     }
@@ -45,7 +45,7 @@ class SoulBarrierEffect extends OneShotEffect {
 
     SoulBarrierEffect() {
         super(Outcome.Damage);
-        this.staticText = "{this} deals 2 damage to that player unless he or she pays {2}";
+        this.staticText = "{this} deals 2 damage to that player unless they pay {2}";
     }
 
     SoulBarrierEffect(final SoulBarrierEffect effect) {
@@ -67,7 +67,7 @@ class SoulBarrierEffect extends OneShotEffect {
             String message = "Would you like to pay {2} to prevent taking 2 damage from " + permanent.getLogName() + "?";
             if (!(player.chooseUse(Outcome.Benefit, message, source, game)
                     && cost.pay(source, game, source.getSourceId(), player.getId(), false, null))) {
-                player.damage(2, source.getSourceId(), game, false, true);
+                player.damage(2, source.getSourceId(), game);
             }
             return true;
         }

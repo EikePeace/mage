@@ -14,8 +14,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -25,8 +23,8 @@ public final class KithkinGreatheart extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Giant");
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.GIANT));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.GIANT.getPredicate());
     }
     private static final String rule2 = "As long as you control a Giant, {this} has first strike";
 

@@ -1,7 +1,5 @@
-
 package mage.cards.o;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -13,14 +11,16 @@ import mage.cards.*;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.target.TargetCard;
+import mage.util.CardUtil;
+
+import java.util.Set;
+import java.util.UUID;
 
 /**
- *
  * @author LevelX2
  */
 public final class OathOfNissa extends CardImpl {
@@ -51,9 +51,9 @@ class OathOfNissaEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard("a creature, land, or planeswalker card");
 
     static {
-        filter.add(Predicates.or(new CardTypePredicate(CardType.CREATURE),
-                new CardTypePredicate(CardType.PLANESWALKER),
-                new CardTypePredicate(CardType.LAND)));
+        filter.add(Predicates.or(CardType.CREATURE.getPredicate(),
+                CardType.PLANESWALKER.getPredicate(),
+                CardType.LAND.getPredicate()));
     }
 
     public OathOfNissaEffect() {
@@ -84,7 +84,8 @@ class OathOfNissaEffect extends OneShotEffect {
                     if (controller.chooseUse(outcome, "Reveal a creature, land, or planeswalker card from the looked at cards and put it into your hand?", source, game)) {
                         Card card;
                         if (number == 1) {
-                            card = topCards.getCards(filter, source.getSourceId(), source.getControllerId(), game).iterator().next();
+                            Set<Card> cards = topCards.getCards(filter, source.getSourceId(), source.getControllerId(), game);
+                            card = cards.isEmpty() ? null : cards.iterator().next();
                         } else {
                             TargetCard target = new TargetCard(Zone.LIBRARY, filter);
                             controller.choose(outcome, topCards, target, game);
@@ -128,13 +129,10 @@ class OathOfNissaSpendAnyManaEffect extends AsThoughEffectImpl implements AsThou
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
+        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
         if (source.isControlledBy(affectedControllerId)) {
             MageObject mageObject = game.getObject(objectId);
-            if (mageObject != null) {
-                if (mageObject.isPlaneswalker()) {
-                    return true;
-                }
-            }
+            return mageObject != null && mageObject.isPlaneswalker();
         }
         return false;
     }

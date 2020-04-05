@@ -15,7 +15,6 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 
 /**
  *
@@ -26,7 +25,7 @@ public final class MesmericSliver extends CardImpl {
     private static final FilterCreaturePermanent filterSliver = new FilterCreaturePermanent();
 
     static {
-        filterSliver.add(new SubtypePredicate(SubType.SLIVER));
+        filterSliver.add(SubType.SLIVER.getPredicate());
     }
 
     public MesmericSliver(UUID ownerId, CardSetInfo setInfo) {
@@ -40,7 +39,7 @@ public final class MesmericSliver extends CardImpl {
         Ability ability = new EntersBattlefieldTriggeredAbility(new FatesealEffect(1), true);
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
                 new GainAbilityAllEffect(ability, Duration.WhileOnBattlefield,
-                filterSliver, "All Slivers have \"When this permanent enters the battlefield, you may fateseal 1.\" <i>(To fateseal 1, its controller looks at the top card of an opponent's library, then he or she may put that card on the bottom of that library.)</i>")));
+                filterSliver, "All Slivers have \"When this permanent enters the battlefield, you may fateseal 1.\" <i>(To fateseal 1, its controller looks at the top card of an opponent's library, then they may put that card on the bottom of that library.)</i>")));
     }
 
     public MesmericSliver(final MesmericSliver card) {

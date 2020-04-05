@@ -17,8 +17,6 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.TokenImpl;
 import mage.target.common.TargetCardInLibrary;
 import mage.target.common.TargetControlledPermanent;
@@ -36,9 +34,9 @@ public final class KothFuryOfKuldotha extends CardImpl {
     static final FilterCard landCardFilter = new FilterCard("Mountain cards");
 
     static {
-        filterCount.add(new SubtypePredicate(SubType.MOUNTAIN));
-        filterCount.add(new ControllerPredicate(TargetController.YOU));
-        landCardFilter.add(new SubtypePredicate(SubType.MOUNTAIN));
+        filterCount.add(SubType.MOUNTAIN.getPredicate());
+        filterCount.add(TargetController.YOU.getControllerPredicate());
+        landCardFilter.add(SubType.MOUNTAIN.getPredicate());
     }
 
     public KothFuryOfKuldotha(UUID ownerId, CardSetInfo setInfo){

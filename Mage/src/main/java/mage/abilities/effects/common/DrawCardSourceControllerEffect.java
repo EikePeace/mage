@@ -23,7 +23,7 @@ public class DrawCardSourceControllerEffect extends OneShotEffect {
     }
 
     public DrawCardSourceControllerEffect(int amount, String whoDrawCard) {
-        this(new StaticValue(amount), whoDrawCard);
+        this(StaticValue.get(amount), whoDrawCard);
     }
 
     public DrawCardSourceControllerEffect(DynamicValue amount) {
@@ -52,7 +52,8 @@ public class DrawCardSourceControllerEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
-        if (player != null) {
+        if (player != null
+                && player.canRespond()) {
             player.drawCards(amount.calculate(game, source, this), game);
             return true;
         }
@@ -61,9 +62,14 @@ public class DrawCardSourceControllerEffect extends OneShotEffect {
 
     private void setText() {
         StringBuilder sb = new StringBuilder();
-        boolean oneCard = (amount instanceof StaticValue && amount.calculate(null, null, this) == 1)
-                || amount instanceof PermanentsOnBattlefieldCount || amount.toString().equals("1") || amount.toString().equals("a");
-        sb.append(whoDrawCard.isEmpty() ? "" : whoDrawCard + " ").append("draw ").append(oneCard ? "a" : CardUtil.numberToText(amount.toString())).append(" card");
+        boolean oneCard = (amount instanceof StaticValue
+                && amount.calculate(null, null, this) == 1)
+                || amount instanceof PermanentsOnBattlefieldCount
+                || amount.toString().equals("1")
+                || amount.toString().equals("a");
+        sb.append(whoDrawCard.isEmpty() ? "" : whoDrawCard
+                + " ").append("draw ").append(oneCard ? "a"
+                : CardUtil.numberToText(amount.toString())).append(" card");
         if (!oneCard) {
             sb.append('s');
         }

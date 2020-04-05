@@ -11,8 +11,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -27,8 +25,8 @@ public final class Rootgrapple extends CardImpl {
     private static final FilterPermanent filterTreefolk = new FilterPermanent("If you control a Treefolk,");
 
     static {
-        filterNoncreature.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
-        filterTreefolk.add(new SubtypePredicate(SubType.TREEFOLK));
+        filterNoncreature.add(Predicates.not(CardType.CREATURE.getPredicate()));
+        filterTreefolk.add(SubType.TREEFOLK.getPredicate());
     }
 
     public Rootgrapple(UUID ownerId, CardSetInfo setInfo) {

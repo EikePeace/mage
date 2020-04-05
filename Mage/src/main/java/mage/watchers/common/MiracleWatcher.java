@@ -14,7 +14,6 @@ import mage.watchers.Watcher;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 /**
@@ -29,13 +28,6 @@ public class MiracleWatcher extends Watcher {
 
     public MiracleWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    public MiracleWatcher(final MiracleWatcher watcher) {
-        super(watcher);
-        for (Entry<UUID, Integer> entry : watcher.amountOfCardsDrawnThisTurn.entrySet()) {
-            amountOfCardsDrawnThisTurn.put(entry.getKey(), entry.getValue());
-        }
     }
 
     @Override
@@ -81,10 +73,5 @@ public class MiracleWatcher extends Watcher {
     public void reset() {
         super.reset();
         amountOfCardsDrawnThisTurn.clear();
-    }
-
-    @Override
-    public MiracleWatcher copy() {
-        return new MiracleWatcher(this);
     }
 }

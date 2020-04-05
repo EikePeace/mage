@@ -1,18 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.dynamicvalue.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import mage.MageObject;
 import mage.abilities.Ability;
+import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.mana.ManaCost;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.InfoEffect;
+import mage.abilities.hint.Hint;
+import mage.abilities.hint.ValueHint;
 import mage.constants.ColoredManaSymbol;
 import mage.game.Game;
-import mage.game.permanent.Permanent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * Each colored mana symbol (e.g. {U}) in the mana costs of permanents you
@@ -20,37 +23,58 @@ import mage.game.permanent.Permanent;
  *
  * @author LevelX2
  */
-public class DevotionCount implements DynamicValue {
+public enum DevotionCount implements DynamicValue {
+    W(ColoredManaSymbol.W),
+    U(ColoredManaSymbol.U),
+    B(ColoredManaSymbol.B),
+    R(ColoredManaSymbol.R),
+    G(ColoredManaSymbol.G),
+    WU(ColoredManaSymbol.W, ColoredManaSymbol.U),
+    WB(ColoredManaSymbol.W, ColoredManaSymbol.B),
+    UB(ColoredManaSymbol.U, ColoredManaSymbol.B),
+    UR(ColoredManaSymbol.U, ColoredManaSymbol.R),
+    BR(ColoredManaSymbol.B, ColoredManaSymbol.R),
+    BG(ColoredManaSymbol.B, ColoredManaSymbol.G),
+    RG(ColoredManaSymbol.R, ColoredManaSymbol.G),
+    RW(ColoredManaSymbol.R, ColoredManaSymbol.W),
+    GW(ColoredManaSymbol.G, ColoredManaSymbol.W),
+    GU(ColoredManaSymbol.G, ColoredManaSymbol.U);
 
-    private ArrayList<ColoredManaSymbol> devotionColors = new ArrayList<>();
+    private final ArrayList<ColoredManaSymbol> devotionColors = new ArrayList<>();
+    private final Hint hint;
 
-    public DevotionCount(ColoredManaSymbol... devotionColor) {
+    DevotionCount(ColoredManaSymbol... devotionColor) {
         this.devotionColors.addAll(Arrays.asList(devotionColor));
-    }
-
-    public DevotionCount(final DevotionCount dynamicValue) {
-        this.devotionColors = dynamicValue.devotionColors;
+        this.hint = new ValueHint(this.getMessage().replace("your d", "D"), this);
     }
 
     @Override
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
-        int devotion = 0;
-        for (Permanent permanent : game.getBattlefield().getAllActivePermanents(sourceAbility.getControllerId())) {
-            for (ManaCost manaCost : permanent.getManaCost()) {
-                for (ColoredManaSymbol coloredManaSymbol : devotionColors) {
-                    if (manaCost.containsColor(coloredManaSymbol)) {
-                        devotion++;
-                        break; // count each manaCost maximum of one time (Hybrid don't count for multiple colors of devotion)
-                    }
-                }
-            }
-        }
-        return devotion;
+        int devotion = game.getBattlefield()
+                .getAllActivePermanents(sourceAbility.getControllerId())
+                .stream()
+                .map(MageObject::getManaCost)
+                .flatMap(Collection::stream)
+                .mapToInt(this::checkCost)
+                .sum();
+        int countIncrease = game.getBattlefield()
+                .getAllActivePermanents(sourceAbility.getControllerId())
+                .stream()
+                .map(permanent -> permanent.getAbilities(game))
+                .flatMap(Collection::stream)
+                .filter(IncreaseDevotionAbility.class::isInstance)
+                .mapToInt(x -> 1)
+                .sum();
+        return devotion + countIncrease;
+    }
+
+    private int checkCost(ManaCost manaCost) {
+        return devotionColors.stream().anyMatch(manaCost::containsColor) ? 1 : 0;
     }
 
     @Override
     public DevotionCount copy() {
-        return new DevotionCount(this);
+        return this;
     }
 
     @Override
@@ -60,15 +84,31 @@ public class DevotionCount implements DynamicValue {
 
     @Override
     public String getMessage() {
-        StringBuilder sb = new StringBuilder("your devotion to ");
-        int count = 0;
-        for (ColoredManaSymbol coloredManaSymbol : devotionColors) {
-            if (count > 0) {
-                sb.append(" and ");
-            }
-            sb.append(coloredManaSymbol.getColorName());
-            count++;
+        return "your devotion to " + String.join(
+                " and ",
+                devotionColors.stream()
+                        .map(ColoredManaSymbol::getColorName)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public Hint getHint() {
+        return hint;
+    }
+
+    public static final class IncreaseDevotionAbility extends SimpleStaticAbility {
+
+        public IncreaseDevotionAbility() {
+            super(new InfoEffect("Your devotion to each color and each combination of colors is increased by one."));
         }
-        return sb.toString();
+
+        private IncreaseDevotionAbility(final IncreaseDevotionAbility ability) {
+            super(ability);
+        }
+
+        @Override
+        public IncreaseDevotionAbility copy() {
+            return new IncreaseDevotionAbility(this);
+        }
     }
 }

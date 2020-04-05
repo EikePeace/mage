@@ -1,12 +1,11 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
+import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleEvasionAbility;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.effects.common.PreventAllDamageToSourceEffect;
+import mage.abilities.effects.PreventionEffectImpl;
 import mage.abilities.effects.common.combat.CantBeBlockedByCreaturesSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -15,12 +14,12 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 
+import java.util.UUID;
+
 /**
- *
  * @author MarcoMarin
  */
 public final class ArgothianPixies extends CardImpl {
@@ -28,7 +27,7 @@ public final class ArgothianPixies extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("artifact creatures");
 
     static {
-        filter.add(new CardTypePredicate(CardType.ARTIFACT));
+        filter.add(CardType.ARTIFACT.getPredicate());
     }
 
     public ArgothianPixies(UUID ownerId, CardSetInfo setInfo) {
@@ -38,9 +37,13 @@ public final class ArgothianPixies extends CardImpl {
         this.toughness = new MageInt(1);
 
         // Argothian Pixies can't be blocked by artifact creatures.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PreventDamageToSourceByCardTypeEffect2(CardType.ARTIFACT)));
+        this.addAbility(new SimpleEvasionAbility(
+                new CantBeBlockedByCreaturesSourceEffect(filter, Duration.WhileOnBattlefield)));
+
         // Prevent all damage that would be dealt to Argothian Pixies by artifact creatures.
-        this.addAbility(new SimpleEvasionAbility(new CantBeBlockedByCreaturesSourceEffect(filter, Duration.WhileOnBattlefield)));
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
+                new ArgothianPixiesPreventDamageFromArtifactsEffect(Duration.WhileOnBattlefield)));
+
     }
 
     public ArgothianPixies(final ArgothianPixies card) {
@@ -53,26 +56,28 @@ public final class ArgothianPixies extends CardImpl {
     }
 }
 
-class PreventDamageToSourceByCardTypeEffect2 extends PreventAllDamageToSourceEffect {
+class ArgothianPixiesPreventDamageFromArtifactsEffect extends PreventionEffectImpl {
 
-    private CardType cardType;
-
-    public PreventDamageToSourceByCardTypeEffect2() {
-        this(null);
+    public ArgothianPixiesPreventDamageFromArtifactsEffect(Duration duration) {
+        super(duration);
+        staticText = "Prevent all damage that would be dealt to {this} by artifact creatures";
     }
 
-    public PreventDamageToSourceByCardTypeEffect2(CardType cardT) {
-        super(Duration.WhileOnBattlefield);
-        cardType = cardT;
+    public ArgothianPixiesPreventDamageFromArtifactsEffect(final ArgothianPixiesPreventDamageFromArtifactsEffect effect) {
+        super(effect);
+    }
+
+    @Override
+    public ArgothianPixiesPreventDamageFromArtifactsEffect copy() {
+        return new ArgothianPixiesPreventDamageFromArtifactsEffect(this);
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         if (super.applies(event, source, game)) {
-            if (game.getObject(event.getSourceId()).getCardType().contains(cardType)) {
-                if (event.getTargetId().equals(source.getSourceId())) {
-                    return true;
-                }
+            MageObject sourceObject = game.getObject(event.getSourceId());
+            if (sourceObject != null && sourceObject.getCardType().contains(CardType.ARTIFACT)) {
+                return (event.getTargetId().equals(source.getSourceId()));
             }
         }
         return false;

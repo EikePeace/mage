@@ -27,9 +27,7 @@ import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.other.OwnerIdPredicate;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
@@ -44,7 +42,7 @@ public final class HeraldOfLeshrac extends CardImpl {
 
     private static final FilterPermanent filter = new FilterControlledLandPermanent("land you control but don't own");
     static {
-        filter.add(new OwnerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getOwnerPredicate());
     }
 
     public HeraldOfLeshrac(UUID ownerId, CardSetInfo setInfo) {
@@ -63,7 +61,7 @@ public final class HeraldOfLeshrac extends CardImpl {
         // Herald of Leshrac gets +1/+1 for each land you control but don't own.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostSourceEffect(new PermanentsOnBattlefieldCount(filter), new PermanentsOnBattlefieldCount(filter), Duration.WhileOnBattlefield)));
 
-        // When Herald of Leshrac leaves the battlefield, each player gains control of each land he or she owns that you control.
+        // When Herald of Leshrac leaves the battlefield, each player gains control of each land they own that you control.
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new HeraldOfLeshracLeavesEffect(), false));
     }
 
@@ -81,7 +79,7 @@ class HeraldOfLeshracCumulativeCost extends CostImpl {
 
     private static final FilterPermanent filter = new FilterLandPermanent("land you don't control");
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     HeraldOfLeshracCumulativeCost() {
@@ -120,7 +118,7 @@ class HeraldOfLeshracLeavesEffect extends OneShotEffect {
 
     HeraldOfLeshracLeavesEffect() {
         super(Outcome.Detriment);
-        this.staticText = "each player gains control of each land he or she owns that you control";
+        this.staticText = "each player gains control of each land they own that you control";
     }
 
     HeraldOfLeshracLeavesEffect(final HeraldOfLeshracLeavesEffect effect) {

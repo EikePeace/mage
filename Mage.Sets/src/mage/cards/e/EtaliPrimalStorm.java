@@ -1,34 +1,24 @@
-
 package mage.cards.e;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
-import mage.cards.CardsImpl;
-import mage.constants.CardType;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.SuperType;
-import mage.constants.Zone;
+import mage.cards.*;
+import mage.constants.*;
 import mage.filter.FilterCard;
-import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
+import mage.filter.common.FilterNonlandCard;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author ciaccona007 & L_J
  */
 public final class EtaliPrimalStorm extends CardImpl {
@@ -41,7 +31,8 @@ public final class EtaliPrimalStorm extends CardImpl {
         this.power = new MageInt(6);
         this.toughness = new MageInt(6);
 
-        // Whenever Etali, Primal Storm attacks, exile the top card of each player's library, then you may cast any number of nonland cards exiled this way without paying their mana costs.
+        // Whenever Etali, Primal Storm attacks, exile the top card of each player's library, 
+        // then you may cast any number of nonland cards exiled this way without paying their mana costs.
         this.addAbility(new AttacksTriggeredAbility(new EtaliPrimalStormEffect(), false));
 
     }
@@ -58,15 +49,12 @@ public final class EtaliPrimalStorm extends CardImpl {
 
 class EtaliPrimalStormEffect extends OneShotEffect {
 
-    private static final FilterCard filter = new FilterCard("nonland cards");
-
-    static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
-    }
+    private static final FilterNonlandCard filter = new FilterNonlandCard("nonland cards");
 
     public EtaliPrimalStormEffect() {
-        super(Outcome.Benefit);
-        this.staticText = "exile the top card of each player's library, then you may cast any number of nonland cards exiled this way without paying their mana costs";
+        super(Outcome.PlayForFree);
+        this.staticText = "exile the top card of each player's library, then you may cast "
+                + "any number of nonland cards exiled this way without paying their mana costs";
     }
 
     public EtaliPrimalStormEffect(final EtaliPrimalStormEffect effect) {
@@ -82,18 +70,21 @@ class EtaliPrimalStormEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = source.getSourceObject(game);
-        if (controller != null && sourceObject != null) {
+        if (controller != null
+                && sourceObject != null) {
             // move cards from library to exile
             Set<Card> currentExiledCards = new HashSet<>();
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     if (!player.getLibrary().getTopCards(game, 1).isEmpty()) {
-                        Card topCard = player.getLibrary().getTopCards(game, 1).iterator().next();
-                        if (filter.match(topCard, source.getSourceId(), source.getControllerId(), game)) {
-                            currentExiledCards.add(topCard);
+                        Card topCard = player.getLibrary().getFromTop(game);
+                        if (topCard != null) {
+                            if (filter.match(topCard, source.getSourceId(), source.getControllerId(), game)) {
+                                currentExiledCards.add(topCard);
+                            }
+                            controller.moveCardsToExile(topCard, source, game, true, source.getSourceId(), sourceObject.getIdName());
                         }
-                        controller.moveCardsToExile(topCard, source, game, true, source.getSourceId(), sourceObject.getIdName());
                     }
                 }
             }
@@ -102,8 +93,10 @@ class EtaliPrimalStormEffect extends OneShotEffect {
             Cards cardsToCast = new CardsImpl();
             cardsToCast.addAll(currentExiledCards);
             boolean alreadyCast = false;
-            while (!cardsToCast.isEmpty()) {
-                if (!controller.chooseUse(Outcome.PlayForFree, "Cast a" + (alreadyCast ? "nother" : "") + " card exiled with " + sourceObject.getLogName() + " without paying its mana cost?", source, game)) {
+            while (controller.canRespond() && !cardsToCast.isEmpty()) {
+                if (!controller.chooseUse(Outcome.PlayForFree, "Cast a"
+                        + (alreadyCast ? "nother" : "") + " card exiled with "
+                        + sourceObject.getLogName() + " without paying its mana cost?", source, game)) {
                     break;
                 }
 
@@ -115,10 +108,13 @@ class EtaliPrimalStormEffect extends OneShotEffect {
                 alreadyCast = true;
                 Card card = game.getCard(targetCard.getFirstTarget());
                 if (card != null) {
-                    if (!controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game))) {
-                        if (!game.isSimulation()) {
-                            game.informPlayer(controller, "You're not able to cast " + card.getIdName() + " or you canceled the casting.");
-                        }
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                    Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
+                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                    game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
+                    if (!cardWasCast) {
+                        game.informPlayer(controller, "You're not able to cast "
+                                + card.getIdName() + " or you canceled the casting.");
                     }
                     cardsToCast.remove(card);
                 }

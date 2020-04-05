@@ -17,10 +17,7 @@ import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.SpiritWhiteToken;
 import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.common.TargetControlledPermanent;
@@ -35,11 +32,11 @@ public class NialaGuideOfLostSouls extends CardImpl {
     private static final FilterControlledCreaturePermanent filterNonspiritCreature = new FilterControlledCreaturePermanent("another non-Spirit creature you control");
     private static final FilterControlledPermanent filterSpirit = new FilterControlledPermanent("Spirits");
     static {
-        filterNonspiritCreature.add(Predicates.not(new SubtypePredicate(SubType.SPIRIT)));
-        filterNonspiritCreature.add(new ControllerPredicate(TargetController.YOU));
+        filterNonspiritCreature.add(Predicates.not(SubType.SPIRIT.getPredicate()));
+        filterNonspiritCreature.add(TargetController.YOU.getControllerPredicate());
         filterNonspiritCreature.add(AnotherPredicate.instance);
-        filterSpirit.add(new SubtypePredicate(SubType.SPIRIT));
-        filterSpirit.add(new ControllerPredicate(TargetController.YOU));
+        filterSpirit.add(SubType.SPIRIT.getPredicate());
+        filterSpirit.add(TargetController.YOU.getControllerPredicate());
     }
 
     public NialaGuideOfLostSouls(UUID ownerId, CardSetInfo setInfo){

@@ -52,7 +52,7 @@ public final class IchneumonDruid extends CardImpl {
 class IchneumonDruidAbility extends TriggeredAbilityImpl {
 
     public IchneumonDruidAbility() {
-        super(Zone.BATTLEFIELD, new DamageTargetEffect(new StaticValue(4), false, "that player", true));
+        super(Zone.BATTLEFIELD, new DamageTargetEffect(StaticValue.get(4), false, "that player", true));
     }
 
     public IchneumonDruidAbility(final IchneumonDruidAbility ability) {
@@ -98,18 +98,6 @@ class IchneumonDruidWatcher extends Watcher {
 
     public IchneumonDruidWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    public IchneumonDruidWatcher(final IchneumonDruidWatcher watcher) {
-        super(watcher);
-        for (Map.Entry<UUID, Integer> entry : watcher.playerInstantCount.entrySet()) {
-            playerInstantCount.put(entry.getKey(), entry.getValue());
-        }
-    }
-
-    @Override
-    public IchneumonDruidWatcher copy() {
-        return new IchneumonDruidWatcher(this);
     }
 
     @Override

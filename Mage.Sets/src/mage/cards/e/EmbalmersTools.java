@@ -17,8 +17,6 @@ import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.other.OwnerPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.players.Player;
@@ -36,7 +34,7 @@ public final class EmbalmersTools extends CardImpl {
 
     static {
         filter.add(Predicates.not(TappedPredicate.instance));
-        filter.add(new SubtypePredicate(SubType.ZOMBIE));
+        filter.add(SubType.ZOMBIE.getPredicate());
     }
 
     public EmbalmersTools(UUID ownerId, CardSetInfo setInfo) {
@@ -67,7 +65,7 @@ class EmbalmersToolsEffect extends CostModificationEffectImpl {
     private static final FilterCreatureCard filter = new FilterCreatureCard();
 
     static {
-        filter.add(new OwnerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getOwnerPredicate());
     }
 
     public EmbalmersToolsEffect() {

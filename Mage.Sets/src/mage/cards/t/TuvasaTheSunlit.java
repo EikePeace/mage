@@ -23,8 +23,6 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterEnchantmentPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.stack.Spell;
@@ -48,7 +46,7 @@ public final class TuvasaTheSunlit extends CardImpl {
         // Tuvasa the Sunlit gets +1/+1 for each enchantment you control.
         FilterEnchantmentPermanent filter
                 = new FilterEnchantmentPermanent("enchantment you control");
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
         DynamicValue value
                 = new PermanentsOnBattlefieldCount(new FilterPermanent(filter));
         Ability ability = new SimpleStaticAbility(
@@ -80,7 +78,7 @@ class TuvasaTheSunlitTriggeredAbility extends SpellCastControllerTriggeredAbilit
 
     public TuvasaTheSunlitTriggeredAbility() {
         super(Zone.BATTLEFIELD, new DrawCardSourceControllerEffect(1),
-                (FilterSpell) new FilterSpell("an enchantment spell").add(new CardTypePredicate(CardType.ENCHANTMENT)), false, true);
+                (FilterSpell) new FilterSpell("an enchantment spell").add(CardType.ENCHANTMENT.getPredicate()), false, true);
     }
 
     public TuvasaTheSunlitTriggeredAbility(final TuvasaTheSunlitTriggeredAbility ability) {
@@ -122,11 +120,6 @@ class TuvasaTheSunlitWatcher extends Watcher {
         super( WatcherScope.GAME);
     }
 
-    public TuvasaTheSunlitWatcher(final TuvasaTheSunlitWatcher watcher) {
-        super(watcher);
-        this.firstEnchantmentThisTurn.putAll(watcher.firstEnchantmentThisTurn);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.SPELL_CAST) {
@@ -147,10 +140,5 @@ class TuvasaTheSunlitWatcher extends Watcher {
 
     public UUID getFirstEnchantmentThisTurn(UUID playerId) {
         return firstEnchantmentThisTurn.get(playerId);
-    }
-
-    @Override
-    public Watcher copy() {
-        return new TuvasaTheSunlitWatcher(this);
     }
 }

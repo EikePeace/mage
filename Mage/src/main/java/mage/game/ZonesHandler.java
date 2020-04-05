@@ -165,7 +165,7 @@ public final class ZonesHandler {
                     game.getPermanentsEntering().remove(permanent.getId());
                     break;
                 default:
-                    throw new UnsupportedOperationException("to Zone" + toZone.toString() + " not supported yet");
+                    throw new UnsupportedOperationException("to Zone " + toZone.toString() + " not supported yet");
             }
         }
         game.setZone(event.getTargetId(), event.getToZone());
@@ -285,6 +285,9 @@ public final class ZonesHandler {
 
     public static List<Card> chooseOrder(String message, Cards cards, Player player, Game game) {
         List<Card> order = new ArrayList<>();
+        if (cards.isEmpty()) {
+            return order;
+        }
         TargetCard target = new TargetCard(Zone.ALL, new FilterCard(message));
         target.setRequired(true);
         while (player.isInGame() && cards.size() > 1) {

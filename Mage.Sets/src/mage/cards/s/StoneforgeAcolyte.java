@@ -18,7 +18,6 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.target.common.TargetControlledPermanent;
 
@@ -32,9 +31,9 @@ public final class StoneforgeAcolyte extends CardImpl {
     private static final FilterCard filterEquipment = new FilterCard("an Equipment card");
 
     static {
-        filterAlly.add(new SubtypePredicate(SubType.ALLY));
+        filterAlly.add(SubType.ALLY.getPredicate());
         filterAlly.add(Predicates.not(TappedPredicate.instance));
-        filterEquipment.add(new SubtypePredicate(SubType.EQUIPMENT));
+        filterEquipment.add(SubType.EQUIPMENT.getPredicate());
     }
 
     public StoneforgeAcolyte(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +47,7 @@ public final class StoneforgeAcolyte extends CardImpl {
         // <i>Cohort</i> &mdash; {T}, Tap an untapped Ally you control: Look at the top four cards of your library.
         // You may reveal an Equipment card from among them and put it into your hand. Put the rest on the bottom of your library in any order.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD,
-                new LookLibraryAndPickControllerEffect(new StaticValue(4), false, new StaticValue(1), filterEquipment, false),
+                new LookLibraryAndPickControllerEffect(StaticValue.get(4), false, StaticValue.get(1), filterEquipment, false),
                 new TapSourceCost());
         ability.addCost(new TapTargetCost(new TargetControlledPermanent(filterAlly)));
         ability.setAbilityWord(AbilityWord.COHORT);

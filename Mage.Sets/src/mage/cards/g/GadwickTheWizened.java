@@ -1,7 +1,6 @@
 package mage.cards.g;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -17,15 +16,12 @@ import mage.filter.FilterPermanent;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterNonlandPermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.stack.Spell;
 import mage.target.TargetPermanent;
 import mage.watchers.Watcher;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -40,7 +36,7 @@ public final class GadwickTheWizened extends CardImpl {
 
     static {
         filter.add(new ColorPredicate(ObjectColor.BLUE));
-        filter2.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter2.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public GadwickTheWizened(UUID ownerId, CardSetInfo setInfo) {
@@ -78,11 +74,17 @@ enum GadwickTheWizenedValue implements DynamicValue {
 
     @Override
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
-        GadwickTheWizenedWatcher watcher = game.getState().getWatcher(GadwickTheWizenedWatcher.class);
+        // watcher in card's scope
+        GadwickTheWizenedWatcher watcher = game.getState().getWatcher(GadwickTheWizenedWatcher.class, sourceAbility.getSourceId());
         if (watcher == null) {
             return 0;
         }
-        return watcher.getX(new MageObjectReference(sourceAbility.getSourceId(), game));
+        if (game.getState().getValue(sourceAbility.getSourceId().toString() 
+                + "cardsToDraw") == null) {
+            return 0;
+        }
+        return (Integer) game.getState().getValue(sourceAbility.getSourceId().toString() 
+                + "cardsToDraw");
     }
 
     @Override
@@ -103,15 +105,8 @@ enum GadwickTheWizenedValue implements DynamicValue {
 
 class GadwickTheWizenedWatcher extends Watcher {
 
-    private final Map<MageObjectReference, Integer> xMap = new HashMap();
-
     GadwickTheWizenedWatcher() {
-        super(WatcherScope.GAME);
-    }
-
-    private GadwickTheWizenedWatcher(final GadwickTheWizenedWatcher watcher) {
-        super(watcher);
-        this.xMap.putAll(watcher.xMap);
+        super(WatcherScope.CARD);
     }
 
     @Override
@@ -123,23 +118,10 @@ class GadwickTheWizenedWatcher extends Watcher {
         if (spell == null) {
             return;
         }
-        xMap.put(new MageObjectReference(
-                spell.getSourceId(), spell.getZoneChangeCounter(game) + 1, game
-        ), spell.getSpellAbility().getManaCostsToPay().getX());
-    }
-
-    @Override
-    public GadwickTheWizenedWatcher copy() {
-        return new GadwickTheWizenedWatcher(this);
-    }
-
-    @Override
-    public void reset() {
-        super.reset();
-        xMap.clear();
-    }
-
-    public int getX(MageObjectReference mageObjectReference) {
-        return xMap.getOrDefault(mageObjectReference, 0);
+        if (spell.getSourceId() != super.getSourceId()) {
+            return;  // the spell is not Gadwick, the Wizened
+        }
+        game.getState().setValue(spell.getSourceId().toString()
+                + "cardsToDraw", spell.getSpellAbility().getManaCostsToPay().getX());
     }
 }

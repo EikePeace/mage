@@ -14,8 +14,6 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -51,8 +49,8 @@ class EmissaryOfHopeEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterPermanent("artifact");
 
     static {
-        filter.add(new CardTypePredicate(CardType.ARTIFACT));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(CardType.ARTIFACT.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     EmissaryOfHopeEffect() {

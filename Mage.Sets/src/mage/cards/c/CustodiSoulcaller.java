@@ -15,7 +15,6 @@ import mage.constants.WatcherScope;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -71,7 +70,7 @@ enum CustodiSoulcallerAdjuster implements TargetAdjuster {
         if (watcher != null) {
             int xValue = watcher.getNumberOfAttackedPlayers(sourcePermanent.getControllerId());
             FilterCard filter = new FilterCard("creature card with converted mana cost " + xValue + " or less");
-            filter.add(new CardTypePredicate(CardType.CREATURE));
+            filter.add(CardType.CREATURE.getPredicate());
             filter.add(Predicates.or(new ConvertedManaCostPredicate(ComparisonType.EQUAL_TO, xValue), new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, xValue)));
             ability.getTargets().add(new TargetCardInYourGraveyard(filter));
         }
@@ -84,11 +83,6 @@ class CustodiSoulcallerWatcher extends Watcher {
 
     CustodiSoulcallerWatcher() {
         super(WatcherScope.GAME);
-    }
-
-    CustodiSoulcallerWatcher(final CustodiSoulcallerWatcher watcher) {
-        super(watcher);
-        this.playersAttacked.putAll(watcher.playersAttacked);
     }
 
     @Override
@@ -104,10 +98,5 @@ class CustodiSoulcallerWatcher extends Watcher {
 
     public int getNumberOfAttackedPlayers(UUID attackerId) {
         return this.playersAttacked.get(attackerId).size();
-    }
-
-    @Override
-    public CustodiSoulcallerWatcher copy() {
-        return new CustodiSoulcallerWatcher(this);
     }
 }

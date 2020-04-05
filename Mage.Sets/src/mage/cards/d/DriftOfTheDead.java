@@ -16,9 +16,6 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -29,9 +26,9 @@ public final class DriftOfTheDead extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("snow lands you control");
 
     static {
-        filter.add(new SupertypePredicate(SuperType.SNOW));
-        filter.add(new CardTypePredicate(CardType.LAND));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SuperType.SNOW.getPredicate());
+        filter.add(CardType.LAND.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public DriftOfTheDead(UUID ownerId, CardSetInfo setInfo) {

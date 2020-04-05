@@ -24,7 +24,6 @@ import mage.constants.Rarity;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
 import mage.filter.predicate.other.CardTextPredicate;
@@ -39,6 +38,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
 import static mage.client.dialog.PreferencesDialog.*;
@@ -229,7 +229,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         filter.add(new CardTextPredicate(name, chkNames.isSelected(), chkTypes.isSelected(), chkRules.isSelected(), chkUnique.isSelected()));
 
         if (limited) {
-            ArrayList<Predicate<MageObject>> predicates = new ArrayList<>();
+            List<Predicate<MageObject>> predicates = new ArrayList<>();
 
             if (this.tbGreen.isSelected()) {
                 predicates.add(new ColorPredicate(ObjectColor.GREEN));
@@ -253,32 +253,32 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
 
             predicates.clear();
             if (this.tbLand.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.LAND));
+                predicates.add(CardType.LAND.getPredicate());
             }
             if (this.tbArifiacts.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.ARTIFACT));
+                predicates.add(CardType.ARTIFACT.getPredicate());
             }
             if (this.tbCreatures.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.CREATURE));
+                predicates.add(CardType.CREATURE.getPredicate());
             }
             if (this.tbEnchantments.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.ENCHANTMENT));
+                predicates.add(CardType.ENCHANTMENT.getPredicate());
             }
             if (this.tbInstants.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.INSTANT));
+                predicates.add(CardType.INSTANT.getPredicate());
             }
             if (this.tbSorceries.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.SORCERY));
+                predicates.add(CardType.SORCERY.getPredicate());
             }
             if (this.tbPlaneswalkers.isSelected()) {
-                predicates.add(new CardTypePredicate(CardType.PLANESWALKER));
+                predicates.add(CardType.PLANESWALKER.getPredicate());
             }
             filter.add(Predicates.or(predicates));
 
             if (this.cbExpansionSet.isVisible()) {
                 String expansionSelection = this.cbExpansionSet.getSelectedItem().toString();
                 if (!expansionSelection.equals("- All Sets")) {
-                    ArrayList<Predicate<Card>> expansionPredicates = new ArrayList<>();
+                    List<Predicate<Card>> expansionPredicates = new ArrayList<>();
                     for (String setCode : ConstructedFormats.getSetsByFormat(expansionSelection)) {
                         expansionPredicates.add(new ExpansionSetPredicate(setCode));
                     }
@@ -418,9 +418,9 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
 
     private void filterCards() {
         FilterCard filter = buildFilter();
+        MageFrame.getDesktop().setCursor(new Cursor(Cursor.WAIT_CURSOR));
         try {
             java.util.List<Card> filteredCards = new ArrayList<>();
-            setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
             boolean chkPD = chkPennyDreadful.isSelected();
             if (chkPD) {
@@ -453,7 +453,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
             this.currentView.loadCards(new CardsView(filteredCards), sortSetting, bigCard, null, false);
             this.cardCount.setText(String.valueOf(filteredCards.size()));
         } finally {
-            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            MageFrame.getDesktop().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 

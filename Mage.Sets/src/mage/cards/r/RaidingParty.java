@@ -24,7 +24,6 @@ import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -44,7 +43,7 @@ public final class RaidingParty extends CardImpl {
     
     static {
         filterWhite.add(new ColorPredicate(ObjectColor.WHITE));
-        filterOrc.add(new SubtypePredicate(SubType.ORC));
+        filterOrc.add(SubType.ORC.getPredicate());
     }
 
     public RaidingParty(UUID ownerId, CardSetInfo setInfo) {
@@ -53,7 +52,7 @@ public final class RaidingParty extends CardImpl {
         // Raiding Party can't be the target of white spells or abilities from white sources.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CantBeTargetedSourceEffect(filterWhite, Duration.WhileOnBattlefield)));
         
-        // Sacrifice an Orc: Each player may tap any number of untapped white creatures he or she controls. For each creature tapped this way, that player chooses up to two Plains. Then destroy all Plains that weren't chosen this way by any player.
+        // Sacrifice an Orc: Each player may tap any number of untapped white creatures they control. For each creature tapped this way, that player chooses up to two Plains. Then destroy all Plains that weren't chosen this way by any player.
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RaidingPartyEffect(), new SacrificeTargetCost(new TargetControlledCreaturePermanent(1,1, filterOrc, true))));
     }
 
@@ -75,12 +74,12 @@ class RaidingPartyEffect extends OneShotEffect {
     static {
         filter.add(Predicates.not(TappedPredicate.instance));
         filter.add(new ColorPredicate(ObjectColor.WHITE));
-        filter2.add(new SubtypePredicate(SubType.PLAINS));
+        filter2.add(SubType.PLAINS.getPredicate());
     }
 
     RaidingPartyEffect() {
         super(Outcome.Detriment);
-        staticText = "Each player may tap any number of untapped white creatures he or she controls. For each creature tapped this way, that player chooses up to two Plains. Then destroy all Plains that weren't chosen this way by any player";
+        staticText = "Each player may tap any number of untapped white creatures they control. For each creature tapped this way, that player chooses up to two Plains. Then destroy all Plains that weren't chosen this way by any player";
     }
 
     RaidingPartyEffect(RaidingPartyEffect effect) {

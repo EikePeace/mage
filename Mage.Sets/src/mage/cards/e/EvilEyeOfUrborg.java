@@ -12,8 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -24,8 +22,8 @@ public final class EvilEyeOfUrborg extends CardImpl {
     private static final FilterCreaturePermanent cantAttackFilter = new FilterCreaturePermanent("Non-Eye creatures you control");
 
     static {
-        cantAttackFilter.add(Predicates.not((new SubtypePredicate(SubType.EYE))));
-        cantAttackFilter.add(new ControllerPredicate(TargetController.YOU));
+        cantAttackFilter.add(Predicates.not((SubType.EYE.getPredicate())));
+        cantAttackFilter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public EvilEyeOfUrborg(UUID ownerId, CardSetInfo setInfo) {

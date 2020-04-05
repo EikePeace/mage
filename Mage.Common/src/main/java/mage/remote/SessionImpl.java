@@ -502,7 +502,7 @@ public class SessionImpl implements Session {
 
     /**
      * @param askForReconnect - true = connection was lost because of error and
-     *                        ask the user if he want to try to reconnect
+     *                        ask the user if they want to try to reconnect
      */
     @Override
     public synchronized void disconnect(boolean askForReconnect) {
@@ -557,8 +557,21 @@ public class SessionImpl implements Session {
 
         @Override
         public void handleCallback(Callback callback) throws HandleCallbackException {
-            //logger.info("callback handler");
-            client.processCallback((ClientCallback) callback.getCallbackObject());
+            try {
+//                Object object = callback.getCallbackObject();
+//                if (((ClientCallback) object).getMethod().equals(ClientCallbackMethod.GAME_TARGET)) {
+//                    Object data = ((ClientCallback) object).getData();
+//                    if (data instanceof GameClientMessage) {
+//                        GameClientMessage message = (GameClientMessage) ((ClientCallback) object).getData();
+//                        logger.info("Client Session Event->" + ((ClientCallback) object).getMethod() + " (id:" + ((ClientCallback) object).getMessageId() + ") " + message.getMessage()
+//                        );
+//                    }
+//                }
+                client.processCallback((ClientCallback) callback.getCallbackObject());
+            } catch (Exception ex) {
+                logger.error("handleCallback error", ex);
+            }
+
         }
     }
 
@@ -1664,7 +1677,7 @@ public class SessionImpl implements Session {
                     sum += time;
                 }
                 milliSeconds = TimeUnit.MILLISECONDS.convert(sum / pingTime.size(), TimeUnit.NANOSECONDS);
-                pingInfo = lastPing + " (Av: " + (milliSeconds > 0 ? milliSeconds + "ms" : "<1ms") + ')';
+                pingInfo = lastPing + " (avg: " + (milliSeconds > 0 ? milliSeconds + "ms" : "<1ms") + ')';
             }
             return true;
         } catch (MageException ex) {

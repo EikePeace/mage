@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
@@ -13,15 +11,15 @@ import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class Mutiny extends CardImpl {
@@ -29,7 +27,7 @@ public final class Mutiny extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
     public Mutiny(UUID ownerId, CardSetInfo setInfo) {
@@ -75,7 +73,7 @@ class MutinyEffect extends OneShotEffect {
             int damage = firstTarget.getPower().getValue();
             Permanent secondTarget = game.getPermanent(source.getTargets().get(1).getFirstTarget());
             if (damage > 0 && secondTarget != null) {
-                secondTarget.damage(damage, firstTarget.getId(), game, false, true);
+                secondTarget.damage(damage, firstTarget.getId(), game);
             }
         }
         return true;

@@ -394,7 +394,6 @@ public final class GamePanel extends javax.swing.JPanel {
         this.feedbackPanel.init(gameId);
         this.feedbackPanel.clear();
         this.abilityPicker.init(gameId);
-
         this.btnConcede.setVisible(true);
         this.btnStopWatching.setVisible(false);
         this.btnSwitchHands.setVisible(false);
@@ -1205,11 +1204,11 @@ public final class GamePanel extends javax.swing.JPanel {
             needSelectable = new HashSet<>();
         }
 
-        Set<UUID> needPlayable;
+        Map<UUID, Integer> needPlayable;
         if (showPlayable && gameView.getCanPlayObjects() != null) {
             needPlayable = gameView.getCanPlayObjects();
         } else {
-            needPlayable = new HashSet<>();
+            needPlayable = new HashMap<>();
         }
 
         if (needChoosen.isEmpty() && needSelectable.isEmpty() && needPlayable.isEmpty()) {
@@ -1225,8 +1224,9 @@ public final class GamePanel extends javax.swing.JPanel {
                 if (needChoosen.contains(card.getId())) {
                     card.setSelected(true);
                 }
-                if (needPlayable.contains(card.getId())) {
+                if (needPlayable.containsKey(card.getId())) {
                     card.setPlayable(true);
+                    card.setPlayableAmount(needPlayable.get(card.getId()));
                 }
             }
         }
@@ -1254,8 +1254,9 @@ public final class GamePanel extends javax.swing.JPanel {
                     if (needChoosen.contains(perm.getKey())) {
                         perm.getValue().setSelected(true);
                     }
-                    if (needPlayable.contains(perm.getKey())) {
+                    if (needPlayable.containsKey(perm.getKey())) {
                         perm.getValue().setPlayable(true);
+                        perm.getValue().setPlayableAmount(needPlayable.get(perm.getKey()));
                     }
                 }
             }
@@ -1271,8 +1272,9 @@ public final class GamePanel extends javax.swing.JPanel {
                     if (needChoosen.contains(card.getKey())) {
                         card.getValue().setSelected(true);
                     }
-                    if (needPlayable.contains(card.getKey())) {
+                    if (needPlayable.containsKey(card.getKey())) {
                         card.getValue().setPlayable(true);
+                        card.getValue().setPlayableAmount(needPlayable.get(card.getKey()));
                     }
                 }
             }
@@ -1288,8 +1290,9 @@ public final class GamePanel extends javax.swing.JPanel {
                     if (needChoosen.contains(card.getKey())) {
                         card.getValue().setSelected(true);
                     }
-                    if (needPlayable.contains(card.getKey())) {
+                    if (needPlayable.containsKey(card.getKey())) {
                         card.getValue().setPlayable(true);
+                        card.getValue().setPlayableAmount(needPlayable.get(card.getKey()));
                     }
                 }
             }
@@ -1305,8 +1308,9 @@ public final class GamePanel extends javax.swing.JPanel {
                     if (needChoosen.contains(com.getId())) {
                         com.setSelected(true);
                     }
-                    if (needPlayable.contains(com.getId())) {
+                    if (needPlayable.containsKey(com.getId())) {
                         com.setPlayable(true);
+                        com.setPlayableAmount(needPlayable.get(com.getId()));
                     }
                 }
             }
@@ -1321,8 +1325,19 @@ public final class GamePanel extends javax.swing.JPanel {
                 if (needChoosen.contains(card.getKey())) {
                     card.getValue().setSelected(true);
                 }
-                if (needPlayable.contains(card.getKey())) {
+                if (needPlayable.containsKey(card.getKey())) {
                     card.getValue().setPlayable(true);
+                    card.getValue().setPlayableAmount(needPlayable.get(card.getKey()));
+                }
+            }
+        }
+
+        // looked at
+        for (LookedAtView look : gameView.getLookedAt()) {
+            for (Map.Entry<UUID, SimpleCardView> card : look.getCards().entrySet()) {
+                if (needPlayable.containsKey(card.getKey())) {
+                    card.getValue().setPlayable(true);
+                    card.getValue().setPlayableAmount(needPlayable.get(card.getKey()));
                 }
             }
         }
@@ -1383,6 +1398,8 @@ public final class GamePanel extends javax.swing.JPanel {
     }
 
     public void select(String message, GameView gameView, int messageId, Map<String, Serializable> options) {
+        this.abilityPicker.setVisible(false);
+
         holdingPriority = false;
         txtHoldPriority.setVisible(false);
         setMenuStates(
@@ -1448,6 +1465,7 @@ public final class GamePanel extends javax.swing.JPanel {
     }
 
     private void hideAll() {
+        this.abilityPicker.setVisible(false);
         ActionCallback callback = Plugins.instance.getActionCallback();
         ((MageActionCallback) callback).hideGameUpdate(gameId);
     }
@@ -1632,7 +1650,13 @@ public final class GamePanel extends javax.swing.JPanel {
 
         bigCard.setBorder(new LineBorder(Color.black, 1, true));
 
+        // HOTKEYS
+
         int c = JComponent.WHEN_IN_FOCUSED_WINDOW;
+
+        // special hotkeys for custom rendered dialogs without focus
+        // call it before any user defined hotkeys
+        this.abilityPicker.injectHotkeys(this, "ABILITY_PICKER");
 
         btnToggleMacro.setContentAreaFilled(false);
         btnToggleMacro.setBorder(new EmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
@@ -2252,6 +2276,10 @@ public final class GamePanel extends javax.swing.JPanel {
         for (ComponentListener cl : this.getComponentListeners()) {
             this.removeComponentListener(cl);
         }
+
+        for (KeyListener kl : this.getKeyListeners()) {
+            this.removeKeyListener(kl);
+        }
     }
 
     private void btnConcedeActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2695,5 +2723,4 @@ class ReplayTask extends SwingWorker<Void, Collection<MatchView>> {
         } catch (CancellationException ex) {
         }
     }
-
 }

@@ -10,7 +10,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -49,11 +48,11 @@ public class SacrificeOpponentsUnlessPayEffect extends OneShotEffect {
     }
 
     public SacrificeOpponentsUnlessPayEffect(Cost cost, FilterPermanent filter, int amount) {
-        this(cost, filter, new StaticValue(amount));
+        this(cost, filter, StaticValue.get(amount));
     }
 
     public SacrificeOpponentsUnlessPayEffect(int genericManaCost, FilterPermanent filter, int amount) {
-        this(new GenericManaCost(genericManaCost), filter, new StaticValue(amount));
+        this(new GenericManaCost(genericManaCost), filter, StaticValue.get(amount));
     }
 
     public SacrificeOpponentsUnlessPayEffect(Cost cost, FilterPermanent filter, DynamicValue amount) {
@@ -99,7 +98,7 @@ public class SacrificeOpponentsUnlessPayEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         List<UUID> permsToSacrifice = new ArrayList<>();
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(TargetController.YOU.getControllerPredicate());
 
         for (UUID playerId : game.getOpponents(source.getControllerId())) {
             Player player = game.getPlayer(playerId);
@@ -171,7 +170,7 @@ public class SacrificeOpponentsUnlessPayEffect extends OneShotEffect {
         sb.append(' ');
         sb.append(filter.getMessage());
 
-        sb.append(" unless he or she pays ");
+        sb.append(" unless they pay ");
 
         if (cost != null) {
             sb.append(cost.getText());

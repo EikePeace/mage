@@ -1,6 +1,7 @@
 package mage.abilities.keyword;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.StaticAbility;
@@ -14,7 +15,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterArtifactPermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -43,7 +43,7 @@ public class ModularAbility extends DiesTriggeredAbility {
     private static final FilterArtifactPermanent filter = new FilterArtifactPermanent("artifact creature");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
     }
     private int amount;
     private boolean sunburst;
@@ -136,7 +136,7 @@ class ModularDistributeCounterEffect extends OneShotEffect {
     private static final FilterArtifactPermanent filter = new FilterArtifactPermanent("artifact creature");
 
     static {
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public ModularDistributeCounterEffect() {
@@ -161,7 +161,7 @@ class ModularDistributeCounterEffect extends OneShotEffect {
         if (sourcePermanent != null && targetArtifact != null && player != null) {
             int numberOfCounters = sourcePermanent.getCounters(game).getCount(CounterType.P1P1);
             if (numberOfCounters > 0) {
-                ArrayList<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects"); // the basic event is the EntersBattlefieldEvent, so use already applied replacement effects from that event
+                List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects"); // the basic event is the EntersBattlefieldEvent, so use already applied replacement effects from that event
                 targetArtifact.addCounters(CounterType.P1P1.createInstance(numberOfCounters), source, game, appliedEffects);
             }
             return true;

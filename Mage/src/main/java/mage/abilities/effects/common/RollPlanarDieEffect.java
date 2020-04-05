@@ -1,8 +1,6 @@
-
 package mage.abilities.effects.common;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import mage.MageObject;
 import mage.abilities.Ability;
@@ -25,8 +23,6 @@ import mage.target.targetpointer.FixedTarget;
  * @author spjspj
  */
 public class RollPlanarDieEffect extends OneShotEffect {
-
-    private static final Logger log = Logger.getLogger("Roll Planar Die");
 
     protected List<Effect> chaosEffects = null;
     protected List<Target> chaosTargets = null;
@@ -102,7 +98,6 @@ public class RollPlanarDieEffect extends OneShotEffect {
                 // Steps: 1) Remove the last plane and set its effects to discarded
                 for (CommandObject cobject : game.getState().getCommand()) {
                     if (cobject instanceof Plane) {
-                        game.getState().addSeenPlane((Plane) cobject, game, id);
                         if (((Plane) cobject).getAbilities() != null) {
                             for (Ability ability : ((Plane) cobject).getAbilities()) {
                                 for (Effect effect : ability.getEffects()) {
@@ -153,7 +148,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
         for (int i = 0; i < chaosEffects.size(); i++) {
             Effect effect = chaosEffects.get(i);
             if (effect != null) {
-                try { 
+                try {
                     String emode = effect.getText(mode);
                     emode = emode.substring(0, 1).toLowerCase() + emode.substring(1);
                     sb.append(emode);

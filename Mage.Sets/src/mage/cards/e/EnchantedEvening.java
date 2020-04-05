@@ -1,4 +1,3 @@
-
 package mage.cards.e;
 
 import java.util.UUID;
@@ -20,10 +19,11 @@ import mage.game.permanent.Permanent;
 public final class EnchantedEvening extends CardImpl {
 
     public EnchantedEvening(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{3}{W/U}{W/U}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{3}{W/U}{W/U}");
 
         // All permanents are enchantments in addition to their other types.
-        Effect effect = new EnchangedEveningEffect(CardType.ENCHANTMENT, Duration.WhileOnBattlefield, new FilterPermanent());
+        Effect effect = new EnchangedEveningEffect(CardType.ENCHANTMENT, 
+                Duration.WhileOnBattlefield, new FilterPermanent());
         effect.setText("All permanents are enchantments in addition to their other types");
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
 
@@ -39,7 +39,7 @@ public final class EnchantedEvening extends CardImpl {
     }
 
     // need to be enclosed class for dependent check of continuous effects
-    class EnchangedEveningEffect extends ContinuousEffectImpl {
+    static class EnchangedEveningEffect extends ContinuousEffectImpl {
 
         private final CardType addedCardType;
         private final FilterPermanent filter;
@@ -49,6 +49,7 @@ public final class EnchantedEvening extends CardImpl {
             this.addedCardType = addedCardType;
             this.filter = filter;
             this.dependencyTypes.add(DependencyType.EnchantmentAddingRemoving);
+            this.dependencyTypes.add(DependencyType.AuraAddingRemoving);
         }
 
         public EnchangedEveningEffect(final EnchangedEveningEffect effect) {
@@ -60,7 +61,8 @@ public final class EnchantedEvening extends CardImpl {
         @Override
         public boolean apply(Game game, Ability source) {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, game)) {
-                if (permanent != null && !permanent.getCardType().contains(addedCardType)) {
+                if (permanent != null
+                        && !permanent.getCardType().contains(addedCardType)) {
                     permanent.addCardType(addedCardType);
                 }
             }

@@ -9,11 +9,7 @@ import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.constants.*;
 
-import static mage.constants.Layer.AbilityAddingRemovingEffects_6;
-
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.command.Emblem;
 import mage.game.permanent.Permanent;
@@ -37,8 +33,8 @@ class KothOfTheHammerThirdEffect extends ContinuousEffectImpl {
     static final FilterLandPermanent mountains = new FilterLandPermanent("Mountain you control");
 
     static {
-        mountains.add(new SubtypePredicate(SubType.MOUNTAIN));
-        mountains.add(new ControllerPredicate(TargetController.YOU));
+        mountains.add(SubType.MOUNTAIN.getPredicate());
+        mountains.add(TargetController.YOU.getControllerPredicate());
     }
 
     public KothOfTheHammerThirdEffect() {

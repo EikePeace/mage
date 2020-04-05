@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -27,7 +26,6 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
 import mage.game.Game;
@@ -46,10 +44,14 @@ public final class Sunforger extends CardImpl {
         this.subtype.add(SubType.EQUIPMENT);
 
         // Equipped creature gets +4/+0.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(4, 0, Duration.WhileOnBattlefield)));
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
+                new BoostEquippedEffect(4, 0, Duration.WhileOnBattlefield)));
 
-        // {R}{W}, Unattach Sunforger: Search your library for a red or white instant card with converted mana cost 4 or less and cast that card without paying its mana cost. Then shuffle your library.
-        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new SunforgerEffect(), new ManaCostsImpl("{R}{W}"));
+        // {R}{W}, Unattach Sunforger: Search your library for a red or white 
+        // instant card with converted mana cost 4 or less and cast that card 
+        // without paying its mana cost. Then shuffle your library.
+        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD,
+                new SunforgerEffect(), new ManaCostsImpl("{R}{W}"));
         ability.addCost(new SunforgerUnattachCost(this.getName()));
         this.addAbility(ability);
 
@@ -72,7 +74,9 @@ class SunforgerEffect extends OneShotEffect {
 
     public SunforgerEffect() {
         super(Outcome.PlayForFree);
-        staticText = "Search your library for a red or white instant card with converted mana cost 4 or less and cast that card without paying its mana cost. Then shuffle your library";
+        staticText = "Search your library for a red or white instant "
+                + "card with converted mana cost 4 or less and cast that "
+                + "card without paying its mana cost. Then shuffle your library";
     }
 
     public SunforgerEffect(final SunforgerEffect effect) {
@@ -90,25 +94,27 @@ class SunforgerEffect extends OneShotEffect {
         if (controller != null) {
             if (controller.getLibrary().hasCards()) {
                 /**
-                 * 10/1/2005 Any card you find must be legally castable (for
+                 * 10/1/2005 Any card you find must be legally cast-able (for
                  * example, you have to be able to choose a legal target for
-                 * it). If you can't find a castable card (or choose not to),
+                 * it). If you can't find a cast-able card (or choose not to),
                  * nothing happens and you shuffle your library.
                  */
-
                 FilterCard filter = new FilterCard("red or white instant card with converted mana cost 4 or less");
                 TargetCardInLibrary target = new TargetCardInLibrary(filter);
                 filter.add(Predicates.or(
                         new ColorPredicate(ObjectColor.RED),
                         new ColorPredicate(ObjectColor.WHITE)));
-                filter.add(new CardTypePredicate(CardType.INSTANT));
+                filter.add(CardType.INSTANT.getPredicate());
                 filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, 5));
                 filter.add(new CardCanBeCastPredicate(source.getControllerId()));
                 if (controller.searchLibrary(target, source, game, controller.getId())) {
                     UUID targetId = target.getFirstTarget();
                     Card card = game.getCard(targetId);
                     if (card != null) {
-                        controller.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
+                        controller.cast(controller.chooseAbilityForCast(card, game, true),
+                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     }
                 }
             }

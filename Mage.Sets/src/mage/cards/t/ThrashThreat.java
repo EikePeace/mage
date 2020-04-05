@@ -1,7 +1,7 @@
 package mage.cards.t;
 
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.DamageWithPowerTargetEffect;
+import mage.abilities.effects.common.DamageWithPowerFromOneToAnotherTargetEffect;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -9,7 +9,6 @@ import mage.constants.SpellAbilityType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.permanent.token.RedGreenBeastToken;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetControlledCreaturePermanent;
@@ -25,7 +24,7 @@ public final class ThrashThreat extends SplitCard {
             = new FilterCreatureOrPlaneswalkerPermanent("creature or planeswalker you don't control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.NOT_YOU));
+        filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
 
     public ThrashThreat(UUID ownerId, CardSetInfo setInfo) {
@@ -33,11 +32,7 @@ public final class ThrashThreat extends SplitCard {
 
         // Thrash
         // Target creature you control deals damage equal to its power to target creature or planeswalker you don't control.
-        this.getLeftHalfCard().getSpellAbility().addEffect(
-                new DamageWithPowerTargetEffect()
-                        .setText("Target creature you control deals damage equal to its power " +
-                                "to target creature or planeswalker you don't control.")
-        );
+        this.getLeftHalfCard().getSpellAbility().addEffect(new DamageWithPowerFromOneToAnotherTargetEffect());
         this.getLeftHalfCard().getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
         this.getLeftHalfCard().getSpellAbility().addTarget(new TargetPermanent(filter));
 

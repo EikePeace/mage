@@ -16,6 +16,8 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -30,7 +32,8 @@ public final class EmpoweredAutogenerator extends CardImpl {
         this.addAbility(new EntersBattlefieldTappedAbility());
 
         // {T}: Put a charge counter on Empowered Autogenerator. Add X mana of any one color, where X is the number of charge counters on Empowered Autogenerator.
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new AstralCornucopiaManaEffect(), new TapSourceCost()));
+        // Empowered Autogenerator's activated ability is a mana ability. It doesn’t use the stack and can’t be responded to. (2019-08-23)
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new EmpoweredAutogeneratorManaEffect(), new TapSourceCost()));
     }
 
     private EmpoweredAutogenerator(final EmpoweredAutogenerator card) {
@@ -43,54 +46,58 @@ public final class EmpoweredAutogenerator extends CardImpl {
     }
 }
 
-class AstralCornucopiaManaEffect extends ManaEffect {
+class EmpoweredAutogeneratorManaEffect extends ManaEffect {
 
     private final Mana computedMana;
 
-    AstralCornucopiaManaEffect() {
+    EmpoweredAutogeneratorManaEffect() {
         super();
         computedMana = new Mana();
-        this.staticText = "Put a charge counter on {this}. Add X mana of any one color, " +
-                "where X is the number of charge counters on {this}";
+        this.staticText = "Put a charge counter on {this}. Add X mana of any one color, "
+                + "where X is the number of charge counters on {this}";
     }
 
-    private AstralCornucopiaManaEffect(final AstralCornucopiaManaEffect effect) {
+    private EmpoweredAutogeneratorManaEffect(final EmpoweredAutogeneratorManaEffect effect) {
         super(effect);
         this.computedMana = effect.computedMana.copy();
     }
 
     @Override
-    public AstralCornucopiaManaEffect copy() {
-        return new AstralCornucopiaManaEffect(this);
+    public EmpoweredAutogeneratorManaEffect copy() {
+        return new EmpoweredAutogeneratorManaEffect(this);
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller == null) {
-            return false;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        if (game != null) {
+            Permanent sourcePermanent = game.getState().getPermanent(source.getSourceId());
+            if (sourcePermanent != null) {
+                int counters = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE) + 1; // one counter will be added on real mana call
+                if (counters > 0) {
+                    netMana.add(Mana.AnyMana(counters));
+                }
+            }
         }
-        checkToFirePossibleEvents(getMana(game, source), game, source);
-        controller.getManaPool().addMana(getMana(game, source), game, source);
-        return true;
-
+        return netMana;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Mana mana = new Mana();
-        Permanent sourcePermanent = game.getPermanent(source.getSourceId());
+        if (game == null) {
+            return mana;
+        }
+        game.applyEffects();
+        Permanent sourcePermanent = game.getState().getPermanent(source.getSourceId());
         if (sourcePermanent == null) {
             return mana;
         }
+
         sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
-        game.applyEffects();
         int counters = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE);
-        if (counters <= 0) {
+        if (counters == 0) {
             return mana;
-        }
-        if (netMana) {
-            return new Mana(0, 0, 0, 0, 0, 0, counters, 0);
         }
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
@@ -122,7 +129,6 @@ class AstralCornucopiaManaEffect extends ManaEffect {
                 mana.setGreen(counters);
                 break;
         }
-
         return mana;
     }
 

@@ -84,6 +84,12 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
     private boolean hasSickness;
     private String zone;
 
+    // Permanent and card renders are different (another sizes and positions of panel, tapped, etc -- that's weird)
+    // Some card view components support only permanents (BattlefieldPanel), but another support only cards (CardArea)
+    // TODO: remove crop/size logic from CardPanel to viewers panels or make compatible for all panels
+    // But testing render needs both cards and permanents. That's settings allows to disable different render logic
+    private boolean needFullPermanentRender = true;
+
     public double transformAngle = 1;
 
     private boolean transformed;
@@ -97,13 +103,27 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
     // if this is set, it's opened if the user right clicks on the card panel
     private JPopupMenu popupMenu;
 
-    public CardPanel(CardView newGameCard, UUID gameId, final boolean loadImage, ActionCallback callback, final boolean foil, Dimension dimension) {
+    public CardPanel(CardView newGameCard, UUID gameId, final boolean loadImage, ActionCallback callback, final boolean foil, Dimension dimension, boolean needFullPermanentRender) {
         // Store away params
         this.setGameCard(newGameCard);
         this.callback = callback;
         this.gameId = gameId;
+        this.needFullPermanentRender = needFullPermanentRender;
 
-        // Gather info about the card
+        /*
+        this.setFocusable(true);
+        this.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                //LOGGER.warn("focus gained " + getCard().getName());
+            }
+
+            public void focusLost(FocusEvent e) {
+                //LOGGER.warn("focus lost " + getCard().getName());
+            }
+        });
+         */
+
+        // Gather info about the card (all card maniputations possible with permanents only, also render can be different)
         this.isPermanent = this.getGameCard() instanceof PermanentView && !this.getGameCard().inViewerOnly();
         if (isPermanent) {
             this.hasSickness = ((PermanentView) this.getGameCard()).hasSummoningSickness();
@@ -204,7 +224,7 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
             updateArtImage();
         }
     }
-    
+
     public void setIsPermanent(boolean isPermanent) {
         this.isPermanent = isPermanent;
     }
@@ -360,7 +380,7 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
         this.cardWidth = cardWidth;
         this.symbolWidth = cardWidth / 7;
         this.cardHeight = cardHeight;
-        if (this.isPermanent) {
+        if (this.isPermanent && needFullPermanentRender) {
             int rotCenterX = Math.round(cardWidth / 2f);
             int rotCenterY = cardHeight - rotCenterX;
             int rotCenterToTopCorner = Math.round(cardWidth * CardPanel.ROT_CENTER_TO_TOP_CORNER);
@@ -382,7 +402,7 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
     }
 
     public int getXOffset(int cardWidth) {
-        if (this.isPermanent) {
+        if (this.isPermanent && needFullPermanentRender) {
             int rotCenterX = Math.round(cardWidth / 2f);
             int rotCenterToBottomCorner = Math.round(cardWidth * CardPanel.ROT_CENTER_TO_BOTTOM_CORNER);
             int xOffset = rotCenterX - rotCenterToBottomCorner;
@@ -393,7 +413,7 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
     }
 
     public final int getYOffset(int cardWidth, int cardHeight) {
-        if (this.isPermanent) {
+        if (this.isPermanent && needFullPermanentRender) {
             int rotCenterX = Math.round(cardWidth / 2f);
             int rotCenterY = cardHeight - rotCenterX;
             int rotCenterToTopCorner = Math.round(cardWidth * CardPanel.ROT_CENTER_TO_TOP_CORNER);
@@ -503,7 +523,19 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
      */
     @Override
     public void update(CardView card) {
-        this.setUpdateCard(card);
+        if (card == null) {
+            return;
+        }
+
+        if (transformed && card.equals(this.temporary)) {
+            // update can be called from different places (after transform click, after selection change, etc)
+            // if card temporary transformed before (by icon click) then do not update full data (as example, after selection changed)
+            this.isChoosable = card.isChoosable();
+            this.isSelected = card.isSelected();
+            return;
+        } else {
+            this.setUpdateCard(card);
+        }
 
         // Animation update
         if (isPermanent && (card instanceof PermanentView)) {
@@ -625,7 +657,7 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
         if (getGameCard().hideInfo()) {
             return;
         }
-        
+
         if (tooltipShowing) {
             synchronized (this) {
                 if (tooltipShowing) {
@@ -749,10 +781,18 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
         this.transformed = transformed;
     }
 
+    private void copySelections(CardView source, CardView dest) {
+        if (source != null && dest != null) {
+            dest.setSelected(source.isSelected());
+            dest.setChoosable(source.isChoosable());
+        }
+    }
+
     @Override
     public void toggleTransformed() {
         this.transformed = !this.transformed;
         if (transformed) {
+            // show night card
             if (dayNightButton != null) { // if transformbable card is copied, button can be null
                 BufferedImage night = ImageManagerImpl.instance.getNightImage();
                 dayNightButton.setIcon(new ImageIcon(night));
@@ -762,15 +802,19 @@ public abstract class CardPanel extends MagePermanent implements MouseListener, 
                 return;
             }
             if (!isPermanent) { // use only for custom transformation (when pressing day-night button)
+                copySelections(this.getGameCard(), this.getGameCard().getSecondCardFace());
                 this.setTemporary(this.getGameCard());
                 update(this.getGameCard().getSecondCardFace());
             }
         } else {
+            // show day card
             if (dayNightButton != null) { // if transformbable card is copied, button can be null
                 BufferedImage day = ImageManagerImpl.instance.getDayImage();
                 dayNightButton.setIcon(new ImageIcon(day));
             }
+
             if (!isPermanent) { // use only for custom transformation (when pressing day-night button)
+                copySelections(this.getGameCard().getSecondCardFace(), this.getGameCard());
                 update(this.getTemporary());
                 this.setTemporary(null);
             }

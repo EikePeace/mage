@@ -21,9 +21,6 @@ import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.token.HumanWizardToken;
 import mage.players.Player;
@@ -37,8 +34,8 @@ public final class DocentOfPerfection extends CardImpl {
 
     static {
         filterSpell.add(Predicates.or(
-                new CardTypePredicate(CardType.INSTANT),
-                new CardTypePredicate(CardType.SORCERY)));
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate()));
     }
 
     public DocentOfPerfection(UUID ownerId, CardSetInfo setInfo) {
@@ -78,8 +75,8 @@ class DocentOfPerfectionEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterPermanent("Wizards");
 
     static {
-        filter.add(new SubtypePredicate(SubType.WIZARD));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.WIZARD.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public DocentOfPerfectionEffect() {

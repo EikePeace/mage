@@ -13,9 +13,6 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 import java.util.ArrayList;
@@ -59,13 +56,13 @@ public final class JediEnclave extends CardImpl {
             addCost(new TapSourceCost());
             addCost(new SacrificeSourceCost());
             FilterCard filter = new FilterCard("basic Forest, Plains or Island");
-            filter.add(new CardTypePredicate(CardType.LAND));
+            filter.add(CardType.LAND.getPredicate());
             List<Predicate<MageObject>> subtypePredicates = new ArrayList<>();
-            subtypePredicates.add(new SubtypePredicate(SubType.FOREST));
-            subtypePredicates.add(new SubtypePredicate(SubType.PLAINS));
-            subtypePredicates.add(new SubtypePredicate(SubType.ISLAND));
+            subtypePredicates.add(SubType.FOREST.getPredicate());
+            subtypePredicates.add(SubType.PLAINS.getPredicate());
+            subtypePredicates.add(SubType.ISLAND.getPredicate());
             filter.add(Predicates.or(subtypePredicates));
-            filter.add(new SupertypePredicate(SuperType.BASIC));
+            filter.add(SuperType.BASIC.getPredicate());
             TargetCardInLibrary target = new TargetCardInLibrary(filter);
             addEffect(new SearchLibraryPutInPlayEffect(target, true, true, Outcome.PutLandInPlay));
         }

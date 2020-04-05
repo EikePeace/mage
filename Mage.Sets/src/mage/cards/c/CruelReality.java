@@ -14,7 +14,6 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -43,7 +42,7 @@ public final class CruelReality extends CardImpl {
         this.getSpellAbility().addEffect(new AttachEffect(Outcome.Damage));
         this.addAbility(new EnchantAbility(auraTarget.getTargetName()));
 
-        //At the beginning of enchanted player's upkeep, that player sacrifices a creature or planeswalker. If the player can't, he or she loses 5 life.
+        //At the beginning of enchanted player's upkeep, that player sacrifices a creature or planeswalker. If the player can't, they lose 5 life.
         this.addAbility(new CruelRealityTriggeredAbiilty());
 
     }
@@ -103,7 +102,7 @@ class CruelRealityEffect extends OneShotEffect {
 
     public CruelRealityEffect() {
         super(Outcome.LoseLife);
-        staticText = "that player sacrifices a creature or planeswalker. If the player can't, he or she loses 5 life";
+        staticText = "that player sacrifices a creature or planeswalker. If the player can't, they lose 5 life";
     }
 
     public CruelRealityEffect(final CruelRealityEffect effect) {
@@ -123,8 +122,8 @@ class CruelRealityEffect extends OneShotEffect {
                 && controller != null) {
                 FilterControlledPermanent filter = new FilterControlledPermanent("creature or planeswalker");
                 filter.add(Predicates.or(
-                        new CardTypePredicate(CardType.CREATURE),
-                        new CardTypePredicate(CardType.PLANESWALKER)));
+                        CardType.CREATURE.getPredicate(),
+                        CardType.PLANESWALKER.getPredicate()));
                 TargetPermanent target = new TargetPermanent(filter);
                 if (cursedPlayer.choose(Outcome.Sacrifice, target, source.getId(), game)) {
                     Permanent objectToBeSacrificed = game.getPermanent(target.getFirstTarget());

@@ -188,7 +188,7 @@ public class LandTypeChangingEffectsTest extends CardTestPlayerBase {
 
         addCard(Zone.BATTLEFIELD, playerA, "Mountain", 4);
 
-        // At the beginning of each player's upkeep, that player puts a flood counter on target non-Island land he or she controls of their choice.
+        // At the beginning of each player's upkeep, that player puts a flood counter on target non-Island land they control of their choice.
         //  That land is an Island for as long as it has a flood counter on it.
         // At the beginning of each end step, if all lands on the battlefield are Islands, remove all flood counters from them.
         addCard(Zone.HAND, playerB, "Quicksilver Fountain", 1); // Artifact {3}
@@ -198,11 +198,14 @@ public class LandTypeChangingEffectsTest extends CardTestPlayerBase {
         castSpell(1, PhaseStep.POSTCOMBAT_MAIN, playerA, "Kormus Bell");
 
         castSpell(2, PhaseStep.PRECOMBAT_MAIN, playerB, "Quicksilver Fountain");
+        
         addTarget(playerA, "Mountain");
-
+        
+        setStrictChooseMode(true);
         setStopAt(3, PhaseStep.POSTCOMBAT_MAIN);
         execute();
-
+        assertAllCommandsUsed();
+        
         assertPermanentCount(playerA, urborgtoy, 1);
         assertPermanentCount(playerA, "Kormus Bell", 1);
         assertPermanentCount(playerB, "Quicksilver Fountain", 1);

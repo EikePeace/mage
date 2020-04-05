@@ -10,8 +10,6 @@ import mage.constants.CardType;
 import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 
 /**
  * @author JRHerlehy
@@ -22,8 +20,8 @@ public final class UrzasRuinousBlast extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("nonland permanents that aren't legendary");
 
     static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
-        filter.add(Predicates.not(new SupertypePredicate(SuperType.LEGENDARY)));
+        filter.add(Predicates.not(CardType.LAND.getPredicate()));
+        filter.add(Predicates.not(SuperType.LEGENDARY.getPredicate()));
     }
 
     public UrzasRuinousBlast(UUID ownerId, CardSetInfo setInfo) {

@@ -11,8 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -22,8 +20,8 @@ public final class NightmareLash extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("Swamp you control");
 
     static {
-        filter.add(new SubtypePredicate(SubType.SWAMP));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.SWAMP.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
     }
 
     public NightmareLash(UUID ownerId, CardSetInfo setInfo) {

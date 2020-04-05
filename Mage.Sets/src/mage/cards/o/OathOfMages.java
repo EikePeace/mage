@@ -1,4 +1,3 @@
-
 package mage.cards.o;
 
 import mage.MageObject;
@@ -28,13 +27,15 @@ public final class OathOfMages extends CardImpl {
     public OathOfMages(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{R}");
 
-        // At the beginning of each player's upkeep, that player chooses target player who has more life than he or she does and is their opponent. The first player may have Oath of Mages deal 1 damage to the second player.
-        Ability ability = new BeginningOfUpkeepTriggeredAbility(new OathOfMagesEffect(), TargetController.ANY, false);
+        // At the beginning of each player's upkeep, that player chooses target player who has more life than they do and is their opponent. The first player may have Oath of Mages deal 1 damage to the second player.
+        Ability ability = new BeginningOfUpkeepTriggeredAbility(
+                new OathOfMagesEffect(), TargetController.ANY, false
+        );
         ability.setTargetAdjuster(OathOfMagesAdjuster.instance);
         this.addAbility(ability);
     }
 
-    public OathOfMages(final OathOfMages card) {
+    private OathOfMages(final OathOfMages card) {
         super(card);
     }
 
@@ -49,22 +50,24 @@ enum OathOfMagesAdjuster implements TargetAdjuster {
     private static final FilterPlayer filter = new FilterPlayer();
 
     static {
-        filter.add(new OathOfMagesPredicate());
+        filter.add(OathOfMagesPredicate.instance);
     }
 
     @Override
     public void adjustTargets(Ability ability, Game game) {
         Player activePlayer = game.getPlayer(game.getActivePlayerId());
-        if (activePlayer != null) {
-            ability.getTargets().clear();
-            TargetPlayer target = new TargetPlayer(1, 1, false, filter);
-            target.setTargetController(activePlayer.getId());
-            ability.getTargets().add(target);
+        if (activePlayer == null) {
+            return;
         }
+        ability.getTargets().clear();
+        TargetPlayer target = new TargetPlayer(1, 1, false, filter);
+        target.setTargetController(activePlayer.getId());
+        ability.getTargets().add(target);
     }
 }
 
-class OathOfMagesPredicate implements ObjectSourcePlayerPredicate<ObjectSourcePlayer<Player>> {
+enum OathOfMagesPredicate implements ObjectSourcePlayerPredicate<ObjectSourcePlayer<Player>> {
+    instance;
 
     @Override
     public boolean apply(ObjectSourcePlayer<Player> input, Game game) {
@@ -83,18 +86,19 @@ class OathOfMagesPredicate implements ObjectSourcePlayerPredicate<ObjectSourcePl
 
     @Override
     public String toString() {
-        return "player who has more life than he or she does and is their opponent";
+        return "player who has more life than they do and is their opponent";
     }
 }
 
 class OathOfMagesEffect extends OneShotEffect {
 
-    public OathOfMagesEffect() {
+    OathOfMagesEffect() {
         super(Outcome.Damage);
-        staticText = "that player chooses target player who has more life than he or she does and is their opponent. The first player may have Oath of Mages deal 1 damage to the second player";
+        staticText = "that player chooses target player who has more life than they do and is their opponent. " +
+                "The first player may have {this} deal 1 damage to the second player";
     }
 
-    public OathOfMagesEffect(OathOfMagesEffect effect) {
+    private OathOfMagesEffect(OathOfMagesEffect effect) {
         super(effect);
     }
 
@@ -106,8 +110,8 @@ class OathOfMagesEffect extends OneShotEffect {
         if (sourceObject == null || firstPlayer == null) {
             return false;
         }
-        if (firstPlayer.chooseUse(outcome, "Deal one damage to " + secondPlayer.getLogName() + "?", source, game)) {
-            secondPlayer.damage(1, source.getId(), game, false, true);
+        if (firstPlayer.chooseUse(Outcome.Benefit, "Deal one damage to " + secondPlayer.getLogName() + "?", source, game)) {
+            secondPlayer.damage(1, source.getSourceId(), game);
         }
         return true;
     }

@@ -15,9 +15,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.players.Player;
@@ -33,8 +31,8 @@ public final class LlawanCephalidEmpress extends CardImpl {
 
     static {
         filter.add(new ColorPredicate(ObjectColor.BLUE));
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public LlawanCephalidEmpress(UUID ownerId, CardSetInfo setInfo) {
@@ -69,7 +67,7 @@ class LlawanCephalidRuleModifyingEffect extends ContinuousRuleModifyingEffectImp
 
     static {
         filter.add(new ColorPredicate(ObjectColor.BLUE));
-        filter.add(new CardTypePredicate(CardType.CREATURE));
+        filter.add(CardType.CREATURE.getPredicate());
     }
 
     public LlawanCephalidRuleModifyingEffect() {

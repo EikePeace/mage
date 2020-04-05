@@ -12,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.permanent.token.GoatToken;
 import mage.target.common.TargetCardInLibrary;
 
@@ -24,8 +23,8 @@ public final class ManifestationOfDestiny extends CardImpl {
     private static final FilterControlledPermanent plains = new FilterControlledPermanent("Plains");
 
     static {
-        filter.add(new SubtypePredicate(SubType.PLAINS));
-        plains.add(new SubtypePredicate(SubType.PLAINS));
+        filter.add(SubType.PLAINS.getPredicate());
+        plains.add(SubType.PLAINS.getPredicate());
     }
 
     public ManifestationOfDestiny(UUID ownerId, CardSetInfo setInfo){

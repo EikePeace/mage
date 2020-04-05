@@ -26,6 +26,7 @@ import mage.client.plugins.impl.Plugins;
 import mage.client.preference.MagePreferences;
 import mage.client.remote.CallbackClientImpl;
 import mage.client.table.TablesPane;
+import mage.client.table.TablesPanel;
 import mage.client.tournament.TournamentPane;
 import mage.client.util.*;
 import mage.client.util.audio.MusicPlayer;
@@ -91,6 +92,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
     private static final String DEBUG_ARG = "-debug";
 
     private static final String NOT_CONNECTED_TEXT = "<not connected>";
+    private static final String NOT_CONNECTED_BUTTON = "CONNECT TO SERVER";
     private static MageFrame instance;
 
     private final ConnectDialog connectDialog;
@@ -261,7 +263,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         desktopPane.add(errorDialog, JLayeredPane.MODAL_LAYER);
         UI.addComponent(MageComponents.DESKTOP_PANE, desktopPane);
 
-        PING_TASK_EXECUTOR.scheduleAtFixedRate(() -> SessionHandler.ping(), 60, 60, TimeUnit.SECONDS);
+        PING_TASK_EXECUTOR.scheduleAtFixedRate(() -> SessionHandler.ping(), TablesPanel.PING_SERVER_SECS, TablesPanel.PING_SERVER_SECS, TimeUnit.SECONDS);
 
         updateMemUsageTask = new UpdateMemUsageTask(jMemUsageLabel);
 
@@ -317,7 +319,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         }
 
         setGUISize();
-        setConnectButtonText(NOT_CONNECTED_TEXT);
+        setConnectButtonText(NOT_CONNECTED_BUTTON);
         SwingUtilities.invokeLater(() -> {
             disableButtons();
             updateMemUsageTask.execute();
@@ -1313,7 +1315,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
                 if (startPort > 0) {
                     instance.currentConnection.setPort(startPort);
                 } else {
-                    instance.currentConnection.setPort(MagePreferences.getServerPortWithDefault(Config.port));
+                    instance.currentConnection.setPort(MagePreferences.getServerPortWithDefault(ClientDefaultSettings.port));
                 }
                 PreferencesDialog.setProxyInformation(instance.currentConnection);
                 instance.currentConnection.setPassword(startPassword);
@@ -1436,7 +1438,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         if (SwingUtilities.isEventDispatchThread()) { // Returns true if the current thread is an AWT event dispatching thread.
             // REMOTE task, e.g. connecting
             LOGGER.info("Disconnected from remote task");
-            setConnectButtonText(NOT_CONNECTED_TEXT);
+            setConnectButtonText(NOT_CONNECTED_BUTTON);
             disableButtons();
             hideGames();
             hideTables();
@@ -1445,7 +1447,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
             LOGGER.info("Disconnected from user mode");
             SwingUtilities.invokeLater(() -> {
                         SessionHandler.disconnect(false); // user already disconnected, can't do any online actions like quite chat
-                        setConnectButtonText(NOT_CONNECTED_TEXT);
+                        setConnectButtonText(NOT_CONNECTED_BUTTON);
                         disableButtons();
                         hideGames();
                         hideTables();

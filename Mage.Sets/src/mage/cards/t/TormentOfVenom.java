@@ -14,7 +14,6 @@ import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -32,7 +31,7 @@ public final class TormentOfVenom extends CardImpl {
     public TormentOfVenom(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{2}{B}{B}");
 
-        // Put three -1/-1 counters on target creature. Its controller loses 3 life unless he or she sacrifices another nonland permanent or discards a card.
+        // Put three -1/-1 counters on target creature. Its controller loses 3 life unless they sacrifice another nonland permanent or discards a card.
         this.getSpellAbility().addEffect(new TormentOfVenomEffect());
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
@@ -51,7 +50,7 @@ class TormentOfVenomEffect extends OneShotEffect {
 
     public TormentOfVenomEffect() {
         super(Outcome.LoseLife);
-        this.staticText = "Put three -1/-1 counters on target creature. Its controller loses 3 life unless he or she sacrifices another nonland permanent or discards a card";
+        this.staticText = "Put three -1/-1 counters on target creature. Its controller loses 3 life unless they sacrifice another nonland permanent or discards a card";
     }
 
     public TormentOfVenomEffect(final TormentOfVenomEffect effect) {
@@ -74,7 +73,7 @@ class TormentOfVenomEffect extends OneShotEffect {
                 if (permanents > 0 && controllingPlayer.chooseUse(outcome, "Sacrifices a nonland permanent?",
                         "Otherwise you have to discard a card or lose 3 life.", "Sacrifice", "Discard or life loss", source, game)) {
                     FilterPermanent filter = new FilterControlledPermanent("another nonland permanent");
-                    filter.add(Predicates.not(new CardTypePredicate(CardType.LAND)));
+                    filter.add(Predicates.not(CardType.LAND.getPredicate()));
                     filter.add(Predicates.not(new PermanentIdPredicate(targetCreature.getId())));
                     Target target = new TargetPermanent(filter);
                     if (controllingPlayer.choose(outcome, target, source.getSourceId(), game)) {

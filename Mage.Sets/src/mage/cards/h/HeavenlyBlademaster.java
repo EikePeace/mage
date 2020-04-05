@@ -1,6 +1,5 @@
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -15,24 +14,20 @@ import mage.abilities.keyword.DoubleStrikeAbility;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.TargetPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801
  */
 public final class HeavenlyBlademaster extends CardImpl {
@@ -86,8 +81,8 @@ class HeavenlyBlademasterEffect extends OneShotEffect {
 
     static {
         filter.add(Predicates.or(
-                new SubtypePredicate(SubType.AURA),
-                new SubtypePredicate(SubType.EQUIPMENT)
+                SubType.AURA.getPredicate(),
+                SubType.EQUIPMENT.getPredicate()
         ));
     }
 
@@ -121,7 +116,7 @@ class HeavenlyBlademasterEffect extends OneShotEffect {
         ).filter(
                 attachment -> attachment != null
         ).forEachOrdered((attachment) -> {
-            if (!sourcePermanent.cantBeAttachedBy(attachment, game)) {
+            if (!sourcePermanent.cantBeAttachedBy(attachment, game, true)) {
                 if (attachment.getAttachedTo() != sourcePermanent.getId()) {
                     if (attachment.getAttachedTo() != null) {
                         Permanent fromPermanent = game.getPermanent(attachment.getAttachedTo());

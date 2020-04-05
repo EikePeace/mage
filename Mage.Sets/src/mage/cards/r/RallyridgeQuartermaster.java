@@ -15,8 +15,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -30,8 +28,8 @@ public final class RallyridgeQuartermaster extends CardImpl {
     private static final FilterPermanent filter = new FilterPermanent("Equipment or Aura you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(Predicates.or(new SubtypePredicate(SubType.EQUIPMENT), new SubtypePredicate(SubType.AURA)));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(Predicates.or(SubType.EQUIPMENT.getPredicate(), SubType.AURA.getPredicate()));
     }
 
     public RallyridgeQuartermaster(UUID ownerId, CardSetInfo cardSetInfo) {

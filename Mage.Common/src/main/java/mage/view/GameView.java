@@ -26,7 +26,10 @@ import mage.watchers.common.CastSpellLastTurnWatcher;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -39,7 +42,7 @@ public class GameView implements Serializable {
     private final int priorityTime;
     private final List<PlayerView> players = new ArrayList<>();
     private CardsView hand;
-    private Set<UUID> canPlayObjects;
+    private Map<UUID, Integer> canPlayObjects;
     private Map<String, SimpleCardsView> opponentHands;
     private Map<String, SimpleCardsView> watchedHands;
     private final CardsView stack = new CardsView();
@@ -118,15 +121,14 @@ public class GameView implements Serializable {
                     } else if (object instanceof Designation) {
                         Designation designation = (Designation) game.getObject(object.getId());
                         if (designation != null) {
-                            stack.put(stackObject.getId(), new StackAbilityView(game, (StackAbility) stackObject, designation.getName(), new CardView(designation)));
+                            stack.put(stackObject.getId(), new StackAbilityView(game, (StackAbility) stackObject, designation.getName(), new CardView(designation, game)));
                         } else {
                             LOGGER.fatal("Designation object not found: " + object.getName() + ' ' + object.toString() + ' ' + object.getClass().toString());
                         }
-
                     } else if (object instanceof StackAbility) {
                         StackAbility stackAbility = ((StackAbility) object);
                         stackAbility.newId();
-                        stack.put(stackObject.getId(), new CardView(stackObject));
+                        stack.put(stackObject.getId(), new CardView(stackObject, game));
                         checkPaid(stackObject.getId(), ((StackAbility) stackObject));
                     } else {
                         LOGGER.fatal("Object can't be cast to StackAbility: " + object.getName() + ' ' + object.toString() + ' ' + object.getClass().toString());
@@ -300,11 +302,11 @@ public class GameView implements Serializable {
         return isPlayer;
     }
 
-    public Set<UUID> getCanPlayObjects() {
+    public Map<UUID, Integer> getCanPlayObjects() {
         return canPlayObjects;
     }
 
-    public void setCanPlayObjects(Set<UUID> canPlayObjects) {
+    public void setCanPlayObjects(Map<UUID, Integer> canPlayObjects) {
         this.canPlayObjects = canPlayObjects;
     }
 

@@ -1,7 +1,5 @@
-
 package mage.cards.d;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.effects.common.AttachEffect;
@@ -10,7 +8,7 @@ import mage.abilities.keyword.EnchantAbility;
 import mage.abilities.mana.TriggeredManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.choices.ChoiceColor;
+import mage.choices.ManaChoice;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
@@ -23,8 +21,11 @@ import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author Plopman
  */
 public final class DawnsReflection extends CardImpl {
@@ -102,46 +103,30 @@ class DawnsReflectionManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            int x = 2;
-            Mana mana = new Mana();
-            for (int i = 0; i < x; i++) {
-                ChoiceColor choiceColor = new ChoiceColor();
-                if (!controller.choose(Outcome.Benefit, choiceColor, game)) {
-                    return false;
-                }
-                choiceColor.increaseMana(mana);
+    public Player getPlayer(Game game, Ability source) {
+        Permanent enchantment = game.getPermanent(source.getSourceId());
+        if (enchantment != null) {
+            Permanent permanentAttachedTo = game.getPermanent(enchantment.getAttachedTo());
+            if (permanentAttachedTo != null) {
+                return game.getPlayer(permanentAttachedTo.getControllerId());
             }
-            controller.getManaPool().addMana(mana, game, source);
-            return true;
-
-        }
-        return false;
-    }
-
-    @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        if (netMana) {
-            return new Mana(0, 0, 0, 0, 0, 0, 2, 0);
-        }
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            int x = 2;
-            Mana mana = new Mana();
-            for (int i = 0; i < x; i++) {
-                ChoiceColor choiceColor = new ChoiceColor();
-                if (!controller.choose(Outcome.Benefit, choiceColor, game)) {
-                    return null;
-                }
-                choiceColor.increaseMana(mana);
-            }
-            controller.getManaPool().addMana(mana, game, source);
-            return mana;
-
         }
         return null;
     }
 
+    @Override
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netMana = new ArrayList<>();
+        netMana.add(Mana.AnyMana(2));
+        return netMana;
+    }
+
+    @Override
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            Player player = getPlayer(game, source);
+            return ManaChoice.chooseAnyColor(player, game, 2);
+        }
+        return new Mana();
+    }
 }

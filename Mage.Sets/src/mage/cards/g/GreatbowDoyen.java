@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import mage.MageInt;
@@ -11,8 +10,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -22,7 +19,6 @@ import mage.players.Player;
 import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class GreatbowDoyen extends CardImpl {
@@ -30,12 +26,12 @@ public final class GreatbowDoyen extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Archer creatures you control");
 
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.ARCHER));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.ARCHER.getPredicate());
     }
 
     public GreatbowDoyen(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{4}{G}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{G}");
         this.subtype.add(SubType.ELF);
         this.subtype.add(SubType.ARCHER);
 
@@ -83,7 +79,7 @@ class GreatbowDoyenTriggeredAbility extends TriggeredAbilityImpl {
     public boolean checkTrigger(GameEvent event, Game game) {
         Permanent creature = game.getPermanent(event.getSourceId());
         Permanent damagedCreature = game.getPermanent(event.getTargetId());
-        if (creature != null && damagedCreature != null 
+        if (creature != null && damagedCreature != null
                 && creature.isCreature()
                 && creature.hasSubtype(SubType.ARCHER, game)
                 && creature.isControlledBy(controllerId)) {
@@ -130,7 +126,7 @@ class GreatbowDoyenEffect extends OneShotEffect {
             if (permanent != null) {
                 Player player = game.getPlayer(controllerId);
                 if (player != null) {
-                    player.damage(damageAmount, sourceOfDamage, game, false, true);
+                    player.damage(damageAmount, sourceOfDamage, game);
                     game.informPlayers(permanent.getName() + " deals " + damageAmount + " damage to " + player.getLogName());
                     return true;
                 }

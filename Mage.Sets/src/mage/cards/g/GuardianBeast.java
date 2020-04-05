@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import java.util.Objects;
@@ -18,10 +17,9 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterObject;
 import mage.filter.FilterStackObject;
+import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledArtifactPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -38,22 +36,26 @@ public final class GuardianBeast extends CardImpl {
     private static final FilterControlledArtifactPermanent filter = new FilterControlledArtifactPermanent("Noncreature artifacts");
 
     static {
-        filterAura.add(new CardTypePredicate(CardType.ENCHANTMENT));
-        filterAura.add(new SubtypePredicate(SubType.AURA));
-        filter.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
+        filterAura.add(CardType.ENCHANTMENT.getPredicate());
+        filterAura.add(SubType.AURA.getPredicate());
+        filter.add(Predicates.not(CardType.CREATURE.getPredicate()));
     }
 
     public GuardianBeast(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{B}");
         this.subtype.add(SubType.BEAST);
         this.power = new MageInt(2);
         this.toughness = new MageInt(4);
 
-        // As long as Guardian Beast is untapped, noncreature artifacts you control can't be enchanted, they're indestructible, and other players can't gain control of them. This effect doesn't remove Auras already attached to those artifacts.
-        Effect effect = new ConditionalContinuousEffect(new GainAbilityControlledEffect(IndestructibleAbility.getInstance(), Duration.WhileOnBattlefield, filter), new InvertCondition(SourceTappedCondition.instance), "noncreature artifacts you control can't be enchanted, they're indestructible, and other players can't gain control of them");
-        GuardianBeastConditionalEffect effect2 = new GuardianBeastConditionalEffect(this.getId());
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect2));
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
+        // As long as Guardian Beast is untapped, noncreature artifacts you control can't be enchanted, they're indestructible, and other players can't gain control of them.
+        // This effect doesn't remove Auras already attached to those artifacts.
+        Effect effect = new ConditionalContinuousEffect(new GainAbilityControlledEffect(IndestructibleAbility.getInstance(), Duration.WhileOnBattlefield, filter),
+                new InvertCondition(SourceTappedCondition.instance),
+                "As long as Guardian Beast is untapped, noncreature artifacts you control can't be enchanted, they're indestructible");
+        Ability ability = new SimpleStaticAbility(Zone.BATTLEFIELD, effect);
+        ability.addEffect(new GuardianBeastConditionalEffect(this.getId()));
+        this.addAbility(ability);
+
     }
 
     public GuardianBeast(final GuardianBeast card) {
@@ -68,16 +70,11 @@ public final class GuardianBeast extends CardImpl {
 
 class GuardianBeastConditionalEffect extends ContinuousRuleModifyingEffectImpl {
 
-    private static final FilterControlledArtifactPermanent filter = new FilterControlledArtifactPermanent("Noncreature artifacts");
-    private UUID guardianBeastId;
-
-    static {
-        filter.add(Predicates.not(new CardTypePredicate(CardType.CREATURE)));
-    }
+    private final UUID guardianBeastId;
 
     public GuardianBeastConditionalEffect(UUID guardianBeastId) {
         super(Duration.WhileOnBattlefield, Outcome.Neutral);
-        staticText = "Noncreature artifacts you control have they can't be enchanted, they're indestructible, and other players can't gain control of them";
+        staticText = ", and other players can't gain control of them. This effect doesn't remove Auras already attached to those artifacts";
         this.guardianBeastId = guardianBeastId;
     }
 
@@ -116,8 +113,11 @@ class GuardianBeastConditionalEffect extends ContinuousRuleModifyingEffectImpl {
         }
 
         StackObject spell = game.getStack().getStackObject(event.getSourceId());
-        if (event.getType() == EventType.LOSE_CONTROL || event.getType() == EventType.ATTACH || event.getType() == EventType.TARGET && spell != null && spell.isEnchantment() && spell.hasSubtype(SubType.AURA, game)) {
-            for (Permanent perm : game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game)) {
+        if (event.getType() == EventType.GAIN_CONTROL
+                || ((event.getType() == EventType.ATTACH
+                || event.getType() == EventType.TARGET)
+                && spell != null && spell.isEnchantment() && spell.hasSubtype(SubType.AURA, game))) {
+            for (Permanent perm : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_ARTIFACTS_NON_CREATURE, source.getControllerId(), game)) {
                 if (perm != null && Objects.equals(perm.getId(), targetPermanent.getId()) && !perm.isCreature()) {
                     return true;
                 }

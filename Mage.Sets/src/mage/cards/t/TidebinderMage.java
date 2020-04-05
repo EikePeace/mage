@@ -21,7 +21,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -38,7 +37,7 @@ public final class TidebinderMage extends CardImpl {
     
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("red or green creature an opponent controls");
     static {
-        filter.add(new ControllerPredicate(TargetController.OPPONENT));
+        filter.add(TargetController.OPPONENT.getControllerPredicate());
         filter.add(Predicates.or(new ColorPredicate(ObjectColor.RED), new ColorPredicate(ObjectColor.GREEN)));
     }
 
@@ -133,10 +132,6 @@ class TidebinderMageWatcher extends Watcher {
         super(WatcherScope.CARD);
     }
 
-    TidebinderMageWatcher(TidebinderMageWatcher watcher) {
-        super(watcher);
-    }
-
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.LOST_CONTROL && event.getPlayerId().equals(controllerId) && event.getTargetId().equals(sourceId)) {
@@ -156,10 +151,5 @@ class TidebinderMageWatcher extends Watcher {
     @Override
     public void reset() {
         //don't reset condition each turn - only when this leaves the battlefield
-    }
-
-    @Override
-    public TidebinderMageWatcher copy() {
-        return new TidebinderMageWatcher(this);
     }
 }

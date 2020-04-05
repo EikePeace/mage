@@ -17,7 +17,7 @@ public enum Outcome {
     PutCreatureInPlay(true),
     PutCardInPlay(true),
     PutLandInPlay(true),
-    GainControl(false),
+    GainControl(true),
     DrawCard(true),
     Discard(false),
     Sacrifice(false),
@@ -28,6 +28,7 @@ public enum Outcome {
     PutManaInPool(true),
     Regenerate(true),
     PreventDamage(true),
+    PreventCast(false),
     RedirectDamage(true),
     Tap(false),
     Transform(true),
@@ -40,7 +41,8 @@ public enum Outcome {
     Removal(false),
     AIDontUseIt(false),
     Vote(true);
-    private final boolean good; // good or bad for targets in current effect
+
+    private final boolean good; // good or bad effect for targeting player (for AI usage)
     private boolean canTargetAll;
 
     Outcome(boolean good) {
@@ -58,5 +60,14 @@ public enum Outcome {
 
     public boolean isCanTargetAll() {
         return canTargetAll;
+    }
+
+    public static Outcome inverse(Outcome outcome) {
+        // inverse bad/good effect (as example, after controlling player change)
+        if (outcome.isGood()) {
+            return Outcome.Detriment;
+        } else {
+            return Outcome.Benefit;
+        }
     }
 }

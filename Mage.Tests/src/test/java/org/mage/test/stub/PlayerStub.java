@@ -1,5 +1,7 @@
 package org.mage.test.stub;
 
+import java.io.Serializable;
+import java.util.*;
 import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.*;
@@ -19,6 +21,7 @@ import mage.counters.Counter;
 import mage.counters.Counters;
 import mage.designations.Designation;
 import mage.designations.DesignationType;
+import mage.filter.FilterMana;
 import mage.filter.FilterPermanent;
 import mage.game.Game;
 import mage.game.Graveyard;
@@ -37,9 +40,6 @@ import mage.target.Target;
 import mage.target.TargetAmount;
 import mage.target.TargetCard;
 import mage.target.common.TargetCardInLibrary;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author Quercitron
@@ -403,11 +403,6 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public void otherPlayerLeftGame(Game game) {
-
-    }
-
-    @Override
     public ManaPool getManaPool() {
         return null;
     }
@@ -647,7 +642,7 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public boolean flipCoin(Ability source, Game game, boolean winnable, ArrayList<UUID> appliedEffects) {
+    public boolean flipCoin(Ability source, Game game, boolean winnable, List<UUID> appliedEffects) {
         return false;
     }
 
@@ -657,13 +652,8 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public int rollDice(Game game, ArrayList<UUID> appliedEffects, int numSides) {
+    public int rollDice(Game game, List<UUID> appliedEffects, int numSides) {
         return 1;
-    }
-
-    @Override
-    public void discard(int amount, Ability source, Game game) {
-
     }
 
     @Override
@@ -1047,7 +1037,7 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public Set<UUID> getPlayableObjects(Game game, Zone zone) {
+    public Map<UUID, Integer> getPlayableObjects(Game game, Zone zone) {
         return null;
     }
 
@@ -1197,6 +1187,11 @@ public class PlayerStub implements Player {
     }
 
     @Override
+    public boolean moveCardToCommandWithInfo(Card card, UUID sourceId, Game game, Zone fromZone) {
+        return false;
+    }
+
+    @Override
     public boolean hasOpponent(UUID playerToCheckId, Game game) {
         return false;
     }
@@ -1207,7 +1202,7 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public UUID getCastSourceIdWithAlternateMana() {
+    public Set<UUID> getCastSourceIdWithAlternateMana() {
         return null;
     }
 
@@ -1217,13 +1212,18 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public ManaCosts getCastSourceIdManaCosts() {
+    public Map<UUID, Costs<Cost>> getCastSourceIdCosts() {
         return null;
     }
 
     @Override
-    public Costs<Cost> getCastSourceIdCosts() {
+    public Map<UUID, ManaCosts<ManaCost>> getCastSourceIdManaCosts() {
         return null;
+    }
+
+    @Override
+    public void clearCastSourceIdManaCosts() {
+
     }
 
     @Override
@@ -1322,12 +1322,12 @@ public class PlayerStub implements Player {
     }
 
     @Override
-    public PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects) {
+    public PlanarDieRoll rollPlanarDie(Game game, List<UUID> appliedEffects) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public PlanarDieRoll rollPlanarDie(Game game, ArrayList<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides) {
+    public PlanarDieRoll rollPlanarDie(Game game, List<UUID> appliedEffects, int numberChaosSides, int numberPlanarSides) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -1369,6 +1369,26 @@ public class PlayerStub implements Player {
         int hash = 5;
         hash = 41 * hash + Objects.hashCode(this.id);
         return hash;
+    }
+
+    @Override
+    public void addPhyrexianToColors(FilterMana colors) {
+
+    }
+
+    @Override
+    public void removePhyrexianFromColors(FilterMana colors) {
+
+    }
+
+    @Override
+    public FilterMana getPhyrexianColors() {
+        return (new FilterMana());
+    }
+
+    @Override
+    public SpellAbility chooseAbilityForCast(Card card, Game game, boolean noMana) {
+        return card.getSpellAbility();
     }
 
 }

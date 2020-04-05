@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.Mana;
 import mage.abilities.Ability;
@@ -14,16 +12,15 @@ import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AbilityWord;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.SuperType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class SelvalaExplorerReturned extends CardImpl {
@@ -72,25 +69,20 @@ class SelvalaExplorerReturnedEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            Mana mana = getMana(game, source);
-            if (mana.getGreen() > 0) {
-                controller.getManaPool().addMana(mana, game, source);
-                controller.gainLife(mana.getGreen(), game, source);
-            }
-            return true;
-        }
-        return false;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        return new ArrayList<>();
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
-        if (netMana) {
-
+    public Mana produceMana(Game game, Ability source) {
+        if (game != null) {
+            int parleyCount = ParleyCount.getInstance().calculate(game, source, this);
+            Player player = getPlayer(game, source);
+            if (player != null) {
+                player.gainLife(parleyCount, game, source);
+            }
+            return Mana.GreenMana(parleyCount);
         }
-        return Mana.GreenMana(ParleyCount.getInstance().calculate(game, source, this));
+        return new Mana();
     }
-
 }

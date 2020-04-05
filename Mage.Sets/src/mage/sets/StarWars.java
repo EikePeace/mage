@@ -75,7 +75,7 @@ public final class StarWars extends ExpansionSet {
         cards.add(new SetCardInfo("Code Slice", 503, Rarity.COMMON, mage.cards.c.CodeSlice.class));
         cards.add(new SetCardInfo("Commander Cody", 173, Rarity.RARE, mage.cards.c.CommanderCody.class));
         cards.add(new SetCardInfo("Condemn", 7, Rarity.UNCOMMON, mage.cards.c.Condemn.class));
-        cards.add(new SetCardInfo("Conscription", 602, Rarity.UNCOMMON, mage.cards.c.Conscription.class));
+        cards.add(new SetCardInfo("SWS:Conscription", 602, Rarity.UNCOMMON, mage.cards.c.SwsConscription.class));
         cards.add(new SetCardInfo("Corellian Corvette", 133, Rarity.UNCOMMON, mage.cards.c.CorellianCorvette.class));
         cards.add(new SetCardInfo("Corellian Gunship", 603, Rarity.COMMON, mage.cards.c.CorellianGunship.class));
         cards.add(new SetCardInfo("Crossfire", 100, Rarity.COMMON, mage.cards.c.Crossfire.class));
@@ -266,7 +266,7 @@ public final class StarWars extends ExpansionSet {
         cards.add(new SetCardInfo("Ravenous Wampa", 226, Rarity.UNCOMMON, mage.cards.r.RavenousWampa.class));
         cards.add(new SetCardInfo("Regression", 152, Rarity.UNCOMMON, mage.cards.r.Regression.class));
         cards.add(new SetCardInfo("Republic Frigate", 53, Rarity.COMMON, mage.cards.r.RepublicFrigate.class));
-        cards.add(new SetCardInfo("Repurpose", 85, Rarity.COMMON, mage.cards.r.Repurpose.class));
+        cards.add(new SetCardInfo("SWS:Repurpose", 85, Rarity.COMMON, mage.cards.r.SwsRepurpose.class));
         cards.add(new SetCardInfo("Resistance", 310, Rarity.UNCOMMON, mage.cards.r.Resistance.class));
         cards.add(new SetCardInfo("Resistance Bomber", 515, Rarity.UNCOMMON, mage.cards.r.ResistanceBomber.class));
         cards.add(new SetCardInfo("Revenge", 117, Rarity.COMMON, mage.cards.r.RevengeStarWars.class));

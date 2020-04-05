@@ -17,9 +17,7 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
 import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -36,8 +34,8 @@ public final class RageForger extends CardImpl {
     private static final FilterControlledCreaturePermanent filterAttack = new FilterControlledCreaturePermanent("creature you control with a +1/+1 counter on it");
 
     static {
-        filter.add(new SubtypePredicate(SubType.SHAMAN));
-        filter.add(new ControllerPredicate(TargetController.YOU));
+        filter.add(SubType.SHAMAN.getPredicate());
+        filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(AnotherPredicate.instance);
         filterAttack.add(new CounterPredicate(CounterType.P1P1));
     }

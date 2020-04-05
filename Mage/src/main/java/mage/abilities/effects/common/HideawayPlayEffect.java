@@ -1,7 +1,5 @@
-
 package mage.abilities.effects.common;
 
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
@@ -9,12 +7,15 @@ import mage.cards.Card;
 import mage.constants.Outcome;
 import mage.game.ExileZone;
 import mage.game.Game;
+import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.CardUtil;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * @author LevelX2
- *
  */
 public class HideawayPlayEffect extends OneShotEffect {
 
@@ -34,11 +35,21 @@ public class HideawayPlayEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        ExileZone zone = game.getExile().getExileZone(CardUtil.getCardExileZoneId(game, source));
-        if (zone == null || zone.isEmpty()) {
+        ExileZone zone = null;
+        Permanent permanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        if (permanent != null) {
+            zone = game.getExile().getExileZone(CardUtil.getExileZoneId(game, source.getSourceId(), permanent.getZoneChangeCounter(game)));
+        }
+
+        if (zone == null) {
             return true;
         }
-        Card card = zone.getCards(game).iterator().next();
+        Set<Card> cards = zone.getCards(game);
+        if (cards.isEmpty()) {
+            return true;
+        }
+
+        Card card = cards.iterator().next();
         Player controller = game.getPlayer(source.getControllerId());
         if (card != null && controller != null) {
             if (controller.chooseUse(Outcome.PlayForFree, "Do you want to play " + card.getIdName() + " for free now?", source, game)) {

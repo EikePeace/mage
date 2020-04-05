@@ -5,8 +5,6 @@
  */
 package mage.abilities.mana;
 
-import java.util.ArrayList;
-import java.util.List;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -18,13 +16,14 @@ import mage.constants.ColoredManaSymbol;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.ControllerPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author CountAndromalius
  */
 public class AnyColorPermanentTypesManaAbility extends ActivatedManaAbilityImpl {
@@ -69,7 +68,7 @@ class AnyColorPermanentTypesManaEffect extends ManaEffect {
         super();
         filter = permanentTypes;
         this.onlyColors = onlyColors;
-        filter.add(new ControllerPredicate(targetController));
+        filter.add(targetController.getControllerPredicate());
         String text = targetController == TargetController.OPPONENT ? "an opponent controls." : "you control.";
         staticText = "Add one mana of any " + (this.onlyColors ? "color" : "type") + " among " + permanentTypes.getMessage() + " " + text;
     }
@@ -81,19 +80,39 @@ class AnyColorPermanentTypesManaEffect extends ManaEffect {
     }
 
     @Override
-    public boolean apply(Game game, Ability source) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            checkToFirePossibleEvents(getMana(game, source), game, source);
-            controller.getManaPool().addMana(getMana(game, source), game, source);
-            return true;
+    public List<Mana> getNetMana(Game game, Ability source) {
+        List<Mana> netManas = new ArrayList<>();
+        Mana types = getManaTypes(game, source);
+        if (types.getBlack() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.B));
         }
-        return false;
+        if (types.getRed() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.R));
+        }
+        if (types.getBlue() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.U));
+        }
+        if (types.getGreen() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.G));
+        }
+        if (types.getWhite() > 0) {
+            netManas.add(new Mana(ColoredManaSymbol.W));
+        }
+        if (!onlyColors && types.getColorless() > 0) {
+            netManas.add(Mana.ColorlessMana(1));
+        }
+        if (types.getAny() > 0) {
+            netManas.add(Mana.AnyMana(1));
+        }
+        return netManas;
     }
 
     @Override
-    public Mana produceMana(boolean netMana, Game game, Ability source) {
+    public Mana produceMana(Game game, Ability source) {
         Mana mana = new Mana();
+        if (game == null) {
+            return mana;
+        }
         Mana types = getManaTypes(game, source);
         Choice choice = new ChoiceColor(true);
         choice.getChoices().clear();
@@ -190,34 +209,6 @@ class AnyColorPermanentTypesManaEffect extends ManaEffect {
         }
         inManaTypeCalculation = false;
         return types;
-    }
-
-    @Override
-    public List<Mana> getNetMana(Game game, Ability source) {
-        List<Mana> netManas = new ArrayList<>();
-        Mana types = getManaTypes(game, source);
-        if (types.getBlack() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.B));
-        }
-        if (types.getRed() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.R));
-        }
-        if (types.getBlue() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.U));
-        }
-        if (types.getGreen() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.G));
-        }
-        if (types.getWhite() > 0) {
-            netManas.add(new Mana(ColoredManaSymbol.W));
-        }
-        if (types.getColorless() > 0) {
-            netManas.add(Mana.ColorlessMana(1));
-        }
-        if (types.getAny() > 0) {
-            netManas.add(Mana.AnyMana(1));
-        }
-        return netManas;
     }
 
     @Override

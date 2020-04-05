@@ -13,8 +13,6 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.permanent.ControllerPredicate;
 
 /**
  *
@@ -24,8 +22,8 @@ public final class IndebtedSamurai extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a Samurai you control");
     static {
-        filter.add(new ControllerPredicate(TargetController.YOU));
-        filter.add(new SubtypePredicate(SubType.SAMURAI));
+        filter.add(TargetController.YOU.getControllerPredicate());
+        filter.add(SubType.SAMURAI.getPredicate());
     }
 
     public IndebtedSamurai(UUID ownerId, CardSetInfo setInfo) {

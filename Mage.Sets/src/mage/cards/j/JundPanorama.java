@@ -15,9 +15,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.CardTypePredicate;
-import mage.filter.predicate.mageobject.SubtypePredicate;
-import mage.filter.predicate.mageobject.SupertypePredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -29,12 +26,12 @@ public final class JundPanorama extends CardImpl {
      private static final FilterCard filter = new FilterCard("a basic Swamp, Mountain, or Forest card");
 
     static {
-        filter.add(new CardTypePredicate(CardType.LAND));
-        filter.add(new SupertypePredicate(SuperType.BASIC));
+        filter.add(CardType.LAND.getPredicate());
+        filter.add(SuperType.BASIC.getPredicate());
         filter.add(Predicates.or(
-                new SubtypePredicate(SubType.SWAMP),
-                new SubtypePredicate(SubType.MOUNTAIN),
-                new SubtypePredicate(SubType.FOREST)));
+                SubType.SWAMP.getPredicate(),
+                SubType.MOUNTAIN.getPredicate(),
+                SubType.FOREST.getPredicate()));
     }
 
     public JundPanorama(UUID ownerId, CardSetInfo setInfo) {
