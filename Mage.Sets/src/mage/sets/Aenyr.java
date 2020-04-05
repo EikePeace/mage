@@ -241,7 +241,7 @@ public final class Aenyr extends ExpansionSet {
         //cards.add(new SetCardInfo("Search for Inspiration", 217, Rarity.COMMON, mage.cards.s.SearchForInspiration.class));
         //cards.add(new SetCardInfo("Skiv's Regards", 218, Rarity.RARE, mage.cards.s.SkivsRegards.class));
         cards.add(new SetCardInfo("Stoic Bihorn", 219, Rarity.COMMON, mage.cards.s.StoicBihorn.class));
-        //cards.add(new SetCardInfo("Storytime", 220, Rarity.RARE, mage.cards.s.Storytime.class));
+        cards.add(new SetCardInfo("Storytime", 220, Rarity.RARE, mage.cards.s.Storytime.class));
         cards.add(new SetCardInfo("Unfinished Creation", 221, Rarity.COMMON, mage.cards.u.UnfinishedCreation.class));
         //cards.add(new SetCardInfo("Voice of Lost Songs", 222, Rarity.UNCOMMON, mage.cards.v.VoiceOfLostSongs.class));
         //cards.add(new SetCardInfo("Wistful Sonnet", 223, Rarity.RARE, mage.cards.w.WistfulSonnet.class));
@@ -250,7 +250,7 @@ public final class Aenyr extends ExpansionSet {
         //cards.add(new SetCardInfo("Ensorcelled Instrument", 226, Rarity.COMMON, mage.cards.e.EnsorcelledInstrument.class));
         //cards.add(new SetCardInfo("Ghostlight", 227, Rarity.UNCOMMON, mage.cards.g.Ghostlight.class));
         cards.add(new SetCardInfo("Hulking Creation", 228, Rarity.COMMON, mage.cards.h.HulkingCreation.class));
-        //cards.add(new SetCardInfo("Jest-In-The-Box", 229, Rarity.COMMON, mage.cards.j.JestInTheBox.class));
+        cards.add(new SetCardInfo("Jest-In-The-Box", 229, Rarity.COMMON, mage.cards.j.JestInTheBox.class));
         cards.add(new SetCardInfo("Painter's Servant", 230, Rarity.RARE, mage.cards.p.PaintersServant.class));
         //cards.add(new SetCardInfo("Roaming Museum", 231, Rarity.UNCOMMON, mage.cards.r.RoamingMuseum.class));
         //cards.add(new SetCardInfo("Scapeforger Bauble", 232, Rarity.COMMON, mage.cards.s.ScapeforgerBauble.class));
