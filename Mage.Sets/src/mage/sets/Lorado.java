@@ -222,7 +222,7 @@ public final class Lorado extends ExpansionSet {
         //cards.add(new SetCardInfo("Miss Cassidy Sureshot", 198, Rarity.RARE, mage.cards.m.MissCassidySureshot.class));
         //cards.add(new SetCardInfo("Rallyridge Protector", 199, Rarity.UNCOMMON, mage.cards.r.RallyridgeProtector.class));
         //cards.add(new SetCardInfo("Redeemed Dead", 200, Rarity.UNCOMMON, mage.cards.r.RedeemedDead.class));
-        //cards.add(new SetCardInfo("Sheriff Josiah Woods", 201, Rarity.RARE, mage.cards.s.SheriffJosiahWoods.class));
+        cards.add(new SetCardInfo("Sheriff Josiah Woods", 201, Rarity.RARE, mage.cards.s.SheriffJosiahWoods.class));
         //cards.add(new SetCardInfo("Skinwalker", 202, Rarity.RARE, mage.cards.s.Skinwalker.class));
         //cards.add(new SetCardInfo("Stickup", 203, Rarity.RARE, mage.cards.s.Stickup.class));
         //cards.add(new SetCardInfo("Stiff-Legged Bear", 204, Rarity.UNCOMMON, mage.cards.s.StiffLeggedBear.class));
