@@ -3,32 +3,20 @@ package mage.cards.d;
 
 import java.util.UUID;
 import mage.abilities.Ability;
-import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.common.SpellCastControllerTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.costs.common.PayEnergyCost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.decorator.ConditionalActivatedAbility;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.PermanentsOnBattlefieldCount;
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.DamageTargetEffect;
-import mage.abilities.effects.common.counter.GetEnergyCountersControllerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.common.FilterArtifactOrEnchantmentPermanent;
-import mage.filter.common.FilterArtifactPermanent;
 import mage.filter.common.FilterControlledArtifactPermanent;
-import mage.filter.common.FilterInstantOrSorcerySpell;
 import mage.game.Game;
 import mage.game.permanent.token.DystopilithToken;
-import mage.game.permanent.token.KarnConstructToken;
-import mage.game.permanent.token.TokenImpl;
-import mage.target.common.TargetAnyTarget;
 
 /**
  *

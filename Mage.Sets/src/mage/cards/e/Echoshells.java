@@ -1,16 +1,13 @@
 package mage.cards.e;
 
-import mage.MageInt;
 import mage.Mana;
 import mage.abilities.Abilities;
 import mage.abilities.Ability;
-import mage.abilities.ActivatedAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ManaEffect;
-import mage.abilities.keyword.AdaptAbility;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.Card;
@@ -20,9 +17,7 @@ import mage.choices.Choice;
 import mage.choices.ChoiceColor;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterLandCard;
