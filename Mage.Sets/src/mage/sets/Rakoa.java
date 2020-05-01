@@ -238,7 +238,7 @@ public final class Rakoa extends ExpansionSet {
         //cards.add(new SetCardInfo("World Elemental", 214, Rarity.MYTHIC, mage.cards.w.WorldElemental.class));
         //cards.add(new SetCardInfo("Carved Boar", 215, Rarity.UNCOMMON, mage.cards.c.CarvedBoar.class));
         //cards.add(new SetCardInfo("Carving Tools", 216, Rarity.RARE, mage.cards.c.CarvingTools.class));
-        //cards.add(new SetCardInfo("Echoshells", 217, Rarity.RARE, mage.cards.e.Echoshells.class));
+        cards.add(new SetCardInfo("Echoshells", 217, Rarity.RARE, mage.cards.e.Echoshells.class));
         //cards.add(new SetCardInfo("Engraved Moai", 218, Rarity.COMMON, mage.cards.e.EngravedMoai.class));
         //cards.add(new SetCardInfo("Opalescent Egg", 219, Rarity.UNCOMMON, mage.cards.o.OpalescentEgg.class));
         //cards.add(new SetCardInfo("Paradise Gem", 220, Rarity.RARE, mage.cards.p.ParadiseGem.class));

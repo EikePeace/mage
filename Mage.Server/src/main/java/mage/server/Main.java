@@ -143,7 +143,7 @@ public final class Main {
         }
 
         logger.info("Updating user stats DB...");
-        UserStatsRepository.instance.updateUserStats();
+//        UserStatsRepository.instance.updateUserStats();
         logger.info("Done.");
         deleteSavedGames();
         ConfigSettings config = ConfigSettings.instance;
