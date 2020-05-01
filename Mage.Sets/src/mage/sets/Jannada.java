@@ -235,7 +235,7 @@ public final class Jannada extends ExpansionSet {
         //cards.add(new SetCardInfo("Spellmaw Crocodile", 211, Rarity.RARE, mage.cards.s.SpellmawCrocodile.class));
         //cards.add(new SetCardInfo("Thunderbird's Song", 212, Rarity.UNCOMMON, mage.cards.t.ThunderbirdsSong.class));
         //cards.add(new SetCardInfo("Tikoloshe Mistmage", 213, Rarity.UNCOMMON, mage.cards.t.TikolosheMistmage.class));
-        //cards.add(new SetCardInfo("Uaria, King of Akuga", 214, Rarity.RARE, mage.cards.u.UariaKingOfAkuga.class));
+        cards.add(new SetCardInfo("Uaria, King of Akuga", 214, Rarity.RARE, mage.cards.u.UariaKingOfAkuga.class));
         //cards.add(new SetCardInfo("Ancient Prism", 215, Rarity.COMMON, mage.cards.a.AncientPrism.class));
         cards.add(new SetCardInfo("Golem of the Lost Temple", 216, Rarity.COMMON, mage.cards.g.GolemOfTheLostTemple.class));
         //cards.add(new SetCardInfo("Ice Golem", 217, Rarity.COMMON, mage.cards.i.IceGolem.class));
