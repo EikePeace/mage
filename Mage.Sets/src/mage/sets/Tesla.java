@@ -23,7 +23,7 @@ public final class Tesla extends ExpansionSet {
         this.ratioBoosterMythic = 8;
 
         //cards.add(new SetCardInfo("Aether Jets", 1, Rarity.COMMON, mage.cards.a.AetherJets.class));
-        //cards.add(new SetCardInfo("Agent of Individuality", 2, Rarity.RARE, mage.cards.a.AgentOfIndividuality.class));
+        cards.add(new SetCardInfo("Agent of Individuality", 2, Rarity.RARE, mage.cards.a.AgentOfIndividuality.class));
         //cards.add(new SetCardInfo("Airheaded Lookout", "3a", Rarity.UNCOMMON, mage.cards.a.AirheadedLookout.class));
         //cards.add(new SetCardInfo("Airborne Visionary", "3b", Rarity.UNCOMMON, mage.cards.a.AirborneVisionary.class));
         //cards.add(new SetCardInfo("Apprehend the Ringleader", 4, Rarity.COMMON, mage.cards.a.ApprehendTheRingleader.class));
