@@ -161,7 +161,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Lab Wrecker", 137, Rarity.UNCOMMON, mage.cards.l.LabWrecker.class));
         //cards.add(new SetCardInfo("Lizardman Outbreak", 138, Rarity.COMMON, mage.cards.l.LizardmanOutbreak.class));
         //cards.add(new SetCardInfo("Lock and Load", 139, Rarity.RARE, mage.cards.l.LockAndLoad.class));
-        //cards.add(new SetCardInfo("Mecha Dragon", 140, Rarity.MYTHIC, mage.cards.m.MechaDragon.class));
+        cards.add(new SetCardInfo("Mecha Dragon", 140, Rarity.MYTHIC, mage.cards.m.MechaDragon.class));
         //cards.add(new SetCardInfo("Motley Crew", 141, Rarity.RARE, mage.cards.m.MotleyCrew.class));
         //cards.add(new SetCardInfo("MX Juggernaut", 142, Rarity.RARE, mage.cards.m.MxJuggernaut.class));
         //cards.add(new SetCardInfo("Out for Blood", 143, Rarity.COMMON, mage.cards.o.OutForBlood.class));
