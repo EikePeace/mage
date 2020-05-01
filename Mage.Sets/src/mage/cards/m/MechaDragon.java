@@ -38,8 +38,10 @@ public final class MechaDragon extends CardImpl {
         this.power = new MageInt(5);
         this.toughness = new MageInt(4);
         this.addAbility(FlyingAbility.getInstance());
+        GainAbilitySourceEffect haste = new GainAbilitySourceEffect(HasteAbility.getInstance());
+        haste.setDuration(Duration.EndOfTurn);
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn), new ColoredManaCost(ColoredManaSymbol.R)));
-        this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainAbilitySourceEffect(HasteAbility.getInstance()), new ColoredManaCost(ColoredManaSymbol.R)));
+        this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, haste, new ColoredManaCost(ColoredManaSymbol.R)));
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, Mana.RedMana(1), new SacrificeTargetCost(new TargetControlledPermanent(filter))));
     }
 

@@ -248,7 +248,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Cultivation Nanotech", 224, Rarity.COMMON, mage.cards.c.CultivationNanotech.class));
         //cards.add(new SetCardInfo("Cybersmith", 225, Rarity.UNCOMMON, mage.cards.c.Cybersmith.class));
         //cards.add(new SetCardInfo("Data Petal", 226, Rarity.UNCOMMON, mage.cards.d.DataPetal.class));
-        //cards.add(new SetCardInfo("Dystopilith", 227, Rarity.MYTHIC, mage.cards.d.Dystopilith.class));
+        cards.add(new SetCardInfo("Dystopilith", 227, Rarity.MYTHIC, mage.cards.d.Dystopilith.class));
         //cards.add(new SetCardInfo("Invasive Nanotech", 228, Rarity.COMMON, mage.cards.i.InvasiveNanotech.class));
         //cards.add(new SetCardInfo("JMD Dome", 229, Rarity.UNCOMMON, mage.cards.j.JmdDome.class));
         //cards.add(new SetCardInfo("Malign Nanotech", 230, Rarity.COMMON, mage.cards.m.MalignNanotech.class));
