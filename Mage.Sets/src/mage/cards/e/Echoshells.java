@@ -43,7 +43,7 @@ import java.util.UUID;
 public final class Echoshells extends CardImpl {
 
     public Echoshells(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{1}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{4}");
 
         // {T}: Add one mana of any type that a land you control could produce
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new AnyColorLandsProduceManaEffect(), new TapSourceCost()));
