@@ -260,7 +260,7 @@ public final class Lorado extends ExpansionSet {
         //cards.add(new SetCardInfo("Tomahawk", 236, Rarity.UNCOMMON, mage.cards.t.Tomahawk.class));
         cards.add(new SetCardInfo("Trading Post", 237, Rarity.RARE, mage.cards.t.TradingPost.class));
         //cards.add(new SetCardInfo("Volatile Ewe", 238, Rarity.COMMON, mage.cards.v.VolatileEwe.class));
-        //cards.add(new SetCardInfo("Boom Town", 239, Rarity.UNCOMMON, mage.cards.b.BoomTown.class));
+        cards.add(new SetCardInfo("Boom Town", 239, Rarity.UNCOMMON, mage.cards.b.BoomTown.class));
         //cards.add(new SetCardInfo("Carnivorous Bog", 240, Rarity.UNCOMMON, mage.cards.c.CarnivorousBog.class));
         //cards.add(new SetCardInfo("Farmyard", 241, Rarity.RARE, mage.cards.f.Farmyard.class));
         //cards.add(new SetCardInfo("Fenced Pasture", 242, Rarity.UNCOMMON, mage.cards.f.FencedPasture.class));
