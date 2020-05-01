@@ -71,7 +71,7 @@ public final class Ankheret extends ExpansionSet {
         //cards.add(new SetCardInfo("Duality of Truth", 47, Rarity.RARE, mage.cards.d.DualityOfTruth.class));
         //cards.add(new SetCardInfo("Dying of Thirst", 48, Rarity.COMMON, mage.cards.d.DyingOfThirst.class));
         cards.add(new SetCardInfo("Isle Turtle", 49, Rarity.COMMON, mage.cards.i.IsleTurtle.class));
-        //cards.add(new SetCardInfo("Iterinis, God of Waters", 50, Rarity.MYTHIC, mage.cards.i.IterinisGodOfWaters.class));
+        cards.add(new SetCardInfo("Iterinis, God of Waters", 50, Rarity.MYTHIC, mage.cards.i.IterinisGodOfWaters.class));
         //cards.add(new SetCardInfo("Lighthouse Pirates", 51, Rarity.COMMON, mage.cards.l.LighthousePirates.class));
         //cards.add(new SetCardInfo("Lunar Akhu", 52, Rarity.COMMON, mage.cards.l.LunarAkhu.class));
         //cards.add(new SetCardInfo("Master of Mysteries", 53, Rarity.UNCOMMON, mage.cards.m.MasterOfMysteries.class));
