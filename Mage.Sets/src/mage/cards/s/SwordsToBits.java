@@ -2,13 +2,11 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.abilities.effects.common.ExileAndGainLifeEqualPowerTargetEffect;
-import mage.abilities.effects.keyword.UploadPermanentEffect;
+import mage.abilities.effects.keyword.UploadEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.target.TargetPermanent;
-import mage.target.common.TargetCreaturePermanent;
 
 /**
  *
@@ -21,7 +19,7 @@ public final class SwordsToBits extends CardImpl {
 
         TargetPermanent card = new TargetPermanent();
         this.getSpellAbility().addTarget(card);
-        this.getSpellAbility().addEffect(new UploadPermanentEffect("upload target permanent"));
+        this.getSpellAbility().addEffect(new UploadEffect("upload target permanent"));
 
     }
 
