@@ -278,7 +278,6 @@ public final class Netropolis extends ExpansionSet {
         cards.add(new SetCardInfo("Swamp", 254, Rarity.LAND, mage.cards.basiclands.Swamp.class, FULL_ART_BFZ));
         cards.add(new SetCardInfo("Mountain", 255, Rarity.LAND, mage.cards.basiclands.Mountain.class, FULL_ART_BFZ));
         cards.add(new SetCardInfo("Forest", 256, Rarity.LAND, mage.cards.basiclands.Forest.class, FULL_ART_BFZ));
-        cards.add(new SetCardInfo("Swords To Bits", 257, Rarity.RARE, mage.cards.s.SwordsToBits.class));
         
     }
 }
