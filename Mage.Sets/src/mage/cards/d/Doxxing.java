@@ -21,7 +21,7 @@ import mage.target.common.TargetAnyTarget;
 public final class Doxxing extends CardImpl {
 
     public Doxxing(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{3}{R}}");
+        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{3}{R}");
 
         // Whenever you put an uploaded card into your hand, Doxxing deals 2 damage to any target
         this.addAbility(new DoxxingAbility());

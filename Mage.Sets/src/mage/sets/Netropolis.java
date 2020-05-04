@@ -63,7 +63,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Viral Fame", 39, Rarity.UNCOMMON, mage.cards.v.ViralFame.class));
         //cards.add(new SetCardInfo("Wrath of Mod", 40, Rarity.RARE, mage.cards.w.WrathOfMod.class));
         //cards.add(new SetCardInfo("Accelerated Assembly", 41, Rarity.UNCOMMON, mage.cards.a.AcceleratedAssembly.class));
-        //cards.add(new SetCardInfo("Ancestral Research", 42, Rarity.RARE, mage.cards.a.AncestralResearch.class));
+        cards.add(new SetCardInfo("Ancestral Research", 42, Rarity.RARE, mage.cards.a.AncestralResearch.class));
         //cards.add(new SetCardInfo("Atares 14", 43, Rarity.UNCOMMON, mage.cards.a.Atares14.class));
         //cards.add(new SetCardInfo("Automated Archivist", 44, Rarity.UNCOMMON, mage.cards.a.AutomatedArchivist.class));
         //cards.add(new SetCardInfo("Automatic Override", 45, Rarity.COMMON, mage.cards.a.AutomaticOverride.class));
