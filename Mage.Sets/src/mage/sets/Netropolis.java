@@ -63,7 +63,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Viral Fame", 39, Rarity.UNCOMMON, mage.cards.v.ViralFame.class));
         //cards.add(new SetCardInfo("Wrath of Mod", 40, Rarity.RARE, mage.cards.w.WrathOfMod.class));
         //cards.add(new SetCardInfo("Accelerated Assembly", 41, Rarity.UNCOMMON, mage.cards.a.AcceleratedAssembly.class));
-        //cards.add(new SetCardInfo("Ancestral Research", 42, Rarity.RARE, mage.cards.a.AncestralResearch.class));
+        cards.add(new SetCardInfo("Ancestral Research", 42, Rarity.RARE, mage.cards.a.AncestralResearch.class));
         //cards.add(new SetCardInfo("Atares 14", 43, Rarity.UNCOMMON, mage.cards.a.Atares14.class));
         //cards.add(new SetCardInfo("Automated Archivist", 44, Rarity.UNCOMMON, mage.cards.a.AutomatedArchivist.class));
         //cards.add(new SetCardInfo("Automatic Override", 45, Rarity.COMMON, mage.cards.a.AutomaticOverride.class));
@@ -151,7 +151,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Cyber Courier", 127, Rarity.COMMON, mage.cards.c.CyberCourier.class));
         //cards.add(new SetCardInfo("Deadeye Shinobi", 128, Rarity.UNCOMMON, mage.cards.d.DeadeyeShinobi.class));
         cards.add(new SetCardInfo("Demolish", 129, Rarity.COMMON, mage.cards.d.Demolish.class));
-        //cards.add(new SetCardInfo("Doxxing", 130, Rarity.UNCOMMON, mage.cards.d.Doxxing.class));
+        cards.add(new SetCardInfo("Doxxing", 130, Rarity.UNCOMMON, mage.cards.d.Doxxing.class));
         //cards.add(new SetCardInfo("Extremist's Discretion", 131, Rarity.UNCOMMON, mage.cards.e.ExtremistsDiscretion.class));
         //cards.add(new SetCardInfo("Gun Runner", 132, Rarity.COMMON, mage.cards.g.GunRunner.class));
         //cards.add(new SetCardInfo("Hard Crash", 133, Rarity.UNCOMMON, mage.cards.h.HardCrash.class));
@@ -278,5 +278,6 @@ public final class Netropolis extends ExpansionSet {
         cards.add(new SetCardInfo("Swamp", 254, Rarity.LAND, mage.cards.basiclands.Swamp.class, FULL_ART_BFZ));
         cards.add(new SetCardInfo("Mountain", 255, Rarity.LAND, mage.cards.basiclands.Mountain.class, FULL_ART_BFZ));
         cards.add(new SetCardInfo("Forest", 256, Rarity.LAND, mage.cards.basiclands.Forest.class, FULL_ART_BFZ));
+        
     }
 }
