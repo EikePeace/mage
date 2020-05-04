@@ -203,7 +203,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Grapple with the Past", 175, Rarity.COMMON, mage.cards.g.GrappleWithThePast.class));
         cards.add(new SetCardInfo("Harrow", 176, Rarity.UNCOMMON, mage.cards.h.Harrow.class));
         //cards.add(new SetCardInfo("Heartland's Protection", 177, Rarity.UNCOMMON, mage.cards.h.HeartlandsProtection.class));
-        //cards.add(new SetCardInfo("Hila Emergence", 178, Rarity.RARE, mage.cards.h.HilaEmergence.class));
+        cards.add(new SetCardInfo("Hila Emergence", 178, Rarity.RARE, mage.cards.h.HilaEmergence.class));
         //cards.add(new SetCardInfo("Humble Shepherd", 179, Rarity.UNCOMMON, mage.cards.h.HumbleShepherd.class));
         cards.add(new SetCardInfo("Husbandry", 180, Rarity.RARE, mage.cards.h.Husbandry.class));
         //cards.add(new SetCardInfo("Jobiah, Devoted Farmer", "181a", Rarity.MYTHIC, mage.cards.j.JobiahDevotedFarmer.class));
