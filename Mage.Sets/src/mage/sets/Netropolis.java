@@ -151,7 +151,7 @@ public final class Netropolis extends ExpansionSet {
         //cards.add(new SetCardInfo("Cyber Courier", 127, Rarity.COMMON, mage.cards.c.CyberCourier.class));
         //cards.add(new SetCardInfo("Deadeye Shinobi", 128, Rarity.UNCOMMON, mage.cards.d.DeadeyeShinobi.class));
         cards.add(new SetCardInfo("Demolish", 129, Rarity.COMMON, mage.cards.d.Demolish.class));
-        //cards.add(new SetCardInfo("Doxxing", 130, Rarity.UNCOMMON, mage.cards.d.Doxxing.class));
+        cards.add(new SetCardInfo("Doxxing", 130, Rarity.UNCOMMON, mage.cards.d.Doxxing.class));
         //cards.add(new SetCardInfo("Extremist's Discretion", 131, Rarity.UNCOMMON, mage.cards.e.ExtremistsDiscretion.class));
         //cards.add(new SetCardInfo("Gun Runner", 132, Rarity.COMMON, mage.cards.g.GunRunner.class));
         //cards.add(new SetCardInfo("Hard Crash", 133, Rarity.UNCOMMON, mage.cards.h.HardCrash.class));

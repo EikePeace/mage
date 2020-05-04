@@ -40,13 +40,11 @@ public class UploadLibraryEffect extends OneShotEffect {
 		}
 		if (targetPlayer != null) {
 			for(Card card : targetPlayer.getLibrary().getTopCards(game, qty)) {
-				System.out.println(card.getName());
 				ActivateAsSorceryActivatedAbility putIntoHand = new ActivateAsSorceryActivatedAbility(Zone.EXILED, new UploadMoveToHandEffect(), new ManaCostsImpl("{2}"));
 				card.addAbility(putIntoHand);
 			}
 			Cards cards = new CardsImpl();
             cards.addAll(targetPlayer.getLibrary().getTopCards(game, qty));
-            System.out.println(cards.toString());
             return targetPlayer.moveCards(cards, Zone.EXILED, source, game);
 		}
 		return false;			
