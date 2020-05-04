@@ -33,7 +33,7 @@ public class UploadMoveToHandEffect extends OneShotEffect {
 			GameEvent event = new GameEvent(GameEvent.EventType.UPLOAD_CARD_INTO_HAND, source.getControllerId(), source.getId(), source.getControllerId(), 1, true);
 			game.fireEvent(event);
 			//in theory, the upload ability should've been the last one added because there are no other effects that add activated abilities in exile
-			//would like to find a cleaner way to do this
+			//TODO: would like to find a cleaner way to do this
 			return true;
 		} else {
 			return false;
