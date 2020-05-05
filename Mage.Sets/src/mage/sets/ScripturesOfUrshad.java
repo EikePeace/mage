@@ -206,8 +206,8 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Hila Emergence", 178, Rarity.RARE, mage.cards.h.HilaEmergence.class));
         //cards.add(new SetCardInfo("Humble Shepherd", 179, Rarity.UNCOMMON, mage.cards.h.HumbleShepherd.class));
         cards.add(new SetCardInfo("Husbandry", 180, Rarity.RARE, mage.cards.h.Husbandry.class));
-        //cards.add(new SetCardInfo("Jobiah, Devoted Farmer", "181a", Rarity.MYTHIC, mage.cards.j.JobiahDevotedFarmer.class));
-        //cards.add(new SetCardInfo("Jobiah the World-Shepherd", "181b", Rarity.MYTHIC, mage.cards.j.JobiahTheWorldShepherd.class));
+        cards.add(new SetCardInfo("Jobiah, Devoted Farmer", "181a", Rarity.MYTHIC, mage.cards.j.JobiahDevotedFarmer.class));
+        cards.add(new SetCardInfo("Jobiah the World-Shepherd", "181b", Rarity.MYTHIC, mage.cards.j.JobiahWorldShepherd.class));
         //cards.add(new SetCardInfo("Lush Delta", 182, Rarity.UNCOMMON, mage.cards.l.LushDelta.class));
         //cards.add(new SetCardInfo("Mangrove Fisher", 183, Rarity.COMMON, mage.cards.m.MangroveFisher.class));
         //cards.add(new SetCardInfo("Multiculturalism", 184, Rarity.RARE, mage.cards.m.Multiculturalism.class));
