@@ -25,6 +25,7 @@ public final class UrnOfHeroes extends CardImpl {
 
 	public UrnOfHeroes (UUID ownerId, CardSetInfo setInfo) {
 		super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{3}");
+		this.addSuperType(SuperType.LEGENDARY);
 		this.addAbility(new ColorlessManaAbility());
 		this.addAbility(new EntersBattlefieldAbility(new SearchLibraryPutInGraveyard()));
 	}
