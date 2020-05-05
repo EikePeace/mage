@@ -273,7 +273,7 @@ public final class Eralou extends ExpansionSet {
         cards.add(new SetCardInfo("Mushroom Lagoon", 244, Rarity.UNCOMMON, mage.cards.m.MushroomLagoon.class));
         cards.add(new SetCardInfo("Prayer Hall", 245, Rarity.UNCOMMON, mage.cards.p.PrayerHall.class));
         cards.add(new SetCardInfo("Ritzy Parlor", 246, Rarity.UNCOMMON, mage.cards.r.RitzyParlor.class));
-        //cards.add(new SetCardInfo("Royal Domain", 247, Rarity.RARE, mage.cards.r.RoyalDomain.class));
+        cards.add(new SetCardInfo("Royal Domain", 247, Rarity.RARE, mage.cards.r.RoyalDomain.class));
         cards.add(new SetCardInfo("Sunlit Plaza", 248, Rarity.UNCOMMON, mage.cards.s.SunlitPlaza.class));
         cards.add(new SetCardInfo("Vacated Bar", 249, Rarity.UNCOMMON, mage.cards.v.VacatedBar.class));
         cards.add(new SetCardInfo("Plains", 250, Rarity.LAND, mage.cards.basiclands.Plains.class));
