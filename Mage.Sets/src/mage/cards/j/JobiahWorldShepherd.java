@@ -8,6 +8,7 @@ import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureTargetEffect;
 import mage.abilities.keyword.HasteAbility;
+import mage.abilities.keyword.IndestructibleAbility;
 import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -45,6 +46,8 @@ public final class JobiahWorldShepherd extends CardImpl {
         this.power = new MageInt(3);
         this.toughness = new MageInt(3);
 
+        this.addAbility(IndestructibleAbility.getInstance());
+        
         /*
          * At the beginning of combat on your turn, you may untap target land you control and have that land become an X/X green Beast 
          * creature with trample and haste until end of turn, where X is the number of differently named lands you control.
