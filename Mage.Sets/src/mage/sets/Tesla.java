@@ -267,7 +267,7 @@ public final class Tesla extends ExpansionSet {
         //cards.add(new SetCardInfo("Matrix Resonator", 221, Rarity.UNCOMMON, mage.cards.m.MatrixResonator.class));
         //cards.add(new SetCardInfo("Mechanical Mutt", 222, Rarity.COMMON, mage.cards.m.MechanicalMutt.class));
         //cards.add(new SetCardInfo("Necrotic Resonator", 223, Rarity.RARE, mage.cards.n.NecroticResonator.class));
-        //cards.add(new SetCardInfo("Paradise Gearwing", 224, Rarity.COMMON, mage.cards.p.ParadiseGearwing.class));
+        cards.add(new SetCardInfo("Paradise Gearwing", 224, Rarity.COMMON, mage.cards.p.ParadiseGearwing.class));
         //cards.add(new SetCardInfo("Patrol Vehicle", 225, Rarity.COMMON, mage.cards.p.PatrolVehicle.class));
         //cards.add(new SetCardInfo("Possibility Titan", 226, Rarity.MYTHIC, mage.cards.p.PossibilityTitan.class));
         //cards.add(new SetCardInfo("Power Suit", 227, Rarity.UNCOMMON, mage.cards.p.PowerSuit.class));
