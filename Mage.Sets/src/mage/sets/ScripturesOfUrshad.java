@@ -270,7 +270,7 @@ public final class ScripturesOfUrshad extends ExpansionSet {
         cards.add(new SetCardInfo("Splinter of Creation", 241, Rarity.RARE, mage.cards.s.SplinterOfCreation.class));
         //cards.add(new SetCardInfo("Stonecut Lammasu", 242, Rarity.UNCOMMON, mage.cards.s.StonecutLammasu.class));
         //cards.add(new SetCardInfo("Tempered Ankulim", 243, Rarity.RARE, mage.cards.t.TemperedAnkulim.class));
-        //cards.add(new SetCardInfo("Urn of Heroes", 244, Rarity.RARE, mage.cards.u.UrnOfHeroes.class));
+        cards.add(new SetCardInfo("Urn of Heroes", 244, Rarity.RARE, mage.cards.u.UrnOfHeroes.class));
         //cards.add(new SetCardInfo("Voyager's Ark", 245, Rarity.MYTHIC, mage.cards.v.VoyagersArk.class));
         //cards.add(new SetCardInfo("Center of Culture", 246, Rarity.RARE, mage.cards.c.CenterOfCulture.class));
         //cards.add(new SetCardInfo("Crescent of Possibilites", 247, Rarity.COMMON, mage.cards.c.CrescentOfPossibilites.class));
