@@ -41,9 +41,10 @@ public final class N1Starfighter extends CardImpl {
         // Whenever N-1 Starfighter deals combat damage to a player, you may pay {1}{W/U}. If you do,
         // exile another target creature you control, then return that card to the battlefield under its owner's control.
         // P.S. original card have error with missing target word (another target creature)
+
         Ability ability = new DealsCombatDamageToAPlayerTriggeredAbility(new DoIfCostPaid(
                 new ExileTargetForSourceEffect(), new ManaCostsImpl("{1}{W/U}")), false);
-        ability.addEffect(new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false).concatBy(", then"));
+        ability.addEffect(new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, true));
         ability.addTarget(new TargetControlledCreaturePermanent(filter));
         this.addAbility(ability);
     }

@@ -266,7 +266,7 @@ public final class StarWars extends ExpansionSet {
         cards.add(new SetCardInfo("Ravenous Wampa", 226, Rarity.UNCOMMON, mage.cards.r.RavenousWampa.class));
         cards.add(new SetCardInfo("Regression", 152, Rarity.UNCOMMON, mage.cards.r.Regression.class));
         cards.add(new SetCardInfo("Republic Frigate", 53, Rarity.COMMON, mage.cards.r.RepublicFrigate.class));
-        cards.add(new SetCardInfo("SWS:Repurpose", 85, Rarity.COMMON, mage.cards.r.SwsRepurpose.class));
+        cards.add(new SetCardInfo("SWS:Repurpose", 85, Rarity.COMMON, mage.cards.r.Repurpose.class));
         cards.add(new SetCardInfo("Resistance", 310, Rarity.UNCOMMON, mage.cards.r.Resistance.class));
         cards.add(new SetCardInfo("Resistance Bomber", 515, Rarity.UNCOMMON, mage.cards.r.ResistanceBomber.class));
         cards.add(new SetCardInfo("Revenge", 117, Rarity.COMMON, mage.cards.r.RevengeStarWars.class));

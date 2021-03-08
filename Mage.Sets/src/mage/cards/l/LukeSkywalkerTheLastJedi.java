@@ -41,7 +41,7 @@ public final class LukeSkywalkerTheLastJedi extends CardImpl {
         this.addAbility(new PlaneswalkerEntersWithLoyaltyCountersAbility(3));
 
         // +1: Put two +1/+1 counters on up to one target creature.
-        Ability ability1 = new LoyaltyAbility(new AddCountersTargetEffect(CounterType.P1P1.createInstance(2)), 2);
+        Ability ability1 = new LoyaltyAbility(new AddCountersTargetEffect(CounterType.P1P1.createInstance(2)), 1);
         ability1.addTarget(new TargetCreaturePermanent(0, 1));
         this.addAbility(ability1);
 
