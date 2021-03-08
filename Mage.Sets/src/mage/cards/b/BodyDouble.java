@@ -38,7 +38,7 @@ public final class BodyDouble extends CardImpl {
 
     }
 
-    public BodyDouble(final BodyDouble card) {
+    private BodyDouble(final BodyDouble card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class BodyDoubleCopyEffect extends OneShotEffect {
         if (player != null) {
             Target target = new TargetCardInGraveyard(new FilterCreatureCard("creature card in a graveyard"));
             target.setNotTarget(true);
-            if (target.canChoose(source.getControllerId(), game)) {
+            if (target.canChoose(source.getSourceId(), source.getControllerId(), game)) {
                 player.choose(outcome, target, source.getSourceId(), game);
                 Card copyFromCard = game.getCard(target.getFirstTarget());
                 if (copyFromCard != null) {

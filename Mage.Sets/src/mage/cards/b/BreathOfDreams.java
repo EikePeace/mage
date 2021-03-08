@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
 
 /**
@@ -38,7 +37,7 @@ public final class BreathOfDreams extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(new CumulativeUpkeepAbility(new ManaCostsImpl("{1}")), Duration.WhileOnBattlefield, filter)));
     }
 
-    public BreathOfDreams(final BreathOfDreams card) {
+    private BreathOfDreams(final BreathOfDreams card) {
         super(card);
     }
 

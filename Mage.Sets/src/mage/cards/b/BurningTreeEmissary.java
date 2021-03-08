@@ -25,10 +25,10 @@ public final class BurningTreeEmissary extends CardImpl {
         this.toughness = new MageInt(2);
 
         // When Burning-Tree Emissary enters the battlefield, add {R}{G}.
-        this.addAbility(new EntersBattlefieldTriggeredAbility(new BasicManaEffect(new Mana(1,1,0,0,0,0,0, 0))));
+        this.addAbility(new EntersBattlefieldTriggeredAbility(new BasicManaEffect(new Mana(0, 0, 0, 1,1, 0,0, 0))));
     }
 
-    public BurningTreeEmissary(final BurningTreeEmissary card) {
+    private BurningTreeEmissary(final BurningTreeEmissary card) {
         super(card);
     }
 

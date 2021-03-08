@@ -27,7 +27,7 @@ public final class ProfaneMemento extends CardImpl {
         this.addAbility(new ProfaneMementoTriggeredAbility());
     }
 
-    public ProfaneMemento(final ProfaneMemento card) {
+    private ProfaneMemento(final ProfaneMemento card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class ProfaneMementoTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
     
     @Override

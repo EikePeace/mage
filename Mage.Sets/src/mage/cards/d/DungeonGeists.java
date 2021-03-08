@@ -51,7 +51,7 @@ public final class DungeonGeists extends CardImpl {
         // watcher needed to send normal events to Dungeon Geists ReplacementEffect
     }
 
-    public DungeonGeists(final DungeonGeists card) {
+    private DungeonGeists(final DungeonGeists card) {
         super(card);
     }
 
@@ -79,7 +79,9 @@ class DungeonGeistsEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.UNTAP || event.getType() == GameEvent.EventType.ZONE_CHANGE || event.getType() == GameEvent.EventType.LOST_CONTROL;
+        return event.getType() == GameEvent.EventType.UNTAP
+                || event.getType() == GameEvent.EventType.ZONE_CHANGE
+                || event.getType() == GameEvent.EventType.LOST_CONTROL;
     }
 
     @Override
@@ -135,7 +137,9 @@ class DungeonGeistsWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == GameEvent.EventType.LOST_CONTROL && event.getPlayerId().equals(controllerId) && event.getTargetId().equals(sourceId)) {
+        if (event.getType() == GameEvent.EventType.LOST_CONTROL
+                && event.getPlayerId().equals(controllerId)
+                && event.getTargetId().equals(sourceId)) {
             condition = true;
             game.replaceEvent(event);
             return;

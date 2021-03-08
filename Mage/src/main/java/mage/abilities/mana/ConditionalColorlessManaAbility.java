@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.mana;
 
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.TapSourceCost;
+import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.effects.mana.AddConditionalColorlessManaEffect;
 import mage.abilities.mana.builder.ConditionalManaBuilder;
 import mage.constants.Zone;
@@ -21,7 +17,11 @@ public class ConditionalColorlessManaAbility extends ActivatedManaAbilityImpl {
     }
 
     public ConditionalColorlessManaAbility(Cost cost, int amount, ConditionalManaBuilder manaBuilder) {
-        super(Zone.BATTLEFIELD, new AddConditionalColorlessManaEffect(amount, manaBuilder), cost);
+        this(cost, amount, manaBuilder, null);
+    }
+
+    public ConditionalColorlessManaAbility(Cost cost, int amount, ConditionalManaBuilder manaBuilder, DynamicValue netAmount) {
+        super(Zone.BATTLEFIELD, new AddConditionalColorlessManaEffect(amount, manaBuilder, netAmount), cost);
     }
 
     public ConditionalColorlessManaAbility(final ConditionalColorlessManaAbility ability) {

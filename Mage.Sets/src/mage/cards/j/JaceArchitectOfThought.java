@@ -1,6 +1,5 @@
 package mage.cards.j;
 
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.LoyaltyAbility;
@@ -29,6 +28,7 @@ import mage.target.targetpointer.FixedTarget;
 import mage.util.CardUtil;
 
 import java.util.*;
+import mage.ApprovingObject;
 
 /**
  * @author LevelX2
@@ -55,7 +55,7 @@ public final class JaceArchitectOfThought extends CardImpl {
 
     }
 
-    public JaceArchitectOfThought(final JaceArchitectOfThought card) {
+    private JaceArchitectOfThought(final JaceArchitectOfThought card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class JaceArchitectOfThoughtDelayedTriggeredAbility extends DelayedTriggeredAbil
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override
@@ -259,7 +259,7 @@ class JaceArchitectOfThoughtEffect3 extends OneShotEffect {
                         playerName = "your";
                     }
                     TargetCardInLibrary target = new TargetCardInLibrary(new FilterNonlandCard("nonland card from " + playerName + " library"));
-                    if (controller.searchLibrary(target, source, game, playerId, !checkList.contains(playerId))) {
+                    if (controller.searchLibrary(target, source, game, playerId)) {
                         checkList.add(playerId);
                         UUID targetId = target.getFirstTarget();
                         Card card = player.getLibrary().remove(targetId, game);
@@ -299,7 +299,7 @@ class JaceArchitectOfThoughtEffect3 extends OneShotEffect {
             if (card != null) {
                 game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                 Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game, true, new ApprovingObject(source, game));
                 game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                 cardsToChoose.remove(card);
                 if (cardWasCast) {

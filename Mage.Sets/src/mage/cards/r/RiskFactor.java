@@ -30,7 +30,7 @@ public final class RiskFactor extends CardImpl {
 
     }
 
-    public RiskFactor(final RiskFactor card) {
+    private RiskFactor(final RiskFactor card) {
         super(card);
     }
 
@@ -65,9 +65,9 @@ class RiskFactorEffect extends OneShotEffect {
             return false;
         }
         if (opponent.chooseUse(outcome, "Do you choose to take the damage?", source, game)) {
-            opponent.damage(4, source.getSourceId(), game);
+            opponent.damage(4, source.getSourceId(), source, game);
         } else {
-            controller.drawCards(3, game);
+            controller.drawCards(3, source, game);
         }
         return true;
     }

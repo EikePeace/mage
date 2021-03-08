@@ -1,9 +1,5 @@
-
 package mage.abilities.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.SpecialAction;
@@ -16,22 +12,18 @@ import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.CreateSpecialActionEffect;
 import mage.abilities.effects.common.RemoveSpecialActionEffect;
 import mage.abilities.keyword.EnchantAbility;
-import mage.constants.CardType;
-import mage.constants.DependencyType;
-import mage.constants.Duration;
-import mage.constants.Layer;
-import mage.constants.Outcome;
-import mage.constants.SubLayer;
-import mage.constants.SubType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public class LicidAbility extends ActivatedAbilityImpl {
@@ -78,7 +70,7 @@ class LicidEffect extends OneShotEffect {
         if (licid != null) {
             UUID messageId = UUID.randomUUID();
             LicidContinuousEffect effect = new LicidContinuousEffect(messageId);
-            effect.setTargetPointer(new FixedTarget(licid.getId()));
+            effect.setTargetPointer(new FixedTarget(licid, game));
             game.addEffect(effect, source);
             new AttachEffect(Outcome.Neutral).apply(game, source);
             SpecialAction specialAction = new LicidSpecialAction(this.specialActionCost, messageId, licid.getIdName());
@@ -117,8 +109,8 @@ class LicidContinuousEffect extends ContinuousEffectImpl {
                 case TypeChangingEffects_4:
                     licid.getCardType().clear();
                     licid.addCardType(CardType.ENCHANTMENT);
-                    licid.getSubtype(game).clear();
-                    licid.getSubtype(game).add(SubType.AURA);
+                    licid.removeAllSubTypes(game);
+                    licid.addSubType(game, SubType.AURA);
                     break;
                 case AbilityAddingRemovingEffects_6:
                     List<Ability> toRemove = new ArrayList<>();
@@ -130,7 +122,8 @@ class LicidContinuousEffect extends ContinuousEffectImpl {
                             }
                         }
                     }
-                    licid.getAbilities(game).removeAll(toRemove);
+                    licid.removeAbilities(toRemove, source.getSourceId(), game);
+
                     Ability ability = new EnchantAbility("creature");
                     ability.setRuleAtTheTop(true);
                     licid.addAbility(ability, source.getSourceId(), game);

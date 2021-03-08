@@ -28,7 +28,7 @@ public final class DingusEgg extends CardImpl {
         this.addAbility(new DingusEggTriggeredAbility());
     }
 
-    public DingusEgg(final DingusEgg card) {
+    private DingusEgg(final DingusEgg card) {
         super(card);
     }
 
@@ -50,7 +50,7 @@ class DingusEggTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

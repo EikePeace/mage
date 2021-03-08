@@ -51,7 +51,7 @@ public final class MikaeusTheUnhallowed extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityControlledEffect(new UndyingAbility(), Duration.WhileOnBattlefield, filter, true)));
     }
 
-    public MikaeusTheUnhallowed(final MikaeusTheUnhallowed card) {
+    private MikaeusTheUnhallowed(final MikaeusTheUnhallowed card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class MikaeusTheUnhallowedAbility extends TriggeredAbilityImpl {
         if (event.getTargetId().equals(this.controllerId)) {
             Permanent permanent = game.getPermanent(event.getSourceId());
             if (permanent != null && permanent.hasSubtype(SubType.HUMAN, game)) {
-                this.getEffects().get(0).setTargetPointer(new FixedTarget(permanent.getId()));
+                this.getEffects().get(0).setTargetPointer(new FixedTarget(permanent, game));
                 return true;
             }
         }

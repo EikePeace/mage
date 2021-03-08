@@ -30,7 +30,7 @@ public final class CongregationAtDawn extends CardImpl {
         this.getSpellAbility().addEffect(new CongregationAtDawnEffect());
     }
 
-    public CongregationAtDawn(final CongregationAtDawn card) {
+    private CongregationAtDawn(final CongregationAtDawn card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class CongregationAtDawnEffect extends OneShotEffect {
                         Card card = revealed.get(targetToLib.getFirstTarget(), game);
                         if (card != null) {
                             revealed.remove(card);
-                            controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, true, false);
+                            controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, true, false);
 
                         }
                         targetToLib.clearChosen();
@@ -88,7 +88,7 @@ class CongregationAtDawnEffect extends OneShotEffect {
 
                     if (revealed.size() == 1) {
                         Card card = revealed.get(revealed.iterator().next(), game);
-                        controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, true, false);
+                        controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, true, false);
                     }
 
                 }

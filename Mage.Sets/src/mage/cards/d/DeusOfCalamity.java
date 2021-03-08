@@ -39,7 +39,7 @@ public final class DeusOfCalamity extends CardImpl {
         this.addAbility(new DeusOfCalamityTriggeredAbility());
     }
 
-    public DeusOfCalamity(final DeusOfCalamity card) {
+    private DeusOfCalamity(final DeusOfCalamity card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class DeusOfCalamityTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -26,7 +26,7 @@ public final class HoodedAssassin extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
     
     public HoodedAssassin(UUID ownerId, CardSetInfo setInfo) {
@@ -47,7 +47,7 @@ public final class HoodedAssassin extends CardImpl {
         this.addAbility(ability);        
     }
 
-    public HoodedAssassin(final HoodedAssassin card) {
+    private HoodedAssassin(final HoodedAssassin card) {
         super(card);
     }
 

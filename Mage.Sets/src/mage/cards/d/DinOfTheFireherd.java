@@ -16,7 +16,6 @@ import mage.filter.common.FilterControlledLandPermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.game.permanent.token.DinOfTheFireherdToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
@@ -36,7 +35,7 @@ public final class DinOfTheFireherd extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public DinOfTheFireherd(final DinOfTheFireherd card) {
+    private DinOfTheFireherd(final DinOfTheFireherd card) {
         super(card);
     }
 
@@ -74,7 +73,7 @@ class DinOfTheFireherdEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         boolean applied;
         Token token = new DinOfTheFireherdToken();
-        applied = token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        applied = token.putOntoBattlefield(1, game, source, source.getControllerId());
 
         int blackCreaturesControllerControls = game.getBattlefield().countAll(blackCreatureFilter, source.getControllerId(), game);
         int redCreaturesControllerControls = game.getBattlefield().countAll(redCreatureFilter, source.getControllerId(), game);

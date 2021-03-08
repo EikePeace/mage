@@ -49,7 +49,7 @@ public final class VialSmasherTheFierce extends CardImpl {
         this.addAbility(PartnerAbility.getInstance());
     }
 
-    public VialSmasherTheFierce(final VialSmasherTheFierce card) {
+    private VialSmasherTheFierce(final VialSmasherTheFierce card) {
         super(card);
     }
 
@@ -97,7 +97,7 @@ class VialSmasherTheFierceTriggeredAbility extends SpellCastControllerTriggeredA
     @Override
     public String getRule() {
         return "Whenever you cast your first spell each turn, choose an opponent at random. "
-                + "{this} deals damage equal to that spell's converted mana cost to that player or a planeswalker that player controls";
+                + "{this} deals damage equal to that spell's converted mana cost to that player or a planeswalker that player controls.";
     }
 }
 
@@ -141,12 +141,12 @@ class VialSmasherTheFierceEffect extends OneShotEffect {
                             if (target.choose(Outcome.Damage, controller.getId(), source.getSourceId(), game)) {
                                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                                 if (permanent != null) {
-                                    return permanent.damage(damage, source.getSourceId(), game, false, true) > 0;
+                                    return permanent.damage(damage, source.getSourceId(), source, game, false, true) > 0;
                                 }
                             }
                         }
                     }
-                    opponent.damage(damage, source.getSourceId(), game);
+                    opponent.damage(damage, source.getSourceId(), source, game);
                 }
             }
             return true;

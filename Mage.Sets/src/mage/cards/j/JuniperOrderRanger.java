@@ -15,7 +15,7 @@ import mage.constants.SetTargetPointer;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class JuniperOrderRanger extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JuniperOrderRanger(final JuniperOrderRanger card) {
+    private JuniperOrderRanger(final JuniperOrderRanger card) {
         super(card);
     }
 

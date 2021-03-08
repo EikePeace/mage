@@ -1,26 +1,29 @@
 package mage.watchers.common;
 
+import mage.constants.CommanderCardType;
 import mage.constants.WatcherScope;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
-import mage.players.Player;
+import mage.util.CardUtil;
 import mage.watchers.Watcher;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Calcs commanders play count only from command zone (spell or land)
  * Cards like Remand can put command to hand and cast it without commander tax increase
+ * <p>
+ * Warning, if your code can be called in non commander games then you must watcher in your ability
+ * (example: you are using watcher in trigger, hint or effect, but do not checking another things like commander source or cost)
  *
  * @author JayDi85
  */
 public class CommanderPlaysCountWatcher extends Watcher {
 
     private final Map<UUID, Integer> playsCount = new HashMap<>();
+    private final Map<UUID, Integer> playerCount = new HashMap<>();
 
     public CommanderPlaysCountWatcher() {
         super(WatcherScope.GAME);
@@ -28,27 +31,43 @@ public class CommanderPlaysCountWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() != EventType.LAND_PLAYED && event.getType() != EventType.SPELL_CAST) {
+        if (event.getType() != EventType.LAND_PLAYED
+                && event.getType() != EventType.SPELL_CAST) {
             return;
         }
 
-        UUID possibleCommanderId = event.getSourceId();
-        boolean isCommanderObject = false;
-        for (Player player : game.getPlayers().values()) {
-            if (game.getCommandersIds(player).contains(possibleCommanderId)) {
-                isCommanderObject = true;
-                break;
-            }
+        // must control main cards (split/mdf cards support)
+        final UUID objectId;
+        if (event.getType() == EventType.LAND_PLAYED) {
+            objectId = CardUtil.getMainCardId(game, event.getTargetId());
+        } else if (event.getType() == EventType.SPELL_CAST) {
+            objectId = CardUtil.getMainCardId(game, event.getSourceId());
+        } else {
+            objectId = null;
         }
 
-        if (isCommanderObject && event.getZone() == Zone.COMMAND) {
-            int count = playsCount.getOrDefault(possibleCommanderId, 0);
-            count++;
-            playsCount.put(possibleCommanderId, count);
+        // must calc all commanders and signature spell cause uses in commander tax
+        boolean isCommanderObject = game
+                .getPlayerList()
+                .stream()
+                .map(game::getPlayer)
+                .map(player -> game.getCommandersIds(player, CommanderCardType.ANY, false))
+                .flatMap(Collection::stream)
+                .anyMatch(id -> Objects.equals(id, objectId));
+        if (!isCommanderObject || event.getZone() != Zone.COMMAND) {
+            return;
         }
+        playsCount.putIfAbsent(objectId, 0);
+        playsCount.computeIfPresent(objectId, (u, i) -> i + 1);
+        playerCount.putIfAbsent(event.getPlayerId(), 0);
+        playerCount.compute(event.getPlayerId(), (u, i) -> i + 1);
     }
 
     public int getPlaysCount(UUID commanderId) {
         return this.playsCount.getOrDefault(commanderId, 0);
+    }
+
+    public int getPlayerCount(UUID playerId) {
+        return this.playerCount.getOrDefault(playerId, 0);
     }
 }

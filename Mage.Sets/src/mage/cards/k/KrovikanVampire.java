@@ -1,8 +1,5 @@
 package mage.cards.k;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
@@ -11,26 +8,22 @@ import mage.abilities.condition.Condition;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.SacrificeTargetEffect;
-import mage.constants.SubType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.WatcherScope;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
 import mage.watchers.Watcher;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class KrovikanVampire extends CardImpl {
@@ -54,7 +47,7 @@ public final class KrovikanVampire extends CardImpl {
         this.addAbility(ability);
     }
 
-    public KrovikanVampire(final KrovikanVampire card) {
+    private KrovikanVampire(final KrovikanVampire card) {
         super(card);
     }
 
@@ -149,10 +142,15 @@ class KrovikanVampireCreaturesDamagedWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.DAMAGED_CREATURE
-                && sourceId.equals(event.getSourceId())) {
-            damagedBySource.add(event.getTargetId());
+        if (event.getType() != GameEvent.EventType.DAMAGED_PERMANENT
+                || !sourceId.equals(event.getSourceId())) {
+            return;
         }
+        Permanent permanent = game.getPermanent(event.getTargetId());
+        if (permanent == null || !permanent.isCreature()) {
+            return;
+        }
+        damagedBySource.add(event.getTargetId());
     }
 
     public Set<UUID> getDamagedBySource() {
@@ -211,17 +209,17 @@ class KrovikanVampireDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST_CONTROL
-                || event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.LOST_CONTROL
+                || event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getType() == EventType.LOST_CONTROL
-                && event.getSourceId().equals(krovikanVampire)) {
+        if (event.getType() == GameEvent.EventType.LOST_CONTROL
+                && event.getTargetId().equals(krovikanVampire)) {
             return true;
         }
-        if (event.getType() == EventType.ZONE_CHANGE
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE
                 && event.getTargetId().equals(krovikanVampire)) {
             return true;
         }

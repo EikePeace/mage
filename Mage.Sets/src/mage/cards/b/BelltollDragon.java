@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class BelltollDragon extends CardImpl {
         this.addAbility(new TurnedFaceUpSourceTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(), filter), false, false));
     }
 
-    public BelltollDragon(final BelltollDragon card) {
+    private BelltollDragon(final BelltollDragon card) {
         super(card);
     }
 

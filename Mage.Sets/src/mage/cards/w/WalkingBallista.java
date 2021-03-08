@@ -8,7 +8,6 @@ import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.RemoveCountersSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.abilities.effects.common.EntersBattlefieldWithXCountersEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -45,7 +44,7 @@ public final class WalkingBallista extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WalkingBallista(final WalkingBallista card) {
+    private WalkingBallista(final WalkingBallista card) {
         super(card);
     }
 

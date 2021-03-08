@@ -33,7 +33,7 @@ public final class Feint extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAttackingCreature());
     }
 
-    public Feint(final Feint card) {
+    private Feint(final Feint card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class FeintEffect extends OneShotEffect {
                     for (UUID blockerId : combatGroup.getBlockers()) {
                         Permanent blocker = game.getPermanent(blockerId);
                         if (blocker != null) {
-                            blocker.tap(game);
+                            blocker.tap(source, game);
                             PreventionEffect effect = new PreventDamageByTargetEffect(Duration.EndOfTurn, true);
                             effect.setTargetPointer(new FixedTarget(blocker.getId()));
                             game.addEffect(effect, source);

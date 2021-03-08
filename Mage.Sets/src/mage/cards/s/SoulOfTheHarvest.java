@@ -14,7 +14,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 
@@ -42,7 +42,7 @@ public final class SoulOfTheHarvest extends CardImpl {
         this.addAbility(new EntersBattlefieldControlledTriggeredAbility(Zone.BATTLEFIELD, new DrawCardSourceControllerEffect(1), filter, true));
     }
 
-    public SoulOfTheHarvest(final SoulOfTheHarvest card) {
+    private SoulOfTheHarvest(final SoulOfTheHarvest card) {
         super(card);
     }
 

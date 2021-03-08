@@ -25,7 +25,7 @@ public final class LimDulsVault extends CardImpl {
         this.getSpellAbility().addEffect(new LimDulsVaultEffect());
     }
 
-    public LimDulsVault(final LimDulsVault card) {
+    private LimDulsVault(final LimDulsVault card) {
         super(card);
     }
 
@@ -67,13 +67,17 @@ class LimDulsVaultEffect extends OneShotEffect {
 
             doAgain = player.chooseUse(outcome, "Pay 1 life and look at the next 5 cards?", source, game);
             if (doAgain) {
-                player.loseLife(1, game, false);
+                player.loseLife(1, game, source, false);
                 player.putCardsOnBottomOfLibrary(cards, game, source, true);
             } else {
                 player.shuffleLibrary(source, game);
                 player.putCardsOnTopOfLibrary(cards, game, source, true);
             }
-        } while (doAgain && player.isHuman()); // AI must stop using it as infinite
+            // AI must stop using it as infinite
+            if (player.isComputer()) {
+                break;
+            }
+        } while (doAgain);
 
         return true;
     }

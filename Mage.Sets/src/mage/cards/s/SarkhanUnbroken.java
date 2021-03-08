@@ -52,7 +52,7 @@ public final class SarkhanUnbroken extends CardImpl {
         this.addAbility(new LoyaltyAbility(new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(0, Integer.MAX_VALUE, dragonFilter)), -8));
     }
 
-    public SarkhanUnbroken(final SarkhanUnbroken card) {
+    private SarkhanUnbroken(final SarkhanUnbroken card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class SarkhanUnbrokenAbility1 extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
 
             game.fireUpdatePlayersEvent();
 

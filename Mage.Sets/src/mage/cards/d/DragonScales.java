@@ -53,7 +53,7 @@ public final class DragonScales extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.GRAVEYARD, new DragonScalesEffect(), filter, true, SetTargetPointer.PERMANENT, null));
     }
 
-    public DragonScales(final DragonScales card) {
+    private DragonScales(final DragonScales card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class DragonScalesEffect extends OneShotEffect {
         if (sourceCard != null && permanent != null && controller != null) {
             game.getState().setValue("attachTo:" + sourceCard.getId(), permanent);
             if (controller.moveCards(sourceCard, Zone.BATTLEFIELD, source, game)) {
-                permanent.addAttachment(sourceCard.getId(), game);
+                permanent.addAttachment(sourceCard.getId(), source, game);
             }
             return true;
         }

@@ -1,7 +1,6 @@
 
 package mage.cards.w;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.keyword.ProtectionAbility;
 import mage.cards.CardImpl;
@@ -10,13 +9,15 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
 
+import java.util.UUID;
+
 /**
  *
  * @author North
  */
 public final class WarrenScourgeElf extends CardImpl {
 
-    private static final FilterCard filter = new FilterCard("Goblin");
+    private static final FilterCard filter = new FilterCard("Goblins");
 
     static {
         filter.add(SubType.GOBLIN.getPredicate());
@@ -34,7 +35,7 @@ public final class WarrenScourgeElf extends CardImpl {
         this.addAbility(new ProtectionAbility(filter));
     }
 
-    public WarrenScourgeElf(final WarrenScourgeElf card) {
+    private WarrenScourgeElf(final WarrenScourgeElf card) {
         super(card);
     }
 

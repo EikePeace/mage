@@ -38,7 +38,7 @@ public final class AlmsCollector extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AlmsCollectorReplacementEffect()));
     }
 
-    public AlmsCollector(final AlmsCollector card) {
+    private AlmsCollector(final AlmsCollector card) {
         super(card);
     }
 
@@ -74,8 +74,8 @@ class AlmsCollectorReplacementEffect extends ReplacementEffectImpl {
         Player controller = game.getPlayer(source.getControllerId());
         Player opponent = game.getPlayer(event.getPlayerId());
         if (controller != null && opponent != null) {
-            controller.drawCards(1, game, event.getAppliedEffects());
-            opponent.drawCards(1, game, event.getAppliedEffects());
+            controller.drawCards(1, source, game, event);
+            opponent.drawCards(1, source, game, event);
             return true;
         }
         return false;

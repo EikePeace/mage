@@ -36,7 +36,7 @@ public final class WasteNot extends CardImpl {
         this.addAbility(new WasteNotOtherTriggeredAbility());
     }
 
-    public WasteNot(final WasteNot card) {
+    private WasteNot(final WasteNot card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class WasteNotCreatureTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override
@@ -100,7 +100,7 @@ class WasteNotLandTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override
@@ -137,7 +137,7 @@ class WasteNotOtherTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override

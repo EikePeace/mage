@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.filter.common.FilterLandPermanent;
+import mage.filter.common.FilterControlledLandPermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 
@@ -23,7 +23,7 @@ import java.util.UUID;
  */
 public final class DesertNomads extends CardImpl {
 
-    private static final FilterLandPermanent filter = new FilterLandPermanent("desert");
+    private static final FilterControlledLandPermanent filter = new FilterControlledLandPermanent("desert");
 
     static {
         filter.add(SubType.DESERT.getPredicate());
@@ -43,7 +43,7 @@ public final class DesertNomads extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PreventDamageToSourceBySubtypeEffect(SubType.DESERT)));
     }
 
-    public DesertNomads(final DesertNomads card) {
+    private DesertNomads(final DesertNomads card) {
         super(card);
     }
 

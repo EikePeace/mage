@@ -56,7 +56,7 @@ public final class MeasureOfWickedness extends CardImpl {
 
     }
 
-    public MeasureOfWickedness(final MeasureOfWickedness card) {
+    private MeasureOfWickedness(final MeasureOfWickedness card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class MeasureOfWickednessControlSourceEffect extends ContinuousEffectImpl {
         Player targetOpponent = game.getPlayer(source.getFirstTarget());
         Permanent permanent = (Permanent) source.getSourceObjectIfItStillExists(game);
         if (permanent != null && targetOpponent != null) {
-                permanent.changeControllerId(targetOpponent.getId(), game);
+                permanent.changeControllerId(targetOpponent.getId(), game, source);
         } else {
             // no valid target exists, effect can be discarded
             discard();

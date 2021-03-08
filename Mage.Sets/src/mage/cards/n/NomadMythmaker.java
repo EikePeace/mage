@@ -51,7 +51,7 @@ public final class NomadMythmaker extends CardImpl {
 
     }
 
-    public NomadMythmaker(final NomadMythmaker card) {
+    private NomadMythmaker(final NomadMythmaker card) {
         super(card);
     }
 
@@ -90,10 +90,10 @@ class NomadMythmakerEffect extends OneShotEffect {
         if (controller.choose(Outcome.PutCardInPlay, target, source.getSourceId(), game)) {
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null
-                    && !permanent.cantBeAttachedBy(aura, game, false)) {
+                    && !permanent.cantBeAttachedBy(aura, source, game, false)) {
                 game.getState().setValue("attachTo:" + aura.getId(), permanent);
                 controller.moveCards(aura, Zone.BATTLEFIELD, source, game);
-                return permanent.addAttachment(aura.getId(), game);
+                return permanent.addAttachment(aura.getId(), source, game);
             }
         }
         return false;

@@ -26,11 +26,11 @@ public final class ReefPirates extends CardImpl {
 
         // Whenever Reef Pirates deals damage to an opponent, that player puts the top card of their library into their graveyard.
         Effect effect = new PutLibraryIntoGraveTargetEffect(1);
-        effect.setText("that player puts the top card of their library into their graveyard");
+        effect.setText("that player mills a card");
         this.addAbility(new DealsDamageToAPlayerTriggeredAbility(effect, false, true));
     }
 
-    public ReefPirates(final ReefPirates card) {
+    private ReefPirates(final ReefPirates card) {
         super(card);
     }
 

@@ -4,10 +4,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.DamagePlayersEffect;
-import mage.abilities.effects.common.DamageTargetEffect;
 import mage.abilities.keyword.SpaceflightAbility;
 import mage.constants.Outcome;
 import mage.constants.SubType;
@@ -15,7 +12,6 @@ import mage.abilities.keyword.HasteAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.TargetController;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -45,7 +41,7 @@ public final class TIESilencer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TIESilencer(final TIESilencer card) {
+    private TIESilencer(final TIESilencer card) {
         super(card);
     }
 
@@ -70,12 +66,12 @@ class TIESilencerEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         UUID defender = game.getCombat().getDefendingPlayerId(source.getSourceId(), game);
         if(defender != null) {
-            game.damagePlayerOrPlaneswalker(defender, 1, source.getSourceId(), game, false, true);
+            game.damagePlayerOrPlaneswalker(defender, 1, source.getSourceId(), source, game, false, true);
 
             UUID target = source.getTargets().getFirstTarget();
             Permanent permanent = game.getPermanent(target);
             if(permanent != null) {
-                permanent.damage(1, source.getSourceId(), game, false, true);
+                permanent.damage(1, source.getSourceId(), source, game, false, true);
             }
 
             return true;

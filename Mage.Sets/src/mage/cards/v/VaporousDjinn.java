@@ -38,7 +38,7 @@ public final class VaporousDjinn extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new VaporousDjinnEffect(), TargetController.YOU, false));
     }
 
-    public VaporousDjinn(final VaporousDjinn card) {
+    private VaporousDjinn(final VaporousDjinn card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class VaporousDjinnEffect extends OneShotEffect {
             Cost cost = new ManaCostsImpl("{U}{U}");
             String message = "Would you like to pay {U}{U} to prevent {this} from phasing out?";
             if (!(controller.chooseUse(Outcome.Benefit, message, source, game)
-                    && cost.pay(source, game, source.getSourceId(), controller.getId(), false, null))) {
+                    && cost.pay(source, game, source, controller.getId(), false, null))) {
                 permanent.phaseOut(game);
             }
             return true;

@@ -31,7 +31,7 @@ public final class Hellfire extends CardImpl {
         this.getSpellAbility().addEffect(new HellfireEffect());
     }
 
-    public Hellfire(final Hellfire card) {
+    private Hellfire(final Hellfire card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class HellfireEffect extends OneShotEffect {
             FilterCreaturePermanent filter = new FilterCreaturePermanent("all nonblack creatures");
             filter.add(Predicates.not(new ColorPredicate(ObjectColor.BLACK)));
             for (Permanent creature : game.getState().getBattlefield().getActivePermanents(filter, controller.getId(), game)) {
-                if (creature.destroy(source.getSourceId(), game, false)
+                if (creature.destroy(source, game, false)
                         && game.getState().getZone(creature.getId()) == Zone.GRAVEYARD) { // If a commander is replaced to command zone, the creature does not die) {
                     destroyedCreature++;
                 }

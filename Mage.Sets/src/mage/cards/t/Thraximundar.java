@@ -48,7 +48,7 @@ public final class Thraximundar extends CardImpl {
 
     }
 
-    public Thraximundar(final Thraximundar card) {
+    private Thraximundar(final Thraximundar card) {
         super(card);
     }
 
@@ -114,7 +114,7 @@ class PlayerSacrificesCreatureTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

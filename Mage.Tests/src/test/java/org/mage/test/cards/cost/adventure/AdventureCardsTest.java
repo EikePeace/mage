@@ -39,14 +39,20 @@ public class AdventureCardsTest extends CardTestPlayerBase {
 
     @Test
     public void testCantCastTreatsToShareTwice() {
-        setStrictChooseMode(true);
-        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2);
         addCard(Zone.HAND, playerA, "Curious Pair");
+        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2);
+
+        checkPlayableAbility("can play on first", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Treats to Share", true);
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Treats to Share");
-        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Treats to Share");
+
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkPlayableAbility("can't play on second", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Treats to Share", false);
+
+        setStrictChooseMode(true);
         setStopAt(1, PhaseStep.BEGIN_COMBAT);
         execute();
-        assertActionsCount(playerA, 1);
+        assertAllCommandsUsed();
+
         assertHandCount(playerA, 0);
         assertPermanentCount(playerA, "Food", 1);
         assertExileCount(playerA, "Curious Pair", 1);
@@ -430,18 +436,21 @@ public class AdventureCardsTest extends CardTestPlayerBase {
 
     @Test
     public void testCantCastCuriousPairWithMelek() {
-        setStrictChooseMode(true);
-        addCard(Zone.BATTLEFIELD, playerA, "Melek, Izzet Paragon");
-        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2);
         removeAllCardsFromLibrary(playerA);
+
+        addCard(Zone.BATTLEFIELD, playerA, "Melek, Izzet Paragon");
+        //
         addCard(Zone.LIBRARY, playerA, "Curious Pair");
+        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2);
 
-        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair");
+        checkPlayableAbility("can't play", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Curious Pair", false);
+        checkPlayableAbility("can play", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Treats to Share", true);
 
+        setStrictChooseMode(true);
         setStopAt(1, PhaseStep.BEGIN_COMBAT);
         execute();
+        assertAllCommandsUsed();
 
-        assertActionsCount(playerA, 1);
         assertPermanentCount(playerA, "Curious Pair", 0);
         assertLibraryCount(playerA, 1);
     }
@@ -477,19 +486,21 @@ public class AdventureCardsTest extends CardTestPlayerBase {
 
     @Test
     public void testCantCastTreatsToShareWithGarruksHorde() {
-        setStrictChooseMode(true);
-        addCard(Zone.BATTLEFIELD, playerA, "Garruk's Horde");
-        addCard(Zone.BATTLEFIELD, playerA, "Forest");
         removeAllCardsFromLibrary(playerA);
+
+        addCard(Zone.BATTLEFIELD, playerA, "Garruk's Horde");
+        //
         addCard(Zone.LIBRARY, playerA, "Curious Pair");
+        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2);
 
-        // showAvaileableAbilities("abils", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
-        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Treats to Share");
+        checkPlayableAbility("can play", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Curious Pair", true);
+        checkPlayableAbility("can't play", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cast Treats to Share", false);
 
+        setStrictChooseMode(true);
         setStopAt(1, PhaseStep.BEGIN_COMBAT);
         execute();
+        assertAllCommandsUsed();
 
-        assertActionsCount(playerA, 1);
         assertPermanentCount(playerA, "Food", 0);
         assertLibraryCount(playerA, 1);
     }
@@ -514,7 +525,7 @@ public class AdventureCardsTest extends CardTestPlayerBase {
         addCounters(1, PhaseStep.UPKEEP, playerA, "Wrenn and Six", CounterType.LOYALTY, 5);
         activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "-7: You get an emblem");
         waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN, playerA);
-        // showAvaileableAbilities("abils", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
+        // showAvailableAbilities("abils", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
 
         // retrace - You may cast this card from your graveyard by discarding a land card as an additional cost to cast it
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Treats to Share");
@@ -551,7 +562,7 @@ public class AdventureCardsTest extends CardTestPlayerBase {
 
         activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "+1: Until your next");
         waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN, playerA);
-        // showAvaileableAbilities("abils", 1, PhaseStep.BEGIN_COMBAT, playerA);
+        // showAvailableAbilities("abils", 1, PhaseStep.BEGIN_COMBAT, playerA);
         castSpell(1, PhaseStep.BEGIN_COMBAT, playerA, "Treats to Share");
 
         setStopAt(1, PhaseStep.POSTCOMBAT_MAIN);
@@ -636,6 +647,99 @@ public class AdventureCardsTest extends CardTestPlayerBase {
 
         setStrictChooseMode(true);
         setStopAt(1, PhaseStep.POSTCOMBAT_MAIN);
+        execute();
+        assertAllCommandsUsed();
+    }
+
+    @Test
+    public void test_BonecrusherGiant_Stopm() {
+        // bug with non working stopm: https://github.com/magefree/mage/issues/6915
+
+        // If noncombat damage would be dealt to Stormwild Capridor, prevent that damage.
+        // Put a +1/+1 counter on Stormwild Capridor for each 1 damage prevented this way.
+        addCard(Zone.BATTLEFIELD, playerA, "Stormwild Capridor@storm", 2); // 1/3
+        //
+        addCard(Zone.HAND, playerA, "Lightning Bolt", 2);
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain", 2);
+        //
+        // Stomp {1}{R}
+        // Damage can’t be prevented this turn. Stomp deals 2 damage to any target.
+        addCard(Zone.HAND, playerA, "Bonecrusher Giant", 1);
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain", 2);
+
+        // prevent
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", "@storm.1");
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkGraveyardCount("prevent", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", 1);
+        checkGraveyardCount("prevent", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "@storm.1", 0);
+
+        // prepare protect by stomp
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Stomp");
+        addTarget(playerA, playerB);
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+
+        // can't prevent
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", "@storm.2");
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkGraveyardCount("can't prevent", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", 2);
+        checkGraveyardCount("can't prevent", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "@storm.2", 1);
+
+        setStrictChooseMode(true);
+        setStopAt(1, PhaseStep.POSTCOMBAT_MAIN);
+        execute();
+        assertAllCommandsUsed();
+    }
+
+    @Test
+    public void test_HostageTaker_CastFromExileAllParts() {
+        // bug: mdf must be playable as both sides
+        // https://github.com/magefree/mage/pull/7446
+
+        // Curious Pair {1}{G}, creature
+        // Treats to Share {G}, sorcery
+        // Create a Food token.
+        addCard(Zone.HAND, playerA, "Curious Pair");
+        addCard(Zone.BATTLEFIELD, playerA, "Forest", 2); // for prepare
+        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 2); // cast from hostage taker for any color
+        //
+        // When Hostage Taker enters the battlefield, exile another target artifact or creature until Hostage Taker
+        // leaves the battlefield. You may cast that card as long as it remains exiled, and you may spend mana
+        // as though it were mana of any type to cast that spell.
+        addCard(Zone.HAND, playerA, "Hostage Taker", 2); // {2}{U}{B}
+        addCard(Zone.BATTLEFIELD, playerA, "Island", 3);
+        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 1);
+
+        // prepare adventure card on battlefield
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {G}", 2);
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair");
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkPermanentCount("prepare", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair", 1);
+
+        // turn 1 - exile by hostage
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Hostage Taker");
+        addTarget(playerA, "Curious Pair");
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkExileCount("after exile 1", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair", 1);
+        // play as creature for any color
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair");
+        waitStackResolved(1, PhaseStep.PRECOMBAT_MAIN);
+        checkPermanentCount("after play 1", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Curious Pair", 1);
+
+        // eat green mana (test what hostage's any color effect work)
+        activateManaAbility(3, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {G}", 2);
+
+        // turn 3 - exile by hostage
+        castSpell(3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Hostage Taker");
+        addTarget(playerA, "Curious Pair");
+        waitStackResolved(3, PhaseStep.POSTCOMBAT_MAIN);
+        checkExileCount("after exile 3", 3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Curious Pair", 1);
+        // play as adventure spell
+        castSpell(3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Treats to Share");
+        waitStackResolved(3, PhaseStep.POSTCOMBAT_MAIN);
+        checkPermanentCount("after play 3", 3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Food", 1);
+
+        setStrictChooseMode(true);
+        setStopAt(3, PhaseStep.END_TURN);
         execute();
         assertAllCommandsUsed();
     }

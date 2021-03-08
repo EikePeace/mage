@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.s;
 
 import java.util.UUID;
@@ -48,7 +43,7 @@ public final class SkyshipWeatherlight extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SkyshipWeatherlight(final SkyshipWeatherlight card) {
+    private SkyshipWeatherlight(final SkyshipWeatherlight card) {
         super(card);
     }
 
@@ -96,7 +91,7 @@ class SkyshipWeatherlightEffect extends SearchEffect {
                     for (UUID cardID : target.getTargets()) {
                         Card card = controller.getLibrary().getCard(cardID, game);
                         if (card != null) {
-                            controller.moveCardToExileWithInfo(card, exileZone, sourceObject.getIdName(), source.getSourceId(), game, Zone.LIBRARY, true);
+                            controller.moveCardToExileWithInfo(card, exileZone, sourceObject.getIdName(), source, game, Zone.LIBRARY, true);
                         }
                     }
                 }

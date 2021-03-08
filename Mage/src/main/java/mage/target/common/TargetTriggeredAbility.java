@@ -1,9 +1,5 @@
-
 package mage.target.common;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbility;
 import mage.constants.Zone;
@@ -13,8 +9,11 @@ import mage.game.Game;
 import mage.game.stack.StackObject;
 import mage.target.TargetObject;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author Styxo
  */
 public class TargetTriggeredAbility extends TargetObject {
@@ -32,13 +31,14 @@ public class TargetTriggeredAbility extends TargetObject {
 
     @Override
     public boolean canTarget(UUID id, Ability source, Game game) {
+        // 114.4. A spell or ability on the stack is an illegal target for itself.
         if (source != null && source.getSourceId().equals(id)) {
             return false;
         }
 
         StackObject stackObject = game.getStack().getStackObject(id);
-        return stackObject.getStackAbility() != null
-                && (stackObject.getStackAbility() instanceof TriggeredAbility)
+        return stackObject != null
+                && stackObject.getStackAbility() instanceof TriggeredAbility
                 && source != null
                 && stackObject.getStackAbility().isControlledBy(source.getControllerId());
     }
@@ -51,8 +51,7 @@ public class TargetTriggeredAbility extends TargetObject {
     @Override
     public boolean canChoose(UUID sourceControllerId, Game game) {
         for (StackObject stackObject : game.getStack()) {
-            if (stackObject.getStackAbility() != null
-                    && stackObject.getStackAbility() instanceof TriggeredAbility
+            if (stackObject.getStackAbility() instanceof TriggeredAbility
                     && stackObject.getStackAbility().isControlledBy(sourceControllerId)) {
                 return true;
             }
@@ -69,8 +68,7 @@ public class TargetTriggeredAbility extends TargetObject {
     public Set<UUID> possibleTargets(UUID sourceControllerId, Game game) {
         Set<UUID> possibleTargets = new HashSet<>();
         for (StackObject stackObject : game.getStack()) {
-            if (stackObject.getStackAbility() != null
-                    && stackObject.getStackAbility() instanceof TriggeredAbility
+            if (stackObject.getStackAbility() instanceof TriggeredAbility
                     && stackObject.getStackAbility().isControlledBy(sourceControllerId)) {
                 possibleTargets.add(stackObject.getStackAbility().getId());
             }

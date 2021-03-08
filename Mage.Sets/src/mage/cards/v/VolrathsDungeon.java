@@ -20,9 +20,11 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.game.Game;
+import mage.game.events.GameEvent;
 import mage.players.Player;
 import mage.target.TargetPlayer;
 import mage.target.common.TargetCardInHand;
+import mage.util.CardUtil;
 
 import java.util.UUID;
 
@@ -49,7 +51,7 @@ public final class VolrathsDungeon extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public VolrathsDungeon(final VolrathsDungeon card) {
+    private VolrathsDungeon(final VolrathsDungeon card) {
         super(card);
     }
 
@@ -79,23 +81,24 @@ class PayLifeActivePlayerCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         int lifeToPayAmount = amount.calculate(game, ability, null);
         return game.getPlayer(game.getActivePlayerId()).getLife() >= lifeToPayAmount;
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        int lifeToPayAmount = amount.calculate(game, ability, null);
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player activatingPlayer = game.getPlayer(game.getActivePlayerId());
-        if (activatingPlayer != null
-                && activatingPlayer.chooseUse(Outcome.LoseLife, "Do you wish to pay " + lifeToPayAmount + " life?", ability, game)) {
-            Player player = game.getPlayer(game.getActivePlayerId());
-            if (player != null) {
-                this.paid = player.loseLife(lifeToPayAmount, game, false) == lifeToPayAmount;
-            }
+        if (activatingPlayer == null) {
+            return false;
         }
-        return paid;
+
+        int lifeToPayAmount = amount.calculate(game, ability, null);
+        if (activatingPlayer.chooseUse(Outcome.LoseLife, "Pay " + lifeToPayAmount + " life?", ability, game)) {
+            this.paid = CardUtil.tryPayLife(lifeToPayAmount, activatingPlayer, source, game);
+            return this.paid;
+        }
+        return false;
     }
 
     @Override
@@ -127,7 +130,8 @@ class VolrathsDungeonEffect extends OneShotEffect {
             TargetCardInHand target = new TargetCardInHand();
             if (targetedPlayer.choose(Outcome.Detriment, targetedPlayer.getHand(), target, game)) {
                 Card card = game.getCard(target.getFirstTarget());
-                return card != null && targetedPlayer.putCardOnTopXOfLibrary(card, game, source, 0);
+                // must hides the card name from other players
+                return card != null && targetedPlayer.putCardOnTopXOfLibrary(card, game, source, 0, false);
             }
         }
         return false;

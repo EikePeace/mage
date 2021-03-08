@@ -34,7 +34,7 @@ public final class CrownOfEmpires extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CrownOfEmpires(final CrownOfEmpires card) {
+    private CrownOfEmpires(final CrownOfEmpires card) {
         super(card);
     }
 
@@ -61,9 +61,9 @@ class CrownOfEmpiresEffect extends OneShotEffect {
         boolean scepter = false;
         boolean throne = false;
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(source.getControllerId())) {
-            if (CardUtil.haveSameNames(permanent.getName(), "Scepter of Empires")) {
+            if (CardUtil.haveSameNames(permanent, "Scepter of Empires", game)) {
                 scepter = true;
-            } else if (CardUtil.haveSameNames(permanent.getName(), "Throne of Empires")) {
+            } else if (CardUtil.haveSameNames(permanent, "Throne of Empires", game)) {
                 throne = true;
             }
             if (scepter && throne) break;
@@ -74,7 +74,7 @@ class CrownOfEmpiresEffect extends OneShotEffect {
             game.getState().setValue(source.getSourceId().toString(), source.getControllerId());
             game.addEffect(effect, source);
         } else {
-            target.tap(game);
+            target.tap(source, game);
         }
         return false;
     }
@@ -105,7 +105,7 @@ class CrownOfEmpiresControlEffect extends ContinuousEffectImpl {
         Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
         UUID controllerId = (UUID) game.getState().getValue(source.getSourceId().toString());
         if (permanent != null && controllerId != null) {
-            return permanent.changeControllerId(controllerId, game);
+            return permanent.changeControllerId(controllerId, game, source);
         }
         return false;
     }

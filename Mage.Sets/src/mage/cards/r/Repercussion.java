@@ -30,7 +30,7 @@ public final class Repercussion extends CardImpl {
         this.addAbility(new RepercussionTriggeredAbility(new RepercussionEffect()));
     }
 
-    public Repercussion(final Repercussion card) {
+    private Repercussion(final Repercussion card) {
         super(card);
     }
 
@@ -55,15 +55,17 @@ class RepercussionTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        for (Effect effect : getEffects()) {
-            effect.setValue(PLAYER_DAMAGE_AMOUNT_KEY, event.getAmount());
-            effect.setValue(TRIGGERING_CREATURE_KEY, new MageObjectReference(event.getTargetId(), game));
+        Permanent permanent = game.getPermanent(event.getTargetId());
+        if (permanent == null || !permanent.isCreature()) {
+            return false;
         }
+        getEffects().setValue(PLAYER_DAMAGE_AMOUNT_KEY, event.getAmount());
+        getEffects().setValue(TRIGGERING_CREATURE_KEY, new MageObjectReference(event.getTargetId(), game));
         return true;
     }
 
@@ -97,7 +99,7 @@ class RepercussionEffect extends OneShotEffect {
             if (creature != null) {
                 Player player = game.getPlayer(creature.getControllerId());
                 if (player != null) {
-                    player.damage(playerDamage, source.getSourceId(), game);
+                    player.damage(playerDamage, source.getSourceId(), source, game);
                 }
             }
             return true;

@@ -1,4 +1,3 @@
-
 package mage.cards.a;
 
 import java.util.UUID;
@@ -38,7 +37,7 @@ public final class ActOfAuthority extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ActOfAuthority(final ActOfAuthority card) {
+    private ActOfAuthority(final ActOfAuthority card) {
         super(card);
     }
 
@@ -66,7 +65,7 @@ class ActOfAuthorityEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent targetPermanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
+        Permanent targetPermanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (targetPermanent != null && new ExileTargetEffect().apply(game, source)) {
             Permanent sourcePermanent = source.getSourcePermanentIfItStillExists(game);
             if (sourcePermanent != null) {
@@ -106,7 +105,7 @@ class ActOfAuthorityGainControlEffect extends ContinuousEffectImpl {
             permanent = game.getPermanent(targetPointer.getFirst(game, source));
         }
         if (permanent != null) {
-            return permanent.changeControllerId(controller, game);
+            return permanent.changeControllerId(controller, game, source);
         }
         return false;
     }

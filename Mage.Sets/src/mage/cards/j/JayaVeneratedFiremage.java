@@ -64,8 +64,7 @@ class JayaVeneratedFiremageEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
                 return true;
             default:
@@ -96,7 +95,7 @@ class JayaVeneratedFiremageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), 1));
+        event.setAmount(CardUtil.overflowInc(event.getAmount(), 1));
         return false;
     }
 

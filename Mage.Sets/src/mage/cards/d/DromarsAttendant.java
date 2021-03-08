@@ -28,12 +28,12 @@ public final class DromarsAttendant extends CardImpl {
         this.toughness = new MageInt(3);
 
         // {1}, Sacrifice Dromar's Attendant: Add {W}{U}{B}.
-        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 1, 1, 0, 0, 0), new ManaCostsImpl("{1}"));
+        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 1, 0, 0, 0, 0, 0), new ManaCostsImpl("{1}"));
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
     }
 
-    public DromarsAttendant(final DromarsAttendant card) {
+    private DromarsAttendant(final DromarsAttendant card) {
         super(card);
     }
 

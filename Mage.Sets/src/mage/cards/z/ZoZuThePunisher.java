@@ -36,7 +36,7 @@ public final class ZoZuThePunisher extends CardImpl {
         this.addAbility(new ZoZuThePunisherAbility());
     }
 
-    public ZoZuThePunisher(final ZoZuThePunisher card) {
+    private ZoZuThePunisher(final ZoZuThePunisher card) {
             super(card);
     }
 
@@ -63,7 +63,7 @@ class ZoZuThePunisherAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
     
     @Override

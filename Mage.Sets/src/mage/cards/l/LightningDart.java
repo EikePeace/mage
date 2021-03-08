@@ -27,7 +27,7 @@ public final class LightningDart extends CardImpl {
         this.getSpellAbility().addEffect(new LightningDartEffect());
     }
 
-    public LightningDart(final LightningDart card) {
+    private LightningDart(final LightningDart card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ public final class LightningDart extends CardImpl {
                 if (color.isWhite() || color.isBlue()) {
                     damage = 4;
                 }
-                permanent.damage(damage, source.getId(), game, false, false);
+                permanent.damage(damage, source.getId(), source, game, false, false);
             }
 
             return false;

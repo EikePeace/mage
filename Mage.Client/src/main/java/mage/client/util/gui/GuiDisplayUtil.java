@@ -14,8 +14,8 @@ import org.mage.card.arcane.UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
+import java.util.*;
 
 import static mage.client.dialog.PreferencesDialog.KEY_MAGE_PANEL_LAST_SIZE;
 
@@ -38,7 +38,7 @@ public final class GuiDisplayUtil {
             this.basicTextLength = basicTextLength;
         }
 
-        public java.util.List<String> getLines() {
+        public List<String> getLines() {
             return lines;
         }
 
@@ -84,7 +84,6 @@ public final class GuiDisplayUtil {
         descriptionPanel.setVisible(false);
         descriptionPanel.setLayout(null);
 
-        //descriptionPanel.setBorder(BorderFactory.createLineBorder(Color.green));
         JButton j = new JButton("");
         j.setBounds(0, 0, width, height);
         j.setBackground(Color.black);
@@ -98,7 +97,7 @@ public final class GuiDisplayUtil {
         j.add(cardText);
 
         TextLines textLines = GuiDisplayUtil.getTextLinesfromCardView(card);
-        cardText.setText(getRulefromCardView(card, textLines).toString());
+        cardText.setText(getRulesFromCardView(card, textLines).toString());
 
         descriptionPanel.add(j);
 
@@ -191,12 +190,8 @@ public final class GuiDisplayUtil {
         // counters
         if (card.getMageObjectType().canHaveCounters()) {
             java.util.List<CounterView> counters = new ArrayList<>();
-            if (card instanceof PermanentView) {
-                if (card.getCounters() != null) {
-                    counters = new ArrayList<>(card.getCounters());
-                }
-            } else if (card.getCounters() != null) {
-                counters = new ArrayList<>(card.getCounters());
+            if (card.getCounters() != null) {
+                counters.addAll(card.getCounters());
             }
             if (!counters.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
@@ -232,11 +227,8 @@ public final class GuiDisplayUtil {
         return "<img src='" + getResourcePath("hint/" + iconName + ".png") + "' alt='" + iconName + "' width=" + symbolSize + " height=" + symbolSize + ">";
     }
 
-    public static StringBuilder getRulefromCardView(CardView card, TextLines textLines) {
-        String manaCost = "";
-        for (String m : card.getManaCost()) {
-            manaCost += m;
-        }
+    public static StringBuilder getRulesFromCardView(CardView card, TextLines textLines) {
+        String manaCost = card.getManaCostStr();
         String castingCost = UI.getDisplayManaCost(manaCost);
         castingCost = ManaSymbols.replaceSymbolsWithHTML(castingCost, ManaSymbols.Type.TOOLTIP);
 
@@ -343,38 +335,48 @@ public final class GuiDisplayUtil {
         }
         buffer.append("</td></tr></table>");
 
+        // split card rules shows up by parts, so no needs to duplicate it later (only dynamic abilities must be shown)
+        Set<String> duplicatedRules = new HashSet<>();
+
         StringBuilder rule = new StringBuilder("<br/>");
         if (card.isSplitCard()) {
             rule.append("<table cellspacing=0 cellpadding=0 border=0 width='100%'>");
             rule.append("<tr><td valign='top'><b>");
             rule.append(card.getLeftSplitName());
             rule.append("</b></td><td align='right' valign='top' style='width:");
-            rule.append(card.getLeftSplitCosts().getSymbols().size() * GUISizeHelper.symbolTooltipSize + 1);
+            rule.append(ManaSymbols.getClearManaSymbolsCount(card.getLeftSplitCostsStr()) * GUISizeHelper.symbolTooltipSize + 1);
             rule.append("px'>");
-            rule.append(card.getLeftSplitCosts().getText());
+            rule.append(card.getLeftSplitCostsStr());
             rule.append("</td></tr></table>");
             for (String ruling : card.getLeftSplitRules()) {
                 if (ruling != null && !ruling.replace(".", "").trim().isEmpty()) {
-                    rule.append("<p style='margin: 2px'>").append(ruling).append("</p>");
+                    // split names must be replaced
+                    duplicatedRules.add(ruling);
+                    rule.append("<p style='margin: 2px'>").append(replaceNamesInRule(ruling, card.getLeftSplitName())).append("</p>");
                 }
             }
             rule.append("<table cellspacing=0 cellpadding=0 border=0 width='100%'>");
             rule.append("<tr><td valign='top'><b>");
             rule.append(card.getRightSplitName());
             rule.append("</b></td><td align='right' valign='top' style='width:");
-            rule.append(card.getRightSplitCosts().getSymbols().size() * GUISizeHelper.symbolTooltipSize + 1);
+            rule.append(ManaSymbols.getClearManaSymbolsCount(card.getRightSplitCostsStr()) * GUISizeHelper.symbolTooltipSize + 1);
             rule.append("px'>");
-            rule.append(card.getRightSplitCosts().getText());
+            rule.append(card.getRightSplitCostsStr());
             rule.append("</td></tr></table>");
             for (String ruling : card.getRightSplitRules()) {
                 if (ruling != null && !ruling.replace(".", "").trim().isEmpty()) {
-                    rule.append("<p style='margin: 2px'>").append(ruling).append("</p>");
+                    // split names must be replaced
+                    duplicatedRules.add(ruling);
+                    rule.append("<p style='margin: 2px'>").append(replaceNamesInRule(ruling, card.getRightSplitName())).append("</p>");
                 }
             }
         }
         if (!textLines.getLines().isEmpty()) {
             for (String textLine : textLines.getLines()) {
                 if (textLine != null && !textLine.replace(".", "").trim().isEmpty()) {
+                    if (duplicatedRules.contains(textLine)) {
+                        continue;
+                    }
                     rule.append("<p style='margin: 2px'>").append(textLine).append("</p>");
                 }
             }
@@ -382,8 +384,7 @@ public final class GuiDisplayUtil {
 
         String legal = rule.toString();
         if (!legal.isEmpty()) {
-            legal = legal.replaceAll("\\{this\\}", card.getName().isEmpty() ? "this" : card.getName());
-            legal = legal.replaceAll("\\{source\\}", card.getName().isEmpty() ? "this" : card.getName());
+            legal = replaceNamesInRule(legal, card.getDisplayName()); // must show real display name (e.g. split part, not original card)
             buffer.append(ManaSymbols.replaceSymbolsWithHTML(legal, ManaSymbols.Type.TOOLTIP));
         }
 
@@ -394,6 +395,10 @@ public final class GuiDisplayUtil {
 
         buffer.append("<br></body></html>");
         return buffer;
+    }
+
+    private static String replaceNamesInRule(String rule, String cardName) {
+        return rule.replaceAll("\\{this\\}", cardName.isEmpty() ? "this" : cardName);
     }
 
     private static String getResourcePath(String image) {

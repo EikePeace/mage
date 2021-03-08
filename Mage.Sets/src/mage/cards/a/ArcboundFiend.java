@@ -46,7 +46,7 @@ public final class ArcboundFiend extends CardImpl {
         this.addAbility(new ModularAbility(this, 3));
     }
 
-    public ArcboundFiend(final ArcboundFiend card) {
+    private ArcboundFiend(final ArcboundFiend card) {
         super(card);
     }
 
@@ -79,8 +79,8 @@ class MoveCounterFromTargetToSourceEffect extends OneShotEffect {
         if (sourceObject != null && controller != null) {
             Permanent fromPermanent = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (fromPermanent != null && fromPermanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
-                fromPermanent.removeCounters(CounterType.P1P1.createInstance(), game);
-                sourceObject.addCounters(CounterType.P1P1.createInstance(), source, game);
+                fromPermanent.removeCounters(CounterType.P1P1.createInstance(), source, game);
+                sourceObject.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 game.informPlayers("Moved a +1/+1 counter from " + fromPermanent.getLogName() + " to " + sourceObject.getLogName());
             }
             return true;

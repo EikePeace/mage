@@ -14,7 +14,7 @@ import mage.filter.common.FilterOwnedCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.target.TargetSpell;
 import mage.target.common.TargetCardInHand;
 
@@ -45,7 +45,7 @@ public final class Misdirection extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter2));
     }
 
-    public Misdirection(final Misdirection card) {
+    private Misdirection(final Misdirection card) {
         super(card);
     }
 

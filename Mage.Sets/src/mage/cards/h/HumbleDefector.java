@@ -39,7 +39,7 @@ public final class HumbleDefector extends CardImpl {
 
     }
 
-    public HumbleDefector(final HumbleDefector card) {
+    private HumbleDefector(final HumbleDefector card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class HumbleDefectorEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            controller.drawCards(2, game);
+            controller.drawCards(2, source, game);
         }
         Permanent humbleDefector = (Permanent) source.getSourceObjectIfItStillExists(game);
         Player targetOpponent = game.getPlayer(getTargetPointer().getFirst(game, source));
@@ -103,7 +103,7 @@ class HumbleDefectorControlSourceEffect extends ContinuousEffectImpl {
         Player targetOpponent = game.getPlayer(source.getFirstTarget());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null && targetOpponent != null) {
-            permanent.changeControllerId(targetOpponent.getId(), game);
+            permanent.changeControllerId(targetOpponent.getId(), game, source);
         } else {
             // no valid target exists, effect can be discarded
             discard();

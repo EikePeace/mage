@@ -27,7 +27,7 @@ public final class LostInTheWoods extends CardImpl {
         this.addAbility(new AttacksAllTriggeredAbility(new LostInTheWoodsEffect(), false, StaticFilters.FILTER_PERMANENT_CREATURE, SetTargetPointer.PERMANENT, true));
     }
 
-    public LostInTheWoods(final LostInTheWoods card) {
+    private LostInTheWoods(final LostInTheWoods card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class LostInTheWoodsEffect extends OneShotEffect {
                         permanent.removeFromCombat(game);
                     }
                 }
-                controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, false, true);
+                controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, false, true);
             }
         }
         return true;

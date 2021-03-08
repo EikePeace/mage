@@ -1,5 +1,7 @@
 package mage.abilities.effects;
 
+import java.util.Locale;
+import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
@@ -16,8 +18,7 @@ import mage.game.stack.StackAbility;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetCardInGraveyard;
-
-import java.util.UUID;
+import static org.apache.log4j.LogMF.info;
 
 /**
  * Cards with the Aura subtype don't change the zone they are in, if there is no
@@ -58,8 +59,6 @@ public class AuraReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Zone fromZone = ((ZoneChangeEvent) event).getFromZone();
         Card card = game.getCard(event.getTargetId());
-        UUID sourceId = event.getSourceId();
-        UUID controllerId = event.getPlayerId();
         if (card == null) {
             return false;
         }
@@ -94,7 +93,7 @@ public class AuraReplacementEffect extends ReplacementEffectImpl {
         }
 
         UUID targetId = null;
-        MageObject sourceObject = game.getObject(sourceId);
+        MageObject sourceObject = game.getObject(event.getSourceId());
         boolean enchantCardInGraveyard = false;
         if (sourceObject instanceof StackAbility) {
             StackAbility stackAbility = (StackAbility) sourceObject;
@@ -156,26 +155,39 @@ public class AuraReplacementEffect extends ReplacementEffectImpl {
         if (targetCard != null || targetPermanent != null || targetPlayer != null) {
             if (firstCardFace != null) {
                 // transforming card. remove first face (original card) from old zone
-                firstCardFace.removeFromZone(game, fromZone, sourceId);
+                firstCardFace.removeFromZone(game, fromZone, source);
             } else {
-                card.removeFromZone(game, fromZone, sourceId);
+                card.removeFromZone(game, fromZone, source);
             }
             PermanentCard permanent = new PermanentCard(card, (controllingPlayer == null ? card.getOwnerId() : controllingPlayer.getId()), game);
-            ZoneChangeEvent zoneChangeEvent = new ZoneChangeEvent(permanent, controllerId, fromZone, Zone.BATTLEFIELD);
+            ZoneChangeEvent zoneChangeEvent = new ZoneChangeEvent(permanent, event.getPlayerId(), fromZone, Zone.BATTLEFIELD);
             permanent.updateZoneChangeCounter(game, zoneChangeEvent);
-            game.getBattlefield().addPermanent(permanent);
+            game.addPermanent(permanent, 0);
             card.setZone(Zone.BATTLEFIELD, game);
-            if (permanent.entersBattlefield(event.getSourceId(), game, fromZone, true)) {
+            if (permanent.entersBattlefield(source, game, fromZone, true)) {
+                String attachToName = null;
                 if (targetCard != null) {
-                    permanent.attachTo(targetCard.getId(), game);
+                    permanent.attachTo(targetCard.getId(), source, game);
+                    attachToName = targetCard.getLogName();
                 } else if (targetPermanent != null) {
-                    targetPermanent.addAttachment(permanent.getId(), game);
+                    targetPermanent.addAttachment(permanent.getId(), source, game);
+                    attachToName = targetPermanent.getLogName();
                 } else if (targetPlayer != null) {
-                    targetPlayer.addAttachment(permanent.getId(), game);
+                    targetPlayer.addAttachment(permanent.getId(), source, game);
+                    attachToName = targetPlayer.getLogName();
                 }
                 game.applyEffects();
 
                 game.fireEvent(zoneChangeEvent);
+                if (!game.isSimulation()) {
+                    if (controllingPlayer != null && fromZone != null && permanent != null) {
+                        game.informPlayers(controllingPlayer.getLogName() + " puts "
+                                + (card.getLogName()) + " from "
+                                + fromZone.toString().toLowerCase(Locale.ENGLISH) + " onto the Battlefield attached to "
+                                + attachToName
+                        );
+                    }
+                }
                 return true;
             }
 
@@ -196,9 +208,9 @@ public class AuraReplacementEffect extends ReplacementEffectImpl {
             return card != null && (card.isEnchantment() && card.hasSubtype(SubType.AURA, game)
                     || // in case of transformable enchantments
                     (game.getState().getValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + card.getId()) != null
-                            && card.getSecondCardFace() != null
-                            && card.getSecondCardFace().isEnchantment()
-                            && card.getSecondCardFace().hasSubtype(SubType.AURA, game)));
+                    && card.getSecondCardFace() != null
+                    && card.getSecondCardFace().isEnchantment()
+                    && card.getSecondCardFace().hasSubtype(SubType.AURA, game)));
         }
         return false;
     }

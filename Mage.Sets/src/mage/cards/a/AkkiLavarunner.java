@@ -20,7 +20,6 @@ import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  * @author Loki
@@ -43,7 +42,7 @@ public final class AkkiLavarunner extends CardImpl {
         this.addAbility(new AkkiLavarunnerAbility());
     }
 
-    public AkkiLavarunner(final AkkiLavarunner card) {
+    private AkkiLavarunner(final AkkiLavarunner card) {
         super(card);
     }
 
@@ -70,7 +69,7 @@ class AkkiLavarunnerAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -30,11 +30,11 @@ public final class DarkDabbling extends CardImpl {
         this.getSpellAbility().addEffect(new RegenerateTargetEffect());
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
-        // <i>Spell mastery</i> — If there are two or more instant and/or sorcery cards in your graveyard, also regenerate each other creature you control.
+        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, also regenerate each other creature you control.
         this.getSpellAbility().addEffect(new DarkDabblingEffect());
     }
 
-    public DarkDabbling(final DarkDabbling card) {
+    private DarkDabbling(final DarkDabbling card) {
         super(card);
     }
 
@@ -48,7 +48,7 @@ class DarkDabblingEffect extends OneShotEffect {
 
     public DarkDabblingEffect() {
         super(Outcome.Benefit);
-        this.staticText = "<i>Spell mastery</i> — If there are two or more instant and/or sorcery cards in your graveyard, also regenerate each other creature you control";
+        this.staticText = "<i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, also regenerate each other creature you control";
     }
 
     public DarkDabblingEffect(final DarkDabblingEffect effect) {
@@ -66,7 +66,7 @@ class DarkDabblingEffect extends OneShotEffect {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
                 if (!permanent.getId().equals(getTargetPointer().getFirst(game, source))) {
                     RegenerateTargetEffect regenEffect = new RegenerateTargetEffect();
-                    regenEffect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    regenEffect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(regenEffect, source);
                 }
             }

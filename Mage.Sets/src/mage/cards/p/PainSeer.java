@@ -32,7 +32,7 @@ public final class PainSeer extends CardImpl {
         this.addAbility(new InspiredAbility(new PainSeerEffect()));
     }
 
-    public PainSeer(final PainSeer card) {
+    private PainSeer(final PainSeer card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class PainSeerEffect extends OneShotEffect {
                 Cards cards = new CardsImpl(card);
                 player.revealCards("Pain Seer", cards, game);
                 if(player.moveCards(card, Zone.HAND, source, game)) {
-                    player.loseLife(card.getConvertedManaCost(), game, false);
+                    player.loseLife(card.getConvertedManaCost(), game, source, false);
                     return true;
                 }
             }

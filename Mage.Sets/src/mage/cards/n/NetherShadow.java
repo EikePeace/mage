@@ -36,7 +36,7 @@ public final class NetherShadow extends CardImpl {
         this.addAbility(new NetherShadowTriggerdAbility());
     }
 
-    public NetherShadow(final NetherShadow card) {
+    private NetherShadow(final NetherShadow card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class NetherShadowTriggerdAbility extends BeginningOfUpkeepTriggeredAbility{
 
     @Override
     public String getRule() {
-        return "At the beginning of your upkeep, if {source} is in your graveyard with three or more creature cards above it, you may put {source} onto the battlefield.";
+        return "At the beginning of your upkeep, if {this} is in your graveyard with three or more creature cards above it, you may put {this} onto the battlefield.";
     }
     
     

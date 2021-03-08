@@ -4,7 +4,6 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.ExileTargetForSourceEffect;
 import mage.abilities.effects.common.ReturnToBattlefieldUnderOwnerControlTargetEffect;
 import mage.abilities.keyword.DevoidAbility;
@@ -14,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 import java.util.UUID;
@@ -40,16 +39,14 @@ public final class EldraziDisplacer extends CardImpl {
         this.addAbility(new DevoidAbility(this.color));
 
         // {2}{C}: Exile another target creature, then return it to the battlefield tapped under its owner's control.
-        Effect effect = new ExileTargetForSourceEffect();
-        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl<>("{2}{C}"));
-        effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(true)
-                .withReturnNames("it", "its owner's").concatBy(", then");
-        ability.addEffect(effect);
+        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new ExileTargetForSourceEffect(), new ManaCostsImpl<>("{2}{C}"));
+        ability.addEffect(new ReturnToBattlefieldUnderOwnerControlTargetEffect(true, false)
+                .withReturnNames("it", "its owner's").concatBy(", then"));
         ability.addTarget(new TargetCreaturePermanent(FILTER));
         this.addAbility(ability);
     }
 
-    public EldraziDisplacer(final EldraziDisplacer card) {
+    private EldraziDisplacer(final EldraziDisplacer card) {
         super(card);
     }
 

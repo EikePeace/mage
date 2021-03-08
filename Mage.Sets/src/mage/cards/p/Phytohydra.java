@@ -11,9 +11,8 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.game.Game;
-import mage.game.events.DamageCreatureEvent;
+import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
 /**
@@ -34,7 +33,7 @@ public final class Phytohydra extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PhytohydraEffect()));
     }
 
-    public Phytohydra(final Phytohydra card) {
+    private Phytohydra(final Phytohydra card) {
         super(card);
     }
 
@@ -56,17 +55,17 @@ class PhytohydraEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        DamageCreatureEvent damageEvent = (DamageCreatureEvent) event;
+        DamageEvent damageEvent = (DamageEvent) event;
         Permanent p = game.getPermanent(source.getSourceId());
         if (p != null) {
-            p.addCounters(CounterType.P1P1.createInstance(damageEvent.getAmount()), source, game);
+            p.addCounters(CounterType.P1P1.createInstance(damageEvent.getAmount()), source.getControllerId(), source, game);
         }
         return true;
     }
     
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
     
     @Override

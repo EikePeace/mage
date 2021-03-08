@@ -1,6 +1,5 @@
 package mage.cards.m;
 
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
@@ -19,6 +18,7 @@ import mage.target.common.TargetCardInYourGraveyard;
 
 import java.util.Set;
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author LevelX2
@@ -43,7 +43,7 @@ public final class MizzixsMastery extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MizzixsMastery(final MizzixsMastery card) {
+    private MizzixsMastery(final MizzixsMastery card) {
         super(card);
     }
 
@@ -79,12 +79,12 @@ class MizzixsMasteryEffect extends OneShotEffect {
             if (card != null) {
                 if (controller.moveCards(card, Zone.EXILED, source, game)) {
                     Card cardCopy = game.copyCard(card, source, source.getControllerId());
-                    if (cardCopy.getSpellAbility().canChooseTarget(game)
+                    if (cardCopy.getSpellAbility().canChooseTarget(game, controller.getId())
                             && controller.chooseUse(outcome, "Cast copy of "
                             + card.getName() + " without paying its mana cost?", source, game)) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + cardCopy.getId(), Boolean.TRUE);
                         controller.cast(controller.chooseAbilityForCast(cardCopy, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + cardCopy.getId(), null);
                     }
                 }
@@ -135,10 +135,10 @@ class MizzixsMasteryOverloadEffect extends OneShotEffect {
                         if (controller.chooseTarget(Outcome.PlayForFree, copiedCards, targetCard, source, game)) {
                             Card selectedCard = game.getCard(targetCard.getFirstTarget());
                             if (selectedCard != null
-                                    && selectedCard.getSpellAbility().canChooseTarget(game)) {
+                                    && selectedCard.getSpellAbility().canChooseTarget(game, controller.getId())) {
                                 game.getState().setValue("PlayFromNotOwnHandZone" + selectedCard.getId(), Boolean.TRUE);
                                 controller.cast(controller.chooseAbilityForCast(selectedCard, game, true),
-                                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                        game, true, new ApprovingObject(source, game));
                                 game.getState().setValue("PlayFromNotOwnHandZone" + selectedCard.getId(), null);
                             }
                             copiedCards.remove(selectedCard);

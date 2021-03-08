@@ -1,13 +1,13 @@
 package mage.target;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.constants.Zone;
 import mage.game.Game;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public abstract class TargetObject extends TargetImpl {
@@ -44,9 +44,17 @@ public abstract class TargetObject extends TargetImpl {
                 sb.append(object.getLogName()).append(' ');
             }
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
+    /**
+     * Warning, don't use with non card objects here like commanders/emblems/etc. If you want it then
+     * override canTarget in your own target.
+     *
+     * @param id
+     * @param game
+     * @return
+     */
     @Override
     public boolean canTarget(UUID id, Game game) {
         MageObject object = game.getObject(id);

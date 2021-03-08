@@ -35,7 +35,7 @@ public final class DaruSpiritualist extends CardImpl {
         this.addAbility(new DaruSpiritualistTriggeredAbility(new BoostTargetEffect(0, 2, Duration.EndOfTurn)));
     }
 
-    public DaruSpiritualist(final DaruSpiritualist card) {
+    private DaruSpiritualist(final DaruSpiritualist card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class DaruSpiritualistTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

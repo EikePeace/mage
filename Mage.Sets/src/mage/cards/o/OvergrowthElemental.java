@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
@@ -86,7 +86,7 @@ class OvergrowthElementalEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(targetPointer.getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent == null || !permanent.hasSubtype(SubType.ELEMENTAL, game)) {
             return false;
         }

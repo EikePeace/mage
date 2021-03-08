@@ -13,7 +13,7 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.StackObject;
@@ -47,7 +47,7 @@ public final class Bioshift extends CardImpl {
     }
     
 
-    public Bioshift(final Bioshift card) {
+    private Bioshift(final Bioshift card) {
         super(card);
     }
 
@@ -89,8 +89,8 @@ class MoveCounterFromTargetToTargetEffect extends OneShotEffect {
             if (amountCounters > 0) {
                 int amountToMove = controller.getAmount(0, amountCounters, "How many counters do you want to move?", game);
                 if (amountToMove > 0) {
-                    fromPermanent.removeCounters(CounterType.P1P1.createInstance(amountToMove), game);
-                    toPermanent.addCounters(CounterType.P1P1.createInstance(amountToMove), source, game);
+                    fromPermanent.removeCounters(CounterType.P1P1.createInstance(amountToMove), source, game);
+                    toPermanent.addCounters(CounterType.P1P1.createInstance(amountToMove), source.getControllerId(), source, game);
                 }
             }
             return true;

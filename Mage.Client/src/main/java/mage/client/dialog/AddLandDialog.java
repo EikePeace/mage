@@ -22,6 +22,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
+ * App GUI: adding new lands to the deck, uses in deck editor and drafting
+ *
  * @author BetaSteward_at_googlemail.com
  */
 public class AddLandDialog extends MageDialog {
@@ -37,10 +39,6 @@ public class AddLandDialog extends MageDialog {
         this.setModal(true);
     }
 
-    private boolean setHaveSnowLands(ExpansionInfo exp) {
-        return CardRepository.instance.haveSnowLands(exp.getCode());
-    }
-
     public void showDialog(Deck deck, DeckEditorMode mode) {
         this.deck = deck;
         SortedSet<String> landSetNames = new TreeSet<>();
@@ -49,7 +47,7 @@ public class AddLandDialog extends MageDialog {
             // decide from which sets basic lands are taken from
             for (String setCode : deck.getExpansionSetCodes()) {
                 ExpansionInfo expansionInfo = ExpansionRepository.instance.getSetByCode(setCode);
-                if (expansionInfo != null && expansionInfo.hasBasicLands() && !setHaveSnowLands(expansionInfo)) {
+                if (expansionInfo != null && expansionInfo.hasBasicLands() && !CardRepository.haveSnowLands(expansionInfo.getCode())) {
                     defaultSetName = expansionInfo.getName();
                     break;
                 }
@@ -62,7 +60,7 @@ public class AddLandDialog extends MageDialog {
                     if (expansionInfo != null) {
                         List<ExpansionInfo> blockSets = ExpansionRepository.instance.getSetsFromBlock(expansionInfo.getBlockName());
                         for (ExpansionInfo blockSet : blockSets) {
-                            if (blockSet.hasBasicLands() && !setHaveSnowLands(expansionInfo)) {
+                            if (blockSet.hasBasicLands() && !CardRepository.haveSnowLands(expansionInfo.getCode())) {
                                 defaultSetName = expansionInfo.getName();
                                 break;
                             }
@@ -71,11 +69,12 @@ public class AddLandDialog extends MageDialog {
                 }
             }
         }
+
         // if still no set with lands found, add list of all available
         List<ExpansionInfo> basicLandSets = ExpansionRepository.instance.getSetsWithBasicLandsByReleaseDate();
         for (ExpansionInfo expansionInfo : basicLandSets) {
             // snow lands only in free mode
-            if (mode != DeckEditorMode.FREE_BUILDING && setHaveSnowLands(expansionInfo)) {
+            if (mode != DeckEditorMode.FREE_BUILDING && CardRepository.haveSnowLands(expansionInfo.getCode())) {
                 continue;
             }
             landSetNames.add(expansionInfo.getName());
@@ -148,6 +147,8 @@ public class AddLandDialog extends MageDialog {
                 throw new IllegalArgumentException("Code of Set " + landSetName + " not found");
             }
             criteria.setCodes(expansionInfo.getCode());
+        } else {
+            criteria.ignoreSetsWithSnowLands();
         }
         criteria.rarities(Rarity.LAND).name(landName);
         List<CardInfo> cards = CardRepository.instance.findCards(criteria);
@@ -472,12 +473,13 @@ public class AddLandDialog extends MageDialog {
             land_number = 0;
         }
         for (Card cd : cards) {
-            Mana m = cd.getManaCost().getMana();
-            red += m.getRed();
-            green += m.getGreen();
-            black += m.getBlack();
-            blue += m.getBlue();
-            white += m.getWhite();
+            for (String s : cd.getManaCostSymbols()) {
+                if (s.contains("W")) white++;
+                if (s.contains("U")) blue++;
+                if (s.contains("B")) black++;
+                if (s.contains("R")) red++;
+                if (s.contains("G")) green++;
+            }
         }
         int total = red + green + black + blue + white;
 

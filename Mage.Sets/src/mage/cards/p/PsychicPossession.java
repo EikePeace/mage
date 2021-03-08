@@ -46,7 +46,7 @@ public final class PsychicPossession extends CardImpl {
         this.addAbility(new PsychicPossessionTriggeredAbility());
     }
 
-    public PsychicPossession(final PsychicPossession card) {
+    private PsychicPossession(final PsychicPossession card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class PsychicPossessionTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DREW_CARD;
+        return event.getType() == GameEvent.EventType.DREW_CARD;
     }
 
     @Override

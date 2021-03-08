@@ -41,7 +41,7 @@ public final class FlashFoliage extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public FlashFoliage(final FlashFoliage card) {
+    private FlashFoliage(final FlashFoliage card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class FlashFoliageEffect extends OneShotEffect {
 
         if (controller != null) {
             Token token = new SaprolingToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+            token.putOntoBattlefield(1, game, source, source.getControllerId());
             Permanent attackingCreature = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (attackingCreature != null && game.getState().getCombat() != null) {
                 // Possible ruling (see Aetherplasm)

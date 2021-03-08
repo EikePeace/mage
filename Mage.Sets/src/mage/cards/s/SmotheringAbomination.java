@@ -46,7 +46,7 @@ public final class SmotheringAbomination extends CardImpl {
         this.addAbility(new SmotheringAbominationTriggeredAbility());
     }
 
-    public SmotheringAbomination(final SmotheringAbomination card) {
+    private SmotheringAbomination(final SmotheringAbomination card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class SmotheringAbominationTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

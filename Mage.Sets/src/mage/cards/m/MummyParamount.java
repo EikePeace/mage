@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -36,7 +36,7 @@ public final class MummyParamount extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new BoostSourceEffect(1, 1, Duration.EndOfTurn), filter));
     }
 
-    public MummyParamount(final MummyParamount card) {
+    private MummyParamount(final MummyParamount card) {
         super(card);
     }
 

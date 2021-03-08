@@ -40,7 +40,7 @@ public final class CabalExecutioner extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{3}{B}{B}")));
     }
 
-    public CabalExecutioner(final CabalExecutioner card) {
+    private CabalExecutioner(final CabalExecutioner card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class CabalExecutionerAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

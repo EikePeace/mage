@@ -36,7 +36,7 @@ public final class VeneratedTeacher extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new VeneratedTeacherEffect()));
     }
 
-    public VeneratedTeacher(final VeneratedTeacher card) {
+    private VeneratedTeacher(final VeneratedTeacher card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class VeneratedTeacherEffect extends OneShotEffect {
             for (Permanent permanent : permanents) {
                 for (Ability ability : permanent.getAbilities()) {
                     if (ability instanceof LevelUpAbility) {
-                        permanent.addCounters(CounterType.LEVEL.createInstance(2), source, game);
+                        permanent.addCounters(CounterType.LEVEL.createInstance(2), source.getControllerId(), source, game);
                     }
                 }
             }

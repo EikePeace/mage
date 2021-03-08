@@ -9,7 +9,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.TapTargetCost;
@@ -70,7 +70,7 @@ public final class VodalianWarMachine extends CardImpl {
         this.addAbility(new VodalianWarMachineTriggeredAbility(), new VodalianWarMachineWatcher());
     }
 
-    public VodalianWarMachine(final VodalianWarMachine card) {
+    private VodalianWarMachine(final VodalianWarMachine card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ public final class VodalianWarMachine extends CardImpl {
     }
 }
 
-class VodalianWarMachineTriggeredAbility extends DiesTriggeredAbility {
+class VodalianWarMachineTriggeredAbility extends DiesSourceTriggeredAbility {
 
     public VodalianWarMachineTriggeredAbility() {
         super(new VodalianWarMachineEffect(), false);
@@ -145,7 +145,7 @@ class VodalianWarMachineEffect extends OneShotEffect {
             if (watcher != null && watcher.getTappedMerfolkIds(sourcePermanent, game) != null) {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                     if (watcher.getTappedMerfolkIds(sourcePermanent, game).contains(new MageObjectReference(permanent, game))) {
-                        permanent.destroy(source.getSourceId(), game, false);
+                        permanent.destroy(source, game, false);
                     }
                 }
                 return true;

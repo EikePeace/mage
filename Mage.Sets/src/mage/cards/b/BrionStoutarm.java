@@ -16,7 +16,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetPlayerOrPlaneswalker;
@@ -51,7 +51,7 @@ public final class BrionStoutarm extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BrionStoutarm(final BrionStoutarm card) {
+    private BrionStoutarm(final BrionStoutarm card) {
         super(card);
     }
 

@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -37,7 +36,7 @@ public final class ThunderTotem extends CardImpl {
                 new ManaCostsImpl("{1}{W}{W}")));
     }
 
-    public ThunderTotem(final ThunderTotem card) {
+    private ThunderTotem(final ThunderTotem card) {
         super(card);
     }
 

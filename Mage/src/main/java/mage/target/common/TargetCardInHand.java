@@ -6,12 +6,14 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.events.TargetEvent;
 import mage.players.Player;
 import mage.target.TargetCard;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import mage.filter.StaticFilters;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -19,7 +21,7 @@ import java.util.UUID;
 public class TargetCardInHand extends TargetCard {
 
     public TargetCardInHand() {
-        this(1, 1, new FilterCard());
+        this(1, 1, StaticFilters.FILTER_CARD_A);
     }
 
     public TargetCardInHand(FilterCard filter) {
@@ -41,8 +43,12 @@ public class TargetCardInHand extends TargetCard {
 
     @Override
     public boolean canTarget(UUID playerId, UUID id, Ability source, Game game) {
-        Card card = game.getPlayer(playerId).getHand().get(id, game);
-        return card != null && filter.match(card, source != null ? source.getSourceId() : null, playerId, game);
+        // Has to be a card in the hand of a player in range. We don't know here, from which player's hand so we have to check all possible players
+        // And because a card in hand is never targeted we can omitt specific targeting related checks
+        Card card = game.getCard(id);
+        return game.getState().getZone(id) == Zone.HAND
+                && game.getState().getPlayersInRange(getTargetController() == null ? playerId : getTargetController(), game).contains(game.getOwnerId(id))
+                && card != null && filter.match(card, game);
     }
 
     @Override
@@ -51,12 +57,12 @@ public class TargetCardInHand extends TargetCard {
     }
 
     @Override
-    public Set<UUID> possibleTargets(UUID sourceId, UUID playerId, Game game) {
+    public Set<UUID> possibleTargets(UUID sourceId, UUID sourceControllerId, Game game) {
         Set<UUID> possibleTargets = new HashSet<>();
-        Player player = game.getPlayer(playerId);
+        Player player = game.getPlayer(sourceControllerId);
         if (player != null) {
-            for (Card card : player.getHand().getCards(filter, sourceId, playerId, game)) {
-                if (sourceId == null || isNotTarget() || !game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.TARGET, card.getId(), sourceId, playerId))) {
+            for (Card card : player.getHand().getCards(filter, sourceId, sourceControllerId, game)) {
+                if (sourceId == null || isNotTarget() || !game.replaceEvent(new TargetEvent(card, sourceId, sourceControllerId))) {
                     possibleTargets.add(card.getId());
                 }
             }
@@ -70,7 +76,7 @@ public class TargetCardInHand extends TargetCard {
         Player player = game.getPlayer(sourceControllerId);
         if (player != null) {
             for (Card card : player.getHand().getCards(filter, sourceId, sourceControllerId, game)) {
-                if (sourceId == null || isNotTarget() || !game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.TARGET, card.getId(), sourceId, sourceControllerId))) {
+                if (sourceId == null || isNotTarget() || !game.replaceEvent(new TargetEvent(card, sourceId, sourceControllerId))) {
                     possibleTargets++;
                     if (possibleTargets >= this.minNumberOfTargets) {
                         return true;
@@ -89,5 +95,11 @@ public class TargetCardInHand extends TargetCard {
     @Override
     public String getTargetedName(Game game) {
         return filter.getMessage();
+    }
+
+    @Override
+    public TargetCardInHand withChooseHint(String chooseHint) {
+        super.withChooseHint(chooseHint);
+        return this;
     }
 }

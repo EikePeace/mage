@@ -10,7 +10,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.counters.Counter;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -41,7 +41,7 @@ public final class FateTransfer extends CardImpl {
 
     }
 
-    public FateTransfer(final FateTransfer card) {
+    private FateTransfer(final FateTransfer card) {
         super(card);
     }
 
@@ -76,8 +76,8 @@ class FateTransferEffect extends OneShotEffect {
                 && creatureToMoveCountersTo != null) {
             Permanent copyCreature = creatureToMoveCountersFrom.copy();
             for (Counter counter : copyCreature.getCounters(game).values()) {
-                creatureToMoveCountersFrom.removeCounters(counter, game);
-                creatureToMoveCountersTo.addCounters(counter, source, game);
+                creatureToMoveCountersFrom.removeCounters(counter, source, game);
+                creatureToMoveCountersTo.addCounters(counter, source.getControllerId(), source, game);
             }
             return true;
         }

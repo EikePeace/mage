@@ -1,5 +1,3 @@
-
-
 package org.mage.test.cards.abilities.keywords;
 
 import mage.abilities.keyword.HexproofAbility;
@@ -9,7 +7,6 @@ import org.junit.Test;
 import org.mage.test.serverside.base.CardTestPlayerBase;
 
 /**
- *
  * @author LevelX2
  */
 public class HexproofTest extends CardTestPlayerBase {
@@ -21,10 +18,13 @@ public class HexproofTest extends CardTestPlayerBase {
     public void testOneTargetOneGainingHexproof() {
         addCard(Zone.BATTLEFIELD, playerA, "Forest", 4);
         addCard(Zone.BATTLEFIELD, playerA, "Elder of Laurels");
-        addCard(Zone.HAND, playerA, "Ranger's Guile");
-
+        //
+        // Target creature you control gets +1/+1 and gains hexproof until end of turn.
+        addCard(Zone.HAND, playerA, "Ranger's Guile"); // {G}
+        //
+        // Return up to two target creatures to their owners’ hands.
+        addCard(Zone.HAND, playerB, "Into the Void"); //{3}{U}
         addCard(Zone.BATTLEFIELD, playerB, "Island", 4);
-        addCard(Zone.HAND, playerB, "Into the Void");
 
         castSpell(2, PhaseStep.PRECOMBAT_MAIN, playerB, "Into the Void", "Elder of Laurels");
         castSpell(2, PhaseStep.PRECOMBAT_MAIN, playerA, "Ranger's Guile", "Elder of Laurels");
@@ -37,6 +37,7 @@ public class HexproofTest extends CardTestPlayerBase {
         assertPowerToughness(playerA, "Elder of Laurels", 3, 4);
         assertAbility(playerA, "Elder of Laurels", HexproofAbility.getInstance(), true);
     }
+
     /**
      * Tests one target gets hexproof
      */
@@ -63,5 +64,43 @@ public class HexproofTest extends CardTestPlayerBase {
         assertPowerToughness(playerA, "Elder of Laurels", 3, 4);
         assertAbility(playerA, "Elder of Laurels", HexproofAbility.getInstance(), true);
         assertPermanentCount(playerA, "Arbor Elf", 0);
+    }
+
+    /**
+     * Tests hexproof from a color with opponent's spells
+     */
+    @Test
+    public void testHexproofFromColorOpponentSpells() {
+        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 6);
+        addCard(Zone.HAND, playerA, "Murder", 2);
+
+        addCard(Zone.BATTLEFIELD, playerB, "Knight of Grace");
+        addCard(Zone.BATTLEFIELD, playerB, "Knight of Malice");
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Murder", "Knight of Grace");
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Murder", "Knight of Malice");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+
+        assertPermanentCount(playerB, "Knight of Grace", 1);
+        assertPermanentCount(playerB, "Knight of Malice", 0);
+    }
+
+    /**
+     * Tests hexproof from a color with controller's spells
+     */
+    @Test
+    public void testHexproofFromColorOwnSpells() {
+        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 3);
+        addCard(Zone.BATTLEFIELD, playerA, "Knight of Grace");
+        addCard(Zone.HAND, playerA, "Murder");
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Murder", "Knight of Grace");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+
+        assertPermanentCount(playerA, "Knight of Grace", 0);
     }
 }

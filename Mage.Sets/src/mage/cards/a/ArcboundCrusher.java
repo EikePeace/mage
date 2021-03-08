@@ -14,7 +14,7 @@ import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterArtifactPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class ArcboundCrusher extends CardImpl {
         this.addAbility(new ModularAbility(this, 1));
     }
 
-    public ArcboundCrusher(final ArcboundCrusher card) {
+    private ArcboundCrusher(final ArcboundCrusher card) {
         super(card);
     }
 

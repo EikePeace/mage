@@ -1,7 +1,5 @@
-
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -26,6 +24,8 @@ import mage.players.Player;
 import mage.target.TargetCard;
 import mage.util.CardUtil;
 
+import java.util.UUID;
+
 /**
  * @author nantuko
  */
@@ -43,7 +43,7 @@ public final class PrototypePortal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PrototypePortal(final PrototypePortal card) {
+    private PrototypePortal(final PrototypePortal card) {
         super(card);
     }
 
@@ -140,8 +140,8 @@ class PrototypePortalCreateTokenEffect extends OneShotEffect {
             Card card = game.getCard(permanent.getImprinted().get(0));
             if (card != null) {
                 EmptyToken token = new EmptyToken();
-                CardUtil.copyTo(token).from(card);
-                token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+                CardUtil.copyTo(token).from(card, game);
+                token.putOntoBattlefield(1, game, source, source.getControllerId());
                 return true;
             }
         }

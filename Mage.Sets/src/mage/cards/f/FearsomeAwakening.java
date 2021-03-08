@@ -31,7 +31,7 @@ public final class FearsomeAwakening extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD));
     }
 
-    public FearsomeAwakening(final FearsomeAwakening card) {
+    private FearsomeAwakening(final FearsomeAwakening card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class FearsomeAwakeningEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getFirstTarget());
         if (permanent != null && permanent.hasSubtype(SubType.DRAGON, game)) {
-            permanent.addCounters(CounterType.P1P1.createInstance(2), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
             return true;
         }
         return false;

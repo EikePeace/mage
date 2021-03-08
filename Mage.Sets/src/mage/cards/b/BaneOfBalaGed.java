@@ -1,7 +1,6 @@
 
 package mage.cards.b;
 
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public final class BaneOfBalaGed extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BaneOfBalaGedEffect(), false, "", SetTargetPointer.PLAYER));
     }
 
-    public BaneOfBalaGed(final BaneOfBalaGed card) {
+    private BaneOfBalaGed(final BaneOfBalaGed card) {
         super(card);
     }
 

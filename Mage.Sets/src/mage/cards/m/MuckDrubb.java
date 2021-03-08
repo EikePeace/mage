@@ -14,12 +14,11 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.filter.FilterInPlay;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.ObjectPlayer;
 import mage.filter.predicate.ObjectPlayerPredicate;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.target.Target;
@@ -60,7 +59,7 @@ public final class MuckDrubb extends CardImpl {
         this.addAbility(new MadnessAbility(this, new ManaCostsImpl("{2}{B}")));
     }
 
-    public MuckDrubb(final MuckDrubb card) {
+    private MuckDrubb(final MuckDrubb card) {
         super(card);
     }
 

@@ -2,7 +2,7 @@ package mage.cards.h;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.CreateTokenEffect;
 import mage.constants.SubType;
 import mage.cards.CardImpl;
@@ -24,12 +24,12 @@ public final class HuntedWitness extends CardImpl {
         this.toughness = new MageInt(1);
 
         // When Hunted Witness dies, create a 1/1 white Soldier creature token with lifelink.
-        this.addAbility(new DiesTriggeredAbility(
+        this.addAbility(new DiesSourceTriggeredAbility(
                 new CreateTokenEffect(new SoldierLifelinkToken())
         ));
     }
 
-    public HuntedWitness(final HuntedWitness card) {
+    private HuntedWitness(final HuntedWitness card) {
         super(card);
     }
 

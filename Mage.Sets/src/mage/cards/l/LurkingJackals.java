@@ -27,7 +27,7 @@ public final class LurkingJackals extends CardImpl {
         this.addAbility(new LurkingJackalsStateTriggeredAbility());
     }
 
-    public LurkingJackals(final LurkingJackals card) {
+    private LurkingJackals(final LurkingJackals card) {
         super(card);
     }
 
@@ -110,7 +110,7 @@ class LurkingJackalsToken extends TokenImpl {
     public LurkingJackalsToken() {
         super("Hound", "3/2 Hound creature");
         cardType.add(CardType.CREATURE);
-        subtype.add(SubType.HOUND);
+        subtype.add(SubType.DOG);
         power = new MageInt(3);
         toughness = new MageInt(2);
     }

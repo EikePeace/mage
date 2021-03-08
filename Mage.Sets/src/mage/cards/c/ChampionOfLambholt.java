@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -45,7 +45,7 @@ public final class ChampionOfLambholt extends CardImpl {
 
     }
 
-    public ChampionOfLambholt(final ChampionOfLambholt card) {
+    private ChampionOfLambholt(final ChampionOfLambholt card) {
         super(card);
     }
 

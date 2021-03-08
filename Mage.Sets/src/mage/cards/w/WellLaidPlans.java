@@ -27,7 +27,7 @@ public final class WellLaidPlans extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new WellLaidPlansPreventionEffect()));
     }
 
-    public WellLaidPlans(final WellLaidPlans card) {
+    private WellLaidPlans(final WellLaidPlans card) {
         super(card);
     }
 
@@ -55,15 +55,15 @@ class WellLaidPlansPreventionEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() != GameEvent.EventType.DAMAGE_CREATURE) {
+        if (event.getType() != GameEvent.EventType.DAMAGE_PERMANENT) {
             return false;
         }
-        Permanent damager = game.getPermanentOrLKIBattlefield(event.getSourceId());
+        Permanent attacker = game.getPermanentOrLKIBattlefield(event.getSourceId());
         Permanent damaged = game.getPermanentOrLKIBattlefield(event.getTargetId());
-        if (damager == null || damaged == null
-                || !damager.isCreature() || !damaged.isCreature()) {
+        if (attacker == null || damaged == null
+                || !attacker.isCreature() || !damaged.isCreature()) {
             return false;
         }
-        return !damager.getColor(game).intersection(damaged.getColor(game)).isColorless();
+        return !attacker.getColor(game).intersection(damaged.getColor(game)).isColorless();
     }
 }

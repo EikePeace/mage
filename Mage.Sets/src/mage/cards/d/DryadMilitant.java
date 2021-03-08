@@ -37,7 +37,7 @@ public final class DryadMilitant extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new DryadMilitantReplacementEffect()));
     }
 
-    public DryadMilitant(final DryadMilitant card) {
+    private DryadMilitant(final DryadMilitant card) {
         super(card);
     }
 
@@ -70,13 +70,7 @@ class DryadMilitantReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            Card card = game.getCard(event.getTargetId());
-            if (card != null) {
-                return controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, game.getState().getZone(card.getId()), true);
-            }
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 

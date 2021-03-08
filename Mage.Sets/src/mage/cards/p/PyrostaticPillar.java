@@ -29,7 +29,7 @@ public final class PyrostaticPillar extends CardImpl {
         this.addAbility(new PyrostaticPillarTriggeredAbility());
     }
 
-    public PyrostaticPillar(final PyrostaticPillar card) {
+    private PyrostaticPillar(final PyrostaticPillar card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class PyrostaticPillarTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

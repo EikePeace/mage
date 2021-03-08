@@ -15,8 +15,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -45,7 +44,7 @@ public final class ExperimentKraj extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ExperimentKraj(final ExperimentKraj card) {
+    private ExperimentKraj(final ExperimentKraj card) {
         super(card);
     }
 
@@ -59,7 +58,7 @@ class ExperimentKrajEffect extends ContinuousEffectImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent();
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
         filter.add(AnotherPredicate.instance);
     }
 

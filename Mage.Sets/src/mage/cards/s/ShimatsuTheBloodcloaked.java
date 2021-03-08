@@ -38,7 +38,7 @@ public final class ShimatsuTheBloodcloaked extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new ShimatsuTheBloodcloakedEffect()));
     }
 
-    public ShimatsuTheBloodcloaked(final ShimatsuTheBloodcloaked card) {
+    private ShimatsuTheBloodcloaked(final ShimatsuTheBloodcloaked card) {
         super(card);
     }
 
@@ -89,11 +89,11 @@ class ShimatsuTheBloodcloakedEffect extends ReplacementEffectImpl {
                 game.informPlayers(controller.getLogName() + " sacrifices " + sacrificedCreatures + " creatures for " + creature.getLogName());
                 for (UUID targetId : target.getTargets()) {
                     Permanent targetCreature = game.getPermanent(targetId);
-                    if (targetCreature == null || !targetCreature.sacrifice(source.getSourceId(), game)) {
+                    if (targetCreature == null || !targetCreature.sacrifice(source, game)) {
                         return false;
                     }
                 }
-                creature.addCounters(CounterType.P1P1.createInstance(sacrificedCreatures), source, game);
+                creature.addCounters(CounterType.P1P1.createInstance(sacrificedCreatures), source.getControllerId(), source, game);
             }
         }
         return false;

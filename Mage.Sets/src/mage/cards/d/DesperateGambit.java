@@ -37,7 +37,7 @@ public final class DesperateGambit extends CardImpl {
         this.getSpellAbility().addEffect(new DesperateGambitEffect());
     }
 
-    public DesperateGambit(final DesperateGambit card) {
+    private DesperateGambit(final DesperateGambit card) {
         super(card);
     }
 
@@ -80,8 +80,7 @@ class DesperateGambitEffect extends PreventionEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE ||
-                event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER ||
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT ||
                 event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
@@ -106,7 +105,7 @@ class DesperateGambitEffect extends PreventionEffectImpl {
         if (controller != null && object != null) {
             if (super.applies(event, source, game) && event instanceof DamageEvent && event.getAmount() > 0) {
                 if (wonFlip) {
-                    event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+                    event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
                     this.discard();
                 } else {
                     preventDamageAction(event, source, game);

@@ -39,7 +39,7 @@ public final class DropOfHoney extends CardImpl {
         this.addAbility(new DropOfHoneyStateTriggeredAbility());
     }
 
-    public DropOfHoney(final DropOfHoney card) {
+    private DropOfHoney(final DropOfHoney card) {
         super(card);
     }
 
@@ -97,7 +97,7 @@ class DropOfHoneyEffect extends OneShotEffect {
             }
             if (permanentToDestroy != null) {
                 game.informPlayers(sourcePermanent.getName() + " chosen creature: " + permanentToDestroy.getName());
-                return permanentToDestroy.destroy(source.getSourceId(), game, true);
+                return permanentToDestroy.destroy(source, game, true);
             }
             return true;
         }

@@ -6,13 +6,11 @@ import mage.abilities.Ability;
 import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.effects.ContinuousEffectImpl;
-import mage.abilities.effects.Effects;
 import mage.abilities.effects.RedirectionEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
-import mage.constants.EffectType;
 import mage.constants.Layer;
 import mage.constants.Outcome;
 import mage.constants.SubLayer;
@@ -39,7 +37,7 @@ public final class Martyrdom extends CardImpl {
         this.getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
     }
 
-    public Martyrdom(final Martyrdom card) {
+    private Martyrdom(final Martyrdom card) {
         super(card);
     }
 
@@ -66,7 +64,7 @@ class MartyrdomGainAbilityTargetEffect extends ContinuousEffectImpl {
         if (permanent != null) {
             ActivatedAbilityImpl ability = new MartyrdomActivatedAbility(source.getControllerId());
             ability.setMayActivate(TargetController.ANY);
-            permanent.addAbility(ability, source.getSourceId(), game, false);
+            permanent.addAbility(ability, source.getSourceId(), game);
             return true;
         }
         return false;

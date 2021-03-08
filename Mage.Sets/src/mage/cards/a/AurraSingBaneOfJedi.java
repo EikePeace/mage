@@ -58,7 +58,7 @@ public final class AurraSingBaneOfJedi extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AurraSingBaneOfJedi(final AurraSingBaneOfJedi card) {
+    private AurraSingBaneOfJedi(final AurraSingBaneOfJedi card) {
         super(card);
     }
 
@@ -114,7 +114,7 @@ class SacrificeAllEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), source.getId(), game);
         for (Permanent p : permanents) {
-            p.sacrifice(source.getSourceId(), game);
+            p.sacrifice(source, game);
         }
         return true;
     }

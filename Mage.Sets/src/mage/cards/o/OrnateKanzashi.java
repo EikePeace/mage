@@ -42,7 +42,7 @@ public final class OrnateKanzashi extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OrnateKanzashi(final OrnateKanzashi card) {
+    private OrnateKanzashi(final OrnateKanzashi card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class OrnateKanzashiEffect extends OneShotEffect {
                 Library library = opponent.getLibrary();
                 Card card = library.getFromTop(game);
                 if (card != null) {
-                    opponent.moveCardToExileWithInfo(card, source.getSourceId(), sourceObject.getName(), source.getSourceId(), game, Zone.LIBRARY, true);
+                    opponent.moveCardToExileWithInfo(card, source.getSourceId(), sourceObject.getName(), source, game, Zone.LIBRARY, true);
                     ContinuousEffect effect = new OrnateKanzashiCastFromExileEffect();
                     effect.setTargetPointer(new FixedTarget(card.getId()));
                     game.addEffect(effect, source);

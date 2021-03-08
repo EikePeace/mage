@@ -4,7 +4,7 @@ package mage.cards.a;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.Card;
@@ -33,10 +33,10 @@ public final class ArashinSovereign extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
         
         // When Arashin Sovereign dies, you may put it on the top or bottom of its owner's library.
-        this.addAbility(new DiesTriggeredAbility(new ArashinSovereignEffect(), true));
+        this.addAbility(new DiesSourceTriggeredAbility(new ArashinSovereignEffect(), true));
     }
 
-    public ArashinSovereign(final ArashinSovereign card) {
+    private ArashinSovereign(final ArashinSovereign card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class ArashinSovereignEffect extends OneShotEffect {
         if (controller != null && sourceCard != null) {
             if (game.getState().getZone(source.getSourceId()) == Zone.GRAVEYARD) {
                 boolean onTop = controller.chooseUse(outcome, "Put " + sourceCard.getName() + " on top of it's owners library (otherwise on bottom)?", source, game);
-                controller.moveCardToLibraryWithInfo(sourceCard, source.getSourceId(), game, Zone.GRAVEYARD, onTop, true);
+                controller.moveCardToLibraryWithInfo(sourceCard, source, game, Zone.GRAVEYARD, onTop, true);
             }
             return true;
         }

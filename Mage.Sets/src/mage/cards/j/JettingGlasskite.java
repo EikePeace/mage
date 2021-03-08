@@ -38,7 +38,7 @@ public final class JettingGlasskite extends CardImpl {
 
     }
 
-    public JettingGlasskite(final JettingGlasskite card) {
+    private JettingGlasskite(final JettingGlasskite card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class JettingGlasskiteAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

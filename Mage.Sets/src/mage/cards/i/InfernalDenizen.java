@@ -7,6 +7,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.condition.common.SourceOnBattlefieldCondition;
+import mage.abilities.condition.common.SourceRemainsInZoneCondition;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.dynamicvalue.DynamicValue;
@@ -52,14 +53,14 @@ public final class InfernalDenizen extends CardImpl {
         // {tap}: Gain control of target creature for as long as Infernal Denizen remains on the battlefield.
         ConditionalContinuousEffect effect = new ConditionalContinuousEffect(
                 new GainControlTargetEffect(Duration.Custom, true),
-                SourceOnBattlefieldCondition.instance,
+                new SourceRemainsInZoneCondition(Zone.BATTLEFIELD),
                 "gain control of target creature for as long as {this} remains on the battlefield");
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new TapSourceCost());
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability);
     }
 
-    public InfernalDenizen(final InfernalDenizen card) {
+    private InfernalDenizen(final InfernalDenizen card) {
         super(card);
     }
 
@@ -105,10 +106,10 @@ class InfernalDenizenEffect extends OneShotEffect {
             effect.apply(game, source);
             if (!canSac) {
                 if (creature != null) {
-                    creature.tap(game);
+                    creature.tap(source, game);
                 }
                 TargetOpponent targetOpp = new TargetOpponent(true);
-                if (targetOpp.canChoose(player.getId(), game)
+                if (targetOpp.canChoose(source.getSourceId(), player.getId(), game)
                         && targetOpp.choose(Outcome.Detriment, player.getId(), source.getSourceId(), game)) {
                     Player opponent = game.getPlayer(targetOpp.getFirstTarget());
                     if (opponent != null) {
@@ -116,7 +117,7 @@ class InfernalDenizenEffect extends OneShotEffect {
                         filter2.add(new ControllerIdPredicate(player.getId()));
                         TargetCreaturePermanent targetCreature = new TargetCreaturePermanent(1, 1, filter2, true);
                         targetCreature.setTargetController(opponent.getId());
-                        if (targetCreature.canChoose(id, game)
+                        if (targetCreature.canChoose(source.getSourceId(), id, game)
                                 && opponent.chooseUse(Outcome.GainControl, "Gain control of a creature?", source, game)
                                 && opponent.chooseTarget(Outcome.GainControl, targetCreature, source, game)) {
                             ConditionalContinuousEffect giveEffect = new ConditionalContinuousEffect(

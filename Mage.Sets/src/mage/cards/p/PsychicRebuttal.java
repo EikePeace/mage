@@ -40,10 +40,10 @@ public final class PsychicRebuttal extends CardImpl {
         // Counter target instant or sorcery spell that targets you.
         this.getSpellAbility().addEffect(new PsychicRebuttalEffect());
         this.getSpellAbility().addTarget(new TargetSpell(filter));
-        // <i>Spell mastery</i> — If there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy.
+        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy.
     }
 
-    public PsychicRebuttal(final PsychicRebuttal card) {
+    private PsychicRebuttal(final PsychicRebuttal card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class PsychicRebuttalEffect extends OneShotEffect {
     public PsychicRebuttalEffect() {
         super(Outcome.Benefit);
         this.staticText = "Counter target instant or sorcery spell that targets you."
-                + "<br><i>Spell mastery</i> — If there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy";
+                + "<br><i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, you may copy the spell countered this way. You may choose new targets for the copy";
     }
 
     public PsychicRebuttalEffect(final PsychicRebuttalEffect effect) {
@@ -78,7 +78,7 @@ class PsychicRebuttalEffect extends OneShotEffect {
         }
         Spell spell = game.getStack().getSpell(getTargetPointer().getFirst(game, source));
         if (spell != null) {
-            game.getStack().counter(spell.getId(), source.getSourceId(), game);
+            game.getStack().counter(spell.getId(), source, game);
 
             if (SpellMasteryCondition.instance.apply(game, source)
                     && controller.chooseUse(Outcome.PlayForFree, "Copy " + spell.getName() + " (you may choose new targets for the copy)?", source, game)) {

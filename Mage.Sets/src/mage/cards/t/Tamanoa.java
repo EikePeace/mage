@@ -36,7 +36,7 @@ public final class Tamanoa extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Tamanoa(final Tamanoa card) {
+    private Tamanoa(final Tamanoa card) {
         super(card);
     }
 
@@ -63,9 +63,8 @@ class TamanoaDealsDamageTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class FadingAbility extends EntersBattlefieldAbility {
         ruleText = "Fading " + fadeCounter
                 + (shortRuleText ? ""
                         : " <i>(This permanent enters the battlefield with " + fadeCounter + " fade counters on it."
-                        + " At the beginning of your upkeep, remove a fade counter from this permanent. If you can't, sacrifice the permanent.</i>");
+                        + " At the beginning of your upkeep, remove a fade counter from this permanent. If you can't, sacrifice the permanent.)</i>");
     }
 
     public FadingAbility(final FadingAbility ability) {
@@ -70,9 +70,9 @@ class FadingEffect extends OneShotEffect {
         if (permanent != null) {
             int amount = permanent.getCounters(game).getCount(CounterType.FADE);
             if (amount > 0) {
-                permanent.removeCounters(CounterType.FADE.createInstance(), game);
+                permanent.removeCounters(CounterType.FADE.createInstance(), source, game);
             } else {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
             return true;
         }

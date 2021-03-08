@@ -35,7 +35,7 @@ public final class ScrollRack extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScrollRack(final ScrollRack card) {
+    private ScrollRack(final ScrollRack card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class ScrollRackEffect extends OneShotEffect {
             TargetCardInHand target = new TargetCardInHand(0, controller.getHand().size(), filter);
             target.setRequired(false);
             int amountExiled = 0;
-            if (target.canChoose(source.getControllerId(), game) && target.choose(Outcome.Neutral, source.getControllerId(), source.getSourceId(), game)) {
+            if (target.canChoose(source.getSourceId(), source.getControllerId(), game) && target.choose(Outcome.Neutral, source.getControllerId(), source.getSourceId(), game)) {
                 if (!target.getTargets().isEmpty()) {
                     for (UUID targetId : target.getTargets()) {
                         Card card = game.getCard(targetId);

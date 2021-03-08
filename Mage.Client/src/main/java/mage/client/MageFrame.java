@@ -1,5 +1,6 @@
 package mage.client;
 
+import mage.MageException;
 import mage.cards.action.ActionCallback;
 import mage.cards.decks.Deck;
 import mage.cards.repository.CardRepository;
@@ -53,8 +54,10 @@ import net.java.truevfs.access.TConfig;
 import net.java.truevfs.kernel.spec.FsAccessOption;
 import org.apache.log4j.Logger;
 import org.mage.card.arcane.ManaSymbols;
+import org.mage.card.arcane.SvgUtils;
 import org.mage.plugins.card.images.DownloadPicturesService;
 import org.mage.plugins.card.info.CardInfoPaneImpl;
+import org.mage.plugins.card.utils.CardImageUtils;
 import org.mage.plugins.card.utils.impl.ImageManagerImpl;
 
 import javax.imageio.ImageIO;
@@ -67,6 +70,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -79,6 +83,7 @@ import java.util.prefs.Preferences;
 public class MageFrame extends javax.swing.JFrame implements MageClient {
 
     private static final String TITLE_NAME = "XMage";
+    private static final Logger logger = Logger.getLogger(MageFrame.class);
 
     private static final Logger LOGGER = Logger.getLogger(MageFrame.class);
     private static final String LITE_MODE_ARG = "-lite";
@@ -184,7 +189,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
     /**
      * Creates new form MageFrame
      */
-    public MageFrame() {
+    public MageFrame() throws MageException {
         setWindowTitle();
 
         EDTExceptionHandler.registerExceptionHandler();
@@ -200,9 +205,17 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         TConfig config = TConfig.current();
         config.setArchiveDetector(new TArchiveDetector("zip"));
         config.setAccessPreference(FsAccessOption.STORE, true);
+
         try {
             UIManager.put("desktop", new Color(0, 0, 0, 0));
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+
+            UIManager.put("nimbusBlueGrey", PreferencesDialog.getCurrentTheme().getNimbusBlueGrey()); // buttons, scrollbar background, disabled inputs
+            UIManager.put("control", PreferencesDialog.getCurrentTheme().getControl()); // window bg
+            UIManager.put("nimbusLightBackground", PreferencesDialog.getCurrentTheme().getNimbusLightBackground()); // inputs, table rows
+            UIManager.put("info", PreferencesDialog.getCurrentTheme().getInfo()); // tooltips
+            UIManager.put("nimbusBase", PreferencesDialog.getCurrentTheme().getNimbusBase()); // title bars, scrollbar foreground
+
             //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             // stop JSplitPane from eating F6 and F8 or any other function keys
             {
@@ -226,16 +239,24 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         RepositoryUtil.bootstrapLocalDb();
         // re-create database on empty (e.g. after new build cleaned db on startup)
         if (RepositoryUtil.CARD_DB_RECREATE_BY_CLIENT_SIDE && RepositoryUtil.isDatabaseEmpty()) {
-            LOGGER.info("DB: creating cards database");
+            LOGGER.info("DB: creating cards database...");
             CardScanner.scan();
             LOGGER.info("Done.");
         }
 
+        // IMAGES CHECK
+        LOGGER.info("Images: search broken files...");
+        CardImageUtils.checkAndFixImageFiles();
+
         if (RateCard.PRELOAD_CARD_RATINGS_ON_STARTUP) {
             RateCard.bootstrapCardsAndRatings();
         }
+        SvgUtils.checkSvgSupport();
         ManaSymbols.loadImages();
         Plugins.instance.loadPlugins();
+        if (!Plugins.instance.isCardPluginLoaded()) {
+            throw new MageException("can't load card plugin");
+        }
 
         initComponents();
 
@@ -445,16 +466,19 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         }
     }
 
+    // Sets background for login screen
     private void setBackground() {
         if (liteMode || grayMode) {
             return;
         }
-        String filename = "/background.jpg";
+
         try {
-            if (Plugins.instance.isThemePluginLoaded()) {
+            // If user has custom background, use that, otherwise, use theme background
+            if (Plugins.instance.isThemePluginLoaded() &&
+                    !PreferencesDialog.getCachedValue(PreferencesDialog.KEY_BACKGROUND_IMAGE_DEFAULT, "true").equals("true")) {
                 backgroundPane = (ImagePanel) Plugins.instance.updateTablePanel(new HashMap<>());
             } else {
-                InputStream is = this.getClass().getResourceAsStream(filename);
+                InputStream is = this.getClass().getResourceAsStream(PreferencesDialog.getCurrentTheme().getLoginBackgroundPath());
                 BufferedImage background = ImageIO.read(is);
                 backgroundPane = new ImagePanel(background, ImagePanelStyle.SCALED);
             }
@@ -870,7 +894,7 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         popupDebug.add(menuDebugTestCardRenderModesDialog);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1024, 768));
+        setMinimumSize(new java.awt.Dimension(1024, 500));
 
         desktopPane.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -1019,6 +1043,10 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
                                 .addGap(2, 2, 2)
                                 .addComponent(desktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
         );
+
+        if (PreferencesDialog.getCurrentTheme().getMageToolbar() != null) {
+            mageToolbar.getParent().setBackground(PreferencesDialog.getCurrentTheme().getMageToolbar());
+        }
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -1211,7 +1239,6 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         } else {
             SwingUtilities.invokeLater(() -> userRequestDialog.showDialog(userRequestMessage));
         }
-
     }
 
     public void showErrorDialog(final String title, final String message) {
@@ -1220,7 +1247,6 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         } else {
             SwingUtilities.invokeLater(() -> errorDialog.showDialog(title, message));
         }
-
     }
 
     public void showCollectionViewer() {
@@ -1253,6 +1279,12 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
         LOGGER.info("Starting MAGE client version " + VERSION);
         LOGGER.info("Logging level: " + LOGGER.getEffectiveLevel());
+        LOGGER.info("Default charset: " + Charset.defaultCharset());
+        if (!Charset.defaultCharset().toString().equals("UTF-8")) {
+            LOGGER.warn("WARNING, bad charset. Some images will not be downloaded. You must:");
+            LOGGER.warn("* Open launcher -> settings -> java -> client java options");
+            LOGGER.warn("* Insert additional command at the the end: -Dfile.encoding=UTF-8");
+        }
 
         startTime = System.currentTimeMillis();
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> LOGGER.fatal(null, e));
@@ -1302,7 +1334,12 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
                     splash.update();
                 }
             }
-            instance = new MageFrame();
+            try {
+                instance = new MageFrame();
+            } catch (Throwable e) {
+                logger.fatal("Critical error on start up, app will be closed: " + e.getMessage(), e);
+                System.exit(1);
+            }
 
             // debug menu
             instance.separatorDebug.setVisible(debugMode);
@@ -1321,7 +1358,6 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
                 instance.currentConnection.setPassword(startPassword);
             }
             instance.setVisible(true);
-
         });
     }
 
@@ -1623,6 +1659,13 @@ public class MageFrame extends javax.swing.JFrame implements MageClient {
         if (whatsNewDialog != null) {
             whatsNewDialog.checkUpdatesAndShow(forceToShowPage);
         }
+    }
+
+    public boolean isGameFrameActive(UUID gameId) {
+        if (activeFrame != null && activeFrame instanceof GamePane) {
+            return ((GamePane) activeFrame).getGameId().equals(gameId);
+        }
+        return false;
     }
 }
 

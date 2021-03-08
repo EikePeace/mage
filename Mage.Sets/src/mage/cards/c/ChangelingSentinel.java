@@ -22,11 +22,11 @@ public final class ChangelingSentinel extends CardImpl {
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(2);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(VigilanceAbility.getInstance());
     }
 
-    public ChangelingSentinel(final ChangelingSentinel card) {
+    private ChangelingSentinel(final ChangelingSentinel card) {
         super(card);
     }
 

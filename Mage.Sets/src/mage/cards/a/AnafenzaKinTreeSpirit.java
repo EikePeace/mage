@@ -13,7 +13,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -41,7 +41,7 @@ public final class AnafenzaKinTreeSpirit extends CardImpl {
         this.addAbility(new EntersBattlefieldControlledTriggeredAbility(Zone.BATTLEFIELD, new BolsterEffect(1), filter, false));
     }
 
-    public AnafenzaKinTreeSpirit(final AnafenzaKinTreeSpirit card) {
+    private AnafenzaKinTreeSpirit(final AnafenzaKinTreeSpirit card) {
         super(card);
     }
 

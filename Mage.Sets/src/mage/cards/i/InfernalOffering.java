@@ -41,7 +41,7 @@ public final class InfernalOffering extends CardImpl {
         this.getSpellAbility().addEffect(new InfernalOfferingReturnEffect());
     }
 
-    public InfernalOffering(final InfernalOffering card) {
+    private InfernalOffering(final InfernalOffering card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class InfernalOfferingSacrificeEffect extends OneShotEffect {
                 for (Entry<UUID, UUID> entry : toSacrifice.entrySet()) {
                     Permanent permanent = game.getPermanent(entry.getValue());
                     if (permanent != null) {
-                        if (permanent.sacrifice(source.getSourceId(), game)) {
+                        if (permanent.sacrifice(source, game)) {
                             toDraw.add(entry.getKey());
                         }
                     }
@@ -99,7 +99,7 @@ class InfernalOfferingSacrificeEffect extends OneShotEffect {
                 for (UUID playerId : toDraw) {
                     Player playerToDraw = game.getPlayer(playerId);
                     if (playerToDraw != null) {
-                        playerToDraw.drawCards(2, game);
+                        playerToDraw.drawCards(2, source, game);
                     }
                 }
                 return true;

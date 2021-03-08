@@ -38,7 +38,7 @@ public final class StaffOfTheLetterMagus extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new StaffOfTheLetterMagusEffect(), new FilterSpell("a spell"), false, SetTargetPointer.SPELL));
     }
 
-    public StaffOfTheLetterMagus(final StaffOfTheLetterMagus card) {
+    private StaffOfTheLetterMagus(final StaffOfTheLetterMagus card) {
         super(card);
     }
 
@@ -130,7 +130,7 @@ class StaffOfTheLetterMagusEffect extends OneShotEffect {
                     for (int i = 0; i < spellName.length(); i++) {
                         char letter = spellName.charAt(i);
                         String chosenLetter = (String) game.getState().getValue(mageObject.getId() + "_letter");
-                        if (Character.isLetter(letter) && Character.toUpperCase(letter) == chosenLetter.charAt(0)) {
+                        if (chosenLetter != null && Character.isLetter(letter) && Character.toUpperCase(letter) == chosenLetter.charAt(0)) {
                             lifegainValue++;
                         }
                     }

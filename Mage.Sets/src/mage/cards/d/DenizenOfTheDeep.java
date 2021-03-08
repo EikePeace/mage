@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class DenizenOfTheDeep extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(effect));
     }
 
-    public DenizenOfTheDeep(final DenizenOfTheDeep card) {
+    private DenizenOfTheDeep(final DenizenOfTheDeep card) {
         super(card);
     }
 

@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -36,7 +35,7 @@ public final class SilumgarMonument extends CardImpl {
             (new OjutaiMonumentToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{4}{U}{B}")));
     }
 
-    public SilumgarMonument(final SilumgarMonument card) {
+    private SilumgarMonument(final SilumgarMonument card) {
         super(card);
     }
 

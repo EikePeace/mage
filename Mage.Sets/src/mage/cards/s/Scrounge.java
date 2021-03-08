@@ -9,7 +9,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.common.FilterArtifactCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInGraveyard;
@@ -29,7 +29,7 @@ public final class Scrounge extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public Scrounge(final Scrounge card) {
+    private Scrounge(final Scrounge card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class ScroungeEffect extends OneShotEffect {
             filter.add(new OwnerIdPredicate(opponent.getId()));
             TargetCardInGraveyard chosenCard = new TargetCardInGraveyard(filter);
             chosenCard.setNotTarget(true);
-            if (chosenCard.canChoose(opponent.getId(), game)) {
+            if (chosenCard.canChoose(source.getSourceId(), opponent.getId(), game)) {
                 opponent.chooseTarget(Outcome.ReturnToHand, chosenCard, source, game);
                 Card card = game.getCard(chosenCard.getFirstTarget());
                 if (card != null) {

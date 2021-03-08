@@ -48,7 +48,7 @@ public final class BloodcrazedHoplite extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BloodcrazedHoplite(final BloodcrazedHoplite card) {
+    private BloodcrazedHoplite(final BloodcrazedHoplite card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class BloodcrazedHopliteTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_ADDED;
+        return event.getType() == GameEvent.EventType.COUNTER_ADDED;
     }
 
     @Override

@@ -11,10 +11,9 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -35,7 +34,7 @@ public final class HavengulSkaab extends CardImpl {
         this.addAbility(new HavengulSkaabAbility());
     }
 
-    public HavengulSkaab(final HavengulSkaab card) {
+    private HavengulSkaab(final HavengulSkaab card) {
         super(card);
     }
 
@@ -63,7 +62,7 @@ class HavengulSkaabAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

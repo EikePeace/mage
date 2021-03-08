@@ -7,7 +7,9 @@ import mage.abilities.Abilities;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.abilities.SpellAbility;
-import mage.abilities.costs.mana.ManaCosts;
+import mage.abilities.effects.Effect;
+import mage.abilities.effects.Effects;
+import mage.abilities.icon.CardIcon;
 import mage.abilities.keyword.AftermathAbility;
 import mage.cards.*;
 import mage.cards.mock.MockCard;
@@ -27,7 +29,7 @@ import mage.game.stack.StackAbility;
 import mage.target.Target;
 import mage.target.Targets;
 import mage.util.CardUtil;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,15 +57,15 @@ public class CardView extends SimpleCardView {
     @Expose
     protected String loyalty = "";
     protected String startingLoyalty;
-    protected Set<CardType> cardTypes;
-    protected SubTypeList subTypes;
+    protected ArrayList<CardType> cardTypes;
+    protected SubTypes subTypes;
     protected Set<SuperType> superTypes;
     protected ObjectColor color;
     protected ObjectColor frameColor;
     protected FrameStyle frameStyle;
     // can combine multiple costs for MockCard from deck editor or db (left/right, card/adventure)
-    protected List<String> manaCostLeft;
-    protected List<String> manaCostRight;
+    protected String manaCostLeftStr;
+    protected String manaCostRightStr;
     protected int convertedManaCost;
     protected Rarity rarity;
 
@@ -76,7 +78,7 @@ public class CardView extends SimpleCardView {
     protected CardView ability;
     protected int type;
 
-    protected boolean transformable;
+    protected boolean transformable; // can toggle one card side to another (transformable cards, modal double faces)
     protected CardView secondCardFace;
     protected boolean transformed;
 
@@ -88,13 +90,15 @@ public class CardView extends SimpleCardView {
 
     protected boolean isSplitCard;
     protected String leftSplitName;
-    protected ManaCosts leftSplitCosts;
+    protected String leftSplitCostsStr;
     protected List<String> leftSplitRules;
     protected String leftSplitTypeLine;
     protected String rightSplitName;
-    protected ManaCosts rightSplitCosts;
+    protected String rightSplitCostsStr;
     protected List<String> rightSplitRules;
     protected String rightSplitTypeLine;
+
+    protected boolean isModalDoubleFacesCard;
 
     protected ArtRect artRect = ArtRect.NORMAL;
 
@@ -114,18 +118,28 @@ public class CardView extends SimpleCardView {
     protected boolean canAttack;
     protected boolean canBlock;
     protected boolean inViewerOnly;
+    protected List<CardIcon> cardIcons = new ArrayList<>(); // additional icons to render
 
     protected Card originalCard = null;
 
+    /**
+     * Non game usage like deck editor
+     *
+     * @param card
+     */
     public CardView(Card card) {
-        this(card, null, false);
+        this(card, (Game) null);
+    }
+
+    public CardView(Card card, Game game) {
+        this(card, game, false);
     }
 
     public CardView(Card card, SimpleCardView simpleCardView) {
         this(card, null, false);
         this.id = simpleCardView.getId();
 
-        this.isPlayable = simpleCardView.isPlayable;
+        this.playableStats = simpleCardView.playableStats.copy();
         this.isChoosable = simpleCardView.isChoosable;
         this.isSelected = simpleCardView.isSelected;
     }
@@ -135,7 +149,7 @@ public class CardView extends SimpleCardView {
         this.id = cardId;
     }
 
-    public CardView(CardView cardView) {
+    public CardView(final CardView cardView) {
         super(cardView);
 
         // generetate new ID (TODO: why new ID?)
@@ -151,15 +165,15 @@ public class CardView extends SimpleCardView {
         this.toughness = cardView.toughness;
         this.loyalty = cardView.loyalty;
         this.startingLoyalty = cardView.startingLoyalty;
-        this.cardTypes = new HashSet<>(cardView.cardTypes);
-        this.subTypes = new SubTypeList(cardView.subTypes);
+        this.cardTypes = new ArrayList<>(cardView.cardTypes);
+        this.subTypes = new SubTypes(cardView.subTypes);
         this.superTypes = cardView.superTypes;
 
         this.color = cardView.color;
         this.frameColor = cardView.frameColor;
         this.frameStyle = cardView.frameStyle;
-        this.manaCostLeft = new ArrayList<>(cardView.manaCostLeft);
-        this.manaCostRight = new ArrayList<>(cardView.manaCostRight);
+        this.manaCostLeftStr = cardView.manaCostLeftStr;
+        this.manaCostRightStr = cardView.manaCostRightStr;
         this.convertedManaCost = cardView.convertedManaCost;
         this.rarity = cardView.rarity;
 
@@ -180,13 +194,15 @@ public class CardView extends SimpleCardView {
 
         this.isSplitCard = cardView.isSplitCard;
         this.leftSplitName = cardView.leftSplitName;
-        this.leftSplitCosts = cardView.leftSplitCosts == null ? null : cardView.leftSplitCosts.copy();
+        this.leftSplitCostsStr = cardView.leftSplitCostsStr;
         this.leftSplitRules = cardView.leftSplitRules == null ? null : new ArrayList<>(cardView.leftSplitRules);
         this.leftSplitTypeLine = cardView.leftSplitTypeLine;
         this.rightSplitName = cardView.rightSplitName;
-        this.rightSplitCosts = cardView.rightSplitCosts == null ? null : cardView.rightSplitCosts.copy();
+        this.rightSplitCostsStr = cardView.rightSplitCostsStr;
         this.rightSplitRules = cardView.rightSplitRules == null ? null : new ArrayList<>(cardView.rightSplitRules);
         this.rightSplitTypeLine = cardView.rightSplitTypeLine;
+
+        this.isModalDoubleFacesCard = cardView.isModalDoubleFacesCard;
 
         this.artRect = cardView.artRect;
         this.targets = cardView.targets == null ? null : new ArrayList<>(cardView.targets);
@@ -207,14 +223,17 @@ public class CardView extends SimpleCardView {
         this.canBlock = cardView.canBlock;
         this.inViewerOnly = cardView.inViewerOnly;
         this.originalCard = cardView.originalCard == null ? null : cardView.originalCard.copy();
+        if (cardView.cardIcons != null) {
+            cardView.cardIcons.forEach(icon -> this.cardIcons.add(icon.copy()));
+        }
     }
 
     /**
      * @param card
      * @param game
      * @param controlled is the card view created for the card controller - used
-     *                   for morph / face down cards to know which player may see information for
-     *                   the card
+     *                   for morph / face down cards to know which player may
+     *                   see information for the card
      */
     public CardView(Card card, Game game, boolean controlled) {
         this(card, game, controlled, false, false);
@@ -240,12 +259,14 @@ public class CardView extends SimpleCardView {
     /**
      * @param card
      * @param game
-     * @param controlled       is the card view created for the card controller - used
-     *                         for morph / face down cards to know which player may see information for
-     *                         the card
+     * @param controlled       is the card view created for the card controller
+     *                         - used for morph / face down cards to know which
+     *                         player may see information for the card
      * @param showFaceDownCard if true and the card is not on the battlefield,
-     *                         also a face down card is shown in the view, face down cards will be shown
-     * @param storeZone        if true the card zone will be set in the zone attribute.
+     *                         also a face down card is shown in the view, face
+     *                         down cards will be shown
+     * @param storeZone        if true the card zone will be set in the zone
+     *                         attribute.
      */
     public CardView(Card card, Game game, boolean controlled, boolean showFaceDownCard, boolean storeZone) {
         super(card.getId(), card.getExpansionSetCode(), card.getCardNumber(), card.getUsesVariousArt(), card.getTokenSetCode(), game != null, card.getTokenDescriptor());
@@ -298,7 +319,7 @@ public class CardView extends SimpleCardView {
         }
 
         SplitCard splitCard = null;
-        if (card.isSplitCard()) {
+        if (card instanceof SplitCard) {
             splitCard = (SplitCard) card;
             rotate = (card.getSpellAbility().getSpellAbilityType()) != SpellAbilityType.SPLIT_AFTERMATH;
         } else if (card instanceof Spell) {
@@ -315,46 +336,50 @@ public class CardView extends SimpleCardView {
                 case SPLIT_RIGHT:
                     rotate = true;
                     break;
+                case MODAL_LEFT:
+                case MODAL_RIGHT:
+                    rotate = false;
+                    break;
             }
-        }
-
-        AdventureCard adventureCard = null;
-        AdventureCardSpell adventureCardSpell = null;
-        if (card instanceof AdventureCard) {
-            adventureCard = (AdventureCard) card;
-            adventureCardSpell = (AdventureCardSpell) adventureCard.getSpellCard();
         }
 
         String fullCardName;
         if (splitCard != null) {
             this.isSplitCard = true;
             leftSplitName = splitCard.getLeftHalfCard().getName();
-            leftSplitCosts = splitCard.getLeftHalfCard().getManaCost();
+            leftSplitCostsStr = String.join("", splitCard.getLeftHalfCard().getManaCostSymbols());
             leftSplitRules = splitCard.getLeftHalfCard().getRules(game);
             leftSplitTypeLine = getCardTypeLine(game, splitCard.getLeftHalfCard());
             rightSplitName = splitCard.getRightHalfCard().getName();
-            rightSplitCosts = splitCard.getRightHalfCard().getManaCost();
+            rightSplitCostsStr = String.join("", splitCard.getRightHalfCard().getManaCostSymbols());
             rightSplitRules = splitCard.getRightHalfCard().getRules(game);
             rightSplitTypeLine = getCardTypeLine(game, splitCard.getRightHalfCard());
 
             fullCardName = card.getName(); // split card contains full name as normal
-            this.manaCostLeft = splitCard.getLeftHalfCard().getManaCost().getSymbols();
-            this.manaCostRight = splitCard.getRightHalfCard().getManaCost().getSymbols();
-        } else if (adventureCard != null) {
+            this.manaCostLeftStr = String.join("", splitCard.getLeftHalfCard().getManaCostSymbols());
+            this.manaCostRightStr = String.join("", splitCard.getRightHalfCard().getManaCostSymbols());
+        } else if (card instanceof ModalDoubleFacesCard) {
+            this.isModalDoubleFacesCard = true;
+            ModalDoubleFacesCard mainCard = ((ModalDoubleFacesCard) card);
+            fullCardName = mainCard.getLeftHalfCard().getName() + MockCard.MODAL_DOUBLE_FACES_NAME_SEPARATOR + mainCard.getRightHalfCard().getName();
+            this.manaCostLeftStr = String.join("", mainCard.getLeftHalfCard().getManaCostSymbols());
+            this.manaCostRightStr = String.join("", mainCard.getRightHalfCard().getManaCostSymbols());
+        } else if (card instanceof AdventureCard) {
+            AdventureCard adventureCard = ((AdventureCard) card);
+            AdventureCardSpell adventureCardSpell = ((AdventureCardSpell) adventureCard.getSpellCard());
             fullCardName = adventureCard.getName() + MockCard.ADVENTURE_NAME_SEPARATOR + adventureCardSpell.getName();
-            this.manaCostLeft = adventureCardSpell.getManaCost().getSymbols();
-            this.manaCostRight = adventureCard.getManaCost().getSymbols();
+            this.manaCostLeftStr = String.join("", adventureCardSpell.getManaCostSymbols());
+            this.manaCostRightStr = String.join("", adventureCard.getManaCostSymbols());
         } else if (card instanceof MockCard) {
             // deck editor cards
             fullCardName = ((MockCard) card).getFullName(true);
-            this.manaCostLeft = ((MockCard) card).getManaCost(CardInfo.ManaCostSide.LEFT).getSymbols();
-            this.manaCostRight = ((MockCard) card).getManaCost(CardInfo.ManaCostSide.RIGHT).getSymbols();
+            this.manaCostLeftStr = String.join("", ((MockCard) card).getManaCostStr(CardInfo.ManaCostSide.LEFT));
+            this.manaCostRightStr = String.join("", ((MockCard) card).getManaCostStr(CardInfo.ManaCostSide.RIGHT));
         } else {
             fullCardName = card.getName();
-            this.manaCostLeft = card.getManaCost().getSymbols();
-            this.manaCostRight = new ArrayList<>();
+            this.manaCostLeftStr = String.join("", card.getManaCostSymbols());
+            this.manaCostRightStr = "";
         }
-        //this.manaCost = card.getManaCost().getSymbols();
 
         this.name = card.getImageName();
         this.displayName = card.getName();
@@ -364,7 +389,7 @@ public class CardView extends SimpleCardView {
         } else {
             this.rules = card.getRules(game);
         }
-        this.convertedManaCost = card.getManaCost().convertedManaCost();
+        this.convertedManaCost = card.getConvertedManaCost();
 
         if (card instanceof Permanent) {
             this.mageObjectType = MageObjectType.PERMANENT;
@@ -386,6 +411,11 @@ public class CardView extends SimpleCardView {
                     controlledByOwner = false;
                 }
             }
+
+            // card icons for permanents on battlefield
+            permanent.getAbilities(game).forEach(ability -> {
+                this.cardIcons.addAll(ability.getIcons());
+            });
         } else {
             if (card.isCopy()) {
                 this.mageObjectType = MageObjectType.COPY_CARD;
@@ -406,7 +436,6 @@ public class CardView extends SimpleCardView {
         this.subTypes = card.getSubtype(game);
         this.superTypes = card.getSuperType();
         this.color = card.getColor(game);
-        this.transformable = card.isTransformable();
         this.flipCard = card.isFlipCard();
         this.faceDown = !showFaceUp;
 
@@ -425,7 +454,7 @@ public class CardView extends SimpleCardView {
                 this.tokenDescriptor = card.getTokenDescriptor();
             }
             //
-            // set code und card number for token copies to get the image
+            // set code and card number for token copies to get the image
             this.rules = card.getRules(game);
             this.type = ((PermanentToken) card).getToken().getTokenType();
         } else {
@@ -433,15 +462,27 @@ public class CardView extends SimpleCardView {
             this.isToken = false;
         }
 
+        // transformable, double faces cards
+        this.transformable = card.isTransformable();
+
         Card secondSideCard = card.getSecondCardFace();
         if (secondSideCard != null) {
-            this.secondCardFace = new CardView(secondSideCard);
+            this.secondCardFace = new CardView(secondSideCard, game);
             this.alternateName = secondCardFace.getName();
             this.originalName = card.getName();
         }
+
         this.flipCard = card.isFlipCard();
         if (card.isFlipCard() && card.getFlipCardName() != null) {
             this.alternateName = card.getFlipCardName();
+            this.originalName = card.getName();
+        }
+
+        if (card instanceof ModalDoubleFacesCard) {
+            this.transformable = true; // enable GUI day/night button
+            ModalDoubleFacesCard mdfCard = (ModalDoubleFacesCard) card;
+            this.secondCardFace = new CardView(mdfCard.getRightHalfCard(), game);
+            this.alternateName = mdfCard.getRightHalfCard().getName();
             this.originalName = card.getName();
         }
 
@@ -452,13 +493,14 @@ public class CardView extends SimpleCardView {
                 for (UUID modeId : spellAbility.getModes().getSelectedModes()) {
                     Mode mode = spellAbility.getModes().get(modeId);
                     if (!mode.getTargets().isEmpty()) {
-                        setTargets(mode.getTargets());
+                        addTargets(mode.getTargets(), mode.getEffects(), spellAbility, game);
                     }
                 }
             }
 
             // Determine what part of the art to slice out for spells on the stack which originate
             // from a split, fuse, or aftermath split card.
+            // Modal double faces cards draws as normal cards
             SpellAbilityType ty = spell.getSpellAbility().getSpellAbilityType();
             if (ty == SpellAbilityType.SPLIT_RIGHT || ty == SpellAbilityType.SPLIT_LEFT || ty == SpellAbilityType.SPLIT_FUSED) {
                 // Needs a special art rect
@@ -467,7 +509,7 @@ public class CardView extends SimpleCardView {
                 } else if (spell.getCard() != null) {
                     SplitCard wholeCard = ((SplitCardHalf) spell.getCard()).getParentCard();
                     Abilities<Ability> aftermathHalfAbilities = wholeCard.getRightHalfCard().getAbilities(game);
-                    if (aftermathHalfAbilities.stream().anyMatch(ability -> ability instanceof AftermathAbility)) {
+                    if (aftermathHalfAbilities.stream().anyMatch(halfAbility -> halfAbility instanceof AftermathAbility)) {
                         if (ty == SpellAbilityType.SPLIT_RIGHT) {
                             artRect = ArtRect.AFTERMATH_BOTTOM;
                         } else {
@@ -518,11 +560,11 @@ public class CardView extends SimpleCardView {
             this.loyalty = "";
         }
         this.cardTypes = object.getCardType();
-        this.subTypes = object.getSubtype(null);
+        this.subTypes = object.getSubtype(game);
         this.superTypes = object.getSuperType();
-        this.color = object.getColor(null);
-        this.manaCostLeft = object.getManaCost().getSymbols();
-        this.manaCostRight = new ArrayList<>();
+        this.color = object.getColor(game);
+        this.manaCostLeftStr = String.join("", object.getManaCostSymbols());
+        this.manaCostRightStr = "";
         this.convertedManaCost = object.getManaCost().convertedManaCost();
         if (object instanceof PermanentToken) {
             this.mageObjectType = MageObjectType.TOKEN;
@@ -562,7 +604,7 @@ public class CardView extends SimpleCardView {
             }
         }
         // Frame color
-        this.frameColor = object.getFrameColor(null);
+        this.frameColor = object.getFrameColor(game);
         // Frame style
         this.frameStyle = object.getFrameStyle();
         // Starting loyalty. Must be extracted from an ability
@@ -636,14 +678,14 @@ public class CardView extends SimpleCardView {
         this.toughness = "";
         this.loyalty = "";
         this.startingLoyalty = "";
-        this.cardTypes = EnumSet.noneOf(CardType.class);
-        this.subTypes = new SubTypeList();
+        this.cardTypes = new ArrayList<>();
+        this.subTypes = new SubTypes();
         this.superTypes = EnumSet.noneOf(SuperType.class);
         this.color = new ObjectColor();
         this.frameColor = new ObjectColor();
         this.frameStyle = FrameStyle.M15_NORMAL;
-        this.manaCostLeft = new ArrayList<>();
-        this.manaCostRight = new ArrayList<>();
+        this.manaCostLeftStr = "";
+        this.manaCostRightStr = "";
         this.convertedManaCost = 0;
 
         // the controller can see more information (e.g. enlarged image) than other players for face down cards (e.g. Morph played face down)
@@ -673,7 +715,7 @@ public class CardView extends SimpleCardView {
 
     }
 
-    CardView(Token token) {
+    CardView(Token token, Game game) {
         super(token.getId(), "", "0", false, "", "");
         this.isToken = true;
         this.id = token.getId();
@@ -686,30 +728,44 @@ public class CardView extends SimpleCardView {
         this.loyalty = "";
         this.startingLoyalty = "";
         this.cardTypes = token.getCardType();
-        this.subTypes = token.getSubtype(null);
+        this.subTypes = token.getSubtype(game);
         this.superTypes = token.getSuperType();
-        this.color = token.getColor(null);
-        this.frameColor = token.getFrameColor(null);
+        this.color = token.getColor(game);
+        this.frameColor = token.getFrameColor(game);
         this.frameStyle = token.getFrameStyle();
-        this.manaCostLeft = token.getManaCost().getSymbols();
-        this.manaCostRight = new ArrayList<>();
+        this.manaCostLeftStr = String.join("", token.getManaCostSymbols());
+        this.manaCostRightStr = "";
         this.rarity = Rarity.SPECIAL;
         this.type = token.getTokenType();
         this.tokenDescriptor = token.getTokenDescriptor();
         this.tokenSetCode = token.getOriginalExpansionSetCode();
     }
 
-    protected final void setTargets(Targets targets) {
+    protected final void addTargets(Targets targets, Effects effects, Ability source, Game game) {
+        if (this.targets == null) {
+            this.targets = new ArrayList<>();
+        }
+
+        // need only unique targets for arrow drawning
+        Set<UUID> newTargets = new HashSet<>();
+
+        // from normal targets
         for (Target target : targets) {
             if (target.isChosen()) {
-                for (UUID targetUUID : target.getTargets()) {
-                    if (this.targets == null) {
-                        this.targets = new ArrayList<>();
-                    }
-                    this.targets.add(targetUUID);
-                }
+                newTargets.addAll(target.getTargets());
             }
         }
+
+        // from targetPointers (can be same as normal targets)
+        List<UUID> fromPointers = effects.stream()
+                .map(Effect::getTargetPointer)
+                .filter(Objects::nonNull)
+                .map(p -> p.getTargets(game, source))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        newTargets.addAll(fromPointers);
+
+        this.targets.addAll(newTargets);
     }
 
     public String getName() {
@@ -764,11 +820,11 @@ public class CardView extends SimpleCardView {
         return startingLoyalty;
     }
 
-    public Set<CardType> getCardTypes() {
+    public ArrayList<CardType> getCardTypes() {
         return cardTypes;
     }
 
-    public SubTypeList getSubTypes() {
+    public SubTypes getSubTypes() {
         return subTypes;
     }
 
@@ -788,8 +844,8 @@ public class CardView extends SimpleCardView {
         return frameStyle;
     }
 
-    public List<String> getManaCost() {
-        return CardUtil.concatManaSymbols(CardInfo.SPLIT_MANA_SEPARATOR_FULL, this.manaCostLeft, this.manaCostRight);
+    public String getManaCostStr() {
+        return CardUtil.concatManaSymbols(CardInfo.SPLIT_MANA_SEPARATOR_FULL, this.manaCostLeftStr, this.manaCostRightStr);
     }
 
     public int getConvertedManaCost() {
@@ -875,7 +931,7 @@ public class CardView extends SimpleCardView {
     }
 
     /**
-     * Name of the other side (transform), flipped, or copying card name.
+     * Name of the other side (transform), flipped, modal double faces card or copying card name.
      *
      * @return name
      */
@@ -905,8 +961,8 @@ public class CardView extends SimpleCardView {
         return leftSplitName;
     }
 
-    public ManaCosts getLeftSplitCosts() {
-        return leftSplitCosts;
+    public String getLeftSplitCostsStr() {
+        return leftSplitCostsStr;
     }
 
     public List<String> getLeftSplitRules() {
@@ -921,8 +977,8 @@ public class CardView extends SimpleCardView {
         return rightSplitName;
     }
 
-    public ManaCosts getRightSplitCosts() {
-        return rightSplitCosts;
+    public String getRightSplitCostsStr() {
+        return rightSplitCostsStr;
     }
 
     public List<String> getRightSplitRules() {
@@ -1030,26 +1086,25 @@ public class CardView extends SimpleCardView {
     }
 
     public String getColorText() {
-
-        String color = getColor().getDescription();
-        return color.substring(0, 1).toUpperCase(Locale.ENGLISH) + color.substring(1);
+        String colorText = getColor().getDescription();
+        return colorText.substring(0, 1).toUpperCase(Locale.ENGLISH) + colorText.substring(1);
     }
 
     public String getTypeText() {
-        StringBuilder type = new StringBuilder();
+        StringBuilder typeText = new StringBuilder();
         if (!getSuperTypes().isEmpty()) {
-            type.append(String.join(" ", getSuperTypes().stream().map(SuperType::toString).collect(Collectors.toList())));
-            type.append(" ");
+            typeText.append(String.join(" ", getSuperTypes().stream().map(SuperType::toString).collect(Collectors.toList())));
+            typeText.append(" ");
         }
         if (!getCardTypes().isEmpty()) {
-            type.append(String.join(" ", getCardTypes().stream().map(CardType::toString).collect(Collectors.toList())));
-            type.append(" ");
+            typeText.append(String.join(" ", getCardTypes().stream().map(CardType::toString).collect(Collectors.toList())));
+            typeText.append(" ");
         }
         if (!getSubTypes().isEmpty()) {
-            type.append(" - ");
-            type.append(String.join(" ", getSubTypes().stream().map(SubType::toString).collect(Collectors.toList())));
+            typeText.append(" - ");
+            typeText.append(String.join(" ", getSubTypes().stream().map(SubType::toString).collect(Collectors.toList())));
         }
-        return type.toString();
+        return typeText.toString();
     }
 
     public boolean isLand() {
@@ -1086,5 +1141,9 @@ public class CardView extends SimpleCardView {
 
     public Card getOriginalCard() {
         return this.originalCard;
+    }
+
+    public List<CardIcon> getCardIcons() {
+        return this.cardIcons;
     }
 }

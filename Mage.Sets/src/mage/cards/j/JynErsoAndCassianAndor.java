@@ -10,7 +10,6 @@ import mage.abilities.keyword.HasteAbility;
 import mage.constants.*;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -39,7 +38,7 @@ public final class JynErsoAndCassianAndor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JynErsoAndCassianAndor(final JynErsoAndCassianAndor card) {
+    private JynErsoAndCassianAndor(final JynErsoAndCassianAndor card) {
         super(card);
     }
 

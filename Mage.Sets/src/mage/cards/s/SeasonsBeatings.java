@@ -32,7 +32,7 @@ public final class SeasonsBeatings extends CardImpl {
 
     }
 
-    public SeasonsBeatings(final SeasonsBeatings card) {
+    private SeasonsBeatings(final SeasonsBeatings card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class SeasonsBeatingsEffect extends OneShotEffect {
                 }
                 Permanent creature2 = game.getPermanent(creatures.get(other));
                 if (creature != null && creature2 != null) {
-                    creature2.damage(creature.getPower().getValue(), creature.getId(), game, false, true);
+                    creature2.damage(creature.getPower().getValue(), creature.getId(), source, game, false, true);
                 }
             }
 

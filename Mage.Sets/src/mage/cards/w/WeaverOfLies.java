@@ -18,7 +18,7 @@ import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.target.Target;
@@ -53,7 +53,7 @@ public final class WeaverOfLies extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WeaverOfLies(final WeaverOfLies card) {
+    private WeaverOfLies(final WeaverOfLies card) {
         super(card);
     }
 

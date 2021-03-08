@@ -32,7 +32,7 @@ public final class CleansingMeditation extends CardImpl {
         this.getSpellAbility().addEffect(new CleansingMeditationEffect());
     }
 
-    public CleansingMeditation(final CleansingMeditation card) {
+    private CleansingMeditation(final CleansingMeditation card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class CleansingMeditationEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
 
         for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_ENCHANTMENT_PERMANENT, source.getControllerId(), source.getSourceId(), game)) {
-            if (permanent != null && permanent.destroy(source.getSourceId(), game, false)) {
+            if (permanent != null && permanent.destroy(source, game, false)) {
                 if (threshold && controller != null && permanent.isOwnedBy(controller.getId())) {
                     cardsToBattlefield.add(permanent);
                 }

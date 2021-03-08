@@ -44,7 +44,6 @@ import mage.constants.SuperType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.WasDealtDamageThisTurnPredicate;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 import java.util.UUID;
 
@@ -56,7 +55,7 @@ public final class BushiTenderfoot extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
 
     public BushiTenderfoot(UUID ownerId, CardSetInfo setInfo) {
@@ -74,7 +73,7 @@ public final class BushiTenderfoot extends CardImpl {
         this.addAbility(new DealtDamageAndDiedTriggeredAbility(effect));
     }
 
-    public BushiTenderfoot(final BushiTenderfoot card) {
+    private BushiTenderfoot(final BushiTenderfoot card) {
         super(card);
     }
 

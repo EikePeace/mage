@@ -22,7 +22,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -58,7 +58,7 @@ public final class ParagonOfEternalWilds extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ParagonOfEternalWilds(final ParagonOfEternalWilds card) {
+    private ParagonOfEternalWilds(final ParagonOfEternalWilds card) {
         super(card);
     }
 

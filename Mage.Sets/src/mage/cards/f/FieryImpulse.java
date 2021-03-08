@@ -20,14 +20,14 @@ public final class FieryImpulse extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{R}");
 
         // Fiery Impulse deals 2 damage to target creature.
-        // <i>Spell mastery</i> — If there are two or more instant and/or sorcery cards in your graveyard, Fiery Impulse deals 3 damage to that creature instead.
+        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, Fiery Impulse deals 3 damage to that creature instead.
         this.getSpellAbility().addEffect(new ConditionalOneShotEffect(
                 new DamageTargetEffect(3), new DamageTargetEffect(2), SpellMasteryCondition.instance,
                 "{this} deals 2 damage to target creature. <br><i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, {this} deals 3 damage instead"));
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public FieryImpulse(final FieryImpulse card) {
+    private FieryImpulse(final FieryImpulse card) {
         super(card);
     }
 

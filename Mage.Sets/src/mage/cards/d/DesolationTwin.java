@@ -32,7 +32,7 @@ public final class DesolationTwin extends CardImpl {
         this.addAbility(new DesolationTwinOnCastAbility());
     }
 
-    public DesolationTwin(final DesolationTwin card) {
+    private DesolationTwin(final DesolationTwin card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class DesolationTwinOnCastAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

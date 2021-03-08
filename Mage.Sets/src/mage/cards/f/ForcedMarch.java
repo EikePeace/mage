@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.f;
 
 import java.util.UUID;
@@ -28,7 +23,7 @@ public final class ForcedMarch extends CardImpl {
         this.getSpellAbility().addEffect(new ForcedMarchEffect());
     }
 
-    public ForcedMarch(final ForcedMarch card) {
+    private ForcedMarch(final ForcedMarch card) {
         super(card);
     }
 
@@ -63,7 +58,7 @@ class ForcedMarchEffect extends OneShotEffect {
                 source.getSourceId(),
                 game)) {
             if (permanent.getConvertedManaCost() <= source.getManaCostsToPay().getX()) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

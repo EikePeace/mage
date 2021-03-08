@@ -12,16 +12,17 @@ import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.players.Player;
+import mage.target.TargetCard;
 import mage.target.common.TargetCardInGraveyard;
 import mage.target.common.TargetCardInLibrary;
 import mage.target.common.TargetOpponent;
+import mage.util.CardUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import mage.target.TargetCard;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class ReapIntellect extends CardImpl {
@@ -38,7 +39,7 @@ public final class ReapIntellect extends CardImpl {
 
     }
 
-    public ReapIntellect(final ReapIntellect card) {
+    private ReapIntellect(final ReapIntellect card) {
         super(card);
     }
 
@@ -88,7 +89,7 @@ class ReapIntellectEffect extends OneShotEffect {
             for (UUID cardId : target.getTargets()) {
                 Card chosenCard = game.getCard(cardId);
                 if (chosenCard != null) {
-                    controller.moveCardToExileWithInfo(chosenCard, null, "", source.getSourceId(), game, Zone.HAND, true);
+                    controller.moveCardToExileWithInfo(chosenCard, null, "", source, game, Zone.HAND, true);
                     exiledCards.add(chosenCard);
                 }
             }
@@ -100,12 +101,11 @@ class ReapIntellectEffect extends OneShotEffect {
                 List<NamePredicate> names = new ArrayList<>();
                 FilterCard filterNamedCards = new FilterCard();
                 for (Card card : exiledCards.getCards(game)) {
+                    String nameToSearch = CardUtil.getCardNameForSameNameSearch(card);
                     if (exiledCards.size() == 1) {
-                        filterNamedCards.add(new NamePredicate(card.isSplitCard()
-                                ? ((SplitCard) card).getLeftHalfCard().getName() : card.getName()));
+                        filterNamedCards.add(new NamePredicate(nameToSearch));
                     } else {
-                        names.add(new NamePredicate(card.isSplitCard()
-                                ? ((SplitCard) card).getLeftHalfCard().getName() : card.getName()));
+                        names.add(new NamePredicate(nameToSearch));
                     }
                 }
                 if (exiledCards.size() > 1) {
@@ -118,7 +118,7 @@ class ReapIntellectEffect extends OneShotEffect {
                 for (UUID cardId : targetCardsGraveyard.getTargets()) {
                     Card card = game.getCard(cardId);
                     if (card != null) {
-                        controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                        controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.GRAVEYARD, true);
                     }
                 }
 
@@ -128,7 +128,7 @@ class ReapIntellectEffect extends OneShotEffect {
                 for (UUID cardId : targetCardsHand.getTargets()) {
                     Card card = game.getCard(cardId);
                     if (card != null) {
-                        controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.HAND, true);
+                        controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.HAND, true);
                     }
                 }
 
@@ -138,7 +138,7 @@ class ReapIntellectEffect extends OneShotEffect {
                 for (UUID cardId : targetCardsLibrary.getTargets()) {
                     Card card = game.getCard(cardId);
                     if (card != null) {
-                        controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.LIBRARY, true);
+                        controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.LIBRARY, true);
                     }
                 }
 

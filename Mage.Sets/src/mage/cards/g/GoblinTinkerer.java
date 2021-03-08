@@ -42,7 +42,7 @@ public final class GoblinTinkerer extends CardImpl {
         
     }
 
-    public GoblinTinkerer(final GoblinTinkerer card) {
+    private GoblinTinkerer(final GoblinTinkerer card) {
         super(card);
     }
 
@@ -71,12 +71,12 @@ class GoblinTinkererDamageEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent targetArtifact = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));        
+        Permanent targetArtifact = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);        
         if (controller != null && targetArtifact != null) {
             Permanent sourceObject = game.getPermanent(source.getSourceId());
             int damage = targetArtifact.getConvertedManaCost();
             if (sourceObject != null && damage > 0) {
-                sourceObject.damage(damage, targetArtifact.getId(), game, false, true);
+                sourceObject.damage(damage, targetArtifact.getId(), source, game, false, true);
             }
             return true;
         }

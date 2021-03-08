@@ -31,7 +31,7 @@ public final class AssassinsStrike extends CardImpl {
         this.getSpellAbility().addEffect(new AssassinsStrikeEffect());
     }
 
-    public AssassinsStrike(final AssassinsStrike card) {
+    private AssassinsStrike(final AssassinsStrike card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class AssassinsStrikeEffect extends OneShotEffect {
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
-                player.discard(1, false, source, game);
+                player.discard(1, false, false, source, game);
                 return true;
             }
         }

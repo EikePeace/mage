@@ -32,7 +32,7 @@ public final class MoggManiac extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MoggManiac(final MoggManiac card) {
+    private MoggManiac(final MoggManiac card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class MoggManiacDealDamageEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int amount = (Integer) getValue("damage");
         if (amount > 0) {
-            game.damagePlayerOrPlaneswalker(targetPointer.getFirst(game, source), amount, source.getSourceId(), game, false, true);
+            game.damagePlayerOrPlaneswalker(targetPointer.getFirst(game, source), amount, source.getSourceId(), source, game, false, true);
             return true;
         }
         return false;

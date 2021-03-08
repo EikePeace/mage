@@ -42,7 +42,7 @@ public final class RenderSilent extends CardImpl {
         this.getSpellAbility().addEffect(new RenderSilentEffect());
     }
 
-    public RenderSilent(final RenderSilent card) {
+    private RenderSilent(final RenderSilent card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class RenderSilentCounterEffect extends OneShotEffect {
         Spell spell = game.getStack().getSpell(source.getFirstTarget());
         if (spell != null) {
             source.getEffects().get(1).setTargetPointer(new FixedTarget(spell.getControllerId()));
-            return game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            return game.getStack().counter(source.getFirstTarget(), source, game);
         }
         return false;
     }

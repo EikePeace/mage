@@ -29,7 +29,7 @@ public final class JovialEvil extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public JovialEvil(final JovialEvil card) {
+    private JovialEvil(final JovialEvil card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class JovialEvilEffect extends OneShotEffect {
                 amount++;
             }
             if (amount > 0) {
-                opponent.damage(amount * 2, source.getSourceId(), game);
+                opponent.damage(amount * 2, source.getSourceId(), source, game);
             }
             return true;
         }

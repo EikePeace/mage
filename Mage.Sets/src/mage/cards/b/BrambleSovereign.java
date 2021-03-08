@@ -1,4 +1,3 @@
-
 package mage.cards.b;
 
 import java.util.UUID;
@@ -9,16 +8,16 @@ import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenCopyTargetEffect;
 import mage.abilities.effects.common.DoIfCostPaid;
-import mage.constants.SubType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SetTargetPointer;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -53,7 +52,7 @@ public final class BrambleSovereign extends CardImpl {
         ));
     }
 
-    public BrambleSovereign(final BrambleSovereign card) {
+    private BrambleSovereign(final BrambleSovereign card) {
         super(card);
     }
 
@@ -81,7 +80,7 @@ class BrambleSovereignEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(permanent.getControllerId());
             effect.setTargetPointer(targetPointer);

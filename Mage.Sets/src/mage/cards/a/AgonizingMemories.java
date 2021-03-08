@@ -31,7 +31,7 @@ public final class AgonizingMemories extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public AgonizingMemories(final AgonizingMemories card) {
+    private AgonizingMemories(final AgonizingMemories card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class AgonizingMemoriesEffect extends OneShotEffect {
             if (you.choose(Outcome.Benefit, targetPlayer.getHand(), target, game)) {
                 Card card = targetPlayer.getHand().get(target.getFirstTarget(), game);
                 if (card != null) {
-                    targetPlayer.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, false);
+                    targetPlayer.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, false);
                 }
             }
         }

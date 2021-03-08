@@ -64,22 +64,22 @@ public final class NajeelaTheBladeBlossom extends CardImpl {
                 TrampleAbility.getInstance(),
                 Duration.EndOfTurn,
                 StaticFilters.FILTER_ATTACKING_CREATURES
-        ).setText("They gain trample,"));
+        ).setText("They gain trample"));
         ability.addEffect(new GainAbilityAllEffect(
                 LifelinkAbility.getInstance(),
                 Duration.EndOfTurn,
                 StaticFilters.FILTER_ATTACKING_CREATURES
-        ).setText("lifelink,"));
+        ).setText(", lifelink"));
         ability.addEffect(new GainAbilityAllEffect(
                 HasteAbility.getInstance(),
                 Duration.EndOfTurn,
                 StaticFilters.FILTER_ATTACKING_CREATURES
-        ).setText("and haste until end of turn."));
+        ).setText(", and haste until end of turn"));
         ability.addEffect(new AdditionalCombatPhaseEffect());
         this.addAbility(ability);
     }
 
-    public NajeelaTheBladeBlossom(final NajeelaTheBladeBlossom card) {
+    private NajeelaTheBladeBlossom(final NajeelaTheBladeBlossom card) {
         super(card);
     }
 

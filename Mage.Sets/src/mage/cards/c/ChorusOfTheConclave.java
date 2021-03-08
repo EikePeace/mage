@@ -43,7 +43,7 @@ public final class ChorusOfTheConclave extends CardImpl {
 
     }
 
-    public ChorusOfTheConclave(final ChorusOfTheConclave card) {
+    private ChorusOfTheConclave(final ChorusOfTheConclave card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class ChorusOfTheConclaveReplacementEffect extends ReplacementEffectImpl {
         int xCost = 0;
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            if (controller.chooseUse(Outcome.Benefit, "Do you wish to pay the additonal cost to add +1/+1 counters to the creature you cast?", source, game)) {
+            if (controller.chooseUse(Outcome.Benefit, "Pay the additonal cost to add +1/+1 counters to the creature you cast?", source, game)) {
                 xCost += ManaUtil.playerPaysXGenericMana(false, "Chorus of the Conclave", controller, source, game);
                 // save the x value to be available for ETB replacement effect
                 Object object = game.getState().getValue("spellX" + source.getSourceId());
@@ -151,7 +151,7 @@ class ChorusOfTheConclaveReplacementEffect2 extends ReplacementEffectImpl {
             String key = event.getSourceId().toString() + (game.getState().getZoneChangeCounter(event.getSourceId()) - 1);
             int xValue = spellX.get(key);
             if (xValue > 0) {
-                creature.addCounters(CounterType.P1P1.createInstance(xValue), source, game, event.getAppliedEffects());
+                creature.addCounters(CounterType.P1P1.createInstance(xValue), source.getControllerId(), source, game, event.getAppliedEffects());
                 game.informPlayers(sourceObject.getLogName() + ": " + creature.getLogName() + " enters the battlefield with " + xValue + " +1/+1 counter" + (xValue > 1 ? "s" : "") + " on it");
             }
             spellX.remove(key);

@@ -16,10 +16,9 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -56,7 +55,7 @@ public final class AdarkarValkyrie extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AdarkarValkyrie(final AdarkarValkyrie card) {
+    private AdarkarValkyrie(final AdarkarValkyrie card) {
         super(card);
     }
 
@@ -115,7 +114,7 @@ class AdarkarValkyrieDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

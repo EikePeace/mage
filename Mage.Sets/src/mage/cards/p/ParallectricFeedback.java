@@ -27,7 +27,7 @@ public final class ParallectricFeedback extends CardImpl {
 
     }
 
-    public ParallectricFeedback(final ParallectricFeedback card) {
+    private ParallectricFeedback(final ParallectricFeedback card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class ParallectricFeedbackEffect extends OneShotEffect {
             if (spell != null) {
                 Player spellController = game.getPlayer(spell.getControllerId());
                 if (spellController != null) {
-                    spellController.damage(spell.getConvertedManaCost(), source.getSourceId(), game);
+                    spellController.damage(spell.getConvertedManaCost(), source.getSourceId(), source, game);
                     return true;
                 }
             }

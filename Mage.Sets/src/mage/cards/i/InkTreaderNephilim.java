@@ -39,7 +39,7 @@ public final class InkTreaderNephilim extends CardImpl {
         this.addAbility(new InkTreaderNephilimTriggeredAbility());
     }
 
-    public InkTreaderNephilim(final InkTreaderNephilim card) {
+    private InkTreaderNephilim(final InkTreaderNephilim card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class InkTreaderNephilimTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

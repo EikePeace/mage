@@ -36,7 +36,7 @@ public final class NeverendingTorment extends CardImpl {
         this.getSpellAbility().addEffect(new EpicEffect());
     }
 
-    public NeverendingTorment(final NeverendingTorment card) {
+    private NeverendingTorment(final NeverendingTorment card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class NeverendingTormentEffect extends OneShotEffect {
             for (UUID cardId : target.getTargets()) {
                 final Card targetCard = game.getCard(cardId);
                 if (targetCard != null) {
-                    applied |= you.moveCardToExileWithInfo(targetCard, null, null, source.getSourceId(), game, Zone.LIBRARY, true);
+                    applied |= you.moveCardToExileWithInfo(targetCard, null, null, source, game, Zone.LIBRARY, true);
                 }
             }
             targetPlayer.shuffleLibrary(source, game);

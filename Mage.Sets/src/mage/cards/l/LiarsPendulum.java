@@ -8,7 +8,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.SplitCard;
 import mage.cards.repository.CardRepository;
 import mage.choices.Choice;
 import mage.choices.ChoiceImpl;
@@ -37,7 +36,7 @@ public final class LiarsPendulum extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LiarsPendulum(final LiarsPendulum card) {
+    private LiarsPendulum(final LiarsPendulum card) {
         super(card);
     }
 
@@ -85,15 +84,7 @@ class LiarsPendulumEffect extends OneShotEffect {
             boolean rightGuess = !opponentGuess;
 
             for (Card card : controller.getHand().getCards(game)) {
-                if (card.isSplitCard()) {
-                    SplitCard splitCard = (SplitCard) card;
-                    if (splitCard.getLeftHalfCard().getName().equals(cardName)) {
-                        rightGuess = opponentGuess;
-                    } else if (splitCard.getRightHalfCard().getName().equals(cardName)) {
-                        rightGuess = opponentGuess;
-                    }
-                }
-                if (CardUtil.haveSameNames(card.getName(), cardName)) {
+                if (CardUtil.haveSameNames(card, cardName, game)) {
                     rightGuess = opponentGuess;
                 }
             }
@@ -102,7 +93,7 @@ class LiarsPendulumEffect extends OneShotEffect {
             if (controller.chooseUse(outcome, "Reveal your hand?", source, game)) {
                 controller.revealCards("hand of " + controller.getName(), controller.getHand(), game);
                 if (!rightGuess) {
-                    controller.drawCards(1, game);
+                    controller.drawCards(1, source, game);
                 }
             }
             return true;

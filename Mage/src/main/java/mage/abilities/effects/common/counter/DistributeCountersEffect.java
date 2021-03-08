@@ -53,7 +53,7 @@ public class DistributeCountersEffect extends OneShotEffect {
             for (UUID target : multiTarget.getTargets()) {
                 Permanent permanent = game.getPermanent(target);
                 if (permanent != null) {
-                    permanent.addCounters(counterType.createInstance(multiTarget.getTargetAmount(target)), source, game);
+                    permanent.addCounters(counterType.createInstance(multiTarget.getTargetAmount(target)), source.getControllerId(), source, game);
                 }
             }
 
@@ -76,7 +76,7 @@ public class DistributeCountersEffect extends OneShotEffect {
         }
 
         String name = counterType.getName();
-        String text = "distribute " + CardUtil.numberToText(amount) + ' ' + name + " counters among " + targetDescription + '.';
+        String text = "distribute " + CardUtil.numberToText(amount) + ' ' + name + " counters among " + targetDescription;
         if (removeAtEndOfTurn) {
             text += " For each " + name + " counter you put on a creature this way, remove a "
                     + name + " counter from that creature at the beginning of the next cleanup step.";
@@ -114,7 +114,7 @@ class RemoveCountersAtEndOfTurn extends OneShotEffect {
             for (UUID target : multiTarget.getTargets()) {
                 Permanent permanent = game.getPermanent(target);
                 if (permanent != null) {
-                    permanent.removeCounters(counterType.getName(), multiTarget.getTargetAmount(target), game);
+                    permanent.removeCounters(counterType.getName(), multiTarget.getTargetAmount(target), source, game);
                 }
             }
             return true;

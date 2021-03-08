@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterEnchantmentPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -33,7 +33,7 @@ public final class TranquilGrove extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new DestroyAllEffect(filter), new ManaCostsImpl("{1}{G}{G}")));
     }
 
-    public TranquilGrove(final TranquilGrove card) {
+    private TranquilGrove(final TranquilGrove card) {
         super(card);
     }
 

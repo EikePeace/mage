@@ -55,7 +55,7 @@ public final class NumbingDose extends CardImpl {
         this.addAbility(new NumbingDoseTriggeredAbility());
     }
 
-    public NumbingDose(final NumbingDose card) {
+    private NumbingDose(final NumbingDose card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class NumbingDoseTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

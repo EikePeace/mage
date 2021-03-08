@@ -61,7 +61,7 @@ public final class Topplegeist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Topplegeist(final Topplegeist card) {
+    private Topplegeist(final Topplegeist card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class TopplegeistAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

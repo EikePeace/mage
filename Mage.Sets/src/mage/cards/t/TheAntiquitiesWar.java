@@ -50,7 +50,7 @@ public final class TheAntiquitiesWar extends CardImpl {
 
     }
 
-    public TheAntiquitiesWar(final TheAntiquitiesWar card) {
+    private TheAntiquitiesWar(final TheAntiquitiesWar card) {
         super(card);
     }
 
@@ -98,7 +98,6 @@ class TheAntiquitiesWarEffect extends ContinuousEffectImpl {
                             if (!permanent.isCreature()) {
                                 permanent.addCardType(CardType.CREATURE);
                             }
-                            permanent.getSubtype(game).clear();
                         }
                         break;
                     case PTChangingEffects_7:

@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterControlledCreaturePermanent;
 
 public final class GavonyTownship extends CardImpl {
 
@@ -29,7 +28,7 @@ public final class GavonyTownship extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GavonyTownship(final GavonyTownship card) {
+    private GavonyTownship(final GavonyTownship card) {
         super(card);
     }
 

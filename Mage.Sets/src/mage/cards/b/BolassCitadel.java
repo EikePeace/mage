@@ -1,7 +1,6 @@
 package mage.cards.b;
 
 import mage.abilities.Ability;
-import mage.abilities.ActivatedAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.Costs;
@@ -21,9 +20,9 @@ import mage.filter.predicate.Predicates;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
-import mage.util.CardUtil;
 
 import java.util.UUID;
+
 
 /**
  * @author jeffwadsworth
@@ -70,7 +69,7 @@ class BolassCitadelPlayTheTopCardEffect extends AsThoughEffectImpl {
     BolassCitadelPlayTheTopCardEffect() {
         super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE,
                 Duration.WhileOnBattlefield, Outcome.AIDontUseIt); // AI will need help with this
-        staticText = "You may play the top card of your library. If you cast a spell this way, "
+        staticText = "You may play lands and cast spells from the top of your library. If you cast a spell this way, "
                 + "pay life equal to its converted mana cost rather than pay its mana cost.";
     }
 
@@ -90,33 +89,37 @@ class BolassCitadelPlayTheTopCardEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return applies(objectId, null, source, game, affectedControllerId);
-    }
-
-    @Override
-    public boolean applies(UUID objectId, Ability affectedAbility, Ability source, Game game, UUID playerId) {
+        // current card's part
         Card cardToCheck = game.getCard(objectId);
-        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
-
-        if (cardToCheck != null
-                && playerId.equals(source.getControllerId())
-                && cardToCheck.isOwnedBy(source.getControllerId())) {
-            Player controller = game.getPlayer(cardToCheck.getOwnerId());
-            if (controller != null
-                    && controller.getLibrary().getFromTop(game) != null
-                    && objectId.equals(controller.getLibrary().getFromTop(game).getId())) {
-                if (affectedAbility instanceof ActivatedAbility) {
-                    ActivatedAbility activatedAbility = (ActivatedAbility) affectedAbility;
-                    // add the life cost first
-                    PayLifeCost cost = new PayLifeCost(activatedAbility.getManaCosts().convertedManaCost());
-                    Costs costs = new CostsImpl();
-                    costs.add(cost);
-                    costs.addAll(activatedAbility.getCosts());
-                    controller.setCastSourceIdWithAlternateMana(activatedAbility.getSourceId(), null, costs);
-                    return true;
-                }
-            }
+        if (cardToCheck == null) {
+            return false;
         }
-        return false;
+
+        // must be you
+        if (!affectedControllerId.equals(source.getControllerId())) {
+            return false;
+        }
+
+        // must be your card
+        Player player = game.getPlayer(cardToCheck.getOwnerId());
+        if (player == null || !player.getId().equals(affectedControllerId)) {
+            return false;
+        }
+
+        // must be from your library
+        Card topCard = player.getLibrary().getFromTop(game);
+        if (topCard == null || !topCard.getId().equals(cardToCheck.getMainCard().getId())) {
+            return false;
+        }
+
+        // allows to play/cast with alternative life cost
+        if (!cardToCheck.isLand()) {
+            PayLifeCost lifeCost = new PayLifeCost(cardToCheck.getSpellAbility().getManaCosts().convertedManaCost());
+            Costs newCosts = new CostsImpl();
+            newCosts.add(lifeCost);
+            newCosts.addAll(cardToCheck.getSpellAbility().getCosts());
+            player.setCastSourceIdWithAlternateMana(cardToCheck.getId(), null, newCosts);
+        }
+        return true;
     }
 }

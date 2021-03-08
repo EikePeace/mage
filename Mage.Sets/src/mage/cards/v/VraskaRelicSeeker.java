@@ -50,7 +50,7 @@ public final class VraskaRelicSeeker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VraskaRelicSeeker(final VraskaRelicSeeker card) {
+    private VraskaRelicSeeker(final VraskaRelicSeeker card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class VraskaRelicSeekerDestroyEffect extends OneShotEffect {
         for (UUID permanentId : targetPointer.getTargets(game, source)) {
             Permanent permanent = game.getPermanent(permanentId);
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return new CreateTokenEffect(new TreasureToken()).apply(game, source);

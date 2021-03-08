@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -38,7 +37,7 @@ public final class FrontierGuide extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FrontierGuide(final FrontierGuide card) {
+    private FrontierGuide(final FrontierGuide card) {
         super(card);
     }
 

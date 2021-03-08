@@ -45,7 +45,7 @@ public final class ColossalWhale extends CardImpl {
 
     }
 
-    public ColossalWhale(final ColossalWhale card) {
+    private ColossalWhale(final ColossalWhale card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class ColossalWhaleAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

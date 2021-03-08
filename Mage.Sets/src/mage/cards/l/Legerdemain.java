@@ -12,7 +12,7 @@ import mage.filter.FilterPermanent;
 import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.StackObject;
@@ -45,7 +45,7 @@ public final class Legerdemain extends CardImpl {
         this.getSpellAbility().addTarget(secondTarget);
     }
 
-    public Legerdemain(final Legerdemain card) {
+    private Legerdemain(final Legerdemain card) {
         super(card);
     }
 

@@ -18,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -42,7 +41,7 @@ public final class NeedleSpires extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{2}{R}{W}")));
     }
 
-    public NeedleSpires(final NeedleSpires card) {
+    private NeedleSpires(final NeedleSpires card) {
         super(card);
     }
 

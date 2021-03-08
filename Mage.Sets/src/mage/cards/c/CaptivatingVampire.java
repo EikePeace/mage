@@ -1,7 +1,6 @@
 
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -21,8 +20,9 @@ import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public final class CaptivatingVampire extends CardImpl {
@@ -37,7 +37,7 @@ public final class CaptivatingVampire extends CardImpl {
     }
 
     public CaptivatingVampire(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{B}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{B}{B}");
 
         this.subtype.add(SubType.VAMPIRE);
         this.power = new MageInt(2);
@@ -52,7 +52,7 @@ public final class CaptivatingVampire extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CaptivatingVampire(final CaptivatingVampire card) {
+    private CaptivatingVampire(final CaptivatingVampire card) {
         super(card);
     }
 
@@ -86,15 +86,11 @@ class CaptivatingVampireEffect extends ContinuousEffectImpl {
             switch (layer) {
                 case ControlChangingEffects_2:
                     if (sublayer == SubLayer.NA) {
-                        permanent.changeControllerId(source.getControllerId(), game);
+                        permanent.changeControllerId(source.getControllerId(), game, source);
                     }
                     break;
                 case TypeChangingEffects_4:
-                    if (sublayer == SubLayer.NA) {
-                        if (!permanent.hasSubtype(SubType.VAMPIRE, game)) {
-                            permanent.getSubtype(game).add(SubType.VAMPIRE);
-                        }
-                    }
+                    permanent.addSubType(game, SubType.VAMPIRE);
                     break;
             }
             return true;

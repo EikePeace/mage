@@ -37,7 +37,7 @@ public final class Tariff extends CardImpl {
         this.getSpellAbility().addEffect(new TariffEffect());
     }
 
-    public Tariff(final Tariff card) {
+    private Tariff(final Tariff card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class TariffEffect extends OneShotEffect {
         do {
             processPlayer(game, source, player);
             player = playerList.getNext(game, false);
-        } while (!player.getId().equals(game.getActivePlayerId()));
+        } while (player != null && !player.getId().equals(game.getActivePlayerId()));
 
         return true;
     }
@@ -88,14 +88,14 @@ class TariffEffect extends OneShotEffect {
             String message = "Pay " + manaCost.getText() + " (otherwise sacrifice " +
                     creatureToPayFor.getName() + ")?";
             if (player.chooseUse(Outcome.Benefit, message, source, game)) {
-                if (manaCost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                if (manaCost.pay(source, game, source, player.getId(), false, null)) {
                     game.informPlayers(sourceObject.getName() + ": " + player.getLogName() + " has paid");
                     return;
                 }
             }
 
             game.informPlayers(sourceObject.getName() + ": " + player.getLogName() + " hasn't paid");
-            creatureToPayFor.sacrifice(source.getSourceId(), game);
+            creatureToPayFor.sacrifice(source, game);
         }
     }
 

@@ -45,7 +45,7 @@ public final class CarryAway extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ControlEnchantedEffect("equipment")));
     }
 
-    public CarryAway(final CarryAway card) {
+    private CarryAway(final CarryAway card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class CarryAwayEffect extends OneShotEffect {
             if (enchantedEquipment != null) {
                 Permanent equippedCreature = game.getPermanent(enchantedEquipment.getAttachedTo());
                 if (equippedCreature != null) {
-                    return equippedCreature.removeAttachment(enchantedEquipment.getId(), game);
+                    return equippedCreature.removeAttachment(enchantedEquipment.getId(), source, game);
                 }
             }
         }

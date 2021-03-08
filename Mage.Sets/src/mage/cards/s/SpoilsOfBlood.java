@@ -34,7 +34,7 @@ public final class SpoilsOfBlood extends CardImpl {
         this.getSpellAbility().addWatcher(new CreaturesDiedThisTurnWatcher());
     }
 
-    public SpoilsOfBlood(final SpoilsOfBlood card) {
+    private SpoilsOfBlood(final SpoilsOfBlood card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class CreaturesDiedThisTurnWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
             MageObject mageObject = game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
             if (mageObject != null && mageObject.isCreature()) {
                 creaturesDiedThisTurn++;

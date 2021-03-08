@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -21,7 +21,7 @@ import mage.filter.predicate.permanent.AnotherPredicate;
  */
 public final class ThaliasLieutenant extends CardImpl {
 
-    private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("each other Human you control");
+    private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("another Human you control");
 
     static {
         filter.add(AnotherPredicate.instance);
@@ -42,7 +42,7 @@ public final class ThaliasLieutenant extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), filter));
     }
 
-    public ThaliasLieutenant(final ThaliasLieutenant card) {
+    private ThaliasLieutenant(final ThaliasLieutenant card) {
         super(card);
     }
 

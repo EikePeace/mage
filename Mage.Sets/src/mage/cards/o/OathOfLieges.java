@@ -16,7 +16,6 @@ import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.game.Game;
 import mage.players.Player;
-import mage.target.Target;
 import mage.target.TargetPlayer;
 import mage.target.common.TargetCardInLibrary;
 import mage.target.targetadjustment.TargetAdjuster;
@@ -38,7 +37,7 @@ public final class OathOfLieges extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OathOfLieges(final OathOfLieges card) {
+    private OathOfLieges(final OathOfLieges card) {
         super(card);
     }
 

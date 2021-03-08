@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.Mana;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
-import mage.abilities.condition.common.CastFromHandSourceCondition;
+import mage.abilities.condition.common.CastFromHandSourcePermanentCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.mana.BasicManaEffect;
 import mage.cards.CardImpl;
@@ -29,12 +29,12 @@ public final class CoalStoker extends CardImpl {
         // When Coal Stoker enters the battlefield, if you cast it from your hand, add {R}{R}{R}.
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(
                 new EntersBattlefieldTriggeredAbility(new BasicManaEffect(Mana.RedMana(3)), false),
-                CastFromHandSourceCondition.instance,
+                CastFromHandSourcePermanentCondition.instance,
                 "When {this} enters the battlefield, if you cast it from your hand, add {R}{R}{R}."),
                 new CastFromHandWatcher());
     }
 
-    public CoalStoker(final CoalStoker card) {
+    private CoalStoker(final CoalStoker card) {
         super(card);
     }
 

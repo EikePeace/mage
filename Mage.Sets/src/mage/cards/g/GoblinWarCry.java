@@ -32,7 +32,7 @@ public final class GoblinWarCry extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public GoblinWarCry(final GoblinWarCry card) {
+    private GoblinWarCry(final GoblinWarCry card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class GoblinWarCryEffect extends OneShotEffect {
         filter.add(new ControllerIdPredicate(player.getId()));
         Target target = new TargetPermanent(1, 1, filter, true);
         if (target.canChoose(source.getSourceId(), player.getId(), game)) {
-            while (!target.isChosen() && target.canChoose(player.getId(), game) && player.canRespond()) {
+            while (!target.isChosen() && target.canChoose(source.getSourceId(), player.getId(), game) && player.canRespond()) {
                 player.chooseTarget(Outcome.DestroyPermanent, target, source, game);
             }
             Permanent permanent = game.getPermanent(target.getFirstTarget());

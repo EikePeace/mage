@@ -18,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -34,7 +33,7 @@ public final class StirringWildwood extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new StirringWildwoodToken(), "land", Duration.EndOfTurn), new ManaCostsImpl("{1}{G}{W}")));
     }
 
-    public StirringWildwood(final StirringWildwood card) {
+    private StirringWildwood(final StirringWildwood card) {
         super(card);
     }
 

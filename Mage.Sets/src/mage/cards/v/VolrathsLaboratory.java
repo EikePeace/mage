@@ -44,7 +44,7 @@ public final class VolrathsLaboratory extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VolrathsLaboratory(final VolrathsLaboratory card) {
+    private VolrathsLaboratory(final VolrathsLaboratory card) {
         super(card);
     }
 
@@ -75,6 +75,6 @@ class VolrathsLaboratoryEffect extends OneShotEffect {
         ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
         SubType subType = ChooseCreatureTypeEffect.getChosenCreatureType(source.getSourceId(), game);
         Token token = new VolrathsLaboratoryToken(color, subType);
-        return token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        return token.putOntoBattlefield(1, game, source, source.getControllerId());
     }
 }

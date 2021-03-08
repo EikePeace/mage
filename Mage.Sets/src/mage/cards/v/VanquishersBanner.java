@@ -48,7 +48,7 @@ public final class VanquishersBanner extends CardImpl {
 
     }
 
-    public VanquishersBanner(final VanquishersBanner card) {
+    private VanquishersBanner(final VanquishersBanner card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class DrawCardIfCreatureTypeAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

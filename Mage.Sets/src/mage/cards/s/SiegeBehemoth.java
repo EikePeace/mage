@@ -4,12 +4,8 @@ package mage.cards.s;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DamageAsThoughNotBlockedAbility;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.condition.common.SourceAttackingCondition;
-import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.effects.AsThoughEffectImpl;
-import mage.abilities.effects.common.continuous.GainAbilityControlledEffect;
 import mage.abilities.keyword.HexproofAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -41,7 +37,7 @@ public final class SiegeBehemoth extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SiegeBehemothEffect()));
     }
 
-    public SiegeBehemoth(final SiegeBehemoth card) {
+    private SiegeBehemoth(final SiegeBehemoth card) {
         super(card);
     }
 
@@ -69,8 +65,7 @@ class SiegeBehemothEffect extends AsThoughEffectImpl {
             Player controller = game.getPlayer(source.getControllerId());
             Permanent otherCreature = game.getPermanent(sourceId);
             if (controller != null && otherCreature != null && otherCreature.isControlledBy(controller.getId())){
-                return controller.chooseUse(Outcome.Damage, "Do you wish to assign damage for "
-                        + otherCreature.getLogName() + " as though it weren't blocked?", source, game);
+                return controller.chooseUse(Outcome.Damage, "Have " + otherCreature.getLogName() + " assign damage as though it weren't blocked?", source, game);
             }
         }
         return false;

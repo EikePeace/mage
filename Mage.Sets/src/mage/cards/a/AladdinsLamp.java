@@ -34,7 +34,7 @@ public final class AladdinsLamp extends CardImpl {
 
     }
 
-    public AladdinsLamp(final AladdinsLamp card) {
+    private AladdinsLamp(final AladdinsLamp card) {
         super(card);
     }
 
@@ -74,8 +74,8 @@ class AladdinsLampEffect extends ReplacementEffectImpl {
             cards.remove(target.getFirstTarget());
         }
         controller.putCardsOnBottomOfLibrary(cards, game, source, false);
-        game.applyEffects();
-        controller.drawCards(1, game, event.getAppliedEffects());
+        game.getState().processAction(game);
+        controller.drawCards(1, source, game, event);
         discard();
         return true;
     }

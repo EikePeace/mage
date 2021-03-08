@@ -35,7 +35,7 @@ public final class AngrathsMarauders extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AngrathsMaraudersEffect()));
     }
 
-    public AngrathsMarauders(final AngrathsMarauders card) {
+    private AngrathsMarauders(final AngrathsMarauders card) {
         super(card);
     }
 
@@ -64,8 +64,7 @@ class AngrathsMaraudersEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         return event.getType().equals(EventType.DAMAGE_PLAYER)
-                || event.getType().equals(EventType.DAMAGE_CREATURE)
-                || event.getType().equals(EventType.DAMAGE_PLANESWALKER);
+                || event.getType().equals(EventType.DAMAGE_PERMANENT);
     }
 
     @Override
@@ -75,7 +74,7 @@ class AngrathsMaraudersEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

@@ -29,7 +29,7 @@ public final class Reparations extends CardImpl {
 
     }
 
-    public Reparations(final Reparations card) {
+    private Reparations(final Reparations card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class ReparationsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

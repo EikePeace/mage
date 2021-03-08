@@ -47,7 +47,7 @@ public final class CurseOfVengeance extends CardImpl {
         this.addAbility(new CurseOfVengeancePlayerLosesTriggeredAbility());
     }
 
-    public CurseOfVengeance(final CurseOfVengeance card) {
+    private CurseOfVengeance(final CurseOfVengeance card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class CurseOfVengeanceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
 
     }
 
@@ -118,7 +118,7 @@ class CurseOfVengeancePlayerLosesTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST;
+        return event.getType() == GameEvent.EventType.LOST;
     }
 
     @Override
@@ -157,7 +157,7 @@ class CurseOfVengeanceDrawLifeEffect extends OneShotEffect {
         Permanent sourceObject = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (sourceObject != null && controller != null) {
             if (sourceObject.getCounters(game).containsKey(CounterType.SPITE)) {
-                controller.drawCards(sourceObject.getCounters(game).getCount(CounterType.SPITE), game);
+                controller.drawCards(sourceObject.getCounters(game).getCount(CounterType.SPITE), source, game);
                 controller.gainLife(sourceObject.getCounters(game).getCount(CounterType.SPITE), game, source);
             }
             return true;

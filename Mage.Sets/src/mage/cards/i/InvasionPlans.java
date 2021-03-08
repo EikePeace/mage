@@ -29,7 +29,7 @@ public final class InvasionPlans extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new InvasionPlansEffect()));
     }
 
-    public InvasionPlans(final InvasionPlans card) {
+    private InvasionPlans(final InvasionPlans card) {
         super(card);
     }
 
@@ -70,8 +70,8 @@ class InvasionPlansEffect extends ContinuousRuleModifyingEffectImpl {
         Player blockController = game.getPlayer(game.getCombat().getAttackingPlayerId());
         if (blockController != null) {
             // temporary workaround for AI bugging out while choosing blockers
-            if (blockController.isHuman()) {
-                game.getCombat().selectBlockers(blockController, game);
+            if (!blockController.isComputer()) {
+                game.getCombat().selectBlockers(blockController, source, game);
                 return event.getPlayerId().equals(game.getCombat().getAttackingPlayerId());
             }
         }

@@ -15,7 +15,6 @@ import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
 /**
@@ -37,7 +36,7 @@ public final class BloodsporeThrinax extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BloodsporeThrinaxEntersBattlefieldEffect()));
     }
 
-    public BloodsporeThrinax(final BloodsporeThrinax card) {
+    private BloodsporeThrinax(final BloodsporeThrinax card) {
         super(card);
     }
 
@@ -60,7 +59,7 @@ class BloodsporeThrinaxEntersBattlefieldEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
@@ -78,7 +77,7 @@ class BloodsporeThrinaxEntersBattlefieldEffect extends ReplacementEffectImpl {
         if (sourceCreature != null && creature != null) {
             int amount = sourceCreature.getCounters(game).getCount(CounterType.P1P1);
             if (amount > 0) {
-                creature.addCounters(CounterType.P1P1.createInstance(amount), source, game);
+                creature.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game);
             }
         }
         return false;

@@ -22,7 +22,6 @@ import mage.filter.FilterCard;
 import mage.filter.common.FilterCreatureCard;
 import mage.game.Game;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetCardInGraveyard;
@@ -51,7 +50,7 @@ public final class NezumiGraverobber extends CardImpl {
         this.addAbility(ability);
     }
 
-    public NezumiGraverobber(final NezumiGraverobber card) {
+    private NezumiGraverobber(final NezumiGraverobber card) {
         super(card);
     }
 

@@ -31,7 +31,7 @@ public final class FierceInvocation extends CardImpl {
         this.getSpellAbility().addEffect(new FierceInvocationEffect());
     }
 
-    public FierceInvocation(final FierceInvocation card) {
+    private FierceInvocation(final FierceInvocation card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class FierceInvocationEffect extends OneShotEffect {
                 Permanent permanent = game.getPermanent(card.getId());
                 if (permanent != null) {
                     Effect effect = new AddCountersTargetEffect(CounterType.P1P1.createInstance(2));
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     return effect.apply(game, source);
                 }
             }

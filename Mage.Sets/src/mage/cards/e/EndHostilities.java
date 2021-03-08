@@ -29,7 +29,7 @@ public final class EndHostilities extends CardImpl {
         this.getSpellAbility().addEffect(new EndHostilitiesEffect());
     }
 
-    public EndHostilities(final EndHostilities card) {
+    private EndHostilities(final EndHostilities card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class EndHostilitiesEffect extends OneShotEffect {
                 }
             }
             for (Permanent permanent : toDestroy){
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
             return true;
         }

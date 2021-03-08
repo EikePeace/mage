@@ -1,8 +1,5 @@
 package mage.cards.c;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.StateTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -11,7 +8,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import static mage.cards.c.CityInABottle.getArabianNightsNamePredicates;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
@@ -23,11 +19,15 @@ import mage.filter.predicate.mageobject.NamePredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static mage.cards.c.CityInABottle.getArabianNightsNamePredicates;
+
 /**
- *
  * @author emerald000
  */
 public final class CityInABottle extends CardImpl {
@@ -42,7 +42,7 @@ public final class CityInABottle extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CityInABottleCantPlayEffect()));
     }
 
-    public CityInABottle(final CityInABottle card) {
+    private CityInABottle(final CityInABottle card) {
         super(card);
     }
 
@@ -158,7 +158,7 @@ class CityInABottleStateTriggeredAbility extends StateTriggeredAbility {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        return game.getBattlefield().contains(filter, this.getControllerId(), game, 1);
+        return game.getBattlefield().contains(filter, this.getSourceId(), this.getControllerId(), game, 1);
     }
 
     @Override
@@ -193,7 +193,7 @@ class CityInABottleSacrificeEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
         }
         return true;
     }
@@ -233,7 +233,7 @@ class CityInABottleCantPlayEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.PLAY_LAND || event.getType() == EventType.CAST_SPELL;
+        return event.getType() == GameEvent.EventType.PLAY_LAND || event.getType() == GameEvent.EventType.CAST_SPELL;
     }
 
     @Override

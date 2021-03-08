@@ -10,7 +10,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.target.TargetSource;
@@ -39,7 +39,7 @@ public final class KorChant extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public KorChant(final KorChant card) {
+    private KorChant(final KorChant card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class KorChantEffect extends RedirectionEffect {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override

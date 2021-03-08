@@ -30,7 +30,7 @@ public final class PowerSurge extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new PowerSurgeDamageEffect(), TargetController.ANY, false, true), new PowerSurgeWatcher());
     }
 
-    public PowerSurge(final PowerSurge card) {
+    private PowerSurge(final PowerSurge card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class PowerSurgeDamageEffect extends OneShotEffect {
             PowerSurgeWatcher watcher = game.getState().getWatcher(PowerSurgeWatcher.class);
             if (watcher != null) {
                 int damage = watcher.getUntappedLandCount();
-                player.damage(damage, source.getSourceId(), game);
+                player.damage(damage, source.getSourceId(), source, game);
                 return true;
             }
         }

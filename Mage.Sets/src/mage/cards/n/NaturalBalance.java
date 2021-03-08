@@ -1,4 +1,3 @@
-
 package mage.cards.n;
 
 import mage.abilities.Ability;
@@ -24,7 +23,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *
  * @author Rene - bugisemail at gmail dot com
  */
 public final class NaturalBalance extends CardImpl {
@@ -36,7 +34,7 @@ public final class NaturalBalance extends CardImpl {
         this.getSpellAbility().addEffect(new NaturalBalanceEffect());
     }
 
-    public NaturalBalance(final NaturalBalance card) {
+    private NaturalBalance(final NaturalBalance card) {
         super(card);
     }
 
@@ -76,7 +74,7 @@ public final class NaturalBalance extends CardImpl {
                             if (target.choose(Outcome.Sacrifice, player.getId(), source.getSourceId(), game)) {
                                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(new FilterLandPermanent(), player.getId(), game)) {
                                     if (!target.getTargets().contains(permanent.getId())) {
-                                        permanent.sacrifice(source.getId(), game);
+                                        permanent.sacrifice(source, game);
                                     }
                                 }
                             }
@@ -100,9 +98,7 @@ public final class NaturalBalance extends CardImpl {
                     }
                 }
                 for (Player player : toShuffle) {
-                    if (player.isInGame()) {
-                        player.shuffleLibrary(source, game);
-                    }
+                    player.shuffleLibrary(source, game);
                 }
                 return true;
             }

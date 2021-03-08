@@ -28,7 +28,7 @@ public final class Oblation extends CardImpl {
         this.getSpellAbility().addTarget(new TargetNonlandPermanent());
     }
 
-    public Oblation(final Oblation card) {
+    private Oblation(final Oblation card) {
         super(card);
     }
 
@@ -60,12 +60,12 @@ class OblationEffect extends OneShotEffect {
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getOwnerId());
             if (player != null) {
-                player.moveCardToLibraryWithInfo(permanent, source.getSourceId(), game, Zone.BATTLEFIELD, true, true);
+                player.moveCardToLibraryWithInfo(permanent, source, game, Zone.BATTLEFIELD, true, true);
                 player.shuffleLibrary(source, game);
 
-                game.applyEffects(); // so effects from creatures that were on the battlefield won't trigger from draw 
+                game.getState().processAction(game); // so effects from creatures that were on the battlefield won't trigger from draw 
 
-                player.drawCards(2, game);
+                player.drawCards(2, source, game);
                 return true;
             }
         }

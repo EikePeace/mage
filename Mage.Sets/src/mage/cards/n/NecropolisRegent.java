@@ -42,7 +42,7 @@ public final class NecropolisRegent extends CardImpl {
         this.addAbility(new NecropolisRegentTriggeredAbility());
     }
 
-    public NecropolisRegent(final NecropolisRegent card) {
+    private NecropolisRegent(final NecropolisRegent card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class NecropolisRegentTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

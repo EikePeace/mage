@@ -29,7 +29,7 @@ public final class MindstormCrown extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new MindstormCrownEffect(), TargetController.YOU, false), new MindstormCrownWatcher());
     }
 
-    public MindstormCrown(final MindstormCrown card) {
+    private MindstormCrown(final MindstormCrown card) {
         super(card);
     }
 
@@ -65,10 +65,10 @@ class MindstormCrownEffect extends OneShotEffect {
         MindstormCrownWatcher watcher = game.getState().getWatcher(MindstormCrownWatcher.class);
         if (watcher != null
                 && watcher.getCardsInHandCount() == 0) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
         } else {
             if (permanent != null) {
-                controller.damage(1, permanent.getId(), game);
+                controller.damage(1, permanent.getId(), source, game);
             }
         }
         return true;

@@ -6,7 +6,6 @@ import java.util.UUID;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.abilities.effects.common.combat.CantBeBlockedAttachedEffect;
 import mage.abilities.keyword.EquipAbility;
@@ -43,7 +42,7 @@ public final class HotSoup extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(3)));
     }
 
-    public HotSoup(final HotSoup card) {
+    private HotSoup(final HotSoup card) {
         super(card);
     }
 
@@ -70,7 +69,7 @@ class HotSoupTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
     
     @Override

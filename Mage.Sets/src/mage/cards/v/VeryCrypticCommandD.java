@@ -21,7 +21,7 @@ import mage.constants.Outcome;
 import mage.filter.FilterStackObject;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -75,7 +75,7 @@ public final class VeryCrypticCommandD extends CardImpl {
         this.getSpellAbility().getModes().addMode(mode);
     }
 
-    public VeryCrypticCommandD(final VeryCrypticCommandD card) {
+    private VeryCrypticCommandD(final VeryCrypticCommandD card) {
         super(card);
     }
 
@@ -106,9 +106,9 @@ class TurnOverEffect extends OneShotEffect {
         Permanent creature = game.getPermanent(source.getFirstTarget());
         if (creature != null) {
             if (creature.isFaceDown(game)) {
-                creature.turnFaceUp(game, source.getControllerId());
+                creature.turnFaceUp(source, game, source.getControllerId());
             } else {
-                creature.turnFaceDown(game, source.getControllerId());
+                creature.turnFaceDown(source, game, source.getControllerId());
                 MageObjectReference objectReference = new MageObjectReference(creature.getId(), creature.getZoneChangeCounter(game), game);
                 game.addEffect(new BecomesFaceDownCreatureEffect(null, objectReference, Duration.Custom, FaceDownType.MANUAL), source);
             }

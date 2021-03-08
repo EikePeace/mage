@@ -17,10 +17,11 @@ import mage.game.permanent.Permanent;
 import mage.game.permanent.token.EmptyToken;
 import mage.target.targetpointer.FixedTarget;
 import mage.util.CardUtil;
-import mage.util.functions.ApplyToPermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.CopyApplier;
+import mage.util.functions.EmptyCopyApplier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,19 +34,21 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
     private final CardType additionalCardType;
     private boolean hasHaste;
     private final int number;
-    private List<Permanent> addedTokenPermanents;
+    private final List<Permanent> addedTokenPermanents;
     private SubType additionalSubType;
     private SubType onlySubType;
-    private boolean tapped;
-    private boolean attacking;
-    private UUID attackedPlayer;
+    private final boolean tapped;
+    private final boolean attacking;
+    private final UUID attackedPlayer;
     private final int tokenPower;
     private final int tokenToughness;
-    private boolean gainsFlying;
+    private final boolean gainsFlying;
     private boolean becomesArtifact;
     private ObjectColor color;
     private boolean useLKI = false;
     private boolean isntLegendary = false;
+    private int startingLoyalty = -1;
+    private final List<Ability> additionalAbilities = new ArrayList();
 
     public CreateTokenCopyTargetEffect(boolean useLKI) {
         this();
@@ -69,8 +72,8 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
     }
 
     /**
-     * @param playerId           null the token is controlled/owned by the controller of
-     *                           the source ability
+     * @param playerId           null the token is controlled/owned by the
+     *                           controller of the source ability
      * @param additionalCardType the token gains this card type in addition
      * @param hasHaste           the token gains haste
      * @param number             number of tokens to put into play
@@ -131,14 +134,14 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
         }
         Permanent permanent;
         if (useLKI) {
-            permanent = ((FixedTarget) getTargetPointer()).getTargetedPermanentOrLKIBattlefield(game);
+            permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         } else {
             permanent = game.getPermanentOrLKIBattlefield(targetId);
         }
 
         // can target card or permanent
         Card copyFrom;
-        ApplyToPermanent applier = new EmptyApplyToPermanent();
+        CopyApplier applier = new EmptyCopyApplier();
         if (permanent != null) {
             // handle copies of copies
             Permanent copyFromPermanent = permanent;
@@ -166,8 +169,9 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
             return false;
         }
 
+        // create token and modify all attributes permanently (without game usage)
         EmptyToken token = new EmptyToken();
-        CardUtil.copyTo(token).from(copyFrom); // needed so that entersBattlefied triggered abilities see the attributes (e.g. Master Biomancer)
+        CardUtil.copyTo(token).from(copyFrom, game); // needed so that entersBattlefied triggered abilities see the attributes (e.g. Master Biomancer)
         applier.apply(game, token, source, targetId);
         if (becomesArtifact) {
             token.addCardType(CardType.ARTIFACT);
@@ -175,7 +179,11 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
         if (isntLegendary) {
             token.getSuperType().remove(SuperType.LEGENDARY);
         }
-        if (additionalCardType != null && !token.getCardType().contains(additionalCardType)) {
+
+        if (startingLoyalty != -1) {
+            token.setStartingLoyalty(startingLoyalty);
+        }
+        if (additionalCardType != null) {
             token.addCardType(additionalCardType);
         }
         if (hasHaste) {
@@ -192,18 +200,19 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
             token.removePTCDA();
             token.getToughness().modifyBaseValue(tokenToughness);
         }
-        if (additionalSubType != null && !token.hasSubtype(additionalSubType, game)) {
-            token.getSubtype(game).add(additionalSubType);
+        if (onlySubType != null) {
+            token.removeAllCreatureTypes();
+            token.addSubType(onlySubType);
         }
-        if (onlySubType != null && !token.hasSubtype(onlySubType, game)) {
-            token.getSubtype(game).clear();
-            token.getSubtype(game).add(onlySubType);
+        if (additionalSubType != null) {
+            token.addSubType(additionalSubType);
         }
         if (color != null) {
-            token.getColor(game).setColor(color);
+            token.getColor().setColor(color);
         }
+        additionalAbilities.stream().forEach(token::addAbility);
 
-        token.putOntoBattlefield(number, game, source.getSourceId(), playerId == null ? source.getControllerId() : playerId, tapped, attacking, attackedPlayer);
+        token.putOntoBattlefield(number, game, source, playerId == null ? source.getControllerId() : playerId, tapped, attacking, attackedPlayer);
         for (UUID tokenId : token.getLastAddedTokenIds()) { // by cards like Doubling Season multiple tokens can be added to the battlefield
             Permanent tokenPermanent = game.getPermanent(tokenId);
             if (tokenPermanent != null) {
@@ -286,6 +295,10 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
         this.hasHaste = hasHaste;
     }
 
+    public void setStartingLoyalty(int startingLoyalty) {
+        this.startingLoyalty = startingLoyalty;
+    }
+
     public void exileTokensCreatedAtNextEndStep(Game game, Ability source) {
         for (Permanent tokenPermanent : addedTokenPermanents) {
             ExileTargetEffect exileEffect = new ExileTargetEffect(null, "", Zone.BATTLEFIELD);
@@ -301,5 +314,9 @@ public class CreateTokenCopyTargetEffect extends OneShotEffect {
             exileEffect.setTargetPointer(new FixedTarget(tokenPermanent, game));
             game.addDelayedTriggeredAbility(new AtTheEndOfCombatDelayedTriggeredAbility(exileEffect), source);
         }
+    }
+
+    public void addAdditionalAbilities(Ability... abilities) {
+        Arrays.stream(abilities).forEach(this.additionalAbilities::add);
     }
 }

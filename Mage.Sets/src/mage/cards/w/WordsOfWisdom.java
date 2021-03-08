@@ -24,11 +24,11 @@ public final class WordsOfWisdom extends CardImpl {
 
 
         // You draw two cards, then each other player draws a card.
-        this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(2));
+        this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(2).setText("you draw two cards"));
         this.getSpellAbility().addEffect(new WordsOfWisdomEffect());
     }
 
-    public WordsOfWisdom(final WordsOfWisdom card) {
+    private WordsOfWisdom(final WordsOfWisdom card) {
         super(card);
     }
 
@@ -42,7 +42,7 @@ class WordsOfWisdomEffect extends OneShotEffect {
 
     public WordsOfWisdomEffect() {
         super(Outcome.Detriment);
-        this.staticText = "then each other player draws a card";
+        this.staticText = ", then each other player draws a card";
     }
 
     public WordsOfWisdomEffect(final WordsOfWisdomEffect effect) {
@@ -62,7 +62,7 @@ class WordsOfWisdomEffect extends OneShotEffect {
                 if (!playerId.equals(controller.getId())) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.drawCards(1, game);
+                        player.drawCards(1, source, game);
                     }
                 }
             }

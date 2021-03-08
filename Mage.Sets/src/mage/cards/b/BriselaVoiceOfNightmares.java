@@ -50,7 +50,7 @@ public final class BriselaVoiceOfNightmares extends MeldCard {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BriselaVoiceOfNightmaresCantCastEffect()));
     }
 
-    public BriselaVoiceOfNightmares(final BriselaVoiceOfNightmares card) {
+    private BriselaVoiceOfNightmares(final BriselaVoiceOfNightmares card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ class BriselaVoiceOfNightmaresCantCastEffect extends ContinuousRuleModifyingEffe
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL_LATE;
+        return event.getType() == GameEvent.EventType.CAST_SPELL_LATE;
     }
 
     @Override

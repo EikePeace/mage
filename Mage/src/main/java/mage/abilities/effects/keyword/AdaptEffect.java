@@ -22,7 +22,7 @@ public class AdaptEffect extends OneShotEffect {
         super(Outcome.BoostCreature);
         this.adaptNumber = adaptNumber;
         staticText = "Adapt " + adaptNumber
-                + " <i>(If this creature has no +1/+1 counters on it, put "
+                + ". <i>(If this creature has no +1/+1 counters on it, put "
                 + CardUtil.numberToText(adaptNumber) + " +1/+1 counter"
                 + (adaptNumber > 1 ? "s" : "") + " on it.)</i>";
     }
@@ -52,7 +52,7 @@ public class AdaptEffect extends OneShotEffect {
             return false;
         }
         GameEvent event = new GameEvent(
-                GameEvent.EventType.ADAPT, source.getSourceId(), source.getSourceId(),
+                GameEvent.EventType.ADAPT, source.getSourceId(), source,
                 source.getControllerId(), adaptNumber, false
         );
         if (game.replaceEvent(event)) {
@@ -60,7 +60,7 @@ public class AdaptEffect extends OneShotEffect {
         }
         if (permanent.getCounters(game).getCount(CounterType.P1P1) == 0
                 || event.getFlag()) {
-            permanent.addCounters(CounterType.P1P1.createInstance(event.getAmount()), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(event.getAmount()), source.getControllerId(), source, game);
         }
         return true;
     }

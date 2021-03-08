@@ -14,7 +14,7 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -48,7 +48,7 @@ public final class DeeprootElite extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DeeprootElite(final DeeprootElite card) {
+    private DeeprootElite(final DeeprootElite card) {
         super(card);
     }
 

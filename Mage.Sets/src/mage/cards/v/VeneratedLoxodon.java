@@ -3,7 +3,6 @@ package mage.cards.v;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import mage.MageInt;
@@ -46,7 +45,7 @@ public final class VeneratedLoxodon extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new VeneratedLoxodonEffect(), false), new VeneratedLoxodonWatcher());
     }
 
-    public VeneratedLoxodon(final VeneratedLoxodon card) {
+    private VeneratedLoxodon(final VeneratedLoxodon card) {
         super(card);
     }
 
@@ -82,7 +81,7 @@ class VeneratedLoxodonEffect extends OneShotEffect {
                 for (MageObjectReference creatureMOR : creatures) {
                     Permanent creature = creatureMOR.getPermanent(game);
                     if (creature != null) {
-                        creature.addCounters(CounterType.P1P1.createInstance(), source, game);
+                        creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                     }
                 }
             }

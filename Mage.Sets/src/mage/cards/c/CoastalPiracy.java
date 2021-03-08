@@ -27,7 +27,7 @@ public final class CoastalPiracy extends CardImpl {
         this.addAbility(new CoastalPiracyTriggeredAbility());
     }
 
-    public CoastalPiracy(final CoastalPiracy card) {
+    private CoastalPiracy(final CoastalPiracy card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class CoastalPiracyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

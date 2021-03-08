@@ -35,7 +35,7 @@ public final class EntrailsFeaster extends CardImpl {
 
     }
 
-    public EntrailsFeaster(final EntrailsFeaster card) {
+    private EntrailsFeaster(final EntrailsFeaster card) {
         super(card);
     }
 
@@ -76,15 +76,15 @@ class EntrailsFeasterEffect extends OneShotEffect {
                     if (cardChosen != null) {
                         controller.moveCardsToExile(cardChosen, source, game, true, null, "");
                         if (sourceObject != null) {
-                            sourceObject.addCounters(CounterType.P1P1.createInstance(), source, game);
+                            sourceObject.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                             game.informPlayers(controller.getLogName() + " puts a +1/+1 counter on " + sourceObject.getLogName());
                         }
                     }
                 } else if (sourceObject != null) {
-                    sourceObject.tap(game);
+                    sourceObject.tap(source, game);
                 }
             } else if (sourceObject != null) {
-                sourceObject.tap(game);
+                sourceObject.tap(source, game);
             }
             return true;
         }

@@ -17,7 +17,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -53,7 +53,7 @@ public final class GalepowderMage extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GalepowderMage(final GalepowderMage card) {
+    private GalepowderMage(final GalepowderMage card) {
         super(card);
     }
 
@@ -88,10 +88,10 @@ class GalepowderMageEffect extends OneShotEffect {
                 Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
                 if (permanent != null) {
                     UUID exileId = UUID.randomUUID();
-                    if (controller.moveCardToExileWithInfo(permanent, exileId, sourceObject.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
+                    if (controller.moveCardToExileWithInfo(permanent, exileId, sourceObject.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
                         Card card = game.getCard(getTargetPointer().getFirst(game, source));
                         if (card != null) {
-                            Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+                            Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                             effect.setTargetPointer(new FixedTarget(card.getId(), game.getState().getZoneChangeCounter(card.getId())));
                             AtTheBeginOfNextEndStepDelayedTriggeredAbility delayedAbility = new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect);
                             game.addDelayedTriggeredAbility(delayedAbility, source);

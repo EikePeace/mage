@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -50,7 +50,7 @@ public final class MadAuntie extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MadAuntie(final MadAuntie card) {
+    private MadAuntie(final MadAuntie card) {
         super(card);
     }
 

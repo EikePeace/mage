@@ -47,7 +47,7 @@ public final class SlowMotion extends CardImpl {
         this.addAbility(new PutIntoGraveFromBattlefieldSourceTriggeredAbility(new ReturnToHandSourceEffect()));
     }
 
-    public SlowMotion(final SlowMotion card) {
+    private SlowMotion(final SlowMotion card) {
         super(card);
     }
 
@@ -88,11 +88,11 @@ class SacrificeEquipedUnlessPaysEffect extends OneShotEffect {
         }
         if (player.chooseUse(Outcome.Benefit, "Pay " + cost.getText() + "? (Or " + equipped.getName() + " will be sacrificed.)", source, game)) {
             cost.clearPaid();
-            if (cost.pay(source, game, source.getSourceId(), equipped.getControllerId(), false, null)) {
+            if (cost.pay(source, game, source, equipped.getControllerId(), false, null)) {
                 return true;
             }
         }
-        equipped.sacrifice(source.getSourceId(), game);
+        equipped.sacrifice(source, game);
         return true;
     }
 

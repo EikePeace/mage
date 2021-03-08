@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class ApocalypseDemon extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(tapEffect, TargetController.YOU, false));
     }
 
-    public ApocalypseDemon(final ApocalypseDemon card) {
+    private ApocalypseDemon(final ApocalypseDemon card) {
         super(card);
     }
 

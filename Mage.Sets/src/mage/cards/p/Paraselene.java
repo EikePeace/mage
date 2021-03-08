@@ -27,7 +27,7 @@ public final class Paraselene extends CardImpl {
         this.getSpellAbility().addEffect(new ParaseleneEffect());
     }
 
-    public Paraselene(final Paraselene card) {
+    private Paraselene(final Paraselene card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class ParaseleneEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int count = 0;
         for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_ENCHANTMENT_PERMANENT, source.getControllerId(), source.getSourceId(), game)) {
-            if (permanent.destroy(source.getSourceId(), game, false)) {
+            if (permanent.destroy(source, game, false)) {
                 count++;
             }
         }

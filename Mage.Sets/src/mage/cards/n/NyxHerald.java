@@ -14,7 +14,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.mageobject.EnchantmentOrEnchantedPredicate;
+import mage.filter.predicate.permanent.EnchantmentOrEnchantedPredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -47,7 +47,7 @@ public final class NyxHerald extends CardImpl {
         );
         ability.addEffect(new GainAbilityTargetEffect(
                 TrampleAbility.getInstance(), Duration.EndOfTurn
-        ).setText("and gains trample"));
+        ).setText("and gains trample until end of turn"));
         ability.addTarget(new TargetPermanent(filter));
         this.addAbility(ability);
     }

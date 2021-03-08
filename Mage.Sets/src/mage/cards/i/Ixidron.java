@@ -17,8 +17,8 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.FaceDownPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -50,7 +50,7 @@ public final class Ixidron extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new SetPowerToughnessSourceEffect(new PermanentsOnBattlefieldCount(filter), Duration.EndOfGame)));
     }
 
-    public Ixidron(final Ixidron card) {
+    private Ixidron(final Ixidron card) {
         super(card);
     }
 

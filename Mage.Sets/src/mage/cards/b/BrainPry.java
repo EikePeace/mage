@@ -30,7 +30,7 @@ public final class BrainPry extends CardImpl {
         this.getSpellAbility().addEffect(new BrainPryEffect());
     }
 
-    public BrainPry(final BrainPry card) {
+    private BrainPry(final BrainPry card) {
         super(card);
     }
 
@@ -60,14 +60,14 @@ class BrainPryEffect extends OneShotEffect {
         if (targetPlayer != null && controller != null && sourceObject != null && cardName != null) {
             boolean hasDiscarded = false;
             for (Card card : targetPlayer.getHand().getCards(game)) {
-                if (CardUtil.haveSameNames(card.getName(), cardName)) {
-                    targetPlayer.discard(card, source, game);
+                if (CardUtil.haveSameNames(card, cardName, game)) {
+                    targetPlayer.discard(card, false, source, game);
                     hasDiscarded = true;
                     break;
                 }
             }
             if (!hasDiscarded) {
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
             }
             controller.lookAtCards(sourceObject.getName() + " Hand", targetPlayer.getHand(), game);
         }

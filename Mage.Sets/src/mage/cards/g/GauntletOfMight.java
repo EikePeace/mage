@@ -7,7 +7,7 @@ import mage.ObjectColor;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.common.TapForManaAllTriggeredManaAbility;
 import mage.abilities.effects.mana.AddManaToManaPoolTargetControllerEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.common.continuous.BoostAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -43,7 +43,7 @@ public final class GauntletOfMight extends CardImpl {
                 effect, filterMountain, SetTargetPointer.PLAYER));        
     }
 
-    public GauntletOfMight(final GauntletOfMight card) {
+    private GauntletOfMight(final GauntletOfMight card) {
         super(card);
     }
 

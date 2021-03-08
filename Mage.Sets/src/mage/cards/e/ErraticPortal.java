@@ -35,7 +35,7 @@ public final class ErraticPortal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ErraticPortal(final ErraticPortal card) {
+    private ErraticPortal(final ErraticPortal card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class ErraticPortalEffect extends OneShotEffect {
                 if (player != null) {
                     cost.clearPaid();
                     if (player.chooseUse(Outcome.Benefit, "Pay {1}? (Otherwise " + targetCreature.getLogName() +" will be returned to its owner's hand)", source, game)) {
-                        cost.pay(source, game, targetCreature.getControllerId(), targetCreature.getControllerId(), false, null);
+                        cost.pay(source, game, source, targetCreature.getControllerId(), false, null);
                     }
                     if (!cost.isPaid()) {
                         controller.moveCards(targetCreature, Zone.HAND, source, game);

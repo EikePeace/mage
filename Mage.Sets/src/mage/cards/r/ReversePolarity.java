@@ -3,7 +3,6 @@ package mage.cards.r;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.DynamicValue;
@@ -32,7 +31,7 @@ public final class ReversePolarity extends CardImpl {
         this.getSpellAbility().addWatcher(new ReversePolarityWatcher());
     }
 
-    public ReversePolarity(final ReversePolarity card) {
+    private ReversePolarity(final ReversePolarity card) {
         super(card);
     }
 
@@ -45,10 +44,10 @@ public final class ReversePolarity extends CardImpl {
 class ReversePolarityAmount implements DynamicValue {
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
         ReversePolarityWatcher watcher = game.getState().getWatcher(ReversePolarityWatcher.class);
         if(watcher != null) {
-            return watcher.getArtifactDamageReceivedThisTurn(source.getControllerId()) * 2;
+            return watcher.getArtifactDamageReceivedThisTurn(sourceAbility.getControllerId()) * 2;
         }
         return 0;
     }

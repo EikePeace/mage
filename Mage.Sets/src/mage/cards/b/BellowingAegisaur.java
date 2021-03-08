@@ -13,7 +13,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class BellowingAegisaur extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BellowingAegisaur(final BellowingAegisaur card) {
+    private BellowingAegisaur(final BellowingAegisaur card) {
         super(card);
     }
 

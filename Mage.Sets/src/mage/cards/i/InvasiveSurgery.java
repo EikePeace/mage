@@ -39,7 +39,7 @@ public final class InvasiveSurgery extends CardImpl {
         this.getSpellAbility().addHint(DeliriumHint.instance);
     }
 
-    public InvasiveSurgery(final InvasiveSurgery card) {
+    private InvasiveSurgery(final InvasiveSurgery card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class InvasiveSurgeryEffect extends SearchTargetGraveyardHandLibraryForCardNameA
                     cardName = targetObject.getName();
                 }
                 spellController = stackObject.getControllerId();
-                game.getStack().counter(objectId, source.getSourceId(), game);
+                game.getStack().counter(objectId, source, game);
             }
         }
 

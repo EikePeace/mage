@@ -47,7 +47,7 @@ public final class KraumLudevicsOpus extends CardImpl {
 
     }
 
-    public KraumLudevicsOpus(final KraumLudevicsOpus card) {
+    private KraumLudevicsOpus(final KraumLudevicsOpus card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class KraumLudevicsOpusTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

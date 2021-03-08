@@ -28,7 +28,7 @@ public final class AetherSting extends CardImpl {
         this.addAbility(new AetherStingTriggeredAbility());
     }
 
-    public AetherSting(final AetherSting card) {
+    private AetherSting(final AetherSting card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class AetherStingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

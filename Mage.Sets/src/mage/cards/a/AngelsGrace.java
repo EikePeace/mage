@@ -35,7 +35,7 @@ public final class AngelsGrace extends CardImpl {
         this.getSpellAbility().addEffect(new AngelsGraceReplacementEffect());
     }
 
-    public AngelsGrace(final AngelsGrace card) {
+    private AngelsGrace(final AngelsGrace card) {
         super(card);
     }
 
@@ -64,14 +64,14 @@ class AngelsGraceEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.WINS || event.getType() == EventType.LOSES;
+        return event.getType() == GameEvent.EventType.WINS || event.getType() == GameEvent.EventType.LOSES;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        return (event.getType() == EventType.WINS
+        return (event.getType() == GameEvent.EventType.WINS
                 && game.getOpponents(source.getControllerId()).contains(event.getPlayerId()))
-                || (event.getType() == EventType.LOSES
+                || (event.getType() == GameEvent.EventType.LOSES
                 && event.getPlayerId().equals(source.getControllerId()));
     }
 
@@ -96,7 +96,7 @@ class AngelsGraceReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CAUSES_LIFE_LOSS;
+        return event.getType() == GameEvent.EventType.DAMAGE_CAUSES_LIFE_LOSS;
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class CouncilsJudgment extends CardImpl {
         this.getSpellAbility().addEffect(new CouncilsJudgmentEffect());
     }
 
-    public CouncilsJudgment(final CouncilsJudgment card) {
+    private CouncilsJudgment(final CouncilsJudgment card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class CouncilsJudgmentEffect extends OneShotEffect {
 
     CouncilsJudgmentEffect() {
         super(Outcome.Exile);
-        this.staticText = "<i>Will of the council</i> — Starting with you, each player votes for a nonland permanent you don't control. Exile each permanent with the most votes or tied for most votes";
+        this.staticText = "<i>Will of the council</i> &mdash; Starting with you, each player votes for a nonland permanent you don't control. Exile each permanent with the most votes or tied for most votes";
     }
 
     CouncilsJudgmentEffect(final CouncilsJudgmentEffect effect) {
@@ -98,7 +98,7 @@ class CouncilsJudgmentEffect extends OneShotEffect {
             for (Entry<Permanent, Integer> entry : chosenCards.entrySet()) {
                 if (entry.getValue() == maxCount) {
                     Permanent permanent = entry.getKey();
-                    controller.moveCardToExileWithInfo(permanent, null, "", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                    controller.moveCardToExileWithInfo(permanent, null, "", source, game, Zone.BATTLEFIELD, true);
                 }
             }
             return true;

@@ -4,7 +4,7 @@ package mage.cards.l;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.WitherAbility;
 import mage.cards.CardImpl;
@@ -14,7 +14,6 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -34,11 +33,11 @@ public final class LockjawSnapper extends CardImpl {
         this.addAbility(WitherAbility.getInstance());
         
         // When Lockjaw Snapper dies, put a -1/-1 counter on each creature with a -1/-1 counter on it.
-        this.addAbility(new DiesTriggeredAbility(new LockjawSnapperEffect()));
+        this.addAbility(new DiesSourceTriggeredAbility(new LockjawSnapperEffect()));
         
     }
 
-    public LockjawSnapper(final LockjawSnapper card) {
+    private LockjawSnapper(final LockjawSnapper card) {
         super(card);
     }
 
@@ -68,13 +67,13 @@ class LockjawSnapperEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         boolean applied = false;
         FilterCreaturePermanent filter = new FilterCreaturePermanent();
-        filter.add(new CounterPredicate(CounterType.M1M1));
+        filter.add(CounterType.M1M1.getPredicate());
         if (game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game).isEmpty()) {
             return true;
         }
         for (Permanent creature : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game)) {
             if (creature != null) {
-                creature.addCounters(CounterType.M1M1.createInstance(), source, game);
+                creature.addCounters(CounterType.M1M1.createInstance(), source.getControllerId(), source, game);
                 applied = true;
             }
         }

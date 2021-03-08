@@ -31,10 +31,10 @@ public final class IzzetBoilerworks extends CardImpl {
         // When Izzet Boilerworks enters the battlefield, return a land you control to its owner's hand.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new ReturnToHandChosenControlledPermanentEffect(filter), false));
         // {T}: Add {U}{R}.
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 1, 0, 0, 0, 0, 0), new TapSourceCost()));
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 0, 1, 0, 0, 0, 0), new TapSourceCost()));
     }
 
-    public IzzetBoilerworks(final IzzetBoilerworks card) {
+    private IzzetBoilerworks(final IzzetBoilerworks card) {
         super(card);
     }
 

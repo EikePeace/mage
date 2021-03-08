@@ -32,7 +32,7 @@ public final class HeatShimmer extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public HeatShimmer(final HeatShimmer card) {
+    private HeatShimmer(final HeatShimmer card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class HeatShimmerEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null
                 && permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(source.getControllerId(), null, true);

@@ -1,7 +1,5 @@
-
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -24,20 +22,22 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public final class AngelOfCondemnation extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("another target creature");
+
     static {
         filter.add(AnotherPredicate.instance);
     }
@@ -72,7 +72,7 @@ public final class AngelOfCondemnation extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AngelOfCondemnation(final AngelOfCondemnation card) {
+    private AngelOfCondemnation(final AngelOfCondemnation card) {
         super(card);
     }
 
@@ -99,9 +99,9 @@ class AngelOfCondemnationExileUntilEOTEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (controller != null && permanent != null && sourcePermanent != null) {
-            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
+            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
                 //create delayed triggered ability
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                 effect.setText("return that card to the battlefield under its owner's control");
                 effect.setTargetPointer(new FixedTarget(source.getFirstTarget(), game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);

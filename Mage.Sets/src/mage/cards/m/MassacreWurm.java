@@ -36,7 +36,7 @@ public final class MassacreWurm extends CardImpl {
         this.addAbility(new MassacreWurmTriggeredAbility());
     }
 
-    public MassacreWurm(final MassacreWurm card) {
+    private MassacreWurm(final MassacreWurm card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class MassacreWurmTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

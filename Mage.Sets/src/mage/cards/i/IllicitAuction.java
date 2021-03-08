@@ -35,7 +35,7 @@ public final class IllicitAuction extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public IllicitAuction(final IllicitAuction card) {
+    private IllicitAuction(final IllicitAuction card) {
         super(card);
     }
 
@@ -78,7 +78,9 @@ class IllicitAuctionEffect extends GainControlTargetEffect {
                 if (currentPlayer.canRespond()
                         && currentPlayer.chooseUse(Outcome.GainControl, text, source, game)) {
                     int newBid = 0;
-                    if (!currentPlayer.isHuman()) {//AI will evaluate the creature and bid
+                    if (currentPlayer.isComputer()) {
+                        // AI hint
+                        // AI will evaluate the creature and bid
                         CreatureEvaluator eval = new CreatureEvaluator();
                         int computerLife = currentPlayer.getLife();
                         int creatureValue = eval.evaluate(targetCreature, game);
@@ -103,7 +105,7 @@ class IllicitAuctionEffect extends GainControlTargetEffect {
             }
 
             game.informPlayers(winner.getLogName() + " won the auction with a bid of " + highBid + " life" + (highBid > 1 ? "s" : ""));
-            winner.loseLife(highBid, game, false);
+            winner.loseLife(highBid, game, source, false);
             super.controllingPlayerId = winner.getId();
         }
         super.init(source, game);

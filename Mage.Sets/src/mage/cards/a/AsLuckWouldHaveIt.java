@@ -36,7 +36,7 @@ public final class AsLuckWouldHaveIt extends CardImpl {
         this.addAbility(new AsLuckWouldHaveItTriggeredAbility());
     }
 
-    public AsLuckWouldHaveIt(final AsLuckWouldHaveIt card) {
+    private AsLuckWouldHaveIt(final AsLuckWouldHaveIt card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class AsLuckWouldHaveItEffect extends OneShotEffect {
         if (controller != null && permanent != null) {
             if (getValue("rolled") != null) {
                 int amount = (Integer) getValue("rolled");
-                permanent.addCounters(new Counter("luck", amount), source, game);
+                permanent.addCounters(new Counter("luck", amount), source.getControllerId(), source, game);
 
                 if (permanent.getCounters(game).getCount("luck") >= 100) {
                     Player player = game.getPlayer(permanent.getControllerId());

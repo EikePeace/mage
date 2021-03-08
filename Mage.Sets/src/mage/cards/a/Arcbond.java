@@ -39,7 +39,7 @@ public final class Arcbond extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public Arcbond(final Arcbond card) {
+    private Arcbond(final Arcbond card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class ArcbondDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

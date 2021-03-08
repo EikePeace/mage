@@ -58,7 +58,7 @@ public final class ForbiddenOrchard extends CardImpl {
         this.addAbility(new ForbiddenOrchardTriggeredAbility());
     }
 
-    public ForbiddenOrchard(final ForbiddenOrchard card) {
+    private ForbiddenOrchard(final ForbiddenOrchard card) {
         super(card);
     }
 
@@ -86,6 +86,9 @@ class ForbiddenOrchardTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
+        if (game.inCheckPlayableState()) { // Ignored - see GameEvent.TAPPED_FOR_MANA
+            return false;
+        }
         return event.getSourceId().equals(getSourceId());
     }
 

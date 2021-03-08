@@ -45,7 +45,7 @@ public final class ProteanHydra extends CardImpl {
 
     }
 
-    public ProteanHydra(final ProteanHydra card) {
+    private ProteanHydra(final ProteanHydra card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ public final class ProteanHydra extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.COUNTER_REMOVED;
+            return event.getType() == GameEvent.EventType.COUNTER_REMOVED;
         }
 
         @Override
@@ -106,7 +106,7 @@ public final class ProteanHydra extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.END_TURN_STEP_PRE;
+            return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
         }
 
         @Override

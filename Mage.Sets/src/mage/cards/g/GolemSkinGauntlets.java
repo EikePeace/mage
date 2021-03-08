@@ -31,11 +31,13 @@ public final class GolemSkinGauntlets extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{1}");
         this.subtype.add(SubType.EQUIPMENT);
 
+        // Equipped creature gets +1/+0 for each Equipment attached to it.
+        // Equip 2 (2: Attach to target creature you control. Equip only as a sorcery. This card enters the battlefield unattached and stays on the battlefield if the creature leaves.)
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(new GolemSkinGauntletsAttachedCount(), StaticValue.get(0), Duration.WhileOnBattlefield)));
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(2)));
     }
 
-    public GolemSkinGauntlets(final GolemSkinGauntlets card) {
+    private GolemSkinGauntlets(final GolemSkinGauntlets card) {
         super(card);
     }
 
@@ -56,9 +58,9 @@ class GolemSkinGauntletsAttachedCount implements DynamicValue {
     }
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
         int count = 0;
-        Permanent equipment = game.getPermanent(source.getSourceId());
+        Permanent equipment = game.getPermanent(sourceAbility.getSourceId());
         if (equipment != null) {
             Permanent permanent = game.getPermanent(equipment.getAttachedTo());
             if (permanent != null) {

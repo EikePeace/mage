@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterBySubtypeCard;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInLibrary;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -55,7 +55,7 @@ public final class ForerunnerOfTheLegion extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ForerunnerOfTheLegion(final ForerunnerOfTheLegion card) {
+    private ForerunnerOfTheLegion(final ForerunnerOfTheLegion card) {
         super(card);
     }
 

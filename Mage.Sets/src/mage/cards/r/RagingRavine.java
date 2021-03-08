@@ -3,7 +3,6 @@
 package mage.cards.r;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
@@ -19,12 +18,9 @@ import mage.abilities.mana.RedManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.counters.CounterType;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.ElementalCreatureToken;
 
 /**
@@ -53,7 +49,7 @@ public final class RagingRavine extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RagingRavine(final RagingRavine card) {
+    private RagingRavine(final RagingRavine card) {
         super(card);
     }
 

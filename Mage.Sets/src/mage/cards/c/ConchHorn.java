@@ -34,7 +34,7 @@ public final class ConchHorn extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ConchHorn(final ConchHorn card) {
+    private ConchHorn(final ConchHorn card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class ConchHornEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(2, game);
+            player.drawCards(2, source, game);
             putOnLibrary(player, source, game);
             return true;
         }
@@ -77,7 +77,7 @@ class ConchHornEffect extends OneShotEffect {
             player.chooseTarget(Outcome.ReturnToHand, target, source, game);
             Card card = player.getHand().get(target.getFirstTarget(), game);
             if (card != null) {
-                return player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, false);
+                return player.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, false);
             }
         }
         return false;

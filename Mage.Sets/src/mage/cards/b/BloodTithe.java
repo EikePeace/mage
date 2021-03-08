@@ -23,7 +23,7 @@ public final class BloodTithe extends CardImpl {
         this.getSpellAbility().addEffect(new BloodTitheEffect());
     }
 
-    public BloodTithe(final BloodTithe card) {
+    private BloodTithe(final BloodTithe card) {
         super(card);
     }
 
@@ -49,7 +49,7 @@ class BloodTitheEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int lifeLost = 0;
         for (UUID opponentId: game.getOpponents(source.getControllerId())) {
-            lifeLost += game.getPlayer(opponentId).loseLife(3, game, false);
+            lifeLost += game.getPlayer(opponentId).loseLife(3, game, source, false);
         }
         game.getPlayer(source.getControllerId()).gainLife(lifeLost, game, source);
         return true;

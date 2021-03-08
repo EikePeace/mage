@@ -52,7 +52,7 @@ public final class MasterWarcraft extends CardImpl {
         this.getSpellAbility().addEffect(new ChooseBlockersRedundancyWatcherIncrementEffect());
     }
 
-    public MasterWarcraft(final MasterWarcraft card) {
+    private MasterWarcraft(final MasterWarcraft card) {
         super(card);
     }
 
@@ -168,7 +168,7 @@ class MasterWarcraftChooseAttackersEffect extends ContinuousRuleModifyingEffectI
                     if (target.getTargets().contains(permanent.getId())) {
                         RequirementEffect effect = new AttacksIfAbleTargetEffect(Duration.EndOfCombat);
                         effect.setText("");
-                        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                        effect.setTargetPointer(new FixedTarget(permanent, game));
                         game.addEffect(effect, source);
                         game.informPlayers(controller.getLogName() + " has decided that " + permanent.getLogName() + " attacks this combat if able");
                         
@@ -184,7 +184,7 @@ class MasterWarcraftChooseAttackersEffect extends ContinuousRuleModifyingEffectI
                         if (!hasToAttack) {
                             RestrictionEffect effect = new CantAttackTargetEffect(Duration.EndOfCombat);
                             effect.setText("");
-                            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                            effect.setTargetPointer(new FixedTarget(permanent, game));
                             game.addEffect(effect, source);
                         }
                     }
@@ -235,7 +235,7 @@ class MasterWarcraftChooseBlockersEffect extends ContinuousRuleModifyingEffectIm
         watcher.copyCountApply = watcher.copyCount;
         Player blockController = game.getPlayer(source.getControllerId());
         if (blockController != null) {
-            game.getCombat().selectBlockers(blockController, game);
+            game.getCombat().selectBlockers(blockController, source, game);
             return true;
         }
         return false;

@@ -1,6 +1,5 @@
 package mage.cards.n;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.AsEntersBattlefieldAbility;
@@ -16,9 +15,11 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
+import mage.util.CardUtil;
+
+import java.util.UUID;
 
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public final class Nevermore extends CardImpl {
@@ -34,7 +35,7 @@ public final class Nevermore extends CardImpl {
 
     }
 
-    public Nevermore(final Nevermore card) {
+    private Nevermore(final Nevermore card) {
         super(card);
     }
 
@@ -68,11 +69,10 @@ class NevermoreEffect2 extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == EventType.CAST_SPELL) {
+        if (event.getType() == GameEvent.EventType.CAST_SPELL) {
             MageObject object = game.getObject(event.getSourceId());
-            if (object != null && object.getName().equals(game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY))) {
-                return true;
-            }
+            String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+            return CardUtil.haveSameNames(object, cardName, game);
         }
         return false;
     }

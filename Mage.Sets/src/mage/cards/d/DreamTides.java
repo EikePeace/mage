@@ -39,7 +39,7 @@ public final class DreamTides extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new DreamTidesEffect(), TargetController.ANY, false));
     }
 
-    public DreamTides(final DreamTides card) {
+    private DreamTides(final DreamTides card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class DreamTidesEffect extends OneShotEffect {
                     Cost cost = ManaUtil.createManaCost(2, false);
                     Permanent tappedCreature = game.getPermanent(tappedCreatureTarget.getFirstTarget());
 
-                    if (cost.pay(source, game, source.getSourceId(), player.getId(), false)) {
+                    if (cost.pay(source, game, source, player.getId(), false)) {
                         tappedCreature.untap(game);
                     }
                 }

@@ -37,7 +37,7 @@ public final class DurkwoodTracker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DurkwoodTracker(final DurkwoodTracker card) {
+    private DurkwoodTracker(final DurkwoodTracker card) {
         super(card);
     }
 
@@ -77,8 +77,8 @@ class DurkwoodTrackerEffect extends OneShotEffect {
         if (targeted == null) {
             return false;
         }
-        targeted.damage(permanent.getPower().getValue(), permanent.getId(), game, false, true);
-        permanent.damage(targeted.getPower().getValue(), targeted.getId(), game, false, true);
+        targeted.damage(permanent.getPower().getValue(), permanent.getId(), source, game, false, true);
+        permanent.damage(targeted.getPower().getValue(), targeted.getId(), source, game, false, true);
         return true;
     }
 }

@@ -28,7 +28,7 @@ public final class ErraticExplosion extends CardImpl {
         this.getSpellAbility().addEffect(new ErraticExplosionEffect());
     }
 
-    public ErraticExplosion(final ErraticExplosion card) {
+    private ErraticExplosion(final ErraticExplosion card) {
         super(card);
     }
 
@@ -72,11 +72,11 @@ class ErraticExplosionEffect extends OneShotEffect {
             if (nonLandCard != null) {
                 Permanent targetCreature = game.getPermanent(this.getTargetPointer().getFirst(game, source));
                 if (targetCreature != null) {
-                    targetCreature.damage(nonLandCard.getConvertedManaCost(), source.getSourceId(), game, false, true);
+                    targetCreature.damage(nonLandCard.getConvertedManaCost(), source.getSourceId(), source, game, false, true);
                 } else {
                     Player targetPlayer = game.getPlayer(this.getTargetPointer().getFirst(game, source));
                     if (targetPlayer != null) {
-                        targetPlayer.damage(nonLandCard.getConvertedManaCost(), source.getSourceId(), game);
+                        targetPlayer.damage(nonLandCard.getConvertedManaCost(), source.getSourceId(), source, game);
                     }
                 }
             }

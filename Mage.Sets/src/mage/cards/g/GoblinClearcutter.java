@@ -5,7 +5,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -46,7 +46,7 @@ public final class GoblinClearcutter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoblinClearcutter(final GoblinClearcutter card) {
+    private GoblinClearcutter(final GoblinClearcutter card) {
         super(card);
     }
 
@@ -56,18 +56,17 @@ public final class GoblinClearcutter extends CardImpl {
     }
 }
 
-// TODO: replace by mana effect to use with mana reflection
 class GoblinClearCutterManaEffect extends ManaEffect {
 
-    private List<Mana> netMana = new ArrayList<>();
+    private final List<Mana> netMana = new ArrayList<>();
 
     public GoblinClearCutterManaEffect() {
         super();
         this.staticText = "Add 3 mana in any combination of {R} and/or {G}";
-        netMana.add(new Mana(0, 3, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(1, 2, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(2, 1, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(3, 0, 0, 0, 0, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 0, 3, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 1, 2, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 2, 1, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 3, 0, 0, 0, 0));
     }
 
     public GoblinClearCutterManaEffect(final GoblinClearCutterManaEffect effect) {

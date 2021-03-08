@@ -45,7 +45,7 @@ public final class HammerJammer extends CardImpl {
 
     }
 
-    public HammerJammer(final HammerJammer card) {
+    private HammerJammer(final HammerJammer card) {
         super(card);
     }
 
@@ -70,9 +70,9 @@ class HammerJammerEntersEffect extends EntersBattlefieldWithXCountersEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanentEntering(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
             List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects"); // the basic event is the EntersBattlefieldEvent, so use already applied replacement effects from that event
-            permanent.addCounters(CounterType.P1P1.createInstance(amount), source, game, appliedEffects);
+            permanent.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game, appliedEffects);
             return super.apply(game, source);
         }
         return false;
@@ -144,8 +144,8 @@ class HammerJammerEffect extends OneShotEffect {
         if (controller != null && permanent != null) {
             if (getValue("rolled") != null) {
                 int amount = (Integer) getValue("rolled");
-                permanent.removeCounters(CounterType.P1P1.createInstance(permanent.getCounters(game).getCount(CounterType.P1P1)), game);
-                permanent.addCounters(CounterType.P1P1.createInstance(amount), source, game);
+                permanent.removeCounters(CounterType.P1P1.createInstance(permanent.getCounters(game).getCount(CounterType.P1P1)), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game);
                 return true;
             }
         }

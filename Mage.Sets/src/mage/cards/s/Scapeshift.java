@@ -31,7 +31,7 @@ public final class Scapeshift extends CardImpl {
         this.getSpellAbility().addEffect(new ScapeshiftEffect());
     }
 
-    public Scapeshift(final Scapeshift card) {
+    private Scapeshift(final Scapeshift card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class ScapeshiftEffect extends OneShotEffect {
             for (UUID uuid : sacrificeLand.getTargets()) {
                 Permanent land = game.getPermanent(uuid);
                 if (land != null) {
-                    land.sacrifice(source.getSourceId(), game);
+                    land.sacrifice(source, game);
                     amount++;
                 }
             }

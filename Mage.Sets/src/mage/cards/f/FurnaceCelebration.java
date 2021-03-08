@@ -27,7 +27,7 @@ public final class FurnaceCelebration extends CardImpl {
         this.addAbility(new FurnaceCelebrationAbility());
     }
 
-    public FurnaceCelebration(final FurnaceCelebration card) {
+    private FurnaceCelebration(final FurnaceCelebration card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class FurnaceCelebrationAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

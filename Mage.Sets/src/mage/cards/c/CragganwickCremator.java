@@ -38,7 +38,7 @@ public final class CragganwickCremator extends CardImpl {
 
     }
 
-    public CragganwickCremator(final CragganwickCremator card) {
+    private CragganwickCremator(final CragganwickCremator card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class CragganwickCrematorEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Card discardedCard = controller.discardOne(true, source, game);
+            Card discardedCard = controller.discardOne(true, false, source, game);
             if (discardedCard != null
                     && discardedCard.isCreature()) {
                 int damage = discardedCard.getPower().getValue();

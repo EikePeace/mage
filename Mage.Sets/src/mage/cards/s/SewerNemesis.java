@@ -10,7 +10,7 @@ import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.ChoosePlayerEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveTargetEffect;
+import mage.abilities.effects.common.MillCardsTargetEffect;
 import mage.abilities.effects.common.continuous.SetPowerToughnessSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -47,7 +47,7 @@ public final class SewerNemesis extends CardImpl {
 
     }
 
-    public SewerNemesis(final SewerNemesis card) {
+    private SewerNemesis(final SewerNemesis card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class CardsInTargetOpponentsGraveyardCount implements DynamicValue {
 class SewerNemesisTriggeredAbility extends TriggeredAbilityImpl {
 
     public SewerNemesisTriggeredAbility() {
-        super(Zone.BATTLEFIELD, new PutTopCardOfLibraryIntoGraveTargetEffect(1), false);
+        super(Zone.BATTLEFIELD, new MillCardsTargetEffect(1), false);
     }
 
     public SewerNemesisTriggeredAbility(final SewerNemesisTriggeredAbility ability) {
@@ -99,7 +99,7 @@ class SewerNemesisTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -114,7 +114,7 @@ class SewerNemesisTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever the chosen player casts a spell, that player puts the top card of their library into their graveyard.";
+        return "Whenever the chosen player casts a spell, that player mills a card.";
     }
 
     @Override

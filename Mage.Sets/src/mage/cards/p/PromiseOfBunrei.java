@@ -36,7 +36,7 @@ public final class PromiseOfBunrei extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new PromiseOfBunreiEffect(), false, filter));
     }
 
-    public PromiseOfBunrei(final PromiseOfBunrei card) {
+    private PromiseOfBunrei(final PromiseOfBunrei card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class PromiseOfBunreiEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
-            if (permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent.sacrifice(source, game)) {
                 return new CreateTokenEffect(new SpiritToken(), 4).apply(game, source);
             }
             return true;

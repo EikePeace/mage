@@ -43,7 +43,7 @@ public final class ForceBubble extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new RemoveAllCountersSourceEffect(CounterType.DEPLETION), TargetController.ANY, false));
     }
 
-    public ForceBubble(final ForceBubble card) {
+    private ForceBubble(final ForceBubble card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class ForceBubbleReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override

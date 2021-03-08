@@ -7,7 +7,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -33,7 +33,7 @@ public final class PitFight extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public PitFight(final PitFight card) {
+    private PitFight(final PitFight card) {
         super(card);
     }
 

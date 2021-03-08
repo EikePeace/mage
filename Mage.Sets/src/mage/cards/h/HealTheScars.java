@@ -30,7 +30,7 @@ public final class HealTheScars extends CardImpl {
 
     }
 
-    public HealTheScars(final HealTheScars card) {
+    private HealTheScars(final HealTheScars card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class HealTheScarsEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player player = game.getPlayer(source.getControllerId());
             if (player != null) {

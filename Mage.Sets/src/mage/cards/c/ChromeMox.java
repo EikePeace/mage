@@ -7,7 +7,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -44,7 +44,7 @@ public final class ChromeMox extends CardImpl {
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new ChromeMoxManaEffect(), new TapSourceCost()));
     }
 
-    public ChromeMox(final ChromeMox card) {
+    private ChromeMox(final ChromeMox card) {
         super(card);
     }
 

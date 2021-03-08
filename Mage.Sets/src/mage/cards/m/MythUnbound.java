@@ -11,7 +11,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
@@ -38,7 +38,7 @@ public final class MythUnbound extends CardImpl {
         this.addAbility(new SimpleStaticAbility(
                 Zone.BATTLEFIELD,
                 new MythUnboundCostReductionEffect()
-        ));
+        ), new CommanderPlaysCountWatcher());
 
         // Whenever your commander is put into the command zone from anywhere, draw a card.
         this.addAbility(new ZoneChangeAllTriggeredAbility(
@@ -49,7 +49,7 @@ public final class MythUnbound extends CardImpl {
         ));
     }
 
-    public MythUnbound(final MythUnbound card) {
+    private MythUnbound(final MythUnbound card) {
         super(card);
     }
 
@@ -77,10 +77,8 @@ class MythUnboundCostReductionEffect extends CostModificationEffectImpl {
         if (spellAbility != null) {
             CommanderPlaysCountWatcher watcher = game.getState().getWatcher(CommanderPlaysCountWatcher.class);
             int castCount = watcher.getPlaysCount(abilityToModify.getSourceId());
-            if (castCount > 0) {
-                CardUtil.reduceCost(spellAbility, castCount);
-                return true;
-            }
+            CardUtil.reduceCost(spellAbility, castCount);
+            return true;
         }
         return false;
     }
@@ -94,7 +92,8 @@ class MythUnboundCostReductionEffect extends CostModificationEffectImpl {
 
         if (abilityToModify instanceof SpellAbility || abilityToModify instanceof PlayLandAbility) {
             if (abilityToModify.isControlledBy(source.getControllerId())) {
-                return game.getCommandersIds(player).contains(abilityToModify.getSourceId());
+                // must check all card parts (example: mdf commander)
+                return game.getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER, true).contains(abilityToModify.getSourceId());
             }
         }
         return false;

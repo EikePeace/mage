@@ -19,7 +19,7 @@ import mage.filter.common.FilterEnchantmentPermanent;
 import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
@@ -73,7 +73,7 @@ public final class SimicGuildmage extends CardImpl {
 
     }
 
-    public SimicGuildmage(final SimicGuildmage card) {
+    private SimicGuildmage(final SimicGuildmage card) {
         super(card);
     }
 
@@ -111,8 +111,8 @@ class MoveCounterFromTargetToTargetEffect extends OneShotEffect {
             if (fromPermanent == null || toPermanent == null || !fromPermanent.isControlledBy(toPermanent.getControllerId())) {
                 return false;
             }
-            fromPermanent.removeCounters(CounterType.P1P1.createInstance(1), game);
-            toPermanent.addCounters(CounterType.P1P1.createInstance(1), source, game);
+            fromPermanent.removeCounters(CounterType.P1P1.createInstance(1), source, game);
+            toPermanent.addCounters(CounterType.P1P1.createInstance(1), source.getControllerId(), source, game);
             return true;
         }
         return false;
@@ -196,12 +196,12 @@ class MoveAuraEffect extends OneShotEffect {
                 Permanent permanentToAttachAura = game.getPermanent(chosenPermanentToAttachAuras.getFirstTarget());
                 if (permanentToAttachAura != null) {
                     // Check for protection
-                    if (permanentToAttachAura.cantBeAttachedBy(aura, game, true)) {
+                    if (permanentToAttachAura.cantBeAttachedBy(aura, source, game, true)) {
                         passed = false;
                     }
                     if (passed) {
-                        fromPermanent.removeAttachment(aura.getId(), game);
-                        permanentToAttachAura.addAttachment(aura.getId(), game);
+                        fromPermanent.removeAttachment(aura.getId(), source, game);
+                        permanentToAttachAura.addAttachment(aura.getId(), source, game);
                         return true;
                     }
                 }

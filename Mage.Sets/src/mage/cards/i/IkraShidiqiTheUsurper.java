@@ -44,7 +44,7 @@ public final class IkraShidiqiTheUsurper extends CardImpl {
         this.addAbility(PartnerAbility.getInstance());
     }
 
-    public IkraShidiqiTheUsurper(final IkraShidiqiTheUsurper card) {
+    private IkraShidiqiTheUsurper(final IkraShidiqiTheUsurper card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class IkraShidiqiTheUsurperTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -90,6 +90,6 @@ class IkraShidiqiTheUsurperTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever a creature you control deals combat damage to a player, you gain life equal to that creature's toughness";
+        return "Whenever a creature you control deals combat damage to a player, you gain life equal to that creature's toughness.";
     }
 }

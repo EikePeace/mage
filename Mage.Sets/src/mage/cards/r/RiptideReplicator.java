@@ -50,7 +50,7 @@ public final class RiptideReplicator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RiptideReplicator(final RiptideReplicator card) {
+    private RiptideReplicator(final RiptideReplicator card) {
         super(card);
     }
 
@@ -85,6 +85,6 @@ class RiptideReplicatorEffect extends OneShotEffect {
         }
         int x = (new CountersSourceCount(CounterType.CHARGE)).calculate(game, source, this);
         Token token = new RiptideReplicatorToken(color, subType, x);
-        return token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        return token.putOntoBattlefield(1, game, source, source.getControllerId());
     }
 }

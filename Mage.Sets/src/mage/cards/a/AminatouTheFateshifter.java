@@ -17,7 +17,7 @@ import mage.choices.ChoiceLeftOrRight;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterNonlandPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -68,7 +68,7 @@ public class AminatouTheFateshifter extends CardImpl {
         this.addAbility(CanBeYourCommanderAbility.getInstance());
     }
 
-    public AminatouTheFateshifter(final AminatouTheFateshifter card) {
+    private AminatouTheFateshifter(final AminatouTheFateshifter card) {
         super(card);
     }
 
@@ -98,7 +98,7 @@ class AminatouPlusEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
             putOnLibrary(player, source, game);
             return true;
         }
@@ -111,7 +111,7 @@ class AminatouPlusEffect extends OneShotEffect {
             player.chooseTarget(Outcome.ReturnToHand, target, source, game);
             Card card = player.getHand().get(target.getFirstTarget(), game);
             if (card != null) {
-                return player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, false);
+                return player.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, false);
             }
         }
         return false;
@@ -172,7 +172,7 @@ class AminatouUltimateEffect extends OneShotEffect {
                         continue;
                     }
                     ContinuousEffect effect = new GainControlTargetEffect(Duration.EndOfGame, currentPlayer);
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(effect, source);
                 }
                 currentPlayer = nextPlayer;

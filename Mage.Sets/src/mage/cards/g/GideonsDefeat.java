@@ -39,7 +39,7 @@ public final class GideonsDefeat extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public GideonsDefeat(final GideonsDefeat card) {
+    private GideonsDefeat(final GideonsDefeat card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class GideonsDefeatEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (controller != null && permanent != null) {
             controller.moveCards(permanent, Zone.EXILED, source, game);
-            game.applyEffects();
+            game.getState().processAction(game);
             if (permanent.isPlaneswalker() && permanent.hasSubtype(SubType.GIDEON, game)) {
                 controller.gainLife(5, game, source);
             }

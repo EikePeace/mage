@@ -12,7 +12,7 @@ import mage.constants.Layer;
 import mage.constants.Outcome;
 import mage.constants.SubLayer;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -41,7 +41,7 @@ public final class Schismotivate extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public Schismotivate(final Schismotivate card) {
+    private Schismotivate(final Schismotivate card) {
         super(card);
     }
 

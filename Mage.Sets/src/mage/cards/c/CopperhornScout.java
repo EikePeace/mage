@@ -36,7 +36,7 @@ public final class CopperhornScout extends CardImpl {
         this.addAbility(new CopperhornScoutTriggeredAbility());
     }
 
-    public CopperhornScout(final CopperhornScout card) {
+    private CopperhornScout(final CopperhornScout card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class CopperhornScoutTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

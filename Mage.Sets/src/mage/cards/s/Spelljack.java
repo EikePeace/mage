@@ -3,16 +3,16 @@ package mage.cards.s;
 
 import java.util.UUID;
 import mage.abilities.Ability;
-import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
+import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AsThoughEffectType;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.constants.ZoneDetail;
 import mage.game.Game;
@@ -36,7 +36,7 @@ public final class Spelljack extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public Spelljack(final Spelljack card) {
+    private Spelljack(final Spelljack card) {
         super(card);
     }
 
@@ -68,62 +68,15 @@ class SpelljackEffect extends OneShotEffect {
         if (controller != null) {
             UUID targetId = targetPointer.getFirst(game, source);
             StackObject stackObject = game.getStack().getStackObject(targetId);
-            if (stackObject != null && game.getStack().counter(targetId, source.getSourceId(), game, Zone.EXILED, false, ZoneDetail.NONE)) {
+            if (stackObject != null && game.getStack().counter(targetId, source, game, Zone.EXILED, false, ZoneDetail.NONE)) {
                 Card card = ((Spell) stackObject).getCard();
                 if (card != null) {
-                    ContinuousEffect effect = new SpelljackCastFromExileEffect();
+                    ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, TargetController.YOU, Duration.Custom, true);
                     effect.setTargetPointer(new FixedTarget(card.getId(), game.getState().getZoneChangeCounter(card.getId())));
                     game.addEffect(effect, source);
                 }
             }
             return true;
-        }
-        return false;
-    }
-}
-
-class SpelljackCastFromExileEffect extends AsThoughEffectImpl {
-
-    SpelljackCastFromExileEffect() {
-        super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.Custom, Outcome.Benefit);
-        staticText = "You may cast that card without paying its mana cost as long as it remains exiled";
-    }
-
-    SpelljackCastFromExileEffect(final SpelljackCastFromExileEffect effect) {
-        super(effect);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        return true;
-    }
-
-    @Override
-    public SpelljackCastFromExileEffect copy() {
-        return new SpelljackCastFromExileEffect(this);
-    }
-
-    @Override
-    public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        if (affectedControllerId.equals(source.getControllerId())) {
-            if (getTargetPointer().getFirst(game, source) == null) {
-                this.discard();
-                return false;
-            }
-            if (sourceId.equals(getTargetPointer().getFirst(game, source))) {
-                Card card = game.getCard(sourceId);
-                if (card != null) {
-                    if (game.getState().getZone(sourceId) == Zone.EXILED) {
-                        Player player = game.getPlayer(affectedControllerId);
-                        if(player != null) {
-                            player.setCastSourceIdWithAlternateMana(sourceId, null, null);
-                        }
-                        return true;
-                    } else {
-                        this.discard();
-                    }
-                }
-            }
         }
         return false;
     }

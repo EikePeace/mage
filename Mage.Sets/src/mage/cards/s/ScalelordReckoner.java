@@ -41,7 +41,7 @@ public final class ScalelordReckoner extends CardImpl {
         this.addAbility(new ScalelardReckonerTriggeredAbility(new DestroyTargetEffect()));
     }
 
-    public ScalelordReckoner(final ScalelordReckoner card) {
+    private ScalelordReckoner(final ScalelordReckoner card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class ScalelardReckonerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

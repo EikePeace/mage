@@ -31,7 +31,7 @@ public final class Wirecat extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new WirecatEffect()));
     }
 
-    public Wirecat(final Wirecat card) {
+    private Wirecat(final Wirecat card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ public final class Wirecat extends CardImpl {
         @Override
         public boolean applies(Permanent permanent, Ability source, Game game) {
             if (permanent.getId().equals(source.getSourceId())) {
-                return game.getBattlefield().contains(StaticFilters.FILTER_ENCHANTMENT_PERMANENT, 1, game);
+                return game.getBattlefield().contains(StaticFilters.FILTER_ENCHANTMENT_PERMANENT, source, game, 1);
             }
             return false;
         }

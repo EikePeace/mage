@@ -2,7 +2,6 @@ package mage.cards.d;
 
 import java.util.UUID;
 
-import mage.abilities.effects.common.SacrificeControllerEffect;
 import mage.abilities.effects.common.SacrificeOpponentsEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -25,7 +24,7 @@ public final class Despair extends CardImpl {
         this.getSpellAbility().addEffect(new SacrificeOpponentsEffect(filter));
     }
 
-    public Despair(final Despair card) {
+    private Despair(final Despair card) {
         super(card);
     }
 

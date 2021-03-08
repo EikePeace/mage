@@ -37,7 +37,7 @@ public final class ArjunTheShiftingFlame extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new ArjunTheShiftingFlameEffect(), false));
     }
 
-    public ArjunTheShiftingFlame(final ArjunTheShiftingFlame card) {
+    private ArjunTheShiftingFlame(final ArjunTheShiftingFlame card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class ArjunTheShiftingFlameEffect extends OneShotEffect {
         if (you != null) {
             int count = you.getHand().size();
             you.putCardsOnBottomOfLibrary(you.getHand(), game, source, true);
-            you.drawCards(count, game);
+            you.drawCards(count, source, game);
         }
         return true;
     }

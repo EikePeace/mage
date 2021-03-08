@@ -1,11 +1,3 @@
-
-
-/*
- * TablePlayerPanel.java
- *
- * Created on 9-May-2010, 11:43:03 AM
- */
-
 package mage.client.table;
 
 import mage.cards.decks.importer.DeckImporter;
@@ -53,7 +45,7 @@ public class TablePlayerPanel extends javax.swing.JPanel {
 
     public boolean joinTable(UUID roomId, UUID tableId) throws IOException, ClassNotFoundException {
         if (this.cbPlayerType.getSelectedItem() != PlayerType.HUMAN) {
-            return SessionHandler.joinTable(roomId, tableId, this.newPlayerPanel.getPlayerName(), (PlayerType) this.cbPlayerType.getSelectedItem(), this.newPlayerPanel.getLevel(), DeckImporter.importDeckFromFile(this.newPlayerPanel.getDeckFile()), "");
+            return SessionHandler.joinTable(roomId, tableId, this.newPlayerPanel.getPlayerName(), (PlayerType) this.cbPlayerType.getSelectedItem(), this.newPlayerPanel.getLevel(), DeckImporter.importDeckFromFile(this.newPlayerPanel.getDeckFile(), true), "");
         }
         return true;
     }
@@ -126,6 +118,7 @@ public class TablePlayerPanel extends javax.swing.JPanel {
     private void cbPlayerTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPlayerTypeActionPerformed
         if (getPlayerType() != PlayerType.HUMAN) {
             this.newPlayerPanel.setVisible(true);
+            this.newPlayerPanel.setPlayerName(ClientDefaultSettings.computerName + " " + this.lblPlayerNum.getText().charAt(this.lblPlayerNum.getText().length() - 1));
         } else {
             this.newPlayerPanel.setVisible(false);
         }

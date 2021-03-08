@@ -38,7 +38,7 @@ public final class ThunderbreakRegent extends CardImpl {
         this.addAbility(new ThunderbreakRegentTriggeredAbility(new DamageTargetEffect(3)));
     }
 
-    public ThunderbreakRegent(final ThunderbreakRegent card) {
+    private ThunderbreakRegent(final ThunderbreakRegent card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class ThunderbreakRegentTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

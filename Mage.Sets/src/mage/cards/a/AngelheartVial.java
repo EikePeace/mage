@@ -19,7 +19,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
 /**
@@ -42,7 +41,7 @@ public final class AngelheartVial extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AngelheartVial(final AngelheartVial card) {
+    private AngelheartVial(final AngelheartVial card) {
         super(card);
     }
 
@@ -69,7 +68,7 @@ class AngelheartVialTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -106,7 +105,7 @@ class AngelheartVialEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.addCounters(CounterType.CHARGE.createInstance((Integer) this.getValue("damageAmount")), source, game);
+            permanent.addCounters(CounterType.CHARGE.createInstance((Integer) this.getValue("damageAmount")), source.getControllerId(), source, game);
         }
         return true;
     }

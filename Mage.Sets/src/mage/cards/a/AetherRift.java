@@ -34,7 +34,7 @@ public final class AetherRift extends CardImpl {
 
     }
 
-    public AetherRift(final AetherRift card) {
+    private AetherRift(final AetherRift card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class AetherRiftEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Card card = controller.discardOne(true, source, game);
+            Card card = controller.discardOne(true, false, source, game);
             if (card != null && card.isCreature()) {
                 Effect returnEffect = new ReturnFromGraveyardToBattlefieldTargetEffect();
                 returnEffect.setTargetPointer(new FixedTarget(card.getId()));

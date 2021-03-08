@@ -8,7 +8,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DrawCardAllEffect;
 import mage.abilities.effects.common.ShuffleHandGraveyardAllEffect;
 import mage.abilities.keyword.AftermathAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -52,7 +51,7 @@ public final class CommitMemory extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(effect);
     }
 
-    public CommitMemory(final CommitMemory card) {
+    private CommitMemory(final CommitMemory card) {
         super(card);
     }
 
@@ -84,11 +83,11 @@ class CommitEffect extends OneShotEffect {
         if (controller != null) {
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
-                return controller.putCardOnTopXOfLibrary(permanent, game, source, 2);
+                return controller.putCardOnTopXOfLibrary(permanent, game, source, 2, true);
             }
             Spell spell = game.getStack().getSpell(source.getFirstTarget());
             if (spell != null) {
-                return controller.putCardOnTopXOfLibrary(spell, game, source, 2);
+                return controller.putCardOnTopXOfLibrary(spell, game, source, 2, true);
             }
         }
         return false;

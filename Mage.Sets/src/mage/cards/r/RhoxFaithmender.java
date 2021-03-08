@@ -39,7 +39,7 @@ public final class RhoxFaithmender extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new RhoxFaithmenderEffect()));
     }
 
-    public RhoxFaithmender(final RhoxFaithmender card) {
+    private RhoxFaithmender(final RhoxFaithmender card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class RhoxFaithmenderEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAIN_LIFE;
+        return event.getType() == GameEvent.EventType.GAIN_LIFE;
     }
 
     @Override

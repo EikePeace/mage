@@ -44,7 +44,7 @@ public final class MeliraSylvokOutcast extends CardImpl {
 
     }
 
-    public MeliraSylvokOutcast(final MeliraSylvokOutcast card) {
+    private MeliraSylvokOutcast(final MeliraSylvokOutcast card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class MeliraSylvokOutcastEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ADD_COUNTERS;
+        return event.getType() == GameEvent.EventType.ADD_COUNTERS;
     }
 
     @Override
@@ -110,7 +110,7 @@ class MeliraSylvokOutcastEffect2 extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ADD_COUNTERS;
+        return event.getType() == GameEvent.EventType.ADD_COUNTERS;
     }
 
     @Override
@@ -149,7 +149,7 @@ class MeliraSylvokOutcastEffect3 extends ContinuousEffectImpl {
         Set<UUID> opponents = game.getOpponents(source.getControllerId());
         for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game)) {
             if (opponents.contains(perm.getControllerId())) {
-                perm.getAbilities().remove(InfectAbility.getInstance());
+                perm.removeAbility(InfectAbility.getInstance(), source.getSourceId(), game);
             }
         }
         return true;

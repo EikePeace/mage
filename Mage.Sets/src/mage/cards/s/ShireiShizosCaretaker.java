@@ -38,7 +38,7 @@ public final class ShireiShizosCaretaker extends CardImpl {
         this.addAbility(new ShireiShizosCaretakerTriggeredAbility(this.getId()));
     }
 
-    public ShireiShizosCaretaker(final ShireiShizosCaretaker card) {
+    private ShireiShizosCaretaker(final ShireiShizosCaretaker card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class ShireiShizosCaretakerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -121,7 +121,7 @@ class ShireiShizosCaretakerEffect extends OneShotEffect {
             Effect effect = new ShireiShizosCaretakerReturnEffect(shireiId);
             effect.setText("return that card to the battlefield if {this} is still on the battlefield");
             DelayedTriggeredAbility delayedAbility = new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect);
-            delayedAbility.getEffects().get(0).setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+            delayedAbility.getEffects().get(0).setTargetPointer(new FixedTarget(card, game));
             game.addDelayedTriggeredAbility(delayedAbility, source);
             return true;
         }

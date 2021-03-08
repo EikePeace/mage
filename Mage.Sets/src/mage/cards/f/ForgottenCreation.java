@@ -35,7 +35,7 @@ public final class ForgottenCreation extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new ForgottenCreationEffect(), TargetController.YOU, true));
     }
 
-    public ForgottenCreation(final ForgottenCreation card) {
+    private ForgottenCreation(final ForgottenCreation card) {
         super(card);
     }
 
@@ -66,8 +66,8 @@ class ForgottenCreationEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             int cardsInHand = controller.getHand().size();
-            controller.discard(cardsInHand, false, source, game);
-            controller.drawCards(cardsInHand, game);
+            controller.discard(cardsInHand, false, false, source, game);
+            controller.drawCards(cardsInHand, source, game);
             return true;
         }
         return false;

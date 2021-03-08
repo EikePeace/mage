@@ -46,7 +46,7 @@ public final class SteamVines extends CardImpl {
 
     }
 
-    public SteamVines(final SteamVines card) {
+    private SteamVines(final SteamVines card) {
         super(card);
     }
 
@@ -82,9 +82,9 @@ class SteamVinesEffect extends OneShotEffect {
                     && controller != null) {
                 Player landsController = game.getPlayer(enchantedLand.getControllerId());
                 if (game.getState().getZone(enchantedLand.getId()) == Zone.BATTLEFIELD) { // if 2 or more Steam Vines were on a land
-                    enchantedLand.destroy(source.getId(), game, false);
+                    enchantedLand.destroy(source, game, false);
                     if (landsController != null) {
-                        landsController.damage(1, source.getSourceId(), game);
+                        landsController.damage(1, source.getSourceId(), source, game);
                     }
                 }
                 if (!game.getBattlefield().getAllActivePermanents(CardType.LAND).isEmpty()) { //lands are available on the battlefield

@@ -42,7 +42,7 @@ public final class WoodlandSleuth extends CardImpl {
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(ability, MorbidCondition.instance, staticText));
     }
 
-    public WoodlandSleuth(final WoodlandSleuth card) {
+    private WoodlandSleuth(final WoodlandSleuth card) {
         super(card);
     }
 
@@ -75,9 +75,10 @@ class WoodlandSleuthEffect extends OneShotEffect {
             Card[] cards = player.getGraveyard().getCards(StaticFilters.FILTER_CARD_CREATURE, game).toArray(new Card[0]);
             if (cards.length > 0) {
                 Card card = cards[RandomUtil.nextInt(cards.length)];
-                card.moveToZone(Zone.HAND, source.getSourceId(), game, true);
-                game.informPlayers(card.getName() + " returned to the hand of " + player.getLogName());
-                return true;
+                if (player.moveCards(card, Zone.HAND, source, game)) {
+                    game.informPlayers(card.getName() + " returned to the hand of " + player.getLogName());
+                    return true;
+                }
             }
         }
         return false;

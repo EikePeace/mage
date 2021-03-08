@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.g;
 
 import java.util.UUID;
@@ -45,7 +40,7 @@ public final class GoblinArchaeologist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoblinArchaeologist(final GoblinArchaeologist card) {
+    private GoblinArchaeologist(final GoblinArchaeologist card) {
         super(card);
     }
 
@@ -76,10 +71,10 @@ class GoblinArchaeologistEffect extends OneShotEffect {
        Permanent permanent = game.getPermanent(source.getSourceId());
        if (player != null && permanent != null) {
            if (!player.flipCoin(source, game, true)) {
-               permanent.sacrifice(source.getSourceId(), game);
+               permanent.sacrifice(source, game);
            }else{
                Permanent targetArtifact = game.getPermanent(source.getFirstTarget());
-               targetArtifact.destroy(source.getSourceId(), game, true);
+               targetArtifact.destroy(source, game, true);
                permanent.untap(game);
            }
            return true;

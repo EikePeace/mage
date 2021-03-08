@@ -17,7 +17,7 @@ public final class ZodiacDog extends CardImpl {
 
     public ZodiacDog(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{R}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
@@ -26,7 +26,7 @@ public final class ZodiacDog extends CardImpl {
         this.addAbility(new MountainwalkAbility());
     }
 
-    public ZodiacDog(final ZodiacDog card) {
+    private ZodiacDog(final ZodiacDog card) {
         super(card);
     }
 

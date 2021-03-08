@@ -18,7 +18,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -43,7 +43,7 @@ public final class MagisterOfWorth extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(effect, false, true));
     }
 
-    public MagisterOfWorth(final MagisterOfWorth card) {
+    private MagisterOfWorth(final MagisterOfWorth card) {
         super(card);
     }
 

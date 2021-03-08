@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.abilities.Mode;
 import mage.abilities.dynamicvalue.common.ManacostVariableValue;
 import mage.abilities.effects.common.DrawCardAllEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveEachPlayerEffect;
+import mage.abilities.effects.common.MillCardsEachPlayerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -26,11 +26,11 @@ public final class Fascination extends CardImpl {
         
         // * Each player puts the top X cards of their library into their graveyard.
         Mode mode = new Mode();
-        mode.addEffect(new PutTopCardOfLibraryIntoGraveEachPlayerEffect(ManacostVariableValue.instance, TargetController.ANY));
+        mode.addEffect(new MillCardsEachPlayerEffect(ManacostVariableValue.instance, TargetController.ANY));
         this.getSpellAbility().addMode(mode);
     }
 
-    public Fascination(final Fascination card) {
+    private Fascination(final Fascination card) {
         super(card);
     }
 

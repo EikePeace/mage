@@ -26,7 +26,7 @@ public final class DismalFailure extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public DismalFailure(final DismalFailure card) {
+    private DismalFailure(final DismalFailure card) {
         super(card);
     }
 
@@ -61,11 +61,11 @@ class DismalFailureEffect extends OneShotEffect {
             controller = game.getPlayer(game.getControllerId(targetId));
         }
         if (targetId != null
-                && game.getStack().counter(targetId, source.getSourceId(), game)) {
+                && game.getStack().counter(targetId, source, game)) {
             countered = true;
         }
         if (controller != null) {
-            controller.discard(1, false, source, game);
+            controller.discard(1, false, false, source, game);
         }
         return countered;
     }

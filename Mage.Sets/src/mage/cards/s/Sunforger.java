@@ -1,7 +1,7 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
@@ -60,7 +60,7 @@ public final class Sunforger extends CardImpl {
 
     }
 
-    public Sunforger(final Sunforger card) {
+    private Sunforger(final Sunforger card) {
         super(card);
     }
 
@@ -113,7 +113,7 @@ class SunforgerEffect extends OneShotEffect {
                     if (card != null) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                         controller.cast(controller.chooseAbilityForCast(card, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     }
                 }
@@ -136,20 +136,20 @@ class SunforgerUnattachCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        Permanent attachment = game.getPermanent(sourceId);
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
+        Permanent attachment = game.getPermanent(source.getSourceId());
         if (attachment != null && attachment.getAttachedTo() != null) {
             Permanent attachedTo = game.getPermanent(attachment.getAttachedTo());
             if (attachedTo != null) {
-                paid = attachedTo.removeAttachment(attachment.getId(), game);
+                paid = attachedTo.removeAttachment(attachment.getId(), source, game);
             }
         }
         return paid;
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        Permanent attachment = game.getPermanent(sourceId);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        Permanent attachment = game.getPermanent(source.getSourceId());
         if (attachment != null && attachment.getAttachedTo() != null) {
             Permanent attachedTo = game.getPermanent(attachment.getAttachedTo());
             if (attachedTo != null) {
@@ -179,7 +179,7 @@ class CardCanBeCastPredicate implements Predicate<Card> {
         SpellAbility ability = input.getSpellAbility().copy();
         ability.setControllerId(controllerId);
         input.adjustTargets(ability, game);
-        return ability.canChooseTarget(game);
+        return ability.canChooseTarget(game, controllerId);
     }
 
     @Override

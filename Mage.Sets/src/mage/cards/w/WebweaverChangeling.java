@@ -2,7 +2,7 @@ package mage.cards.w;
 
 import mage.MageInt;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.decorator.ConditionalOneShotEffect;
 import mage.abilities.effects.common.GainLifeEffect;
 import mage.abilities.keyword.ChangelingAbility;
@@ -28,7 +28,7 @@ public final class WebweaverChangeling extends CardImpl {
         this.toughness = new MageInt(5);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         // Reach
         this.addAbility(ReachAbility.getInstance());
@@ -36,7 +36,7 @@ public final class WebweaverChangeling extends CardImpl {
         // When Webweaver Changeling enters the battlefield, if there are three or more creature cards in your graveyard, you gain 5 life.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new ConditionalOneShotEffect(
                 new GainLifeEffect(5),
-                new CardsInControllerGraveCondition(
+                new CardsInControllerGraveyardCondition(
                         3, StaticFilters.FILTER_CARD_CREATURE
                 ), "When {this} enters the battlefield, if there are three or more " +
                 "creature cards in your graveyard, you gain 5 life."

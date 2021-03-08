@@ -51,7 +51,7 @@ public final class ChandraTheFirebrand extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public ChandraTheFirebrand(final ChandraTheFirebrand card) {
+    private ChandraTheFirebrand(final ChandraTheFirebrand card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class ChandraTheFirebrandAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

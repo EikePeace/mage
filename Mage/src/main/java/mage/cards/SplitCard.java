@@ -1,8 +1,5 @@
 package mage.cards;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Abilities;
 import mage.abilities.AbilitiesImpl;
@@ -12,6 +9,11 @@ import mage.constants.CardType;
 import mage.constants.SpellAbilityType;
 import mage.constants.Zone;
 import mage.game.Game;
+import mage.game.events.ZoneChangeEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author LevelX2
@@ -30,7 +32,6 @@ public abstract class SplitCard extends CardImpl {
         String[] names = setInfo.getName().split(" // ");
         leftHalfCard = new SplitCardHalfImpl(this.getOwnerId(), new CardSetInfo(names[0], setInfo.getExpansionSetCode(), setInfo.getCardNumber(), setInfo.getRarity(), setInfo.getGraphicInfo()), typesLeft, costsLeft, this, SpellAbilityType.SPLIT_LEFT);
         rightHalfCard = new SplitCardHalfImpl(this.getOwnerId(), new CardSetInfo(names[1], setInfo.getExpansionSetCode(), setInfo.getCardNumber(), setInfo.getRarity(), setInfo.getGraphicInfo()), typesRight, costsRight, this, SpellAbilityType.SPLIT_RIGHT);
-        this.splitCard = true;
     }
 
     public SplitCard(SplitCard card) {
@@ -39,6 +40,14 @@ public abstract class SplitCard extends CardImpl {
         ((SplitCardHalf) leftHalfCard).setParentCard(this);
         this.rightHalfCard = card.rightHalfCard.copy();
         ((SplitCardHalf) rightHalfCard).setParentCard(this);
+    }
+
+    public void setParts(SplitCardHalf leftHalfCard, SplitCardHalf rightHalfCard) {
+        // for card copy only - set new parts
+        this.leftHalfCard = leftHalfCard;
+        leftHalfCard.setParentCard(this);
+        this.rightHalfCard = rightHalfCard;
+        rightHalfCard.setParentCard(this);
     }
 
     public SplitCardHalf getLeftHalfCard() {
@@ -64,8 +73,8 @@ public abstract class SplitCard extends CardImpl {
     }
 
     @Override
-    public boolean moveToZone(Zone toZone, UUID sourceId, Game game, boolean flag, List<UUID> appliedEffects) {
-        if (super.moveToZone(toZone, sourceId, game, flag, appliedEffects)) {
+    public boolean moveToZone(Zone toZone, Ability source, Game game, boolean flag, List<UUID> appliedEffects) {
+        if (super.moveToZone(toZone, source, game, flag, appliedEffects)) {
             game.getState().setZone(getLeftHalfCard().getId(), toZone);
             game.getState().setZone(getRightHalfCard().getId(), toZone);
             return true;
@@ -74,14 +83,38 @@ public abstract class SplitCard extends CardImpl {
     }
 
     @Override
-    public boolean moveToExile(UUID exileId, String name, UUID sourceId, Game game, List<UUID> appliedEffects) {
-        if (super.moveToExile(exileId, name, sourceId, game, appliedEffects)) {
+    public void setZone(Zone zone, Game game) {
+        super.setZone(zone, game);
+        game.setZone(getLeftHalfCard().getId(), zone);
+        game.setZone(getRightHalfCard().getId(), zone);
+    }
+
+    @Override
+    public boolean moveToExile(UUID exileId, String name, Ability source, Game game, List<UUID> appliedEffects) {
+        if (super.moveToExile(exileId, name, source, game, appliedEffects)) {
             Zone currentZone = game.getState().getZone(getId());
             game.getState().setZone(getLeftHalfCard().getId(), currentZone);
             game.getState().setZone(getRightHalfCard().getId(), currentZone);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean removeFromZone(Game game, Zone fromZone, Ability source) {
+        // zone contains only one main card
+        return super.removeFromZone(game, fromZone, source);
+    }
+
+    @Override
+    public void updateZoneChangeCounter(Game game, ZoneChangeEvent event) {
+        if (isCopy()) { // same as meld cards
+            super.updateZoneChangeCounter(game, event);
+            return;
+        }
+        super.updateZoneChangeCounter(game, event);
+        getLeftHalfCard().updateZoneChangeCounter(game, event);
+        getRightHalfCard().updateZoneChangeCounter(game, event);
     }
 
     @Override
@@ -99,25 +132,27 @@ public abstract class SplitCard extends CardImpl {
     }
 
     @Override
-    public void setZone(Zone zone, Game game) {
-        super.setZone(zone, game);
-        game.setZone(getLeftHalfCard().getId(), zone);
-        game.setZone(getRightHalfCard().getId(), zone);
-    }
-
-    @Override
     public Abilities<Ability> getAbilities() {
         Abilities<Ability> allAbilites = new AbilitiesImpl<>();
         for (Ability ability : super.getAbilities()) {
+            // ignore split abilities
+            // TODO: why it here, for GUI's cleanup in card texts? Maybe it can be removed, see mdf cards
             if (ability instanceof SpellAbility
-                    && ((SpellAbility) ability).getSpellAbilityType() != SpellAbilityType.SPLIT
-                    && ((SpellAbility) ability).getSpellAbilityType() != SpellAbilityType.SPLIT_AFTERMATH) {
-                allAbilites.add(ability);
+                    && (((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.SPLIT
+                    || ((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.SPLIT_AFTERMATH)) {
+                continue;
             }
+            allAbilites.add(ability);
         }
         allAbilites.addAll(leftHalfCard.getAbilities());
         allAbilites.addAll(rightHalfCard.getAbilities());
         return allAbilites;
+    }
+
+    @Override
+    public Abilities<Ability> getInitAbilities() {
+        // must init only full split card aiblities like fuse, parts must be init separately
+        return super.getAbilities();
     }
 
     /**
@@ -135,11 +170,14 @@ public abstract class SplitCard extends CardImpl {
     public Abilities<Ability> getAbilities(Game game) {
         Abilities<Ability> allAbilites = new AbilitiesImpl<>();
         for (Ability ability : super.getAbilities(game)) {
+            // ignore split abilities
+            // TODO: why it here, for GUI's cleanup in card texts? Maybe it can be removed, see mdf cards
             if (ability instanceof SpellAbility
-                    && ((SpellAbility) ability).getSpellAbilityType() != SpellAbilityType.SPLIT
-                    && ((SpellAbility) ability).getSpellAbilityType() != SpellAbilityType.SPLIT_AFTERMATH) {
-                allAbilites.add(ability);
+                    && (((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.SPLIT
+                    || ((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.SPLIT_AFTERMATH)) {
+                continue;
             }
+            allAbilites.add(ability);
         }
         allAbilites.addAll(leftHalfCard.getAbilities(game));
         allAbilites.addAll(rightHalfCard.getAbilities(game));
@@ -163,7 +201,16 @@ public abstract class SplitCard extends CardImpl {
         leftHalfCard.setOwnerId(ownerId);
         rightHalfCard.getAbilities().setControllerId(ownerId);
         rightHalfCard.setOwnerId(ownerId);
-
     }
 
+    @Override
+    public int getConvertedManaCost() {
+        // 202.3d The converted mana cost of a split card not on the stack or of a fused split spell on the
+        // stack is determined from the combined mana costs of its halves. Otherwise, while a split card is
+        // on the stack, the converted mana cost of the spell is determined by the mana cost of the half
+        // that was chosen to be cast. See rule 708, “Split Cards.”
+
+        // split card and it's halfes contains own mana costs, so no need to rewrite logic
+        return super.getConvertedManaCost();
+    }
 }

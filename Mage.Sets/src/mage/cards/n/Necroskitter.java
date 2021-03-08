@@ -41,7 +41,7 @@ public final class Necroskitter extends CardImpl {
 
     }
 
-    public Necroskitter(final Necroskitter card) {
+    private Necroskitter(final Necroskitter card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class NecroskitterTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

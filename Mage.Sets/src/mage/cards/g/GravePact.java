@@ -1,9 +1,5 @@
-
 package mage.cards.g;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.OneShotEffect;
@@ -14,27 +10,29 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class GravePact extends CardImpl {
 
     public GravePact(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{1}{B}{B}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{1}{B}{B}{B}");
 
 
         // Whenever a creature you control dies, each other player sacrifices a creature.
         this.addAbility(new GravePactTriggeredAbility());
     }
 
-    public GravePact(final GravePact card) {
+    private GravePact(final GravePact card) {
         super(card);
     }
 
@@ -61,7 +59,7 @@ class GravePactTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -69,9 +67,7 @@ class GravePactTriggeredAbility extends TriggeredAbilityImpl {
         if (((ZoneChangeEvent) event).getToZone() == Zone.GRAVEYARD
                 && ((ZoneChangeEvent) event).getFromZone() == Zone.BATTLEFIELD) {
             Permanent permanent = (Permanent) game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
-            if (permanent.isControlledBy(this.getControllerId()) && permanent.isCreature()) {
-                return true;
-            }
+            return permanent != null && permanent.isControlledBy(this.getControllerId()) && permanent.isCreature();
         }
         return false;
     }
@@ -102,13 +98,13 @@ class GravePactEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<UUID> perms = new ArrayList<>();
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {            
+        if (controller != null) {
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null && !playerId.equals(source.getControllerId())) {
                     TargetControlledCreaturePermanent target = new TargetControlledCreaturePermanent();
                     target.setNotTarget(true);
-                    if (target.canChoose(player.getId(), game)) {
+                    if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                         player.chooseTarget(Outcome.Sacrifice, target, source, game);
                         perms.addAll(target.getTargets());
                     }
@@ -117,11 +113,11 @@ class GravePactEffect extends OneShotEffect {
             for (UUID permID : perms) {
                 Permanent permanent = game.getPermanent(permID);
                 if (permanent != null) {
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                 }
             }
-            return true;        
+            return true;
         }
-        return false;        
+        return false;
     }
 }

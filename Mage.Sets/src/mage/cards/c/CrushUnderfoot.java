@@ -35,7 +35,7 @@ public final class CrushUnderfoot extends CardImpl {
 
     }
 
-    public CrushUnderfoot(final CrushUnderfoot card) {
+    private CrushUnderfoot(final CrushUnderfoot card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class CrushUnderfootEffect extends OneShotEffect {
                     game.informPlayers("Crush Underfoot: Chosen Giant is " + giant.getName());
                     Permanent targetCreature = game.getPermanent(this.getTargetPointer().getFirst(game, source));
                     if (targetCreature != null) {
-                        targetCreature.damage(giant.getPower().getValue(), source.getSourceId(), game, false, true);
+                        targetCreature.damage(giant.getPower().getValue(), source.getSourceId(), source, game, false, true);
                         return true;
                     }
                 }

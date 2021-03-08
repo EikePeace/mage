@@ -49,7 +49,7 @@ public final class NewBlood extends CardImpl {
         getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public NewBlood(final NewBlood card) {
+    private NewBlood(final NewBlood card) {
         super(card);
     }
 
@@ -150,9 +150,9 @@ class ChangeCreatureTypeTargetEffect extends ContinuousEffectImpl {
                         case TypeChangingEffects_4:
                             if (sublayer == SubLayer.NA) {
                                 if (targetObject.hasSubtype(fromSubType, game)) {
-                                    targetObject.getSubtype(game).remove(fromSubType);
+                                    targetObject.removeSubType(game, fromSubType);
                                     if (!targetObject.hasSubtype(toSubType, game)) {
-                                        targetObject.getSubtype(game).add(toSubType);
+                                        targetObject.addSubType(game, toSubType);
                                     }
                                 }
                                 break;

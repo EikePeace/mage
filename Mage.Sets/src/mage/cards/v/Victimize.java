@@ -32,7 +32,7 @@ public final class Victimize extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(2, new FilterCreatureCard("creature cards in your graveyard")));
     }
 
-    public Victimize(final Victimize card) {
+    private Victimize(final Victimize card) {
         super(card);
     }
 
@@ -63,8 +63,8 @@ class VictimizeEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             SacrificeTargetCost cost = new SacrificeTargetCost(new TargetControlledCreaturePermanent(FILTER_CONTROLLED_CREATURE_SHORT_TEXT));
-            if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
-                game.applyEffects(); // To end effects of the sacrificed creature
+            if (cost.pay(source, game, source, source.getControllerId(), false, null)) {
+                game.getState().processAction(game); // To end effects of the sacrificed creature
                 controller.moveCards(new CardsImpl(getTargetPointer().getTargets(game, source)).getCards(game),
                         Zone.BATTLEFIELD, source, game, true, false, false, null);
             }

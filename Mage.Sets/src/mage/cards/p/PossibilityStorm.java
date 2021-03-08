@@ -1,11 +1,9 @@
-
 package mage.cards.p;
 
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.ArrayList;
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.Effect;
@@ -41,7 +39,7 @@ public final class PossibilityStorm extends CardImpl {
         this.addAbility(new PossibilityStormTriggeredAbility());
     }
 
-    public PossibilityStorm(final PossibilityStorm card) {
+    private PossibilityStorm(final PossibilityStorm card) {
         super(card);
     }
 
@@ -68,7 +66,7 @@ class PossibilityStormTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -129,9 +127,9 @@ class PossibilityStormEffect extends OneShotEffect {
 
                     if (card != null && sharesType(card, spell.getCardType())
                             && !card.isLand()
-                            && card.getSpellAbility().canChooseTarget(game)) {
+                            && card.getSpellAbility().canChooseTarget(game, spellController.getId())) {
                         if (spellController.chooseUse(Outcome.PlayForFree, "Cast " + card.getLogName() + " without paying cost?", source, game)) {
-                            spellController.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            spellController.cast(card.getSpellAbility(), game, true, new ApprovingObject(source, game));
                         }
                     }
 
@@ -147,7 +145,7 @@ class PossibilityStormEffect extends OneShotEffect {
         return false;
     }
 
-    private boolean sharesType(Card card, Set<CardType> cardTypes) {
+    private boolean sharesType(Card card, ArrayList<CardType> cardTypes) {
         for (CardType type : card.getCardType()) {
             if (cardTypes.contains(type)) {
                 return true;

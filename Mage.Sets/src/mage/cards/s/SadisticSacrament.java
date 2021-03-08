@@ -45,7 +45,7 @@ public final class SadisticSacrament extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public SadisticSacrament(final SadisticSacrament card) {
+    private SadisticSacrament(final SadisticSacrament card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class SadisticSacramentEffect extends OneShotEffect {
                 for (UUID targetId : targets) {
                     Card card = targetPlayer.getLibrary().remove(targetId, game);
                     if (card != null) {
-                        card.moveToExile(null, "", source.getSourceId(), game);
+                        card.moveToExile(null, "", source, game);
                     }
                 }
             }

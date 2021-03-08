@@ -45,7 +45,7 @@ public final class SwordOfTheMeek extends CardImpl {
         this.addAbility(new EntersBattlefieldControlledTriggeredAbility(Zone.GRAVEYARD, new SwordOfTheMeekEffect(), filter, true, SetTargetPointer.PERMANENT, ""));
     }
 
-    public SwordOfTheMeek(final SwordOfTheMeek card) {
+    private SwordOfTheMeek(final SwordOfTheMeek card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class SwordOfTheMeekEffect extends OneShotEffect {
             controller.moveCards(equipment, Zone.BATTLEFIELD, source, game);
             Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (permanent != null) {
-                return permanent.addAttachment(equipment.getId(), game);
+                return permanent.addAttachment(equipment.getId(), source, game);
             }
         }
         return false;

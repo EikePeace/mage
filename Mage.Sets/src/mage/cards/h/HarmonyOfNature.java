@@ -32,7 +32,7 @@ public final class HarmonyOfNature extends CardImpl {
         this.getSpellAbility().addEffect(new HarmonyOfNatureEffect());
     }
 
-    public HarmonyOfNature(final HarmonyOfNature card) {
+    private HarmonyOfNature(final HarmonyOfNature card) {
         super(card);
     }
 
@@ -68,14 +68,14 @@ class HarmonyOfNatureEffect extends OneShotEffect {
             TargetPermanent target = new TargetPermanent(0, 1, filter, false);
             while (true) {
                 target.clearChosen();
-                if (target.canChoose(source.getControllerId(), game) && target.choose(Outcome.Tap, source.getControllerId(), source.getSourceId(), game)) {
+                if (target.canChoose(source.getSourceId(), source.getControllerId(), game) && target.choose(Outcome.Tap, source.getControllerId(), source.getSourceId(), game)) {
                     Map<String, Serializable> options = new HashMap<>();
                     options.put("UI.right.btn.text", "Tapping complete");
                     controller.choose(outcome, target, source.getControllerId(), game, options);
                     if (!target.getTargets().isEmpty()) {
                         UUID creature = target.getFirstTarget();
                         if (creature != null) {
-                            game.getPermanent(creature).tap(game);
+                            game.getPermanent(creature).tap(source, game);
                             tappedAmount++;
                         }
                     } else {

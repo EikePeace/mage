@@ -27,7 +27,7 @@ public final class BookBurning extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public BookBurning(final BookBurning card) {
+    private BookBurning(final BookBurning card) {
         super(card);
     }
 
@@ -41,7 +41,7 @@ class BookBurningMillEffect extends OneShotEffect {
 
     public BookBurningMillEffect() {
         super(Outcome.Detriment);
-        staticText = "Any player may have {source} deal 6 damage to them. If no one does, target player puts the top six cards of their library into their graveyard";
+        staticText = "Any player may have {this} deal 6 damage to them. If no one does, target player mills six cards";
     }
 
     public BookBurningMillEffect(final BookBurningMillEffect effect) {
@@ -62,7 +62,7 @@ class BookBurningMillEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.chooseUse(Outcome.Detriment, "Have " + sourceObject.getLogName() + " deal 6 damage to you?", source, game)) {
                     millCards = false;
-                    player.damage(6, source.getSourceId(), game);
+                    player.damage(6, source.getSourceId(), source, game);
                     game.informPlayers(player.getLogName() + " has " + sourceObject.getLogName() + " deal 6 damage to them");
                 }
             }

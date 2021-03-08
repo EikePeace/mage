@@ -29,7 +29,7 @@ public final class FiligreeFracture extends CardImpl {
         this.getSpellAbility().addEffect(new FiligreeFractureEffect());
     }
 
-    public FiligreeFracture(final FiligreeFracture card) {
+    private FiligreeFracture(final FiligreeFracture card) {
         super(card);
     }
 
@@ -60,10 +60,10 @@ class FiligreeFractureEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (player != null && permanent != null) {
-            permanent.destroy(source.getSourceId(), game, true);
-            game.applyEffects();
+            permanent.destroy(source, game, true);
+            game.getState().processAction(game);
             if (permanent.getColor(game).isBlack() || permanent.getColor(game).isBlue()) {
-                player.drawCards(1, game);
+                player.drawCards(1, source, game);
             }
             return true;
         }

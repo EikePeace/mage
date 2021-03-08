@@ -18,7 +18,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.mageobject.MulticoloredPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -56,7 +56,7 @@ public final class EsperStormblade extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EsperStormblade(final EsperStormblade card) {
+    private EsperStormblade(final EsperStormblade card) {
         super(card);
     }
 

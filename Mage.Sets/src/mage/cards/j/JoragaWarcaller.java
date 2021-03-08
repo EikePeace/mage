@@ -15,7 +15,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -56,7 +56,7 @@ public final class JoragaWarcaller extends CardImpl {
         
     }
 
-    public JoragaWarcaller(final JoragaWarcaller card) {
+    private JoragaWarcaller(final JoragaWarcaller card) {
         super(card);
     }
 

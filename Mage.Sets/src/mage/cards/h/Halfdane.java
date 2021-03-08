@@ -12,7 +12,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -43,7 +43,7 @@ public final class Halfdane extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Halfdane(final Halfdane card) {
+    private Halfdane(final Halfdane card) {
         super(card);
     }
 

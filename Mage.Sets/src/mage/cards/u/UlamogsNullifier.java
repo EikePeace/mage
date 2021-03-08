@@ -55,7 +55,7 @@ public final class UlamogsNullifier extends CardImpl {
         this.addAbility(ability);
     }
 
-    public UlamogsNullifier(final UlamogsNullifier card) {
+    private UlamogsNullifier(final UlamogsNullifier card) {
         super(card);
     }
 
@@ -97,7 +97,7 @@ class UlamogsNullifierEffect extends OneShotEffect {
                 if (controller.chooseTarget(outcome, target, source, game)) {
                     Cards cardsToGraveyard = new CardsImpl(target.getTargets());
                     controller.moveCards(cardsToGraveyard, Zone.GRAVEYARD, source, game);
-                    game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+                    game.getStack().counter(source.getFirstTarget(), source, game);
                     return true;
                 }
             }

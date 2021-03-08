@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class AngelicCaptain extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(value, value, Duration.EndOfTurn, true), false));
     }
 
-    public AngelicCaptain(final AngelicCaptain card) {
+    private AngelicCaptain(final AngelicCaptain card) {
         super(card);
     }
 

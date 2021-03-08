@@ -48,7 +48,7 @@ public final class SixthSense extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public SixthSense(final SixthSense card) {
+    private SixthSense(final SixthSense card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SixthSenseTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

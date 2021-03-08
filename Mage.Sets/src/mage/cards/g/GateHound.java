@@ -24,7 +24,7 @@ public final class GateHound extends CardImpl {
 
     public GateHound(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
@@ -36,7 +36,7 @@ public final class GateHound extends CardImpl {
                 "Creatures you control have vigilance as long as {this} is enchanted")));
     }
 
-    public GateHound(final GateHound card) {
+    private GateHound(final GateHound card) {
         super(card);
     }
 

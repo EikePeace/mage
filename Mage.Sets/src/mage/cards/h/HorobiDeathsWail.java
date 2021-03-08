@@ -15,7 +15,6 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
 
@@ -40,7 +39,7 @@ public final class HorobiDeathsWail extends CardImpl {
         this.addAbility(new HorobiDeathsWailAbility(new DestroyTargetEffect()));
     }
 
-    public HorobiDeathsWail(final HorobiDeathsWail card) {
+    private HorobiDeathsWail(final HorobiDeathsWail card) {
         super(card);
     }
 
@@ -68,7 +67,7 @@ class HorobiDeathsWailAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

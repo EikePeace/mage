@@ -40,7 +40,7 @@ public final class BrainGorgers extends CardImpl {
         this.addAbility(new MadnessAbility(this, new ManaCostsImpl<>("{1}{B}")));
     }
 
-    public BrainGorgers(final BrainGorgers card) {
+    private BrainGorgers(final BrainGorgers card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class BrainGorgersCounterSourceEffect extends OneShotEffect {
 
     public BrainGorgersCounterSourceEffect() {
         super(Outcome.AIDontUseIt);
-        staticText = "any player may sacrifice a creature. If a player does, counter {source}";
+        staticText = "any player may sacrifice a creature. If a player does, counter {this}";
     }
 
     public BrainGorgersCounterSourceEffect(final BrainGorgersCounterSourceEffect effect) {
@@ -74,13 +74,13 @@ class BrainGorgersCounterSourceEffect extends OneShotEffect {
             for (UUID playerId : game.getState().getPlayerList(source.getControllerId())) {
                 cost.clearPaid();
                 Player player = game.getPlayer(playerId);
-                if (player != null && cost.canPay(source, source.getSourceId(), player.getId(), game)
+                if (player != null && cost.canPay(source, source, player.getId(), game)
                         && player.chooseUse(outcome, "Sacrifice a creature to counter " + sourceObject.getIdName() + '?', source, game)) {
-                    if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                    if (cost.pay(source, game, source, player.getId(), false, null)) {
                         game.informPlayers(player.getLogName() + " sacrifices a creature to counter " + sourceObject.getIdName() + '.');
                         Spell spell = game.getStack().getSpell(source.getSourceId());
                         if (spell != null) {
-                            game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                            game.getStack().counter(spell.getId(), source, game);
                         }
                     }
                 }

@@ -35,7 +35,7 @@ public final class RapaciousOne extends CardImpl {
         this.addAbility(new RapaciousOneTriggeredAbility());
     }
 
-    public RapaciousOne(final RapaciousOne card) {
+    private RapaciousOne(final RapaciousOne card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class RapaciousOneTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

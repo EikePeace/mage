@@ -17,7 +17,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -48,7 +47,7 @@ public final class Skinshifter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Skinshifter(final Skinshifter card) {
+    private Skinshifter(final Skinshifter card) {
         super(card);
     }
 

@@ -43,7 +43,7 @@ public final class GlissaSunseeker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GlissaSunseeker(final GlissaSunseeker card) {
+    private GlissaSunseeker(final GlissaSunseeker card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class GlissaSunseekerEffect extends OneShotEffect {
         int colorlessMana = pool.getColorless();
         int manaPoolTotal = blackMana + whiteMana + blueMana + greenMana + redMana + colorlessMana;
         if (permanent.getConvertedManaCost() == manaPoolTotal) {
-            return permanent.destroy(source.getSourceId(), game, false);
+            return permanent.destroy(source, game, false);
         }
         return false;
     }

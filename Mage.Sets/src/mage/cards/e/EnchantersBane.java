@@ -31,7 +31,7 @@ public final class EnchantersBane extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EnchantersBane(final EnchantersBane card) {
+    private EnchantersBane(final EnchantersBane card) {
         super(card);
     }
 
@@ -70,9 +70,9 @@ class EnchantersBaneEffect extends OneShotEffect {
             return false;
         }
         if (player.chooseUse(Outcome.GainLife, "Sacrifice " + permanent.getLogName() + "?", source, game)) {
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
         } else {
-            player.damage(permanent.getConvertedManaCost(), permanent.getId(), game);
+            player.damage(permanent.getConvertedManaCost(), permanent.getId(), source, game);
         }
         return true;
     }

@@ -42,7 +42,7 @@ public final class SageOfFables extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SageOfFables(final SageOfFables card) {
+    private SageOfFables(final SageOfFables card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class SageOfFablesReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         return false;
     }

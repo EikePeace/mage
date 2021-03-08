@@ -34,7 +34,7 @@ public final class SharedFate extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SharedFateLookEffect()));
     }
 
-    public SharedFate(final SharedFate card) {
+    private SharedFate(final SharedFate card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class SharedFateReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_CARD;
+        return event.getType() == GameEvent.EventType.DRAW_CARD;
     }
 
     @Override

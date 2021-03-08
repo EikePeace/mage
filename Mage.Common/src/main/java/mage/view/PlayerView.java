@@ -1,13 +1,5 @@
-
 package mage.view;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import mage.cards.Card;
 import mage.counters.Counters;
 import mage.designations.Designation;
@@ -22,6 +14,9 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.players.net.UserData;
 
+import java.io.Serializable;
+import java.util.*;
+
 /**
  * @author BetaSteward_at_googlemail.com
  */
@@ -31,6 +26,7 @@ public class PlayerView implements Serializable {
 
     private final UUID playerId;
     private final String name;
+    private final boolean controlled; // gui: player is current user
     private final int life;
     private final Counters counters;
     private final int wins;
@@ -64,6 +60,7 @@ public class PlayerView implements Serializable {
     public PlayerView(Player player, GameState state, Game game, UUID createdForPlayerId, UUID watcherUserId) {
         this.playerId = player.getId();
         this.name = player.getName();
+        this.controlled = player.getId().equals(createdForPlayerId);
         this.life = player.getLife();
         this.counters = player.getCounters();
         this.wins = player.getMatchPlayer().getWins();
@@ -103,7 +100,7 @@ public class PlayerView implements Serializable {
         }
         Card cardOnTop = (player.isTopCardRevealed() && player.getLibrary().hasCards())
                 ? player.getLibrary().getFromTop(game) : null;
-        this.topCard = cardOnTop != null ? new CardView(cardOnTop) : null;
+        this.topCard = cardOnTop != null ? new CardView(cardOnTop, game) : null;
         if (player.getUserData() != null) {
             this.userData = player.getUserData();
         } else {
@@ -162,6 +159,10 @@ public class PlayerView implements Serializable {
                 return permanent.getControllerId().equals(playerId);
             }
         }
+    }
+
+    public boolean getControlled() {
+        return this.controlled;
     }
 
     public int getLife() {

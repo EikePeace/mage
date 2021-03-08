@@ -27,7 +27,7 @@ public final class Catastrophe extends CardImpl {
         this.getSpellAbility().addEffect(new CatastropheEffect());
     }
 
-    public Catastrophe(final Catastrophe card) {
+    private Catastrophe(final Catastrophe card) {
         super(card);
     }
 
@@ -59,11 +59,11 @@ class CatastropheEffect extends OneShotEffect {
         if (controller != null) {
             if (controller.chooseUse(outcome, "Destroy all lands? (otherwise all creatures are destroyed)", source, game)) {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(new FilterLandPermanent(), controller.getId(), source.getSourceId(), game)) {
-                    permanent.destroy(source.getSourceId(), game, permanent.isCreature());
+                    permanent.destroy(source, game, permanent.isCreature());
                 }
             } else {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, controller.getId(), source.getSourceId(), game)) {
-                    permanent.destroy(source.getSourceId(), game, true);
+                    permanent.destroy(source, game, true);
                 }
             }
             return true;

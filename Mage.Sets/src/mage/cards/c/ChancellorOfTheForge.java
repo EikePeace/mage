@@ -49,7 +49,7 @@ public final class ChancellorOfTheForge extends CardImpl {
                 .addHint(CreaturesYouControlHint.instance));
     }
 
-    public ChancellorOfTheForge(final ChancellorOfTheForge card) {
+    private ChancellorOfTheForge(final ChancellorOfTheForge card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class ChancellorOfTheForgeDelayedTriggeredAbility extends DelayedTriggeredAbilit
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

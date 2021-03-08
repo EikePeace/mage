@@ -49,7 +49,7 @@ public final class SpinningDarkness extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public SpinningDarkness(final SpinningDarkness card) {
+    private SpinningDarkness(final SpinningDarkness card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SpinningDarknessCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
             Set<Card> blackCardsInGraveyard = controller.getGraveyard().getCards(filter, game);
@@ -98,7 +98,7 @@ class SpinningDarknessCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
             return controller.getGraveyard().getCards(filter, game).size() >= 3;

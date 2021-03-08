@@ -15,7 +15,6 @@ import mage.filter.common.FilterLandPermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetLandPermanent;
 
 /**
@@ -41,7 +40,7 @@ public final class AwakenerDruid extends CardImpl {
     }
 
 
-    public AwakenerDruid(final AwakenerDruid card) {
+    private AwakenerDruid(final AwakenerDruid card) {
         super(card);
     }
 
@@ -96,6 +95,7 @@ class AwakenerDruidToken extends TokenImpl {
         super(token);
     }
 
+    @Override
     public AwakenerDruidToken copy() {
         return new AwakenerDruidToken(this);
     }

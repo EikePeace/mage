@@ -18,7 +18,7 @@ import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.mageobject.CardIdPredicate;
-import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToPermanentId;
 import mage.filter.predicate.permanent.AttachedToPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -76,7 +76,7 @@ public final class HakimLoreweaver extends CardImpl {
 
     }
 
-    public HakimLoreweaver(final HakimLoreweaver card) {
+    private HakimLoreweaver(final HakimLoreweaver card) {
         super(card);
     }
 
@@ -116,7 +116,7 @@ class HakimLoreweaverEffect extends OneShotEffect {
             if (target != null) {
                 game.getState().setValue("attachTo:" + targetAuraCard.getId(), hakimLoreweaver);
                 controller.moveCards(targetAuraCard, Zone.BATTLEFIELD, source, game);
-                return hakimLoreweaver.addAttachment(targetAuraCard.getId(), game);
+                return hakimLoreweaver.addAttachment(targetAuraCard.getId(), source, game);
             }
         }
         return false;

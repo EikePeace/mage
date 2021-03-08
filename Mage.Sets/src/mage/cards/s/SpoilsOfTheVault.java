@@ -27,7 +27,7 @@ public final class SpoilsOfTheVault extends CardImpl {
         this.getSpellAbility().addEffect(new SpoilsOfTheVaultEffect());
     }
 
-    public SpoilsOfTheVault(final SpoilsOfTheVault card) {
+    private SpoilsOfTheVault(final SpoilsOfTheVault card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class SpoilsOfTheVaultEffect extends OneShotEffect {
         for (Card card : controller.getLibrary().getCards(game)) {
             if (card != null) {
                 cardsToReveal.add(card);
-                if (CardUtil.haveSameNames(card.getName(), cardName)) {
+                if (CardUtil.haveSameNames(card, cardName, game)) {
                     controller.moveCards(card, Zone.HAND, source, game);
                     break;
                 } else {
@@ -78,7 +78,7 @@ class SpoilsOfTheVaultEffect extends OneShotEffect {
         }
         controller.revealCards(sourceObject.getIdName(), cardsToReveal, game);
         controller.moveCards(cardsToExile, Zone.EXILED, source, game);
-        controller.loseLife(cardsToExile.size(), game, false);
+        controller.loseLife(cardsToExile.size(), game, source, false);
 
         return true;
     }

@@ -13,9 +13,8 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.filter.FilterAbility;
 import mage.filter.FilterStackObject;
-import mage.filter.predicate.ability.ArtifactSourcePredicate;
+import mage.filter.predicate.other.ArtifactSourcePredicate;
 import mage.target.common.TargetActivatedAbility;
 
 /**
@@ -44,7 +43,7 @@ public final class BrownOuphe extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BrownOuphe(final BrownOuphe card) {
+    private BrownOuphe(final BrownOuphe card) {
         super(card);
     }
 

@@ -5,7 +5,6 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.common.combat.MustBeBlockedByAtLeastOneSourceEffect;
-import mage.abilities.effects.Effect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -31,7 +30,7 @@ public final class GaeasProtector extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new MustBeBlockedByAtLeastOneSourceEffect(Duration.WhileOnBattlefield)));
     }
 
-    public GaeasProtector(final GaeasProtector card) {
+    private GaeasProtector(final GaeasProtector card) {
         super(card);
     }
 

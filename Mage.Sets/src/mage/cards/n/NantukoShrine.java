@@ -31,7 +31,7 @@ public final class NantukoShrine extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new NantukoShrineEffect(), StaticFilters.FILTER_SPELL, false, SetTargetPointer.SPELL));
     }
 
-    public NantukoShrine(final NantukoShrine card) {
+    private NantukoShrine(final NantukoShrine card) {
         super(card);
     }
 
@@ -45,7 +45,7 @@ class NantukoShrineEffect extends OneShotEffect {
 
     public NantukoShrineEffect() {
         super(Outcome.PutCreatureInPlay);
-        this.staticText = "that player puts X 1/1 green Squirrel creature tokens onto the battlefield, where X is the number of cards in all graveyards with the same name as that spell";
+        this.staticText = "that player creates X 1/1 green Squirrel creature tokens, where X is the number of cards in all graveyards with the same name as that spell";
     }
 
     public NantukoShrineEffect(final NantukoShrineEffect effect) {
@@ -74,7 +74,7 @@ class NantukoShrineEffect extends OneShotEffect {
                     }
                 }
                 if (count > 0) {
-                    new SquirrelToken().putOntoBattlefield(count, game, source.getSourceId(), spell.getControllerId());
+                    new SquirrelToken().putOntoBattlefield(count, game, source, spell.getControllerId());
                 }
                 return true;
             }

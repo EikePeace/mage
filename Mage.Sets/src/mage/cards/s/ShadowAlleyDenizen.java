@@ -16,7 +16,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -50,7 +50,7 @@ public final class ShadowAlleyDenizen extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ShadowAlleyDenizen(final ShadowAlleyDenizen card) {
+    private ShadowAlleyDenizen(final ShadowAlleyDenizen card) {
         super(card);
     }
 

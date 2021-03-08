@@ -42,7 +42,7 @@ public final class NirkanaRevenant extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 1, Duration.EndOfTurn), new ManaCostsImpl("{B}")));
     }
 
-    public NirkanaRevenant(final NirkanaRevenant card) {
+    private NirkanaRevenant(final NirkanaRevenant card) {
         super(card);
     }
 
@@ -70,12 +70,12 @@ class NirkanaRevenantTriggeredAbility extends TriggeredManaAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        Permanent land = game.getPermanent(event.getTargetId());
+        Permanent land = game.getPermanentOrLKIBattlefield(event.getTargetId());
         return land != null && filter.match(land, this.getSourceId(), this.getControllerId(), game);
     }
 

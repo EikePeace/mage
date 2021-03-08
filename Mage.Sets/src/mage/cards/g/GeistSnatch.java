@@ -11,7 +11,6 @@ import mage.constants.Outcome;
 import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.permanent.token.SpiritBlueToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.target.TargetSpell;
 
@@ -29,7 +28,7 @@ public final class GeistSnatch extends CardImpl {
         this.getSpellAbility().addEffect(new GeistSnatchCounterTargetEffect());
     }
 
-    public GeistSnatch(final GeistSnatch card) {
+    private GeistSnatch(final GeistSnatch card) {
         super(card);
     }
 
@@ -57,9 +56,9 @@ class GeistSnatchCounterTargetEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+        game.getStack().counter(source.getFirstTarget(), source, game);
         Token token = new SpiritBlueToken();
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(1, game, source, source.getControllerId());
         return true;
     }
 }

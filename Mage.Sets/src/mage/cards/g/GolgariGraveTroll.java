@@ -46,7 +46,7 @@ public final class GolgariGraveTroll extends CardImpl {
         this.addAbility(new DredgeAbility(6));
     }
 
-    public GolgariGraveTroll(final GolgariGraveTroll card) {
+    private GolgariGraveTroll(final GolgariGraveTroll card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class GolgariGraveTrollEffect extends OneShotEffect {
         if (permanent != null && player != null) {
             int amount = player.getGraveyard().count(StaticFilters.FILTER_CARD_CREATURE, game);
             if (amount > 0) {
-                permanent.addCounters(CounterType.P1P1.createInstance(amount), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game);
             }
             return true;
         }

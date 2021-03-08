@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -35,7 +34,7 @@ public final class SimicKeyrune extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new SimicKeyruneToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{G}{U}")));
     }
 
-    public SimicKeyrune(final SimicKeyrune card) {
+    private SimicKeyrune(final SimicKeyrune card) {
         super(card);
     }
 

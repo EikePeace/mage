@@ -38,7 +38,7 @@ public final class DayOfTheDragons extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new DayOfTheDragonsLeavesEffect(), false));
     }
 
-    public DayOfTheDragons(final DayOfTheDragons card) {
+    private DayOfTheDragons(final DayOfTheDragons card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class DayOfTheDragonsEntersEffect extends OneShotEffect {
                 UUID exileId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
                 controller.moveCardsToExile(toExile, source, game, true, exileId, sourceObject.getIdName());
                 DragonToken2 token = new DragonToken2();
-                token.putOntoBattlefield(toExile.size(), game, source.getSourceId(), source.getControllerId());
+                token.putOntoBattlefield(toExile.size(), game, source, source.getControllerId());
             }
             return true;
         }
@@ -115,7 +115,7 @@ class DayOfTheDragonsLeavesEffect extends OneShotEffect {
         if (controller != null) {
             for (Permanent dragon : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game)) {
                 if (dragon != null) {
-                    dragon.sacrifice(source.getSourceId(), game);
+                    dragon.sacrifice(source, game);
                 }
             }
             int zoneChangeCounter = source.getSourceObjectZoneChangeCounter();

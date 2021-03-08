@@ -48,7 +48,7 @@ public final class HeavyArbalest extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(4)));
     }
 
-    public HeavyArbalest(final HeavyArbalest card) {
+    private HeavyArbalest(final HeavyArbalest card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class HeavyArbalestEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UNTAP;
+        return event.getType() == GameEvent.EventType.UNTAP;
     }
     
     @Override

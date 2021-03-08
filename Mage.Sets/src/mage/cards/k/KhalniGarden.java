@@ -1,5 +1,3 @@
-
-
 package mage.cards.k;
 
 import java.util.UUID;
@@ -19,13 +17,17 @@ import mage.game.permanent.token.PlantToken;
 public final class KhalniGarden extends CardImpl {
 
     public KhalniGarden(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.LAND},null);
+        super(ownerId, setInfo, new CardType[]{CardType.LAND}, "");
+
+        // Khalni Garden enters the battlefield tapped.
         this.addAbility(new EntersBattlefieldTappedAbility());
+        // When Khalni Garden enters the battlefield, create a 0/1 green Plant creature token.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CreateTokenEffect(new PlantToken()), false));
+        // {T}: Add {G}.
         this.addAbility(new GreenManaAbility());
     }
 
-    public KhalniGarden(final KhalniGarden card) {
+    private KhalniGarden(final KhalniGarden card) {
         super(card);
     }
 

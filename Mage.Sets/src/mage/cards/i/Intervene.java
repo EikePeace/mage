@@ -8,7 +8,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.target.TargetSpell;
 
 /**
@@ -32,7 +32,7 @@ public final class Intervene extends CardImpl {
         this.getSpellAbility().addEffect(new CounterTargetEffect());
     }
 
-    public Intervene(final Intervene card) {
+    private Intervene(final Intervene card) {
         super(card);
     }
 

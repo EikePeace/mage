@@ -37,7 +37,7 @@ public final class BenevolentUnicorn extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BenevolentUnicornEffect()));
     }
 
-    public BenevolentUnicorn(final BenevolentUnicorn card) {
+    private BenevolentUnicorn(final BenevolentUnicorn card) {
         super(card);
     }
 
@@ -76,7 +76,8 @@ class BenevolentUnicornEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE || event.getType() == EventType.DAMAGE_PLANESWALKER || event.getType() == EventType.DAMAGE_PLAYER;
+        return event.getType() == EventType.DAMAGE_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override

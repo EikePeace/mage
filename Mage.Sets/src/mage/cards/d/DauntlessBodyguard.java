@@ -3,7 +3,6 @@ package mage.cards.d;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.AsEntersBattlefieldAbility;
@@ -21,7 +20,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -50,7 +49,7 @@ public final class DauntlessBodyguard extends CardImpl {
 
     }
 
-    public DauntlessBodyguard(final DauntlessBodyguard card) {
+    private DauntlessBodyguard(final DauntlessBodyguard card) {
         super(card);
     }
 

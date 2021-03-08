@@ -2,7 +2,7 @@ package mage.cards.m;
 
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.BlocksTriggeredAbility;
+import mage.abilities.common.BlocksSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.TrampleAbility;
 import mage.abilities.keyword.VigilanceAbility;
@@ -35,11 +35,11 @@ public final class Meglonoth extends CardImpl {
         this.addAbility(TrampleAbility.getInstance());
 
         // Whenever Meglonoth blocks a creature, Meglonoth deals damage to that creature's controller equal to Meglonoth's power.
-        this.addAbility(new BlocksTriggeredAbility(new MeglonothEffect(), false, true));
+        this.addAbility(new BlocksSourceTriggeredAbility(new MeglonothEffect(), false, true));
 
     }
 
-    public Meglonoth(final Meglonoth card) {
+    private Meglonoth(final Meglonoth card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class MeglonothEffect extends OneShotEffect {
         Permanent meglonoth = game.getPermanent(source.getSourceId());
         Permanent blocked = game.getPermanent(targetPointer.getFirst(game, source));
         if (blocked != null && meglonoth != null) {
-            game.getPlayer(blocked.getControllerId()).damage(meglonoth.getPower().getValue(), source.getSourceId(), game);
+            game.getPlayer(blocked.getControllerId()).damage(meglonoth.getPower().getValue(), source.getSourceId(), source, game);
             return true;
         }
         return false;

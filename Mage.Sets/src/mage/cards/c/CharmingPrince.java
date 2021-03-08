@@ -16,7 +16,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -98,7 +98,7 @@ class CharmingPrinceEffect extends OneShotEffect {
         if (permanent == null) {
             return false;
         }
-        if (!controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourceObject.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
+        if (!controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourceObject.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
             return false;
         }
         //create delayed triggered ability

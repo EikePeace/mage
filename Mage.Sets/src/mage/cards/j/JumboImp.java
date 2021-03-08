@@ -53,7 +53,7 @@ public final class JumboImp extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public JumboImp(final JumboImp card) {
+    private JumboImp(final JumboImp card) {
         super(card);
     }
 
@@ -78,9 +78,9 @@ class JumboImpEffect extends EntersBattlefieldWithXCountersEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanentEntering(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
             List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects"); // the basic event is the EntersBattlefieldEvent, so use already applied replacement effects from that event
-            permanent.addCounters(CounterType.P1P1.createInstance(amount), source, game, appliedEffects);
+            permanent.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game, appliedEffects);
             return super.apply(game, source);
         }
         return false;
@@ -114,8 +114,8 @@ class JumboImpAddCountersEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
-            permanent.addCounters(CounterType.P1P1.createInstance(amount), source, game);
+            int amount = controller.rollDice(source, game, 6);
+            permanent.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game);
             return true;
         }
         return false;
@@ -143,8 +143,8 @@ class JumboImpRemoveCountersEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
-            permanent.removeCounters(CounterType.P1P1.createInstance(amount), game);
+            int amount = controller.rollDice(source, game, 6);
+            permanent.removeCounters(CounterType.P1P1.createInstance(amount), source, game);
             return true;
         }
         return false;

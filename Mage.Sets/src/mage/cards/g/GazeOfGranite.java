@@ -33,7 +33,7 @@ public final class GazeOfGranite extends CardImpl {
          this.getSpellAbility().addEffect(new GazeOfGraniteEffect());
     }
 
-    public GazeOfGranite(final GazeOfGranite card) {
+    private GazeOfGranite(final GazeOfGranite card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class GazeOfGraniteEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         for (Permanent permanent : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
             if (!permanent.isLand() && permanent.getConvertedManaCost() <= source.getManaCostsToPay().getX()) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

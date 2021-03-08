@@ -2,7 +2,7 @@
 package mage.cards.o;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfDrawTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -37,7 +37,7 @@ public final class OmenMachine extends CardImpl {
         this.addAbility(new BeginningOfDrawTriggeredAbility(new OmenMachineEffect2(), TargetController.ANY, false));
     }
 
-    public OmenMachine(final OmenMachine card) {
+    private OmenMachine(final OmenMachine card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class OmenMachineEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_CARD;
+        return event.getType() == GameEvent.EventType.DRAW_CARD;
     }
 
     @Override
@@ -101,7 +101,7 @@ class OmenMachineEffect2 extends OneShotEffect {
                 if (card.isLand()) {
                     player.moveCards(card, Zone.BATTLEFIELD, source, game);
                 } else {
-                    player.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                    player.cast(card.getSpellAbility(), game, true, new ApprovingObject(source, game));
                 }
             }
             return true;

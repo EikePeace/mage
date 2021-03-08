@@ -30,7 +30,7 @@ public final class SoulsFire extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public SoulsFire(final SoulsFire card) {
+    private SoulsFire(final SoulsFire card) {
         super(card);
     }
 
@@ -44,7 +44,7 @@ class SoulsFireEffect extends OneShotEffect {
 
     public SoulsFireEffect() {
         super(Outcome.Damage);
-        this.staticText = "Target creature you control on the battlefield deals damage equal to its power to any target";
+        this.staticText = "Target creature you control deals damage equal to its power to any target";
     }
 
     public SoulsFireEffect(final SoulsFireEffect effect) {
@@ -71,13 +71,13 @@ class SoulsFireEffect extends OneShotEffect {
 
         Permanent permanent = game.getPermanent(targetId);
         if (permanent != null) {
-            permanent.damage(damage, sourcePermanent.getId(), game, false, true);
+            permanent.damage(damage, sourcePermanent.getId(), source, game, false, true);
             return true;
         }
 
         Player player = game.getPlayer(targetId);
         if (player != null) {
-            player.damage(damage, sourcePermanent.getId(), game);
+            player.damage(damage, sourcePermanent.getId(), source, game);
             return true;
         }
 

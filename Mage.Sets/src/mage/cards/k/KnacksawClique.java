@@ -52,7 +52,7 @@ public final class KnacksawClique extends CardImpl {
         
     }
 
-    public KnacksawClique(final KnacksawClique card) {
+    private KnacksawClique(final KnacksawClique card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class KnacksawCliqueEffect extends OneShotEffect {
                 Library library = opponent.getLibrary();
                 Card card = library.getFromTop(game);
                 if (card != null) {
-                    opponent.moveCardToExileWithInfo(card, source.getSourceId(), sourceObject.getName(), source.getSourceId(), game, Zone.LIBRARY, true);
+                    opponent.moveCardToExileWithInfo(card, source.getSourceId(), sourceObject.getName(), source, game, Zone.LIBRARY, true);
                     ContinuousEffect effect = new KnacksawCliqueCastFromExileEffect();
                     effect.setTargetPointer(new FixedTarget(card.getId()));
                     game.addEffect(effect, source);

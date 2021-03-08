@@ -74,6 +74,68 @@ public class TablesPanel extends javax.swing.JPanel {
     public static final double REFRESH_TIMEOUTS_INCREASE_FACTOR = 0.8; // can increase timeouts by 80% (0.8)
 
     private final TablesTableModel tableModel;
+    
+    private static final TableInfo tableInfo = new TableInfo() // currently only the hint texts are used from this object
+            .addColumn(0, 35, Icon.class, "M/T", 
+                    "<b>Basic table type</b><br>"
+                            + "A symbol for match or a tournament table")
+            .addColumn(1, 150, String.class, "Deck Type", null)
+            .addColumn(2, 100, String.class, "Name", 
+                    "<b>Table name</b><br>"
+                            + "A name for the table the table creator has set")
+            .addColumn(3, 50, String.class, "Seats", 
+                    "<b>Seats of the table</b>"
+                            + "<br>Occupied Seats / Total number of seats ")
+            .addColumn(4, 120, String.class, "Owner / Players",
+                    "<b>Joined players</b><br>"
+                            + "Owner = First name is the creator of the table<br>"
+                            + "Players = Names of the other players joint to the table")
+            
+            .addColumn(5, 180, String.class, "Game Type",null)
+            .addColumn(6, 80, String.class, "Info",
+                    "<b>Match / Tournament settings</b>"
+                            + "<br>Wins = Number of games you need to wins to win a match"  
+                            + "<br>Time = Time limit per player"  
+                            + "<br>FM: = Numbers of freee mulligans"
+                            + "<br>Constr.: = Construction time for limited tournament formats"                              
+                            + "<br>RB = Rollback allowed"                            
+                            + "<br>PC = Planechase active"                            
+                            + "<br>SP = Spectators allowed"
+                            + "<br>Rng: Range of visibility for multiplayer matches"
+            )
+            .addColumn(7, 120, String.class, "Status",
+                    "<b>Table status</b><br>"
+                            + "Information about the progress of the match or tournament")
+            .addColumn(8, 80, String.class, "Password",
+                    "<b>Password set</b><br>" 
+                            + "Yes = You need the password of this table<br>"
+                            + "to join the table")
+            .addColumn(9, 60, Date.class, "Created / Started", 
+                    "<b>Creation and starting time</b><br>"
+                            + "When was the table created<br>"
+                            + "when started the match or tournament")
+            .addColumn(10, 40, SkillLevel.class, "Skill Level", 
+                    "<b>Defined skill level</b><br>"
+                            + "Expectations of the table creator<br>"
+                            + "on the level of experience of the joining players")
+            .addColumn(11, 40, String.class, "Rated", 
+                    "<b>Rating status</b><br>"
+                            + "Yes = The matches of this table are rated")
+            .addColumn(12, 60, String.class, "Quit %", 
+                    "<b>Needed maximal quit ratio</b><br>"
+                            + "Your calculated quit ratio of your past games"
+                            + "<br>needs to be below or equal to the given value"
+                            + "<br>to be able to join to the table")
+            .addColumn(13, 40, String.class, "Min Rating", 
+                    "<b>Rating restriction</b><br>"
+                            + "You need at least this rating"
+                            + "<br> to be able to join the table")
+            .addColumn(14, 80, String.class, "Action", 
+                    "<b>Actions related to this table</b><br>"
+                            + "Depending on the state of the table<br>"
+                            + "the possible actions you can take<br>"
+                            + "are shown here as buttons");
+    
     private final MatchesTableModel matchesModel;
     private UUID roomId;
     private UpdateTablesTask updateTablesTask;
@@ -95,7 +157,7 @@ public class TablesPanel extends javax.swing.JPanel {
     final JToggleButton[] filterButtons;
 
     // time formater
-    private PrettyTime timeFormater = new PrettyTime(Locale.ENGLISH);
+    private final PrettyTime timeFormater = new PrettyTime(Locale.ENGLISH);
 
     // time ago renderer
     TableCellRenderer timeAgoCellRenderer = new DefaultTableCellRenderer() {
@@ -127,7 +189,7 @@ public class TablesPanel extends javax.swing.JPanel {
 
     // datetime render
     TableCellRenderer datetimeCellRenderer = new DefaultTableCellRenderer() {
-        DateFormat datetimeFormater = new SimpleDateFormat("HH:mm:ss");
+        final DateFormat datetimeFormater = new SimpleDateFormat("HH:mm:ss");
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -147,8 +209,8 @@ public class TablesPanel extends javax.swing.JPanel {
     TableCellRenderer skillCellRenderer = new DefaultTableCellRenderer() {
 
         // base panel to render
-        private JPanel renderPanel = new JPanel();
-        private ImageIcon skillIcon = new ImageIcon(this.getClass().getResource("/info/yellow_star_16.png"));
+        private final JPanel renderPanel = new JPanel();
+        private final ImageIcon skillIcon = new ImageIcon(this.getClass().getResource("/info/yellow_star_16.png"));
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -181,7 +243,7 @@ public class TablesPanel extends javax.swing.JPanel {
     // seats render
     TableCellRenderer seatsCellRenderer = new DefaultTableCellRenderer() {
 
-        JLabel greenLabel = new JLabel();
+        final JLabel greenLabel = new JLabel();
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -230,7 +292,7 @@ public class TablesPanel extends javax.swing.JPanel {
      */
     public TablesPanel() {
 
-        tableModel = new TablesTableModel();
+        tableModel = new TablesTableModel();        
         matchesModel = new MatchesTableModel();
         gameChooser = new GameChooser();
 
@@ -247,13 +309,15 @@ public class TablesPanel extends javax.swing.JPanel {
 
         // 1. TABLE CURRENT
         tableTables.createDefaultColumnsFromModel();
+        ((MageTable)tableTables).setTableInfo(tableInfo);
+        
         activeTablesSorter = new MageTableRowSorter(tableModel) {
             @Override
             public void toggleSortOrder(int column) {
                 // special sort for created and seat column
                 if (column == TablesTableModel.COLUMN_CREATED || column == TablesTableModel.COLUMN_SEATS) {
                     List<? extends SortKey> sortKeys = getSortKeys();
-                    if (!sortKeys.isEmpty() && sortKeys.size() == 2) {
+                    if (sortKeys.size() == 2) {
                         // clear sort on second click
                         setSortKeys(null);
                     } else {
@@ -582,6 +646,7 @@ public class TablesPanel extends javax.swing.JPanel {
         Dimension newDimension = new Dimension((int) jPanelBottom.getPreferredSize().getWidth(), GUISizeHelper.menuFont.getSize() + 28);
         jPanelBottom.setMinimumSize(newDimension);
         jPanelBottom.setPreferredSize(newDimension);
+        buttonWhatsNew.setFont(GUISizeHelper.menuFont);
         buttonNextMessage.setFont(GUISizeHelper.menuFont);
         labelMessageHeader.setFont(new Font(GUISizeHelper.menuFont.getName(), Font.BOLD, GUISizeHelper.menuFont.getSize()));
         labelMessageText.setFont(GUISizeHelper.menuFont);
@@ -693,6 +758,7 @@ public class TablesPanel extends javax.swing.JPanel {
         if (SessionHandler.getSession() != null) {
             btnQuickStartDuel.setVisible(SessionHandler.isTestMode());
             btnQuickStartCommander.setVisible(SessionHandler.isTestMode());
+            btnQuickStartMCTS.setVisible(SessionHandler.isTestMode());
             gameChooser.init();
             chatRoomId = SessionHandler.getRoomChatId(roomId).orElse(null);
         }
@@ -791,7 +857,7 @@ public class TablesPanel extends javax.swing.JPanel {
             typeFilterList.add(RowFilter.regexFilter("Constructed", TablesTableModel.COLUMN_GAME_TYPE));
         }
         if (btnTypeTourneyLimited.isSelected()) {
-            typeFilterList.add(RowFilter.regexFilter("Booster|Sealed", TablesTableModel.COLUMN_GAME_TYPE));
+            typeFilterList.add(RowFilter.regexFilter("Booster|Sealed|Jumpstart", TablesTableModel.COLUMN_GAME_TYPE));
         }
 
         // format
@@ -800,25 +866,25 @@ public class TablesPanel extends javax.swing.JPanel {
             formatFilterList.add(RowFilter.regexFilter("^Constructed.*Block", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatStandard.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Constructed - Standard|^Custom Standard", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Constructed - Standard", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatModern.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Constructed - Modern|^Custom Modern", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Constructed - Modern", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatPioneer.isSelected()) {
             formatFilterList.add(RowFilter.regexFilter("^Constructed - Pioneer", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatLegacy.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Constructed - Legacy|^Custom Eternal", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Constructed - Legacy", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatVintage.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Constructed - Vintage|^Custom Eternal", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Constructed - Vintage", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatPremodern.isSelected()) {
             formatFilterList.add(RowFilter.regexFilter("^Constructed - Premodern", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatCommander.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Centurion Commander|^Penny Dreadful Commander|^Freeform Commander|^Freeform Unlimited Commander|^MTGO 1v1 Commander|^Duel Brawl|^Brawl|^Elder Custom Highlander|^Custom Brawl", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Commander|^Duel Commander|^Centurion Commander|^Penny Dreadful Commander|^Freeform Commander|^Freeform Unlimited Commander|^MTGO 1v1 Commander|^Duel Brawl|^Brawl", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatTinyLeader.isSelected()) {
             formatFilterList.add(RowFilter.regexFilter("^Tiny", TablesTableModel.COLUMN_DECK_TYPE));
@@ -830,7 +896,7 @@ public class TablesPanel extends javax.swing.JPanel {
             formatFilterList.add(RowFilter.regexFilter("^Limited", TablesTableModel.COLUMN_DECK_TYPE));
         }
         if (btnFormatOther.isSelected()) {
-            formatFilterList.add(RowFilter.regexFilter("^Momir Basic|^Constructed - Pauper|^Constructed - Frontier|^Constructed - Extended|^Constructed - Eternal|^Constructed - Historical|^Constructed - Super|^Constructed - Freeform|^Australian Highlander|^Canadian Highlander|^Constructed - Old|^Custom Pauper", TablesTableModel.COLUMN_DECK_TYPE));
+            formatFilterList.add(RowFilter.regexFilter("^Momir Basic|^Constructed - Pauper|^Constructed - Frontier|^Constructed - Extended|^Constructed - Eternal|^Constructed - Historical|^Constructed - Super|^Constructed - Freeform|^Australian Highlander|^European Highlander|^Canadian Highlander|^Constructed - Old|^Constructed - Historic", TablesTableModel.COLUMN_DECK_TYPE));
         }
 
         // skill
@@ -870,7 +936,7 @@ public class TablesPanel extends javax.swing.JPanel {
 
         // Hide games of ignored players
         java.util.List<RowFilter<Object, Object>> ignoreListFilterList = new ArrayList<>();
-        String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
+        String serverAddress = SessionHandler.getSession().getServerHostname().orElse("");
         final Set<String> ignoreListCopy = IgnoreList.getIgnoredUsers(serverAddress);
         if (!ignoreListCopy.isEmpty()) {
             ignoreListFilterList.add(new RowFilter<Object, Object>() {
@@ -987,6 +1053,7 @@ public class TablesPanel extends javax.swing.JPanel {
         btnPassword = new javax.swing.JToggleButton();
         btnQuickStartDuel = new javax.swing.JButton();
         btnQuickStartCommander = new javax.swing.JButton();
+        btnQuickStartMCTS = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanelTables = new javax.swing.JPanel();
         jSplitPaneTables = new javax.swing.JSplitPane();
@@ -1391,7 +1458,7 @@ public class TablesPanel extends javax.swing.JPanel {
 
         btnFormatOther.setSelected(true);
         btnFormatOther.setText("Other");
-        btnFormatOther.setToolTipText("Other formats (Freeform, Pauper, Extended, etc.)");
+        btnFormatOther.setToolTipText("Other formats (Freeform, Pauper, Historic, Extended, etc.)");
         btnFormatOther.setFocusPainted(false);
         btnFormatOther.setFocusable(false);
         btnFormatOther.setRequestFocusEnabled(false);
@@ -1456,6 +1523,13 @@ public class TablesPanel extends javax.swing.JPanel {
             }
         });
 
+        btnQuickStartMCTS.setText("Quick start MCTS");
+        btnQuickStartMCTS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnQuickStartMCTSActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanelTopLayout = new javax.swing.GroupLayout(jPanelTop);
         jPanelTop.setLayout(jPanelTopLayout);
         jPanelTopLayout.setHorizontalGroup(
@@ -1471,9 +1545,12 @@ public class TablesPanel extends javax.swing.JPanel {
                                         .addComponent(filterBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(btnQuickStartDuel)
+                                        .addGroup(jPanelTopLayout.createSequentialGroup()
+                                                .addComponent(btnQuickStartDuel)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(btnQuickStartMCTS))
                                         .addComponent(btnQuickStartCommander))
-                                .addContainerGap(667, Short.MAX_VALUE))
+                                .addContainerGap(540, Short.MAX_VALUE))
         );
         jPanelTopLayout.setVerticalGroup(
                 jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1486,7 +1563,11 @@ public class TablesPanel extends javax.swing.JPanel {
                                         .addGroup(jPanelTopLayout.createSequentialGroup()
                                                 .addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(filterBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(btnQuickStartDuel))
+                                                        .addGroup(jPanelTopLayout.createSequentialGroup()
+                                                                .addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                        .addComponent(btnQuickStartDuel)
+                                                                        .addComponent(btnQuickStartMCTS))
+                                                                .addGap(0, 0, Short.MAX_VALUE)))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addGroup(jPanelTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addComponent(filterBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1553,7 +1634,7 @@ public class TablesPanel extends javax.swing.JPanel {
         jPanelBottom.setPreferredSize(new java.awt.Dimension(516, 37));
         jPanelBottom.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        buttonWhatsNew.setText("Show that's new");
+        buttonWhatsNew.setText("Show what's new");
         buttonWhatsNew.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         buttonWhatsNew.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         buttonWhatsNew.setOpaque(false);
@@ -1596,7 +1677,7 @@ public class TablesPanel extends javax.swing.JPanel {
         newTournamentDialog.showDialog(roomId);
     }//GEN-LAST:event_btnNewTournamentActionPerformed
 
-    private void createTestGame(String gameName, String gameType) {
+    private void createTestGame(String gameName, String gameType, boolean useMonteCarloAI) {
         TableView table;
         try {
             String testDeckFile = "test.dck";
@@ -1610,11 +1691,12 @@ public class TablesPanel extends javax.swing.JPanel {
                         + "5 Mountain" + System.lineSeparator()
                         + "5 Plains");
             }
-            DeckCardLists testDeck = DeckImporter.importDeckFromFile(testDeckFile);
+            DeckCardLists testDeck = DeckImporter.importDeckFromFile(testDeckFile, false);
 
+            PlayerType aiType = useMonteCarloAI ? PlayerType.COMPUTER_MONTE_CARLO : PlayerType.COMPUTER_MAD;
             MatchOptions options = new MatchOptions(gameName, gameType, false, 2);
             options.getPlayerTypes().add(PlayerType.HUMAN);
-            options.getPlayerTypes().add(PlayerType.COMPUTER_MAD);
+            options.getPlayerTypes().add(aiType);
             options.setDeckType("Limited");
             options.setAttackOption(MultiplayerAttackOption.LEFT);
             options.setRange(RangeOfInfluence.ALL);
@@ -1625,12 +1707,12 @@ public class TablesPanel extends javax.swing.JPanel {
             options.setRollbackTurnsAllowed(true);
             options.setQuitRatio(100);
             options.setMinimumRating(0);
-            String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
+            String serverAddress = SessionHandler.getSession().getServerHostname().orElse("");
             options.setBannedUsers(IgnoreList.getIgnoredUsers(serverAddress));
             table = SessionHandler.createTable(roomId, options);
 
             SessionHandler.joinTable(roomId, table.getTableId(), "Human", PlayerType.HUMAN, 1, testDeck, "");
-            SessionHandler.joinTable(roomId, table.getTableId(), "Computer", PlayerType.COMPUTER_MAD, 5, testDeck, "");
+            SessionHandler.joinTable(roomId, table.getTableId(), "Computer", aiType, 5, testDeck, "");
             SessionHandler.startMatch(roomId, table.getTableId());
         } catch (HeadlessException ex) {
             handleError(ex);
@@ -1638,7 +1720,7 @@ public class TablesPanel extends javax.swing.JPanel {
     }
 
     private void btnQuickStartDuelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuickStartDuelActionPerformed
-        createTestGame("Test duel", "Two Player Duel");
+        createTestGame("Test duel", "Two Player Duel", false);
     }//GEN-LAST:event_btnQuickStartDuelActionPerformed
 
     private void btnNewTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewTableActionPerformed
@@ -1677,8 +1759,12 @@ public class TablesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_buttonWhatsNewActionPerformed
 
     private void btnQuickStartCommanderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuickStartCommanderActionPerformed
-        createTestGame("Test commander", "Commander Two Player Duel");
+        createTestGame("Test commander", "Commander Two Player Duel", false);
     }//GEN-LAST:event_btnQuickStartCommanderActionPerformed
+
+    private void btnQuickStartMCTSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuickStartMCTSActionPerformed
+        createTestGame("Test Monte Carlo AI", "Two Player Duel", true);
+    }//GEN-LAST:event_btnQuickStartMCTSActionPerformed
 
     private void handleError(Exception ex) {
         LOGGER.fatal("Error loading deck: ", ex);
@@ -1691,9 +1777,9 @@ public class TablesPanel extends javax.swing.JPanel {
     private javax.swing.JToggleButton btnFormatLegacy;
     private javax.swing.JToggleButton btnFormatLimited;
     private javax.swing.JToggleButton btnFormatModern;
-    private javax.swing.JToggleButton btnFormatPioneer;
     private javax.swing.JToggleButton btnFormatOathbreaker;
     private javax.swing.JToggleButton btnFormatOther;
+    private javax.swing.JToggleButton btnFormatPioneer;
     private javax.swing.JToggleButton btnFormatPremodern;
     private javax.swing.JToggleButton btnFormatStandard;
     private javax.swing.JToggleButton btnFormatTinyLeader;
@@ -1704,6 +1790,7 @@ public class TablesPanel extends javax.swing.JPanel {
     private javax.swing.JToggleButton btnPassword;
     private javax.swing.JButton btnQuickStartCommander;
     private javax.swing.JButton btnQuickStartDuel;
+    private javax.swing.JButton btnQuickStartMCTS;
     private javax.swing.JToggleButton btnRated;
     private javax.swing.JToggleButton btnSkillBeginner;
     private javax.swing.JToggleButton btnSkillCasual;

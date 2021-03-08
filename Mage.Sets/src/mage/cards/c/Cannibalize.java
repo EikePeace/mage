@@ -31,7 +31,7 @@ public final class Cannibalize extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanentSameController(2, 2, StaticFilters.FILTER_PERMANENT_CREATURE, false));
     }
 
-    public Cannibalize(final Cannibalize card) {
+    private Cannibalize(final Cannibalize card) {
         super(card);
     }
 
@@ -69,10 +69,10 @@ class CannibalizeEffect extends OneShotEffect {
                 if (creature != null) {
                     if ((count == 0 && controller.chooseUse(Outcome.Exile, "Exile " + creature.getLogName() + '?', source, game))
                             || (count == 1 && !exileDone)) {
-                        controller.moveCardToExileWithInfo(creature, null, "", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                        controller.moveCardToExileWithInfo(creature, null, "", source, game, Zone.BATTLEFIELD, true);
                         exileDone = true;
                     } else {
-                        creature.addCounters(CounterType.P1P1.createInstance(2), source, game);
+                        creature.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
                         game.informPlayers("Added two +1/+1 counters on " + creature.getLogName());
                     }
                     count++;

@@ -30,7 +30,7 @@ public final class WildDogs extends CardImpl {
 
     public WildDogs(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(2);
         this.toughness = new MageInt(1);
 
@@ -41,7 +41,7 @@ public final class WildDogs extends CardImpl {
         this.addAbility(new CyclingAbility(new ManaCostsImpl("{2}")));
     }
 
-    public WildDogs(final WildDogs card) {
+    private WildDogs(final WildDogs card) {
         super(card);
     }
 

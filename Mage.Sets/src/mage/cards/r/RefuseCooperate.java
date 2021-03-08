@@ -38,7 +38,7 @@ public final class RefuseCooperate extends SplitCard {
         getRightHalfCard().getSpellAbility().addTarget(new TargetSpell(new FilterInstantOrSorcerySpell()));
     }
 
-    public RefuseCooperate(final RefuseCooperate card) {
+    private RefuseCooperate(final RefuseCooperate card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class RefuseEffect extends OneShotEffect {
             if (spell != null) {
                 Player spellController = game.getPlayer(spell.getControllerId());
                 if (spellController != null) {
-                    spellController.damage(spell.getConvertedManaCost(), source.getSourceId(), game);
+                    spellController.damage(spell.getConvertedManaCost(), source.getSourceId(), source, game);
                     return true;
                 }
             }

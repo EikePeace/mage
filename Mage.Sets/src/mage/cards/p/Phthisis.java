@@ -34,7 +34,7 @@ public final class Phthisis extends CardImpl {
         this.addAbility(new SuspendAbility(5, new ManaCostsImpl("{1}{B}"), this));
     }
 
-    public Phthisis(final Phthisis card) {
+    private Phthisis(final Phthisis card) {
         super(card);
     }
 
@@ -66,10 +66,10 @@ class PhthisisEffect extends OneShotEffect {
         if (creature != null) {
             Player controller = game.getPlayer(creature.getControllerId());
             if (controller != null) {
-                int lifeLoss = CardUtil.addWithOverflowCheck(creature.getPower().getValue(), creature.getToughness().getValue());
-                creature.destroy(source.getSourceId(), game, false);
+                int lifeLoss = CardUtil.overflowInc(creature.getPower().getValue(), creature.getToughness().getValue());
+                creature.destroy(source, game, false);
                 // the life loss happens also if the creature is indestructible or regenerated (legal targets)
-                controller.loseLife(lifeLoss, game, false);
+                controller.loseLife(lifeLoss, game, source, false);
                 return true;
             }
         }

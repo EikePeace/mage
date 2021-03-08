@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.abilities.common.AttacksTriggeredAbility;
@@ -12,8 +11,6 @@ import mage.abilities.common.EndOfCombatTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DontUntapInControllersNextUntapStepTargetEffect;
-import mage.abilities.effects.common.TapAllEffect;
-import mage.abilities.effects.common.TapTargetEffect;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.constants.Duration;
 import mage.constants.Outcome;
@@ -52,7 +49,7 @@ public final class JovensFerrets extends CardImpl {
         this.addAbility(eocAbility);
     }
 
-    public JovensFerrets(final JovensFerrets card) {
+    private JovensFerrets(final JovensFerrets card) {
         super(card);
     }
 
@@ -93,7 +90,7 @@ class JovensFerretsEffect extends OneShotEffect {
                     }
                 }
                 for (Permanent creature : toTap) {
-                    creature.tap(game);
+                    creature.tap(source, game);
                     DontUntapInControllersNextUntapStepTargetEffect effect = new DontUntapInControllersNextUntapStepTargetEffect();
                     effect.setTargetPointer(new FixedTarget(creature.getId()));
                     game.addEffect(effect, source);

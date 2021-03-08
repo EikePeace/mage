@@ -12,7 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -35,7 +34,7 @@ public final class OtherworldlyOutburst extends CardImpl {
         this.getSpellAbility().addEffect(new OtherworldlyOutburstEffect());
     }
 
-    public OtherworldlyOutburst(final OtherworldlyOutburst card) {
+    private OtherworldlyOutburst(final OtherworldlyOutburst card) {
         super(card);
     }
 
@@ -84,7 +83,7 @@ class OtherworldlyOutburstDelayedTriggeredAbility extends DelayedTriggeredAbilit
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

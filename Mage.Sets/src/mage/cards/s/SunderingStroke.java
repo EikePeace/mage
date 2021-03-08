@@ -32,7 +32,7 @@ public final class SunderingStroke extends CardImpl {
         ));
         this.getSpellAbility().addTarget(new TargetAnyTargetAmount(7, 3));
         this.getSpellAbility().addHint(new StaticHint(
-                "(You have to choose how 7 damage is divided even if you spend seven red mana)"
+                "(You have to choose how 7 damage is divided even if you spend seven red mana.)"
         ));
     }
 
@@ -51,6 +51,6 @@ enum SunderingStrokeCondtition implements Condition {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        return source.getManaCostsToPay().getPayment().getColor(ColoredManaSymbol.R) >= 6;
+        return source.getManaCostsToPay().getUsedManaToPay().getColor(ColoredManaSymbol.R) >= 6;
     }
 }

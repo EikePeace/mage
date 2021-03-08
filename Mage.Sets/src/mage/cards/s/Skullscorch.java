@@ -27,7 +27,7 @@ public final class Skullscorch extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Skullscorch(final Skullscorch card) {
+    private Skullscorch(final Skullscorch card) {
         super(card);
     }
 
@@ -41,7 +41,7 @@ class SkullscorchDiscardEffect extends OneShotEffect {
 
     public SkullscorchDiscardEffect() {
         super(Outcome.DrawCard);
-        staticText = "Target player discards two cards at random unless that player has {source} deal 4 damage to them";
+        staticText = "Target player discards two cards at random unless that player has {this} deal 4 damage to them";
     }
 
     public SkullscorchDiscardEffect(final SkullscorchDiscardEffect effect) {
@@ -71,11 +71,11 @@ class SkullscorchDiscardEffect extends OneShotEffect {
             if (player != null) {
                 if (player.chooseUse(Outcome.Detriment, "Have " + spell.getLogName() + " deal 4 damage to you?", source, game)) {
                     discardCards = false;
-                    player.damage(4, source.getSourceId(), game);
+                    player.damage(4, source.getSourceId(), source, game);
                     game.informPlayers(player.getLogName() + " has " + spell.getLogName() + " deal 4 to them");
                 }
                 if (discardCards) {
-                    player.discard(2, true, source, game);
+                    player.discard(2, true, false, source, game);
                 }
             }
             return discardCards;

@@ -32,7 +32,7 @@ public final class HighPriestOfPenance extends CardImpl {
         this.addAbility(new HighPriestOfPenanceTriggeredAbility());
     }
 
-    public HighPriestOfPenance(final HighPriestOfPenance card) {
+    private HighPriestOfPenance(final HighPriestOfPenance card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class HighPriestOfPenanceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

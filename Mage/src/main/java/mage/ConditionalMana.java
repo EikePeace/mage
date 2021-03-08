@@ -17,7 +17,7 @@ import java.util.UUID;
 /**
  * @author nantuko
  */
-public class ConditionalMana extends Mana implements Serializable {
+public class ConditionalMana extends Mana implements Serializable, Emptiable {
 
     /**
      * Conditions that should be met (all or any depending on comparison scope)
@@ -52,7 +52,7 @@ public class ConditionalMana extends Mana implements Serializable {
 
     public ConditionalMana(final ConditionalMana conditionalMana) {
         super(conditionalMana);
-        conditions = conditionalMana.conditions;
+        conditions.addAll(conditionalMana.conditions);
         scope = conditionalMana.scope;
         staticText = conditionalMana.staticText;
         manaProducerId = conditionalMana.manaProducerId;
@@ -65,6 +65,10 @@ public class ConditionalMana extends Mana implements Serializable {
 
     public void setComparisonScope(Filter.ComparisonScope scope) {
         this.scope = scope;
+    }
+
+    public List<Condition> getConditions() {
+        return conditions;
     }
 
     public boolean apply(Ability ability, Game game, UUID manaProducerId, Cost costToPay) {
@@ -109,25 +113,25 @@ public class ConditionalMana extends Mana implements Serializable {
             return;
         }
         if (filter.isBlack()) {
-            black = 0;
+            black.clear();
         }
         if (filter.isBlue()) {
-            blue = 0;
+            blue.clear();
         }
         if (filter.isWhite()) {
-            white = 0;
+            white.clear();
         }
         if (filter.isGreen()) {
-            green = 0;
+            green.clear();
         }
         if (filter.isRed()) {
-            red = 0;
+            red.clear();
         }
         if (filter.isColorless()) {
-            colorless = 0;
+            colorless.clear();
         }
         if (filter.isGeneric()) {
-            generic = 0;
+            generic.clear();
         }
     }
 
@@ -150,51 +154,69 @@ public class ConditionalMana extends Mana implements Serializable {
     public void clear(ManaType manaType) {
         switch (manaType) {
             case BLACK:
-                black = 0;
+                black.clear();
                 break;
             case BLUE:
-                blue = 0;
+                blue.clear();
                 break;
             case GREEN:
-                green = 0;
+                green.clear();
                 break;
             case RED:
-                red = 0;
+                red.clear();
                 break;
             case WHITE:
-                white = 0;
+                white.clear();
                 break;
             case GENERIC:
-                generic = 0;
+                generic.clear();
                 break;
             case COLORLESS:
-                colorless = 0;
+                colorless.clear();
                 break;
         }
+    }
+
+    @Override
+    public void add(Mana mana) {
+        if (mana instanceof ConditionalMana) {
+            for (Condition condition : ((ConditionalMana) mana).getConditions()) {
+                addCondition(condition);
+            }
+        }
+        super.add(mana);
+    }
+
+    public String getConditionString() {
+        String condStr = "[";
+        for (Condition condition : conditions) {
+            condStr += condition.getManaText();
+        }
+        return condStr + "]";
     }
 
     public void add(ManaType manaType, int amount) {
         switch (manaType) {
             case BLACK:
-                black += amount;
+                black.incrementAmount(amount, false);
                 break;
             case BLUE:
-                blue += amount;
+                blue.incrementAmount(amount, false);
                 break;
             case GREEN:
-                green += amount;
+                green.incrementAmount(amount, false);
                 break;
             case RED:
-                red += amount;
+                red.incrementAmount(amount, false);
                 break;
             case WHITE:
-                white += amount;
+                white.incrementAmount(amount, false);
                 break;
             case COLORLESS:
-                colorless += amount;
+                colorless.incrementAmount(amount, false);
                 break;
             case GENERIC:
-                generic += amount;
+                generic.incrementAmount(amount, false);
                 break;
         }
     }

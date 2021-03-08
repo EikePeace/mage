@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPlayer;
 
 /**
@@ -49,7 +49,7 @@ public final class MoggBombers extends CardImpl {
 
     }
 
-    public MoggBombers(final MoggBombers card) {
+    private MoggBombers(final MoggBombers card) {
         super(card);
     }
 

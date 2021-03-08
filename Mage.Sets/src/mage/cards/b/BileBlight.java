@@ -28,7 +28,7 @@ public final class BileBlight extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public BileBlight(final BileBlight card) {
+    private BileBlight(final BileBlight card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class BileBlightEffect extends BoostAllEffect {
                 } else {
                     String name = target.getName();
                     for (Permanent perm : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
-                        if (CardUtil.haveSameNames(perm.getName(), name)) {
+                        if (CardUtil.haveSameNames(perm, name, game)) {
                             affectedObjectList.add(new MageObjectReference(perm, game));
                         }
                     }

@@ -2,7 +2,7 @@ package mage.cards.t;
 
 import mage.MageInt;
 import mage.abilities.TriggeredAbilityImpl;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveTargetEffect;
+import mage.abilities.effects.common.MillCardsTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -59,9 +59,8 @@ class ToweringWaveMysticTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -70,13 +69,12 @@ class ToweringWaveMysticTriggeredAbility extends TriggeredAbilityImpl {
             return false;
         }
         this.getEffects().clear();
-        this.addEffect(new PutTopCardOfLibraryIntoGraveTargetEffect(event.getAmount()));
+        this.addEffect(new MillCardsTargetEffect(event.getAmount()));
         return true;
     }
 
     @Override
     public String getRule() {
-        return "Whenever {this} deals damage, target player puts that many cards " +
-                "from the top of their library into their graveyard.";
+        return "Whenever {this} deals damage, target player mills that many cards.";
     }
 }

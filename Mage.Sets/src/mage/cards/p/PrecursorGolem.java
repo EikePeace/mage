@@ -44,7 +44,7 @@ public final class PrecursorGolem extends CardImpl {
         this.addAbility(new PrecursorGolemCopyTriggeredAbility());
     }
 
-    public PrecursorGolem(final PrecursorGolem card) {
+    private PrecursorGolem(final PrecursorGolem card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class PrecursorGolemCopyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

@@ -6,7 +6,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.costs.common.PutTopCardOfYourLibraryToGraveyardCost;
+import mage.abilities.costs.common.MillCardsCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DontUntapInControllersNextUntapStepSourceEffect;
@@ -38,8 +38,8 @@ public final class DeepSpawn extends CardImpl {
         // Trample
         this.addAbility(TrampleAbility.getInstance());
         // At the beginning of your upkeep, sacrifice Deep Spawn unless you put the top two cards of your library into your graveyard.
-        Effect effect = new SacrificeSourceUnlessPaysEffect(new PutTopCardOfYourLibraryToGraveyardCost(2));
-        effect.setText("sacrifice {this} unless you put the top two cards of your library into your graveyard");
+        Effect effect = new SacrificeSourceUnlessPaysEffect(new MillCardsCost(2));
+        effect.setText("sacrifice {this} unless you mill two cards");
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(effect, TargetController.YOU, false));
         // {U}: Deep Spawn gains shroud until end of turn and doesn't untap during your next untap step. Tap Deep Spawn.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainAbilitySourceEffect(
@@ -51,7 +51,7 @@ public final class DeepSpawn extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DeepSpawn(final DeepSpawn card) {
+    private DeepSpawn(final DeepSpawn card) {
         super(card);
     }
 

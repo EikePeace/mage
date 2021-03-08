@@ -12,7 +12,7 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInExile;
@@ -39,7 +39,7 @@ public final class PullFromEternity extends CardImpl {
 
     }
 
-    public PullFromEternity(final PullFromEternity card) {
+    private PullFromEternity(final PullFromEternity card) {
         super(card);
     }
 

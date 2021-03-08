@@ -14,7 +14,7 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -45,7 +45,7 @@ public final class FangOfThePack extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FangOfThePack(final FangOfThePack card) {
+    private FangOfThePack(final FangOfThePack card) {
         super(card);
     }
 

@@ -42,7 +42,7 @@ public final class GlintEyeNephilim extends CardImpl {
 
     }
 
-    public GlintEyeNephilim(final GlintEyeNephilim card) {
+    private GlintEyeNephilim(final GlintEyeNephilim card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class GlintEyeNephilimEffect extends OneShotEffect {
         if (amount > 0) {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
-                controller.drawCards(amount, game);
+                controller.drawCards(amount, source, game);
                 return true;
             }
         }

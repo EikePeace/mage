@@ -2,9 +2,12 @@
 package mage.abilities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
+
 import mage.abilities.keyword.ProtectionAbility;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.constants.Zone;
@@ -87,6 +90,7 @@ public interface Abilities<T extends Ability> extends List<T>, Serializable {
      *
      * @param zone The {@link Zone} to search for
      * {@link ActivatedManaAbilityImpl mana abilities}.
+     * @param playerId The id of the player to check availability for
      * @return All {@link ActivatedManaAbilityImpl mana abilities} for the given
      * {@link Zone} that can be used.
      *
@@ -94,7 +98,7 @@ public interface Abilities<T extends Ability> extends List<T>, Serializable {
      * @see mage.players.PlayerImpl#getManaAvailable(mage.game.Game)
      * @see mage.players.PlayerImpl#getAvailableManaProducers(mage.game.Game)
      */
-    Abilities<ActivatedManaAbilityImpl> getAvailableActivatedManaAbilities(Zone zone, Game game);
+    Abilities<ActivatedManaAbilityImpl> getAvailableActivatedManaAbilities(Zone zone, UUID playerId, Game game);
 
     /**
      * Retrieves all {@link StaticAbility static abilities} in the given
@@ -255,13 +259,20 @@ public interface Abilities<T extends Ability> extends List<T>, Serializable {
     boolean containsAll(Abilities<T> abilities);
 
     /**
-     * Searches this set of abilities for the existence of the give class
+     * Searches this set of abilities for the existence of the given class
+     * Warning, it doesn't work with inherited classes (e.g. it's not equal to instanceOf command)
      *
      * @param classObject
      * @return True if the passed in class is also in this set of abilities.
      */
     boolean containsClass(Class classObject);
 
+    /**
+     * Returns true if one or more of the abilities are activated mana abilities with the pollDependant flag set to true.
+     * @return 
+     */
+    boolean hasPoolDependantAbilities();
+    
     /**
      * Copies this set of abilities. This copy should be new instances of all
      * the contained abilities.
@@ -271,4 +282,13 @@ public interface Abilities<T extends Ability> extends List<T>, Serializable {
     Abilities<T> copy();
 
     String getValue();
+
+    @Deprecated // use permanent.removeAbility instead
+    boolean remove(Object o);
+
+    @Deprecated // use permanent.removeAbility instead
+    boolean removeAll(Collection<?> c);
+
+    @Deprecated // use permanent.removeAbility instead
+    boolean removeIf(Predicate<? super T> filter);
 }

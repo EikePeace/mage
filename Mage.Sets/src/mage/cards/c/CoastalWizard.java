@@ -16,7 +16,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -49,7 +49,7 @@ public final class CoastalWizard extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CoastalWizard(final CoastalWizard card) {
+    private CoastalWizard(final CoastalWizard card) {
         super(card);
     }
 

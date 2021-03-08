@@ -1,8 +1,6 @@
 package mage.game.stack;
 
-import mage.MageInt;
-import mage.MageObject;
-import mage.ObjectColor;
+import mage.*;
 import mage.abilities.*;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostAdjuster;
@@ -14,11 +12,14 @@ import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
 import mage.abilities.hint.Hint;
+import mage.abilities.icon.CardIcon;
 import mage.abilities.text.TextPart;
 import mage.cards.Card;
 import mage.cards.FrameStyle;
 import mage.constants.*;
 import mage.game.Game;
+import mage.game.events.CopiedStackObjectEvent;
+import mage.game.events.CopyStackObjectEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
@@ -27,7 +28,7 @@ import mage.target.Target;
 import mage.target.Targets;
 import mage.target.targetadjustment.TargetAdjuster;
 import mage.util.GameLog;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 import mage.watchers.Watcher;
 
 import java.util.ArrayList;
@@ -40,12 +41,12 @@ import java.util.UUID;
  */
 public class StackAbility extends StackObjImpl implements Ability {
 
-    private static EnumSet<CardType> emptyCardType = EnumSet.noneOf(CardType.class);
-    private static List<String> emptyString = new ArrayList<>();
-    private static ObjectColor emptyColor = new ObjectColor();
-    private static ManaCosts<ManaCost> emptyCost = new ManaCostsImpl<>();
-    private static Costs<Cost> emptyCosts = new CostsImpl<>();
-    private static Abilities<Ability> emptyAbilites = new AbilitiesImpl<>();
+    private static final ArrayList<CardType> emptyCardType = new ArrayList<>();
+    private static final List<String> emptyString = new ArrayList<>();
+    private static final ObjectColor emptyColor = new ObjectColor();
+    private static final ManaCosts<ManaCost> emptyCost = new ManaCostsImpl<>();
+    private static final Costs<Cost> emptyCosts = new CostsImpl<>();
+    private static final Abilities<Ability> emptyAbilites = new AbilitiesImpl<>();
 
     private final Ability ability;
     private UUID controllerId;
@@ -89,7 +90,7 @@ public class StackAbility extends StackObjImpl implements Ability {
         if (!game.isSimulation()) {
             game.informPlayers("Ability has been fizzled: " + getRule());
         }
-        counter(null, game);
+        counter(null, /*this*/ game);
         game.getStack().remove(this, game);
         return false;
     }
@@ -99,13 +100,13 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public void counter(UUID sourceId, Game game) {
+    public void counter(Ability source, Game game) {
         // zone, owner, top ignored
-        this.counter(sourceId, game, Zone.GRAVEYARD, true, ZoneDetail.TOP);
+        this.counter(source, game, Zone.GRAVEYARD, true, ZoneDetail.TOP);
     }
 
     @Override
-    public void counter(UUID sourceId, Game game, Zone zone, boolean owner, ZoneDetail zoneDetail) {
+    public void counter(Ability source, Game game, Zone zone, boolean owner, ZoneDetail zoneDetail) {
         //20100716 - 603.8
         if (ability instanceof StateTriggeredAbility) {
             ((StateTriggeredAbility) ability).counter(game);
@@ -153,13 +154,18 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public EnumSet<CardType> getCardType() {
+    public ArrayList<CardType> getCardType() {
         return emptyCardType;
     }
 
     @Override
-    public SubTypeList getSubtype(Game game) {
-        return new SubTypeList();
+    public SubTypes getSubtype() {
+        return new SubTypes();
+    }
+
+    @Override
+    public SubTypes getSubtype(Game game) {
+        return new SubTypes();
     }
 
     @Override
@@ -178,8 +184,18 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public boolean hasAbility(UUID abilityId, Game game) {
+    public Abilities<Ability> getInitAbilities() {
+        return new AbilitiesImpl<>();
+    }
+
+    @Override
+    public boolean hasAbility(Ability ability, Game game) {
         return false;
+    }
+
+    @Override
+    public ObjectColor getColor() {
+        return emptyColor;
     }
 
     @Override
@@ -204,6 +220,11 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
+    public List<String> getManaCostSymbols() {
+        return super.getManaCostSymbols();
+    }
+
+    @Override
     public MageInt getPower() {
         return MageInt.EmptyMageInt;
     }
@@ -216,6 +237,10 @@ public class StackAbility extends StackObjImpl implements Ability {
     @Override
     public int getStartingLoyalty() {
         return 0;
+    }
+
+    @Override
+    public void setStartingLoyalty(int startingLoyalty) {
     }
 
     @Override
@@ -309,6 +334,11 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
+    public Targets getAllSelectedTargets() {
+        return ability.getAllSelectedTargets();
+    }
+
+    @Override
     public void addTarget(Target target) {
     }
 
@@ -372,15 +402,6 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public Costs<Cost> getOptionalCosts() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void addOptionalCost(Cost cost) {
-    }
-
-    @Override
     public boolean checkIfClause(Game game) {
         return true;
     }
@@ -416,8 +437,8 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public boolean canChooseTarget(Game game) {
-        return ability.canChooseTarget(game);
+    public boolean canChooseTarget(Game game, UUID playerId) {
+        return ability.canChooseTarget(game, playerId);
     }
 
     @Override
@@ -467,7 +488,7 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
-    public void setAbilityWord(AbilityWord abilityWord) {
+    public Ability setAbilityWord(AbilityWord abilityWord) {
         throw new UnsupportedOperationException("Not supported.");
     }
 
@@ -573,29 +594,44 @@ public class StackAbility extends StackObjImpl implements Ability {
 
     @Override
     public StackObject createCopyOnStack(Game game, Ability source, UUID newControllerId, boolean chooseNewTargets) {
-        Ability newAbility = this.copy();
-        newAbility.newId();
-        StackAbility newStackAbility = new StackAbility(newAbility, newControllerId);
-        game.getStack().push(newStackAbility);
-        if (chooseNewTargets && !newAbility.getTargets().isEmpty()) {
-            Player controller = game.getPlayer(newControllerId);
-            Outcome outcome = newAbility.getEffects().getOutcome(newAbility);
-            if (controller.chooseUse(outcome, "Choose new targets?", source, game)) {
-                newAbility.getTargets().clearChosen();
-                newAbility.getTargets().chooseTargets(outcome, newControllerId, newAbility, false, game, false);
-            }
+        return createCopyOnStack(game, source, newControllerId, chooseNewTargets, 1);
+    }
+
+    public StackObject createCopyOnStack(Game game, Ability source, UUID newControllerId, boolean chooseNewTargets, int amount) {
+        StackAbility newStackAbility = null;
+        GameEvent gameEvent = new CopyStackObjectEvent(source, this, newControllerId, amount);
+        if (game.replaceEvent(gameEvent)) {
+            return null;
         }
-        game.fireEvent(new GameEvent(GameEvent.EventType.COPIED_STACKOBJECT, newStackAbility.getId(), this.getId(), newControllerId));
+        for (int i = 0; i < gameEvent.getAmount(); i++) {
+            Ability newAbility = this.copy();
+            newAbility.newId();
+            newStackAbility = new StackAbility(newAbility, newControllerId);
+            game.getStack().push(newStackAbility);
+            if (chooseNewTargets && !newAbility.getTargets().isEmpty()) {
+                Player controller = game.getPlayer(newControllerId);
+                Outcome outcome = newAbility.getEffects().getOutcome(newAbility);
+                if (controller.chooseUse(outcome, "Choose new targets?", source, game)) {
+                    newAbility.getTargets().clearChosen();
+                    newAbility.getTargets().chooseTargets(outcome, newControllerId, newAbility, false, game, false);
+                }
+            }
+            game.fireEvent(new CopiedStackObjectEvent(this, newStackAbility, newControllerId));
+        }
         return newStackAbility;
     }
 
     @Override
-    public boolean isAllCreatureTypes() {
+    public boolean isAllCreatureTypes(Game game) {
         return false;
     }
 
     @Override
     public void setIsAllCreatureTypes(boolean value) {
+    }
+
+    @Override
+    public void setIsAllCreatureTypes(Game game, boolean value) {
     }
 
     @Override
@@ -653,6 +689,16 @@ public class StackAbility extends StackObjImpl implements Ability {
     }
 
     @Override
+    public List<CardIcon> getIcons() {
+        return this.ability.getIcons();
+    }
+
+    @Override
+    public Ability addIcon(CardIcon cardIcon) {
+        throw new IllegalArgumentException("Stack ability is not supports icon adding");
+    }
+
+    @Override
     public Ability addCustomOutcome(Outcome customOutcome) {
         throw new IllegalArgumentException("Stack ability is not supports custom outcome adding");
     }
@@ -661,4 +707,28 @@ public class StackAbility extends StackObjImpl implements Ability {
     public Outcome getCustomOutcome() {
         return this.ability.getCustomOutcome();
     }
+
+    @Override
+    public boolean isSameInstance(Ability ability) {
+        // same instance (by mtg rules) = same object, ID or class+text (you can't check class only cause it can be different by params/text)
+        if (ability == null) {
+            return false;
+        }
+
+        return (this == ability)
+                || (this.getId().equals(ability.getId()))
+                || (this.getOriginalId().equals(ability.getOriginalId()))
+                || (this.getClass() == ability.getClass() && this.getRule().equals(ability.getRule()));
+    }
+
+    @Override
+    public MageIdentifier getIdentifier() {
+        return ability.getIdentifier();
+    }
+
+    @Override
+    public AbilityImpl setIdentifier(MageIdentifier identifier) {
+        throw new UnsupportedOperationException("Not supported.");
+    }
+
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects;
 
 import mage.abilities.Ability;
@@ -51,7 +46,7 @@ public class PreventDamageAndRemoveCountersEffect extends PreventionEffectImpl {
         if (!thatMany) {
             damage = 1;
         }
-        permanent.removeCounters(CounterType.P1P1.createInstance(damage), game); //MTG ruling (this) loses counters even if the damage isn't prevented
+        permanent.removeCounters(CounterType.P1P1.createInstance(damage), source, game); //MTG ruling (this) loses counters even if the damage isn't prevented
         return false;
     }
 

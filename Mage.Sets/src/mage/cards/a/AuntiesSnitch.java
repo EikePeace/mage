@@ -43,7 +43,7 @@ public final class AuntiesSnitch extends CardImpl {
         this.addAbility(new AuntiesSnitchTriggeredAbility());
     }
 
-    public AuntiesSnitch(final AuntiesSnitch card) {
+    private AuntiesSnitch(final AuntiesSnitch card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class AuntiesSnitchTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

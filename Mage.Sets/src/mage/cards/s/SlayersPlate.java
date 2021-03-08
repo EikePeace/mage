@@ -41,7 +41,7 @@ public final class SlayersPlate extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(3)));
     }
 
-    public SlayersPlate(final SlayersPlate card) {
+    private SlayersPlate(final SlayersPlate card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class SlayersPlateTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

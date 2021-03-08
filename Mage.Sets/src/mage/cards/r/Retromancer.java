@@ -34,7 +34,7 @@ public final class Retromancer extends CardImpl {
         this.addAbility(new RetromancerTriggeredAbility(new DamageTargetEffect(3)));
     }
 
-    public Retromancer(final Retromancer card) {
+    private Retromancer(final Retromancer card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class RetromancerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

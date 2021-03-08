@@ -6,6 +6,7 @@ import mage.abilities.Ability;
 import mage.abilities.ActivatedAbility;
 import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.TriggeredAbility;
+import mage.abilities.common.delayed.ReflexiveTriggeredAbility;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.ContinuousEffects;
 import mage.abilities.effects.PreventionEffectData;
@@ -18,6 +19,7 @@ import mage.choices.Choice;
 import mage.constants.*;
 import mage.counters.Counters;
 import mage.game.combat.Combat;
+import mage.game.command.CommandObject;
 import mage.game.command.Commander;
 import mage.game.command.Emblem;
 import mage.game.command.Plane;
@@ -39,7 +41,7 @@ import mage.players.Player;
 import mage.players.PlayerList;
 import mage.players.Players;
 import mage.util.MessageToClient;
-import mage.util.functions.ApplyToPermanent;
+import mage.util.functions.CopyApplier;
 
 import java.io.Serializable;
 import java.util.*;
@@ -88,6 +90,14 @@ public interface Game extends MageItem, Serializable {
 
     Spell getSpellOrLKIStack(UUID spellId);
 
+    /**
+     * Find permanent on the battlefield by id. If you works with cards and want to check it on battlefield then
+     * use game.getState().getZone() instead. Card's id and permanent's id can be different (example: mdf card
+     * puts half card to battlefield, not the main card).
+     *
+     * @param permanentId
+     * @return
+     */
     Permanent getPermanent(UUID permanentId);
 
     Permanent getPermanentOrLKIBattlefield(UUID permanentId);
@@ -125,6 +135,10 @@ public interface Game extends MageItem, Serializable {
      */
     default Set<UUID> getOpponents(UUID playerId) {
         Player player = getPlayer(playerId);
+        if (player == null) {
+            return new HashSet<>();
+        }
+
         return player.getInRange().stream()
                 .filter(opponentId -> !opponentId.equals(playerId))
                 .collect(Collectors.toSet());
@@ -300,8 +314,8 @@ public interface Game extends MageItem, Serializable {
     /**
      * Creates and fires an damage prevention event
      *
-     * @param damageEvent     damage event that will be replaced (instanceof check
-     *                        will be done)
+     * @param damageEvent     damage event that will be replaced (instanceof
+     *                        check will be done)
      * @param source          ability that's the source of the prevention effect
      * @param game
      * @param amountToPrevent max preventable amount
@@ -312,9 +326,10 @@ public interface Game extends MageItem, Serializable {
     /**
      * Creates and fires an damage prevention event
      *
-     * @param event            damage event that will be replaced (instanceof check will be
-     *                         done)
-     * @param source           ability that's the source of the prevention effect
+     * @param event            damage event that will be replaced (instanceof
+     *                         check will be done)
+     * @param source           ability that's the source of the prevention
+     *                         effect
      * @param game
      * @param preventAllDamage true if there is no limit to the damage that can
      *                         be prevented
@@ -360,7 +375,12 @@ public interface Game extends MageItem, Serializable {
 
     void undo(UUID playerId);
 
-    void emptyManaPools();
+    /**
+     * Empty mana pool with mana burn and life lose checks
+     *
+     * @param source must be null for default game events
+     */
+    void emptyManaPools(Ability source);
 
     void addEffect(ContinuousEffect continuousEffect, Ability source);
 
@@ -372,7 +392,16 @@ public interface Game extends MageItem, Serializable {
 
     void addCommander(Commander commander);
 
-    void addPermanent(Permanent permanent);
+    /**
+     * Adds a permanent to the battlefield
+     *
+     * @param permanent
+     * @param createOrder upcounting number from state about the create order of
+     *                    all permanents. Can equal for multiple permanents, if
+     *                    they go to battlefield at the same time. If the value
+     *                    is set to 0, a next number will be set automatically.
+     */
+    void addPermanent(Permanent permanent, int createOrder);
 
     // priority method
     void sendPlayerAction(PlayerAction playerAction, UUID playerId, Object data);
@@ -386,9 +415,9 @@ public interface Game extends MageItem, Serializable {
      * @param applier
      * @return
      */
-    Permanent copyPermanent(Permanent copyFromPermanent, UUID copyToPermanentId, Ability source, ApplyToPermanent applier);
+    Permanent copyPermanent(Permanent copyFromPermanent, UUID copyToPermanentId, Ability source, CopyApplier applier);
 
-    Permanent copyPermanent(Duration duration, Permanent copyFromPermanent, UUID copyToPermanentId, Ability source, ApplyToPermanent applier);
+    Permanent copyPermanent(Duration duration, Permanent copyFromPermanent, UUID copyToPermanentId, Ability source, CopyApplier applier);
 
     Card copyCard(Card cardToCopy, Ability source, UUID newController);
 
@@ -397,6 +426,8 @@ public interface Game extends MageItem, Serializable {
     UUID addDelayedTriggeredAbility(DelayedTriggeredAbility delayedAbility);
 
     UUID addDelayedTriggeredAbility(DelayedTriggeredAbility delayedAbility, Ability source);
+
+    UUID fireReflexiveTriggeredAbility(ReflexiveTriggeredAbility reflexiveAbility, Ability source);
 
     void applyEffects();
 
@@ -408,7 +439,7 @@ public interface Game extends MageItem, Serializable {
 
     boolean endTurn(Ability source);
 
-    int doAction(MageAction action);
+    int doAction(Ability source, MageAction action);
 
     //game transaction methods
     void saveState(boolean bookmark);
@@ -436,7 +467,7 @@ public interface Game extends MageItem, Serializable {
     // game cheats (for tests only)
     void cheat(UUID ownerId, Map<Zone, String> commands);
 
-    void cheat(UUID ownerId, UUID activePlayerId, List<Card> library, List<Card> hand, List<PermanentCard> battlefield, List<Card> graveyard, List<Card> command);
+    void cheat(UUID ownerId, List<Card> library, List<Card> hand, List<PermanentCard> battlefield, List<Card> graveyard, List<Card> command);
 
     // controlling the behaviour of replacement effects while permanents entering the battlefield
     void setScopeRelevant(boolean scopeRelevant);
@@ -474,15 +505,72 @@ public interface Game extends MageItem, Serializable {
 
     void setMonarchId(Ability source, UUID monarchId);
 
-    int damagePlayerOrPlaneswalker(UUID playerOrWalker, int damage, UUID sourceId, Game game, boolean combatDamage, boolean preventable);
+    int damagePlayerOrPlaneswalker(UUID playerOrWalker, int damage, UUID attackerId, Ability source, Game game, boolean combatDamage, boolean preventable);
 
-    int damagePlayerOrPlaneswalker(UUID playerOrWalker, int damage, UUID sourceId, Game game, boolean combatDamage, boolean preventable, List<UUID> appliedEffects);
+    int damagePlayerOrPlaneswalker(UUID playerOrWalker, int damage, UUID attackerId, Ability source, Game game, boolean combatDamage, boolean preventable, List<UUID> appliedEffects);
 
     Mulligan getMulligan();
 
-    Set<UUID> getCommandersIds(Player player, CommanderCardType commanderCardType);
+    Set<UUID> getCommandersIds(Player player, CommanderCardType commanderCardType, boolean returnAllCardParts);
 
-    default Set<UUID> getCommandersIds(Player player) {
-        return getCommandersIds(player, CommanderCardType.ANY);
+    /**
+     * Return not played commander cards from command zone
+     * Read comments for CommanderCardType for more info on commanderCardType usage
+     *
+     * @param player
+     * @return
+     */
+    default Set<Card> getCommanderCardsFromCommandZone(Player player, CommanderCardType commanderCardType) {
+        // commanders in command zone aren't cards so you must call getCard instead getObject
+        return getCommandersIds(player, commanderCardType, false).stream()
+                .map(this::getCard)
+                .filter(Objects::nonNull)
+                .filter(card -> Zone.COMMAND.equals(this.getState().getZone(card.getId())))
+                .collect(Collectors.toSet());
     }
+
+    /**
+     * Return commander cards from any zones (main card from command and permanent card from battlefield)
+     * Read comments for CommanderCardType for more info on commanderCardType usage
+     *
+     * @param player
+     * @param commanderCardType commander or signature spell
+     * @return
+     */
+    default Set<Card> getCommanderCardsFromAnyZones(Player player, CommanderCardType commanderCardType) {
+        // from command zone
+        Set<Card> res = getCommanderCardsFromCommandZone(player, commanderCardType);
+
+        // from battlefield
+        this.getCommandersIds(player, commanderCardType, true).stream()
+                .map(this::getPermanent)
+                .filter(Objects::nonNull)
+                .forEach(res::add);
+        return res;
+    }
+
+    /**
+     * Finds is it a commander card/object (use it in conditional and other things)
+     *
+     * @param player
+     * @param object
+     * @return
+     */
+    default boolean isCommanderObject(Player player, MageObject object) {
+        UUID idToCheck = null;
+        if (object instanceof Spell) {
+            idToCheck = ((Spell) object).getCard().getId();
+        }
+        if (object instanceof CommandObject) {
+            idToCheck = object.getId();
+        }
+        if (object instanceof Card) {
+            idToCheck = ((Card) object).getMainCard().getId();
+        }
+        return idToCheck != null && this.getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER, false).contains(idToCheck);
+    }
+
+    void setGameStopped(boolean gameStopped);
+
+    boolean isGameStopped();
 }

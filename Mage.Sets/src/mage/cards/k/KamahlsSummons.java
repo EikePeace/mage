@@ -32,7 +32,7 @@ public final class KamahlsSummons extends CardImpl {
         getSpellAbility().addEffect(new KamahlsSummonsEffect());
     }
 
-    public KamahlsSummons(final KamahlsSummons card) {
+    private KamahlsSummons(final KamahlsSummons card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class KamahlsSummonsEffect extends OneShotEffect {
             for (Map.Entry<UUID, Integer> revealedCardsByPlayer : revealedCards.entrySet()) {
                 int value = revealedCardsByPlayer.getValue();
                 if (value > 0) {
-                    token.putOntoBattlefield(value, game, source.getSourceId(), revealedCardsByPlayer.getKey());
+                    token.putOntoBattlefield(value, game, source, revealedCardsByPlayer.getKey());
                 }
             }
             return true;

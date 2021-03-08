@@ -12,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -29,7 +28,7 @@ public final class PlanarBirth extends CardImpl {
         this.getSpellAbility().addEffect(new PlanarBirthEffect());
     }
 
-    public PlanarBirth(final PlanarBirth card) {
+    private PlanarBirth(final PlanarBirth card) {
         super(card);
     }
 

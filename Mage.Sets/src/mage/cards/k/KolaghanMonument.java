@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -36,7 +35,7 @@ public final class KolaghanMonument extends CardImpl {
             (new KolaghanMonumentToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{4}{B}{R}")));
     }
 
-    public KolaghanMonument(final KolaghanMonument card) {
+    private KolaghanMonument(final KolaghanMonument card) {
         super(card);
     }
 

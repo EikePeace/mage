@@ -3,7 +3,6 @@ package mage.cards.c;
 
 import java.util.UUID;
 
-import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -16,8 +15,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 
 /**
@@ -39,7 +36,7 @@ public final class ChimericIdol extends CardImpl {
 
     }
 
-    public ChimericIdol(final ChimericIdol card) {
+    private ChimericIdol(final ChimericIdol card) {
         super(card);
     }
 

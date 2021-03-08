@@ -43,7 +43,7 @@ public final class ConsecrateLand extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public ConsecrateLand(final ConsecrateLand card) {
+    private ConsecrateLand(final ConsecrateLand card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ConsecrateLandRuleEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACH || event.getType() == EventType.STAY_ATTACHED;
+        return event.getType() == GameEvent.EventType.ATTACH || event.getType() == GameEvent.EventType.STAY_ATTACHED;
     }
 
     @Override

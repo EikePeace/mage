@@ -20,7 +20,6 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -43,7 +42,7 @@ public final class ForiysianTotem extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousEffect(new CanBlockAdditionalCreatureEffect(1), new SourceMatchesFilterCondition(new FilterCreaturePermanent()), ruleText)));
     }
 
-    public ForiysianTotem(final ForiysianTotem card) {
+    private ForiysianTotem(final ForiysianTotem card) {
         super(card);
     }
 

@@ -1,8 +1,6 @@
 
 package mage.cards.p;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.delayed.AtTheBeginOfMainPhaseDelayedTriggeredAbility;
@@ -11,8 +9,6 @@ import mage.abilities.effects.mana.AddManaInAnyCombinationEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.choices.ChoiceColor;
-import mage.choices.ManaChoice;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
@@ -34,7 +30,7 @@ public final class PlasmCapture extends CardImpl {
         this.getSpellAbility().addEffect(new PlasmCaptureCounterEffect());
     }
 
-    public PlasmCapture(final PlasmCapture card) {
+    private PlasmCapture(final PlasmCapture card) {
         super(card);
     }
 
@@ -64,7 +60,7 @@ class PlasmCaptureCounterEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Spell spell = game.getStack().getSpell(getTargetPointer().getFirst(game, source));
         if (spell != null) {
-            game.getStack().counter(getTargetPointer().getFirst(game, source), source.getSourceId(), game);
+            game.getStack().counter(getTargetPointer().getFirst(game, source), source, game);
             // mana gets added also if counter is not successful
             int mana = spell.getConvertedManaCost();
             AtTheBeginOfMainPhaseDelayedTriggeredAbility delayedAbility

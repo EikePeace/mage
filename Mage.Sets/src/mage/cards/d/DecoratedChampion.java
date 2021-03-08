@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterTeamPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class DecoratedChampion extends CardImpl {
         ));
     }
 
-    public DecoratedChampion(final DecoratedChampion card) {
+    private DecoratedChampion(final DecoratedChampion card) {
         super(card);
     }
 

@@ -30,7 +30,7 @@ public final class DevourFlesh extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public DevourFlesh(final DevourFlesh card) {
+    private DevourFlesh(final DevourFlesh card) {
         super(card);
     }
 
@@ -66,14 +66,14 @@ class DevourFleshSacrificeEffect extends OneShotEffect {
         int realCount = game.getBattlefield().countAll(filter, player.getId(), game);
         if (realCount > 0) {
             Target target = new TargetControlledPermanent(1, 1, filter, true);
-            while (player.canRespond() && !target.isChosen() && target.canChoose(player.getId(), game)) {
+            while (player.canRespond() && !target.isChosen() && target.canChoose(source.getSourceId(), player.getId(), game)) {
                 player.chooseTarget(Outcome.Sacrifice, target, source, game);
             }
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
                 int gainLife = permanent.getToughness().getValue();
-                permanent.sacrifice(source.getSourceId(), game);
-                game.applyEffects();
+                permanent.sacrifice(source, game);
+                game.getState().processAction(game);
                 player.gainLife(gainLife, game, source);
             } else {
                 return false;

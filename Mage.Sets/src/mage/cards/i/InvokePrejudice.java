@@ -33,7 +33,7 @@ public final class InvokePrejudice extends CardImpl {
         this.addAbility(new InvokePrejudiceTriggeredAbility());
     }
 
-    public InvokePrejudice(final InvokePrejudice card) {
+    private InvokePrejudice(final InvokePrejudice card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class InvokePrejudiceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

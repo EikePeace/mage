@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -12,23 +10,20 @@ import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class MossbridgeTroll extends CardImpl {
@@ -56,7 +51,7 @@ public final class MossbridgeTroll extends CardImpl {
 
     }
 
-    public MossbridgeTroll(final MossbridgeTroll card) {
+    private MossbridgeTroll(final MossbridgeTroll card) {
         super(card);
     }
 
@@ -81,7 +76,7 @@ class MossbridgeTrollReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent mossbridgeTroll = game.getPermanent(event.getTargetId());
         if (mossbridgeTroll != null && event.getAmount() == 0) { // 1=noRegen
-            return mossbridgeTroll.regenerate(source.getSourceId(), game);
+            return mossbridgeTroll.regenerate(source, game);
         }
         return false;
     }
@@ -123,12 +118,12 @@ class MossbridgeTrollCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         int sumPower = 0;
-        if (targets.choose(Outcome.Tap, controllerId, sourceId, game)) {
+        if (targets.choose(Outcome.Tap, controllerId, source.getSourceId(), game)) {
             for (UUID targetId : targets.get(0).getTargets()) {
                 Permanent permanent = game.getPermanent(targetId);
-                if (permanent != null && permanent.tap(game)) {
+                if (permanent != null && permanent.tap(source, game)) {
                     sumPower += permanent.getPower().getValue();
                 }
             }
@@ -139,10 +134,10 @@ class MossbridgeTrollCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         int sumPower = 0;
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, controllerId, game)) {
-            if (!permanent.getId().equals(sourceId)) {
+            if (!permanent.getId().equals(source.getSourceId())) {
                 sumPower += permanent.getPower().getValue();
             }
         }

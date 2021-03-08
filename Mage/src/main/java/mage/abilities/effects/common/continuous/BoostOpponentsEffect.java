@@ -1,19 +1,21 @@
 package mage.abilities.effects.common.continuous;
 
-import java.util.Iterator;
+import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.constants.Duration;
 import mage.constants.Layer;
 import mage.constants.Outcome;
 import mage.constants.SubLayer;
+import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
+import mage.util.CardUtil;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
-import mage.MageObjectReference;
 
 public class BoostOpponentsEffect extends ContinuousEffectImpl {
     protected int power;
@@ -21,7 +23,7 @@ public class BoostOpponentsEffect extends ContinuousEffectImpl {
     protected FilterCreaturePermanent filter;
 
     public BoostOpponentsEffect(int power, int toughness, Duration duration) {
-        this(power, toughness, duration, new FilterCreaturePermanent("Creatures"));
+        this(power, toughness, duration, StaticFilters.FILTER_PERMANENT_CREATURES);
     }
 
     public BoostOpponentsEffect(int power, int toughness, Duration duration, FilterCreaturePermanent filter) {
@@ -49,7 +51,7 @@ public class BoostOpponentsEffect extends ContinuousEffectImpl {
         super.init(source, game);
         if (this.affectedObjectsSet) {
             Set<UUID> opponents = game.getOpponents(source.getControllerId());
-            for (Permanent perm: game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
+            for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 if (opponents.contains(perm.getControllerId())) {
                     affectedObjectList.add(new MageObjectReference(perm, game));
                 }
@@ -61,7 +63,7 @@ public class BoostOpponentsEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Set<UUID> opponents = game.getOpponents(source.getControllerId());
         if (this.affectedObjectsSet) {
-            for (Iterator<MageObjectReference> it = affectedObjectList.iterator(); it.hasNext();) { // filter may not be used again, because object can have changed filter relevant attributes but still geets boost
+            for (Iterator<MageObjectReference> it = affectedObjectList.iterator(); it.hasNext(); ) { // filter may not be used again, because object can have changed filter relevant attributes but still geets boost
                 Permanent perm = it.next().getPermanent(game);
                 if (perm != null) {
                     if (opponents.contains(perm.getControllerId())) {
@@ -73,7 +75,7 @@ public class BoostOpponentsEffect extends ContinuousEffectImpl {
                 }
             }
         } else {
-            for (Permanent perm: game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
+            for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 if (opponents.contains(perm.getControllerId())) {
                     perm.addPower(power);
                     perm.addToughness(toughness);
@@ -86,8 +88,8 @@ public class BoostOpponentsEffect extends ContinuousEffectImpl {
     private void setText() {
         StringBuilder sb = new StringBuilder();
         sb.append(filter.getMessage());
-        sb.append(" your opponents control get ").append(String.format("%1$+d/%2$+d", power, toughness));
-        sb.append((duration== Duration.EndOfTurn?" until end of turn":""));
+        sb.append(" your opponents control get ").append(CardUtil.getBoostCountAsStr(power, toughness));
+        sb.append((duration == Duration.EndOfTurn ? " until end of turn" : ""));
         staticText = sb.toString();
     }
 }

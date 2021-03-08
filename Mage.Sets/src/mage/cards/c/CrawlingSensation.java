@@ -1,13 +1,10 @@
-
-
 package mage.cards.c;
 
-import java.util.Set;
 import java.util.UUID;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.OnEventTriggeredAbility;
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveControllerEffect;
+import mage.abilities.effects.common.MillCardsControllerEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -28,13 +25,13 @@ public final class CrawlingSensation extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{G}");
 
         // At the beginning of your upkeep, you may put the top two cards of your library into your graveyard.
-        this.addAbility(new OnEventTriggeredAbility(GameEvent.EventType.UPKEEP_STEP_PRE, "beginning of your upkeep", new PutTopCardOfLibraryIntoGraveControllerEffect(2), true));
+        this.addAbility(new OnEventTriggeredAbility(GameEvent.EventType.UPKEEP_STEP_PRE, "beginning of your upkeep", new MillCardsControllerEffect(2), true));
 
         // Whenever one or more land cards are put into your graveyard from anywhere for the first time each turn, create a 1/1 green Insect creature token.
         this.addAbility(new CrawlingSensationTriggeredAbility());
     }
 
-    public CrawlingSensation(final CrawlingSensation card) {
+    private CrawlingSensation(final CrawlingSensation card) {
         super(card);
     }
 
@@ -69,11 +66,8 @@ class CrawlingSensationTriggeredAbility extends TriggeredAbilityImpl {
                 for (Card card : zEvent.getCards()) {
                     if (card != null) {
                         UUID cardOwnerId = card.getOwnerId();
-                        Set<CardType> cardType = card.getCardType();
-
                         if (cardOwnerId != null
                                 && card.isOwnedBy(getControllerId())
-                                && cardType != null
                                 && card.isLand()) {
                             game.getState().setValue("usedOnTurn" + getControllerId() + getOriginalId(), game.getTurnNum());
                             return true;

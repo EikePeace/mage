@@ -46,7 +46,7 @@ public final class ThievingSprite extends CardImpl {
 
     }
 
-    public ThievingSprite(final ThievingSprite card) {
+    private ThievingSprite(final ThievingSprite card) {
         super(card);
     }
 
@@ -116,7 +116,7 @@ class ThievingSpriteEffect extends OneShotEffect {
             } else {
                 card = revealedCards.getRandom(game);
             }
-            targetPlayer.discard(card, source, game);
+            targetPlayer.discard(card, false, source, game);
         }
         return true;
     }

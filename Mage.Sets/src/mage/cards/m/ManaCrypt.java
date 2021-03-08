@@ -28,11 +28,11 @@ public final class ManaCrypt extends CardImpl {
         // At the beginning of your upkeep, flip a coin. If you lose the flip, Mana Crypt deals 3 damage to you.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new ManaCryptEffect(), TargetController.YOU, false));
 
-        // {tap}: Add {C}{C}.
+        // {T}: Add {C}{C}.
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, Mana.ColorlessMana(2), new TapSourceCost()));
     }
 
-    public ManaCrypt(final ManaCrypt card) {
+    private ManaCrypt(final ManaCrypt card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class ManaCryptEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
             if (!player.flipCoin(source, game, true)) {
-                player.damage(3, source.getSourceId(), game);
+                player.damage(3, source.getSourceId(), source, game);
             }
             return true;
         }

@@ -13,7 +13,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 
 /**
  *
@@ -39,7 +39,7 @@ public final class SecretPlans extends CardImpl {
 
     }
 
-    public SecretPlans(final SecretPlans card) {
+    private SecretPlans(final SecretPlans card) {
         super(card);
     }
 

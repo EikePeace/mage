@@ -15,7 +15,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -41,7 +40,7 @@ public final class WildFieldScarecrow extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WildFieldScarecrow(final WildFieldScarecrow card) {
+    private WildFieldScarecrow(final WildFieldScarecrow card) {
         super(card);
     }
 

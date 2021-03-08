@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import mage.abilities.Ability;
@@ -16,7 +15,6 @@ import mage.target.common.TargetControlledCreaturePermanent;
 import java.util.UUID;
 
 /**
- *
  * @author TheElk801
  */
 public final class SirensRuse extends CardImpl {
@@ -29,7 +27,7 @@ public final class SirensRuse extends CardImpl {
         this.getSpellAbility().addEffect(new SirensRuseEffect());
     }
 
-    public SirensRuse(final SirensRuse card) {
+    private SirensRuse(final SirensRuse card) {
         super(card);
     }
 
@@ -64,9 +62,9 @@ class SirensRuseEffect extends ExileTargetForSourceEffect {
             isPirate = true;
         }
         if (super.apply(game, source)) {
-            new ReturnToBattlefieldUnderYourControlTargetEffect(true).apply(game, source);
+            new ReturnToBattlefieldUnderYourControlTargetEffect(false).apply(game, source);
             if (isPirate && player != null) {
-                player.drawCards(1, game);
+                player.drawCards(1, source, game);
             }
             return true;
         }

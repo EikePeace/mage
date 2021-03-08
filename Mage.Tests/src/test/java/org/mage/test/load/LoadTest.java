@@ -22,10 +22,7 @@ import org.mage.test.utils.DeckTestUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Intended to test Mage server under different load patterns.
@@ -34,7 +31,7 @@ import java.util.UUID;
  * started before running them. In case you want to debug these tests, use
  * -Ddebug.mage that would disable client-server request timeout.
  * <p>
- * Then it's also better to use -Xms256M -Xmx512M JVM options for these stests.
+ * Then it's also better to use -Xms256M -Xmx512M JVM options for these tests.
  *
  * @author JayDi85
  */
@@ -46,6 +43,7 @@ public class LoadTest {
     private static final int TEST_PORT = 17171;
     private static final String TEST_PROXY_TYPE = "None";
     private static final String TEST_USER_NAME = "user";
+    private static final String TEST_AI_SETS_USAGE = "CMR"; // set in generated decks for AI games (empty for all sets usage)
 
     @BeforeClass
     public static void initDatabase() {
@@ -59,46 +57,60 @@ public class LoadTest {
         Deck deck;
 
         deck = DeckTestUtils.buildRandomDeck("G", false);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in G",
                     card.getColorIdentity().isGreen());
         }
 
         deck = DeckTestUtils.buildRandomDeck("U", false);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in U",
                     card.getColorIdentity().isBlue());
         }
 
         deck = DeckTestUtils.buildRandomDeck("BR", false);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in BR",
                     card.getColorIdentity().isBlack() || card.getColorIdentity().isRed());
         }
 
         deck = DeckTestUtils.buildRandomDeck("BUG", false);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in BUG",
                     card.getColorIdentity().isBlack() || card.getColorIdentity().isBlue() || card.getColorIdentity().isGreen());
         }
 
         // lands
         deck = DeckTestUtils.buildRandomDeck("UR", true);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in UR",
                     card.getColorIdentity().isBlue() || card.getColorIdentity().isRed());
             Assert.assertEquals("card " + card.getName() + " must be basic land ", Rarity.LAND, card.getRarity());
         }
 
         deck = DeckTestUtils.buildRandomDeck("B", true);
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in B", card.getColorIdentity().isBlack());
             Assert.assertEquals("card " + card.getName() + " must be basic land ", Rarity.LAND, card.getRarity());
         }
 
         // allowed sets
         deck = DeckTestUtils.buildRandomDeck("B", true, "GRN");
+        Assert.assertNotNull(deck);
         for (Card card : deck.getCards()) {
+            Assert.assertNotNull(card);
             Assert.assertTrue("card " + card.getName() + " color " + card.getColorIdentity().toString() + " must be in B", card.getColorIdentity().isBlack());
             Assert.assertEquals("card " + card.getName() + " have wrong set code " + card.getExpansionSetCode(), "GRN", card.getExpansionSetCode());
         }
@@ -191,7 +203,7 @@ public class LoadTest {
         }
     }
 
-    public void playTwoAIGame(String gameName, String deckColors, String deckAllowedSets) {
+    public void playTwoAIGame(String gameName, String deckColors, String deckAllowedSets, LoadTestGameResult gameResult) {
         Assert.assertFalse("need deck colors", deckColors.isEmpty());
         Assert.assertFalse("need allowed sets", deckAllowedSets.isEmpty());
 
@@ -215,6 +227,7 @@ public class LoadTest {
         Assert.assertTrue(monitor.session.startMatch(monitor.roomID, tableId));
 
         // playing until game over
+        gameResult.start();
         boolean startToWatching = false;
         while (true) {
             GameView gameView = monitor.client.getLastGameView();
@@ -228,6 +241,7 @@ public class LoadTest {
                     + ", " + state);
 
             if (state == TableState.FINISHED) {
+                gameResult.finish(gameView);
                 break;
             }
 
@@ -253,15 +267,16 @@ public class LoadTest {
     @Test
     @Ignore
     public void test_TwoAIPlayGame_One() {
-        playTwoAIGame("Single AI game", "GR", "GRN");
+        LoadTestGameResult gameResult = new LoadTestGameResult(0, "test game", 0);
+        playTwoAIGame("Single AI game", "WGUBR", TEST_AI_SETS_USAGE, gameResult);
     }
 
     @Test
     @Ignore
     public void test_TwoAIPlayGame_Multiple() {
 
-        int singleGameSID = 0; // for one game test with same deck
-        int gamesAmount = 1000; // multiple run of one game test
+        int singleGameSID = 0; // set sid for same deck games, set 0 for random decks
+        int gamesAmount = 10; // games per run
 
         // save random seeds for repeated results (in decks generating)
         List<Integer> seedsList = new ArrayList<>();
@@ -275,12 +290,21 @@ public class LoadTest {
             }
         }
 
+        LoadTestGameResultsList gameResults = new LoadTestGameResultsList();
         for (int i = 0; i <= seedsList.size() - 1; i++) {
             long randomSeed = seedsList.get(i);
             logger.info("Game " + (i + 1) + " of " + seedsList.size() + ", RANDOM seed: " + randomSeed);
             RandomUtil.setSeed(randomSeed);
-            playTwoAIGame("AI game #" + (i + 1), "WGUBR", "ELD");
+            String gameName = "AI game #" + (i + 1);
+            LoadTestGameResult gameResult = gameResults.createGame(i + 1, gameName, randomSeed);
+            playTwoAIGame(gameName, "WGUBR", TEST_AI_SETS_USAGE, gameResult);
         }
+
+        // results
+        System.out.println();
+        gameResults.printResultHeader();
+        gameResults.printResultData();
+        gameResults.printResultTotal();
     }
 
     @Test
@@ -671,6 +695,127 @@ public class LoadTest {
 
         public Boolean isPlaying() {
             return (this.runningThread != null);
+        }
+    }
+
+    private class LoadTestGameResult {
+        int index;
+        String name;
+        long randomSeed;
+        Date timeStarted;
+        Date timeEnded = null;
+        GameView finalGameView = null;
+
+        public LoadTestGameResult(int index, String name, long randomSeed) {
+            this.index = index;
+            this.name = name;
+            this.randomSeed = randomSeed;
+        }
+
+        public void start() {
+            this.timeStarted = new Date();
+        }
+
+        public void finish(GameView finalGameView) {
+            this.timeEnded = new Date();
+            this.finalGameView = finalGameView;
+        }
+
+        public int getLife1() {
+            return this.finalGameView.getPlayers().get(0).getLife();
+        }
+
+        public int getLife2() {
+            return this.finalGameView.getPlayers().get(1).getLife();
+        }
+
+        public int getTurn() {
+            return this.finalGameView.getTurn();
+        }
+
+        public int getDuration() {
+            return (int) ((this.timeEnded.getTime() - this.timeStarted.getTime()) / 1000);
+        }
+    }
+
+    private class LoadTestGameResultsList extends HashMap<Integer, LoadTestGameResult> {
+
+        private static final String tableFormatHeader = "|%-10s|%-15s|%-20s|%-10s|%-15s|%-15s|%-10s|%-20s|%n";
+        private static final String tableFormatData = "|%-10s|%15s|%20s|%10s|%15s|%15s|%10s|%20s|%n";
+
+        public LoadTestGameResult createGame(int index, String name, long randomSeed) {
+            if (this.containsKey(index)) {
+                throw new IllegalArgumentException("Game with index " + index + " already exists");
+            }
+            LoadTestGameResult res = new LoadTestGameResult(index, name, randomSeed);
+            this.put(index, res);
+            return res;
+        }
+
+        public void printResultHeader() {
+            List<String> data = Arrays.asList(
+                    "index",
+                    "name",
+                    "random sid",
+                    "turn",
+                    "player 1",
+                    "player 2",
+                    "time, sec",
+                    "time per turn, sec"
+            );
+            System.out.printf(tableFormatHeader, data.toArray());
+        }
+
+        public void printResultData() {
+            this.values().forEach(this::printResultData);
+        }
+
+        public void printResultData(LoadTestGameResult gameResult) {
+            List<String> data = Arrays.asList(
+                    String.valueOf(gameResult.index), //"index",
+                    gameResult.name, //"name",
+                    String.valueOf(gameResult.randomSeed), // "random sid",
+                    String.valueOf(gameResult.getTurn()), //"turn",
+                    String.valueOf(gameResult.getLife1()), //"player 1",
+                    String.valueOf(gameResult.getLife2()), //"player 2",
+                    String.valueOf(gameResult.getDuration()),// "time, sec",
+                    String.valueOf(gameResult.getDuration() / gameResult.getTurn()) //"per turn, sec"
+            );
+            System.out.printf(tableFormatData, data.toArray());
+        }
+
+        public void printResultTotal() {
+            List<String> data = Arrays.asList(
+                    "TOTAL/AVG", //"index",
+                    String.valueOf(this.size()), //"name",
+                    "", // "random sid",
+                    String.valueOf(this.getAvgTurn()), // turn
+                    String.valueOf(this.getAvgLife1()), // player 1
+                    String.valueOf(this.getAvgLife2()), // player 2
+                    String.valueOf(this.getAvgDuration()), // time, sec
+                    String.valueOf(this.getAvgDurationPerTurn()) // time per turn, sec
+            );
+            System.out.printf(tableFormatData, data.toArray());
+        }
+
+        private int getAvgTurn() {
+            return this.values().stream().mapToInt(LoadTestGameResult::getTurn).sum() / this.size();
+        }
+
+        private int getAvgLife1() {
+            return this.values().stream().mapToInt(LoadTestGameResult::getLife1).sum() / this.size();
+        }
+
+        private int getAvgLife2() {
+            return this.values().stream().mapToInt(LoadTestGameResult::getLife2).sum() / this.size();
+        }
+
+        private int getAvgDuration() {
+            return this.values().stream().mapToInt(LoadTestGameResult::getDuration).sum() / this.size();
+        }
+
+        private int getAvgDurationPerTurn() {
+            return getAvgDuration() / getAvgTurn();
         }
     }
 }

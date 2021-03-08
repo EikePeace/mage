@@ -35,7 +35,7 @@ public final class ConsecratedSphinx extends CardImpl {
         this.addAbility(new ConsecratedSphinxTriggeredAbility());
     }
 
-    public ConsecratedSphinx(final ConsecratedSphinx card) {
+    private ConsecratedSphinx(final ConsecratedSphinx card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class ConsecratedSphinxTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DREW_CARD;
+        return event.getType() == GameEvent.EventType.DREW_CARD;
     }
 
     @Override

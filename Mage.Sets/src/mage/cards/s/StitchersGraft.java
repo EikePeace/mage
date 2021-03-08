@@ -48,7 +48,7 @@ public final class StitchersGraft extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public StitchersGraft(final StitchersGraft card) {
+    private StitchersGraft(final StitchersGraft card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class StitchersGraftTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

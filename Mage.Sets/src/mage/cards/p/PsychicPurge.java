@@ -36,7 +36,7 @@ public final class PsychicPurge extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PsychicPurge(final PsychicPurge card) {
+    private PsychicPurge(final PsychicPurge card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class PsychicPurgeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override

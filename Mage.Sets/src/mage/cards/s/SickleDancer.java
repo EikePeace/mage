@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.filter.common.FilterTeamPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class SickleDancer extends CardImpl {
         ));
     }
 
-    public SickleDancer(final SickleDancer card) {
+    private SickleDancer(final SickleDancer card) {
         super(card);
     }
 

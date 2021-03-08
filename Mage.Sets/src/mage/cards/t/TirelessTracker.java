@@ -45,7 +45,7 @@ public final class TirelessTracker extends CardImpl {
         this.addAbility(new TirelessTrackerTriggeredAbility());
     }
 
-    public TirelessTracker(final TirelessTracker card) {
+    private TirelessTracker(final TirelessTracker card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class TirelessTrackerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

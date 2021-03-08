@@ -1,7 +1,4 @@
-
 package mage.cards.e;
-
-import java.util.UUID;
 
 import mage.MageObject;
 import mage.Mana;
@@ -11,14 +8,13 @@ import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.DiscardTargetCost;
 import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.costs.mana.GenericManaCost;
+import mage.abilities.dynamicvalue.common.CreaturesYouControlCount;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.search.SearchLibraryPutInHandEffect;
 import mage.abilities.effects.common.GainLifeEffect;
+import mage.abilities.effects.common.search.SearchLibraryPutInHandEffect;
+import mage.abilities.effects.mana.BasicManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.SplitCard;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SpellAbilityType;
@@ -33,23 +29,26 @@ import mage.target.common.TargetCardInLibrary;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Ketsuban
  */
 public final class EverythingamajigE extends CardImpl {
 
     public EverythingamajigE(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{5}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{5}");
 
         // Zuran Orb
         // Sacrifice a land: You gain 2 life.
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainLifeEffect(2), new SacrificeTargetCost(new TargetControlledPermanent(StaticFilters.FILTER_CONTROLLED_LAND_SHORT_TEXT))));
-        
+
         // Ashnod's Altar
-        // Sacrifice a creature: Add CC to your mana pool.
+        // Sacrifice a creature: Add {C}{C} to your mana pool.
         SacrificeTargetCost cost = new SacrificeTargetCost(new TargetControlledCreaturePermanent(StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT));
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, Mana.ColorlessMana(2), cost));
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD,
+                new BasicManaEffect(Mana.ColorlessMana(2), CreaturesYouControlCount.instance),
+                cost));
 
         // Urza's Hot Tub
         // 2, Discard a card: Search your library for a card that shares a complete word in its name with the name of the discarded card, reveal it, put it into your hand, then shuffle your library.
@@ -58,7 +57,7 @@ public final class EverythingamajigE extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EverythingamajigE(final EverythingamajigE card) {
+    private EverythingamajigE(final EverythingamajigE card) {
         super(card);
     }
 
@@ -113,21 +112,23 @@ class UrzasHotTubPredicate implements Predicate<MageObject> {
     public boolean apply(MageObject input, Game game) {
         String name = input.getName();
         if (input instanceof SplitCard) {
-            return sharesWordWithName(((SplitCard)input).getLeftHalfCard().getName()) || sharesWordWithName(((SplitCard)input).getRightHalfCard().getName());
-        } else if (input instanceof Spell && ((Spell) input).getSpellAbility().getSpellAbilityType() == SpellAbilityType.SPLIT_FUSED){
-            SplitCard card = (SplitCard) ((Spell)input).getCard();
+            return sharesWordWithName(((SplitCard) input).getLeftHalfCard().getName()) || sharesWordWithName(((SplitCard) input).getRightHalfCard().getName());
+        } else if (input instanceof ModalDoubleFacesCard) {
+            return sharesWordWithName(((ModalDoubleFacesCard) input).getLeftHalfCard().getName()) || sharesWordWithName(((ModalDoubleFacesCard) input).getRightHalfCard().getName());
+        } else if (input instanceof Spell && ((Spell) input).getSpellAbility().getSpellAbilityType() == SpellAbilityType.SPLIT_FUSED) {
+            SplitCard card = (SplitCard) ((Spell) input).getCard();
             return sharesWordWithName(card.getLeftHalfCard().getName()) || sharesWordWithName(card.getRightHalfCard().getName());
         } else {
             if (name.contains(" // ")) {
                 String leftName = name.substring(0, name.indexOf(" // "));
-                String rightName = name.substring(name.indexOf(" // ") + 4, name.length());
+                String rightName = name.substring(name.indexOf(" // ") + 4);
                 return sharesWordWithName(leftName) || sharesWordWithName(rightName);
             } else {
                 return sharesWordWithName(name);
             }
         }
     }
-    
+
     private boolean sharesWordWithName(String str) {
         if (referenceName == null || referenceName.equals("")) {
             return false;

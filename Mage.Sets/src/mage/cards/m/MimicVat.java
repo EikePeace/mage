@@ -46,7 +46,7 @@ public final class MimicVat extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MimicVat(final MimicVat card) {
+    private MimicVat(final MimicVat card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class MimicVatTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -181,7 +181,7 @@ class MimicVatCreateTokenEffect extends OneShotEffect {
             Card card = game.getCard(permanent.getImprinted().get(0));
             if (card != null) {
                 CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(source.getControllerId(), null, true);
-                effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+                effect.setTargetPointer(new FixedTarget(card, game));
                 effect.apply(game, source);
                 for (Permanent addedToken : effect.getAddedPermanent()) {
                     ExileTargetEffect exileEffect = new ExileTargetEffect();

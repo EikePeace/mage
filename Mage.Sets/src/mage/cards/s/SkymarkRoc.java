@@ -41,7 +41,7 @@ public final class SkymarkRoc extends CardImpl {
         this.addAbility(new SkymarkRocAbility());
     }
 
-    public SkymarkRoc(final SkymarkRoc card) {
+    private SkymarkRoc(final SkymarkRoc card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class SkymarkRocAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

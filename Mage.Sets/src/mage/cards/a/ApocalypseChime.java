@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.ExpansionSetPredicate;
+import mage.filter.predicate.card.ExpansionSetPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -42,7 +42,7 @@ public final class ApocalypseChime extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ApocalypseChime(final ApocalypseChime card) {
+    private ApocalypseChime(final ApocalypseChime card) {
         super(card);
     }
 

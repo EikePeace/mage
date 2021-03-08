@@ -17,7 +17,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class DustStalker extends CardImpl {
                 new PermanentsOnTheBattlefieldCondition(filter, ComparisonType.EQUAL_TO, 0), false));
     }
 
-    public DustStalker(final DustStalker card) {
+    private DustStalker(final DustStalker card) {
         super(card);
     }
 

@@ -54,7 +54,7 @@ public final class PhyrexianIngester extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PhyrexianIngesterBoostEffect()));
     }
 
-    public PhyrexianIngester(final PhyrexianIngester card) {
+    private PhyrexianIngester(final PhyrexianIngester card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class PhyrexianIngesterImprintEffect extends OneShotEffect {
             Permanent sourcePermanent = game.getPermanent(source.getSourceId());
             Permanent targetPermanent = game.getPermanent(source.getFirstTarget());
             if (sourcePermanent != null && targetPermanent != null) {
-                controller.moveCardToExileWithInfo(targetPermanent, getId(), sourceObject.getIdName() + " (Imprint)", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                controller.moveCardToExileWithInfo(targetPermanent, getId(), sourceObject.getIdName() + " (Imprint)", source, game, Zone.BATTLEFIELD, true);
                 sourcePermanent.imprint(targetPermanent.getId(), game);
                 return true;
             }

@@ -27,11 +27,13 @@ public final class ApproachOfTheSecondSun extends CardImpl {
     public ApproachOfTheSecondSun(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{6}{W}");
 
+        // If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game,
+        // you win the game. Otherwise, put Approach of the Second Sun into its owner's library seventh from the top and you gain 7 life.        
         getSpellAbility().addEffect(new ApproachOfTheSecondSunEffect());
         getSpellAbility().addWatcher(new ApproachOfTheSecondSunWatcher());
     }
 
-    public ApproachOfTheSecondSun(final ApproachOfTheSecondSun card) {
+    private ApproachOfTheSecondSun(final ApproachOfTheSecondSun card) {
         super(card);
     }
 
@@ -46,7 +48,7 @@ class ApproachOfTheSecondSunEffect extends OneShotEffect {
     public ApproachOfTheSecondSunEffect() {
         super(Outcome.Win);
         this.staticText
-                = "If this spell was cast from your hand and you've cast another spell named Approach of the Second Sun this game, you win the game. "
+                = "If this spell was cast from your hand and you've cast another spell named {this} this game, you win the game. "
                 + "Otherwise, put {this} into its owner's library seventh from the top and you gain 7 life.";
     }
 
@@ -62,12 +64,11 @@ class ApproachOfTheSecondSunEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Spell spell = game.getStack().getSpell(source.getSourceId());
+        Spell spell = game.getStack().getSpell(source.getSourceId(), false);
         if (controller != null && spell != null) {
             ApproachOfTheSecondSunWatcher watcher
                     = game.getState().getWatcher(ApproachOfTheSecondSunWatcher.class);
             if (watcher != null
-                    && !spell.isCopy()
                     && watcher.getApproachesCast(controller.getId()) > 1
                     && spell.getFromZone() == Zone.HAND) {
                 // Win the game
@@ -77,12 +78,9 @@ class ApproachOfTheSecondSunEffect extends OneShotEffect {
                 controller.gainLife(7, game, source);
 
                 // Put this into the library as the 7th from the top
-                if (spell.isCopy()) {
-                    return true;
-                }
-                Card spellCard = game.getStack().getSpell(source.getSourceId()).getCard();
+                Card spellCard = game.getStack().getSpell(source.getSourceId(), false).getCard();
                 if (spellCard != null) {
-                    controller.putCardOnTopXOfLibrary(spellCard, game, source, 7);
+                    controller.putCardOnTopXOfLibrary(spellCard, game, source, 7, true);
                 }
             }
             return true;
@@ -93,7 +91,7 @@ class ApproachOfTheSecondSunEffect extends OneShotEffect {
 
 class ApproachOfTheSecondSunWatcher extends Watcher {
 
-    private Map<UUID, Integer> approachesCast = new HashMap<>();
+    private final Map<UUID, Integer> approachesCast = new HashMap<>();
 
     public ApproachOfTheSecondSunWatcher() {
         super(WatcherScope.GAME);

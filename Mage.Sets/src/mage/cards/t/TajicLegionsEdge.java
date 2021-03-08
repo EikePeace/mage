@@ -19,7 +19,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -66,7 +66,7 @@ public final class TajicLegionsEdge extends CardImpl {
         ));
     }
 
-    public TajicLegionsEdge(final TajicLegionsEdge card) {
+    private TajicLegionsEdge(final TajicLegionsEdge card) {
         super(card);
     }
 

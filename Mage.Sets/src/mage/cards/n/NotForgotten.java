@@ -12,7 +12,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.token.SpiritWhiteToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.common.TargetCardInGraveyard;
@@ -32,7 +31,7 @@ public final class NotForgotten extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInGraveyard());
     }
 
-    public NotForgotten(final NotForgotten card) {
+    private NotForgotten(final NotForgotten card) {
         super(card);
     }
 
@@ -65,10 +64,10 @@ class NotForgottenEffect extends OneShotEffect {
         
         if (controller != null && targetCard != null) {
             boolean onTop = controller.chooseUse(outcome, "Put " + targetCard.getName() + " on top of it's owners library (otherwise on bottom)?", source, game);
-            boolean moved = controller.moveCardToLibraryWithInfo(targetCard, source.getSourceId(), game, Zone.GRAVEYARD, onTop, true);
+            boolean moved = controller.moveCardToLibraryWithInfo(targetCard, source, game, Zone.GRAVEYARD, onTop, true);
             if (moved) {
                 Token token = new SpiritWhiteToken();
-                token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId(), false, false);                
+                token.putOntoBattlefield(1, game, source, source.getControllerId(), false, false);
                 return true;
             }
         }

@@ -31,7 +31,7 @@ public final class RainbowVale extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RainbowVale(final RainbowVale card) {
+    private RainbowVale(final RainbowVale card) {
         super(card);
     }
 
@@ -115,7 +115,7 @@ class OpponentGainControlEffect extends ContinuousEffectImpl {
         Player targetOpponent = game.getPlayer(opponentId);
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null && targetOpponent != null) {
-            permanent.changeControllerId(opponentId, game);
+            permanent.changeControllerId(opponentId, game, source);
         } else {
             // no valid target exists, effect can be discarded
             discard();

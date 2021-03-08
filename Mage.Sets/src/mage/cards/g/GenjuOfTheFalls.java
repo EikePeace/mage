@@ -17,7 +17,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
@@ -49,7 +48,7 @@ public final class GenjuOfTheFalls extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public GenjuOfTheFalls(final GenjuOfTheFalls card) {
+    private GenjuOfTheFalls(final GenjuOfTheFalls card) {
         super(card);
     }
 

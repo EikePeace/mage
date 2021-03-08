@@ -36,7 +36,7 @@ public final class FlamebladeAngel extends CardImpl {
 
     }
 
-    public FlamebladeAngel(final FlamebladeAngel card) {
+    private FlamebladeAngel(final FlamebladeAngel card) {
         super(card);
     }
 
@@ -63,8 +63,7 @@ class FlamebladeAngelTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE 
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
                 || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 

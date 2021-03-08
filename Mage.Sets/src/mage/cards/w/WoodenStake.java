@@ -40,7 +40,7 @@ public final class WoodenStake extends CardImpl {
         this.addAbility(new WoodenStakeBlocksOrBecomesBlockedTriggeredAbility());
     }
 
-    public WoodenStake(final WoodenStake card) {
+    private WoodenStake(final WoodenStake card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class WoodenStakeBlocksOrBecomesBlockedTriggeredAbility extends TriggeredAbility
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

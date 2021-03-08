@@ -36,7 +36,7 @@ public final class RakishHeir extends CardImpl {
         this.addAbility(new RakishHeirTriggeredAbility());
     }
 
-    public RakishHeir(final RakishHeir card) {
+    private RakishHeir(final RakishHeir card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class RakishHeirTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -74,7 +74,7 @@ class RakishHeirTriggeredAbility extends TriggeredAbilityImpl {
                 && permanent.hasSubtype(SubType.VAMPIRE, game) && permanent.isControlledBy(controllerId)) {
             this.getEffects().clear();
             AddCountersTargetEffect effect = new AddCountersTargetEffect(CounterType.P1P1.createInstance());
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             this.addEffect(effect);
             return true;
         }

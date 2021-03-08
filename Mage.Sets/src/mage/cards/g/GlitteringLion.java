@@ -4,12 +4,9 @@ package mage.cards.g;
 import java.io.ObjectStreamException;
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.Ability;
-import mage.abilities.MageSingleton;
 import mage.abilities.StaticAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.effects.common.InfoEffect;
 import mage.abilities.effects.common.PreventAllDamageToSourceEffect;
 import mage.abilities.effects.common.continuous.LoseAbilitySourceEffect;
 import mage.cards.CardImpl;
@@ -35,13 +32,12 @@ public final class GlitteringLion extends CardImpl {
         // Prevent all damage that would be dealt to Glittering Lion.
         this.addAbility(GlitteringLionAbility.getInstance());
         // {3}: Until end of turn, Glittering Lion loses "Prevent all damage that would be dealt to Glittering Lion." Any player may activate this ability.
-        SimpleActivatedAbility ability2 = new SimpleActivatedAbility(Zone.BATTLEFIELD, new LoseAbilitySourceEffect(GlitteringLionAbility.getInstance(), Duration.EndOfTurn).setText("Until end of turn, {this} loses \"Prevent all damage that would be dealt to {this}.\""), new ManaCostsImpl("{3}"));
+        SimpleActivatedAbility ability2 = new SimpleActivatedAbility(Zone.BATTLEFIELD, new LoseAbilitySourceEffect(GlitteringLionAbility.getInstance(), Duration.EndOfTurn).setText("Until end of turn, {this} loses \"Prevent all damage that would be dealt to {this}.\" Any player may activate this ability"), new ManaCostsImpl("{3}"));
         ability2.setMayActivate(TargetController.ANY);
-        ability2.addEffect(new InfoEffect("Any player may activate this ability"));
         this.addAbility(ability2);
     }
 
-    public GlitteringLion(final GlitteringLion card) {
+    private GlitteringLion(final GlitteringLion card) {
         super(card);
     }
 

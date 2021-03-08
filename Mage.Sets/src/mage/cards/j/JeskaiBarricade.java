@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -47,7 +47,7 @@ public final class JeskaiBarricade extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JeskaiBarricade(final JeskaiBarricade card) {
+    private JeskaiBarricade(final JeskaiBarricade card) {
         super(card);
     }
 

@@ -34,7 +34,7 @@ public final class ScourgeOfNumai extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new ScourgeOfNumaiEffect(), TargetController.YOU, false));        
     }
 
-    public ScourgeOfNumai(final ScourgeOfNumai card) {
+    private ScourgeOfNumai(final ScourgeOfNumai card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class ScourgeOfNumaiEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             if (game.getBattlefield().countAll(new FilterCreaturePermanent(SubType.OGRE, "Ogre"), source.getControllerId(), game) < 1) {
-                controller.loseLife(2, game, false);
+                controller.loseLife(2, game, source, false);
             }
             return true;
         }

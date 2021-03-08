@@ -31,7 +31,7 @@ public final class LeylinePhantom extends CardImpl {
         this.addAbility(new LeylinePhantomTriggeredAbility());
     }
 
-    public LeylinePhantom(final LeylinePhantom card) {
+    private LeylinePhantom(final LeylinePhantom card) {
         super(card);
     }
 
@@ -58,7 +58,8 @@ class LeylinePhantomTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE || event.getType() == EventType.DAMAGED_PLANESWALKER || event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

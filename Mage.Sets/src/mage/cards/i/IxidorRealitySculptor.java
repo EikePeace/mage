@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -48,7 +48,7 @@ public final class IxidorRealitySculptor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public IxidorRealitySculptor(final IxidorRealitySculptor card) {
+    private IxidorRealitySculptor(final IxidorRealitySculptor card) {
         super(card);
     }
 

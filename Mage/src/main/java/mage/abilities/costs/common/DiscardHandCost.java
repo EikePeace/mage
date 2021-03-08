@@ -1,27 +1,23 @@
-
-
 package mage.abilities.costs.common;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostImpl;
-import mage.cards.Card;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 
 public class DiscardHandCost extends CostImpl {
 
     public DiscardHandCost() {
-    
     }
 
-    public DiscardHandCost(final DiscardHandCost cost) {
+    private DiscardHandCost(final DiscardHandCost cost) {
         super(cost);
     }
 
@@ -31,19 +27,18 @@ public class DiscardHandCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         return true;
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player player = game.getPlayer(controllerId);
-        if (player != null) {
-            for (Card card : player.getHand().getCards(game)) {
-                player.discard(card, ability, game);
-            }
-            paid = true;
+        if (player == null) {
+            return paid;
         }
+        player.discard(player.getHand(), true, source, game);
+        paid = true;
         return paid;
     }
 

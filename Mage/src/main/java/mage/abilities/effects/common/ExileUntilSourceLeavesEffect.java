@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common;
 
 import mage.abilities.Ability;
@@ -36,7 +31,11 @@ public class ExileUntilSourceLeavesEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            return new ExileTargetEffect(CardUtil.getCardExileZoneId(game, source), permanent.getIdName()).apply(game, source);
+            ExileTargetEffect effect = new ExileTargetEffect(CardUtil.getCardExileZoneId(game, source), permanent.getIdName());
+            if (targetPointer != null) {  // Grasping Giant
+                effect.setTargetPointer(targetPointer);
+            }
+            return effect.apply(game, source);
         }
         return false;
     }

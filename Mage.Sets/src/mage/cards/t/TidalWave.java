@@ -13,7 +13,6 @@ import mage.constants.Outcome;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.TidalWaveWallToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.target.targetpointer.FixedTarget;
 
@@ -30,7 +29,7 @@ public final class TidalWave extends CardImpl {
         this.getSpellAbility().addEffect(new TidalWaveEffect());
     }
 
-    public TidalWave(final TidalWave card) {
+    private TidalWave(final TidalWave card) {
         super(card);
     }
 
@@ -59,7 +58,7 @@ class TidalWaveEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Token token = new TidalWaveWallToken();
-        if (token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId())) {
+        if (token.putOntoBattlefield(1, game, source, source.getControllerId())) {
             for (UUID tokenId : token.getLastAddedTokenIds()) {
                 Permanent tokenPermanent = game.getPermanent(tokenId);
                 if (tokenPermanent != null) {

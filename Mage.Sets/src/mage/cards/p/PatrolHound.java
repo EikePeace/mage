@@ -22,7 +22,7 @@ public final class PatrolHound extends CardImpl {
 
     public PatrolHound(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
@@ -31,7 +31,7 @@ public final class PatrolHound extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainAbilitySourceEffect(FirstStrikeAbility.getInstance(), Duration.EndOfTurn), new DiscardCardCost()));
     }
 
-    public PatrolHound(final PatrolHound card) {
+    private PatrolHound(final PatrolHound card) {
         super(card);
     }
 

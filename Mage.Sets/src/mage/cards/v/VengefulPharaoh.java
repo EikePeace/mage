@@ -1,7 +1,6 @@
 
 package mage.cards.v;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
@@ -12,26 +11,26 @@ import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.DamagedEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.turn.Step;
 import mage.players.Player;
 import mage.target.common.TargetAttackingCreature;
 
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class VengefulPharaoh extends CardImpl {
 
     public VengefulPharaoh(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{B}{B}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{B}{B}{B}");
         this.subtype.add(SubType.ZOMBIE);
 
         this.power = new MageInt(5);
@@ -44,7 +43,7 @@ public final class VengefulPharaoh extends CardImpl {
         this.addAbility(new VengefulPharaohTriggeredAbility());
     }
 
-    public VengefulPharaoh(final VengefulPharaoh card) {
+    private VengefulPharaoh(final VengefulPharaoh card) {
         super(card);
     }
 
@@ -94,12 +93,13 @@ class VengefulPharaohTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER
+                || event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if ((event.getType() == EventType.DAMAGED_PLAYER && event.getTargetId().equals(this.getControllerId()))
+        if ((event.getType() == GameEvent.EventType.DAMAGED_PLAYER && event.getTargetId().equals(this.getControllerId()))
                 && ((DamagedEvent) event).isCombatDamage()) {
             if (!game.getPhase().getStep().equals(stepTriggeredPlayer) || game.getTurnNum() != turnTriggeredPlayer) {
                 stepTriggeredPlayer = game.getPhase().getStep();
@@ -107,9 +107,9 @@ class VengefulPharaohTriggeredAbility extends TriggeredAbilityImpl {
                 return true;
             }
         }
-        if (event.getType() == EventType.DAMAGED_PLANESWALKER && ((DamagedEvent) event).isCombatDamage()) {
+        if (event.getType() == GameEvent.EventType.DAMAGED_PERMANENT && ((DamagedEvent) event).isCombatDamage()) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.isControlledBy(this.getControllerId())) {
+            if (permanent != null && permanent.isPlaneswalker() && permanent.isControlledBy(this.getControllerId())) {
                 if (!game.getPhase().getStep().equals(stepTriggeredPlansewalker) || game.getTurnNum() != turnTriggeredPlaneswalker) {
                     stepTriggeredPlansewalker = game.getPhase().getStep();
                     turnTriggeredPlaneswalker = game.getTurnNum();
@@ -149,9 +149,9 @@ class VengefulPharaohEffect extends OneShotEffect {
         if (card != null && controller != null) {
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
-            controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+            controller.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             return true;
         }
         return false;

@@ -45,7 +45,7 @@ public final class SirensCall extends CardImpl {
         this.getSpellAbility().addWatcher(new AttackedThisTurnWatcher());
     }
 
-    public SirensCall(final SirensCall card) {
+    private SirensCall(final SirensCall card) {
         super(card);
     }
 
@@ -129,7 +129,7 @@ class SirensCallDestroyEffect extends OneShotEffect {
                     continue;
                 }
                 // Destroy the rest.
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
             return true;
         }

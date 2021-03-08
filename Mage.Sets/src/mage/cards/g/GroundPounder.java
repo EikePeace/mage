@@ -9,7 +9,6 @@ import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
-import mage.abilities.effects.common.continuous.BoostTargetEffect;
 import mage.abilities.effects.common.continuous.GainAbilitySourceEffect;
 import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
@@ -45,7 +44,7 @@ public final class GroundPounder extends CardImpl {
         this.addAbility(new GroundPounderTriggeredAbility());
     }
 
-    public GroundPounder(final GroundPounder card) {
+    private GroundPounder(final GroundPounder card) {
         super(card);
     }
 
@@ -76,7 +75,7 @@ class GroundPounderEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
             game.addEffect(new BoostSourceEffect(amount, amount, Duration.EndOfTurn), source);
             return true;
         }

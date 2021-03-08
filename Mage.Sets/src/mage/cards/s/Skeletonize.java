@@ -37,7 +37,7 @@ public final class Skeletonize extends CardImpl {
         this.getSpellAbility().addWatcher(new DamagedByWatcher(false));
     }
 
-    public Skeletonize(final Skeletonize card) {
+    private Skeletonize(final Skeletonize card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class SkeletonizeDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

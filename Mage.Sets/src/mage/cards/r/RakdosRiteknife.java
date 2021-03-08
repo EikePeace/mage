@@ -13,8 +13,6 @@ import mage.abilities.dynamicvalue.common.CountersSourceCount;
 import mage.abilities.dynamicvalue.common.StaticValue;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.SacrificeEffect;
-import mage.abilities.effects.common.SacrificeOpponentsEffect;
-import mage.abilities.effects.common.SacrificeTargetEffect;
 import mage.abilities.effects.common.continuous.BoostEquippedEffect;
 import mage.abilities.effects.common.continuous.GainAbilityAttachedEffect;
 import mage.abilities.keyword.EquipAbility;
@@ -60,7 +58,7 @@ public final class RakdosRiteknife extends CardImpl {
         this.addAbility(new EquipAbility(2));
     }
 
-    public RakdosRiteknife(final RakdosRiteknife card) {
+    private RakdosRiteknife(final RakdosRiteknife card) {
         super(card);
     }
 
@@ -89,7 +87,7 @@ class RakdosRiteKnifeEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent equipment = game.getPermanent(this.effectGivingEquipmentId);
         if (equipment != null) {
-            equipment.addCounters(CounterType.BLOOD.createInstance(), source, game);
+            equipment.addCounters(CounterType.BLOOD.createInstance(), source.getControllerId(), source, game);
         }
         return true;
     }

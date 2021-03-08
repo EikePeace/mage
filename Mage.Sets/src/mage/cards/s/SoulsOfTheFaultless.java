@@ -15,9 +15,8 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
-import mage.game.events.DamagedCreatureEvent;
+import mage.game.events.DamagedEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
@@ -40,7 +39,7 @@ public final class SoulsOfTheFaultless extends CardImpl {
         this.addAbility(new SoulsOfTheFaultlessTriggeredAbility());
     }
 
-    public SoulsOfTheFaultless(final SoulsOfTheFaultless card) {
+    private SoulsOfTheFaultless(final SoulsOfTheFaultless card) {
         super(card);
     }
 
@@ -67,13 +66,13 @@ class SoulsOfTheFaultlessTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getTargetId().equals(this.sourceId)
-                && ((DamagedCreatureEvent) event).isCombatDamage()) {
+                && ((DamagedEvent) event).isCombatDamage()) {
             Permanent source = game.getPermanent(event.getSourceId());
             if (source == null) {
                 source = (Permanent) game.getLastKnownInformation(event.getSourceId(), Zone.BATTLEFIELD);
@@ -122,7 +121,7 @@ class SoulsOfTheFaultlessEffect extends OneShotEffect {
         UUID attackerId = (UUID) this.getValue("attackerId");
         Player attacker = game.getPlayer(attackerId);
         if (attacker != null) {
-            attacker.loseLife(amount, game, false);
+            attacker.loseLife(amount, game, source, false);
         }
         return true;
     }

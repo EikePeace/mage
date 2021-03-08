@@ -18,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -42,7 +41,7 @@ public final class HissingQuagmire extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{1}{B}{G}")));
     }
 
-    public HissingQuagmire(final HissingQuagmire card) {
+    private HissingQuagmire(final HissingQuagmire card) {
         super(card);
     }
 

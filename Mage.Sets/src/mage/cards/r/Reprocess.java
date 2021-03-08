@@ -29,7 +29,7 @@ public final class Reprocess extends CardImpl {
         this.getSpellAbility().addEffect(new ReprocessEffect());
     }
 
-    public Reprocess(final Reprocess card) {
+    private Reprocess(final Reprocess card) {
         super(card);
     }
 
@@ -74,11 +74,11 @@ class ReprocessEffect extends OneShotEffect {
             for(UUID uuid : toSacrifice.getTargets()){
                 Permanent permanent = game.getPermanent(uuid);
                 if(permanent != null){
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                     amount++;
                 }
             }
-            player.drawCards(amount, game);
+            player.drawCards(amount, source, game);
         }
         return true;
     }

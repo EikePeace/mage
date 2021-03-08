@@ -18,7 +18,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ToughnessPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -53,7 +53,7 @@ public final class ThundercloudElemental extends CardImpl {
 
     }
 
-    public ThundercloudElemental(final ThundercloudElemental card) {
+    private ThundercloudElemental(final ThundercloudElemental card) {
         super(card);
     }
 

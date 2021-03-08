@@ -37,7 +37,7 @@ public final class DinrovaHorror extends CardImpl {
 
     }
 
-    public DinrovaHorror(final DinrovaHorror card) {
+    private DinrovaHorror(final DinrovaHorror card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class DinrovaHorrorEffect extends OneShotEffect {
             Player controller = game.getPlayer(target.getControllerId());
             if (controller != null) {
                 controller.moveCards(target, Zone.HAND, source, game);
-                controller.discard(1, false, source, game);
+                controller.discard(1, false, false, source, game);
                 return true;
             }
         }

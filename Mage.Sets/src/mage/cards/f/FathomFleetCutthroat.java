@@ -24,7 +24,7 @@ public final class FathomFleetCutthroat extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature an opponent controls that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
         filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
@@ -42,7 +42,7 @@ public final class FathomFleetCutthroat extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FathomFleetCutthroat(final FathomFleetCutthroat card) {
+    private FathomFleetCutthroat(final FathomFleetCutthroat card) {
         super(card);
     }
 

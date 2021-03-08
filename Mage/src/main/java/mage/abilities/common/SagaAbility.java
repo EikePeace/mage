@@ -12,7 +12,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.stack.StackAbility;
 import mage.game.stack.StackObject;
@@ -40,8 +39,8 @@ public class SagaAbility extends SimpleStaticAbility {
         this.maxChapter = ability.maxChapter;
     }
 
-    public void addChapterEffect(Card card, SagaChapter chapter, Effect effect) {
-        addChapterEffect(card, chapter, chapter, effect);
+    public void addChapterEffect(Card card, SagaChapter chapter, Effect... effects) {
+        addChapterEffect(card, chapter, chapter, new Effects(effects));
     }
 
     public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effect effect) {
@@ -53,7 +52,11 @@ public class SagaAbility extends SimpleStaticAbility {
     }
 
     public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effect effect, Target target) {
-        addChapterEffect(card, fromChapter, toChapter, new Effects(effect), new Targets(target));
+        addChapterEffect(card, fromChapter, toChapter, effect, target, false);
+    }
+
+    public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effect effect, Target target, boolean optional) {
+        addChapterEffect(card, fromChapter, toChapter, new Effects(effect), new Targets(target), optional);
     }
 
     public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effects effects, Target target) {
@@ -61,9 +64,13 @@ public class SagaAbility extends SimpleStaticAbility {
     }
 
     public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effects effects, Targets targets) {
+        addChapterEffect(card, fromChapter, toChapter, effects, targets, false);
+    }
+
+    public void addChapterEffect(Card card, SagaChapter fromChapter, SagaChapter toChapter, Effects effects, Targets targets, boolean optional) {
         ChapterTriggeredAbility ability;
         for (int i = fromChapter.getNumber(); i <= toChapter.getNumber(); i++) {
-            ability = new ChapterTriggeredAbility(null, SagaChapter.getChapter(i), toChapter);
+            ability = new ChapterTriggeredAbility(null, SagaChapter.getChapter(i), toChapter, optional);
             for (Effect effect : effects) {
                 if (effect != null) {
                     ability.addEffect(effect.copy());
@@ -114,8 +121,8 @@ class ChapterTriggeredAbility extends TriggeredAbilityImpl {
 
     private SagaChapter chapterFrom, chapterTo;
 
-    public ChapterTriggeredAbility(Effect effect, SagaChapter chapterFrom, SagaChapter chapterTo) {
-        super(Zone.ALL, effect, false);
+    public ChapterTriggeredAbility(Effect effect, SagaChapter chapterFrom, SagaChapter chapterTo, boolean optional) {
+        super(Zone.ALL, effect, optional);
         this.chapterFrom = chapterFrom;
         this.chapterTo = chapterTo;
     }
@@ -128,7 +135,7 @@ class ChapterTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_ADDED;
+        return event.getType() == GameEvent.EventType.COUNTER_ADDED;
     }
 
     @Override

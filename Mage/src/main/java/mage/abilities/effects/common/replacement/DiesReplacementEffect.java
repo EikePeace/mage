@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common.replacement;
 
 import mage.MageObjectReference;
@@ -52,14 +47,14 @@ public class DiesReplacementEffect extends ReplacementEffectImpl {
         Permanent permanent = ((ZoneChangeEvent) event).getTarget();
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && permanent != null) {
-            return controller.moveCardToExileWithInfo(permanent, null, "", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+            return controller.moveCards(permanent, Zone.EXILED, source, game);
         }
         return false;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

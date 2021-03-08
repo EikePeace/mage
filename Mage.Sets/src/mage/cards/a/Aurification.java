@@ -15,13 +15,12 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
-import mage.util.SubTypeList;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -33,7 +32,7 @@ public final class Aurification extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Each creature with a gold counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.GOLD));
+        filter.add(CounterType.GOLD.getPredicate());
     }
 
     static final String rule = "Each creature with a gold counter on it is a Wall in addition to its other creature types and has defender.";
@@ -45,10 +44,7 @@ public final class Aurification extends CardImpl {
         this.addAbility(new AddGoldCountersAbility());
 
         // Each creature with a gold counter on it is a Wall in addition to its other creature types and has defender.
-        SubTypeList subtypes = new SubTypeList();
-        subtypes.add(SubType.WALL);
-
-        BecomesSubtypeAllEffect becomesSubtypeAllEffect = new BecomesSubtypeAllEffect(Duration.WhileOnBattlefield, subtypes, filter, false);
+        BecomesSubtypeAllEffect becomesSubtypeAllEffect = new BecomesSubtypeAllEffect(Duration.WhileOnBattlefield, Arrays.asList(SubType.WALL), filter, false);
         becomesSubtypeAllEffect.setText("");
 
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, becomesSubtypeAllEffect));
@@ -58,7 +54,7 @@ public final class Aurification extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new RemoveAllGoldCountersEffect(), false));
     }
 
-    public Aurification(final Aurification card) {
+    private Aurification(final Aurification card) {
         super(card);
     }
 
@@ -129,7 +125,7 @@ public final class Aurification extends CardImpl {
                 if (permanent != null) {
                     int numToRemove = permanent.getCounters(game).getCount(CounterType.GOLD);
                     if (numToRemove > 0) {
-                        permanent.removeCounters(CounterType.GOLD.getName(), numToRemove, game);
+                        permanent.removeCounters(CounterType.GOLD.getName(), numToRemove, source, game);
                     }
                 }
             }

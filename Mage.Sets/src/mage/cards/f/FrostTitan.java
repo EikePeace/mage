@@ -44,7 +44,7 @@ public final class FrostTitan extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FrostTitan(final FrostTitan card) {
+    private FrostTitan(final FrostTitan card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class FrostTitanAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

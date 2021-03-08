@@ -3,7 +3,7 @@ package mage.cards.p;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -25,12 +25,12 @@ public final class PitchburnDevils extends CardImpl {
         this.toughness = new MageInt(3);
 
         // When Pitchburn Devils dies, it deals 3 damage to any target.
-        DiesTriggeredAbility ability = new DiesTriggeredAbility(new DamageTargetEffect(3, "it"));
+        DiesSourceTriggeredAbility ability = new DiesSourceTriggeredAbility(new DamageTargetEffect(3, "it"));
         ability.addTarget(new TargetAnyTarget());
         this.addAbility(ability);
     }
 
-    public PitchburnDevils(final PitchburnDevils card) {
+    private PitchburnDevils(final PitchburnDevils card) {
         super(card);
     }
 

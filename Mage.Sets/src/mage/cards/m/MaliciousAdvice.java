@@ -27,13 +27,13 @@ public final class MaliciousAdvice extends CardImpl {
 
         // Tap X target artifacts, creatures, and/or lands. You lose X life.
         Effect effect = new TapTargetEffect();
-        effect.setText("X target artifacts, creatures, and/or lands.");
+        effect.setText("X target artifacts, creatures, and/or lands");
         this.getSpellAbility().addEffect(effect);
         this.getSpellAbility().addEffect(new LoseLifeSourceControllerEffect(ManacostVariableValue.instance));
         this.getSpellAbility().setTargetAdjuster(MaliciousAdviceAdjuster.instance);
     }
 
-    public MaliciousAdvice(final MaliciousAdvice card) {
+    private MaliciousAdvice(final MaliciousAdvice card) {
         super(card);
     }
 

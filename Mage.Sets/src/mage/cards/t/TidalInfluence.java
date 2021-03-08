@@ -1,7 +1,5 @@
-
 package mage.cards.t;
 
-import java.util.UUID;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.StateTriggeredAbility;
@@ -31,8 +29,9 @@ import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LoneFox
  */
 public final class TidalInfluence extends CardImpl {
@@ -44,31 +43,31 @@ public final class TidalInfluence extends CardImpl {
     }
 
     public TidalInfluence(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{2}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{U}");
 
         // Cast Tidal Influence only if no permanents named Tidal Influence are on the battlefield.
         this.getSpellAbility().addCost(new TidalInfluenceCost());
         // Tidal Influence enters the battlefield with a tide counter on it.
         this.addAbility(new EntersBattlefieldAbility(new AddCountersSourceEffect(CounterType.TIDE.createInstance()),
-            "with a tide counter on it."));
+                "with a tide counter on it."));
         // At the beginning of your upkeep, put a tide counter on Tidal Influence.
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new AddCountersSourceEffect(CounterType.TIDE.createInstance()),
-            TargetController.YOU, false));
+                TargetController.YOU, false));
         // As long as there is exactly one tide counter on Tidal Influence, all blue creatures get -2/-0.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousEffect(
-            new BoostAllEffect(-2, -0, Duration.WhileOnBattlefield, filter, false),
-            new SourceHasCounterCondition(CounterType.TIDE, 1, 1),
-            "As long as there is exactly one tide counter on {this}, all blue creatures get -2/-0.")));
+                new BoostAllEffect(-2, -0, Duration.WhileOnBattlefield, filter, false),
+                new SourceHasCounterCondition(CounterType.TIDE, 1, 1),
+                "As long as there is exactly one tide counter on {this}, all blue creatures get -2/-0.")));
         // As long as there are exactly three tide counters on Tidal Influence, all blue creatures get +2/+0.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousEffect(
-            new BoostAllEffect(2, -0, Duration.WhileOnBattlefield, filter, false),
-            new SourceHasCounterCondition(CounterType.TIDE, 3, 3),
-            "As long as there are exactly three tide counter on {this}, all blue creatures get +2/-0.")));
+                new BoostAllEffect(2, -0, Duration.WhileOnBattlefield, filter, false),
+                new SourceHasCounterCondition(CounterType.TIDE, 3, 3),
+                "As long as there are exactly three tide counter on {this}, all blue creatures get +2/-0.")));
         // Whenever there are four tide counters on Tidal Influence, remove all tide counters from it.
         this.addAbility(new TidalInfluenceTriggeredAbility(new RemoveAllCountersSourceEffect(CounterType.TIDE)));
     }
 
-    public TidalInfluence(final TidalInfluence card) {
+    private TidalInfluence(final TidalInfluence card) {
         super(card);
     }
 
@@ -96,12 +95,12 @@ class TidalInfluenceCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return !game.getBattlefield().contains(filter, 1, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return !game.getBattlefield().contains(filter, source, game, 1);
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         this.paid = true;
         return paid;
     }

@@ -1,8 +1,5 @@
 package mage.cards.k;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
@@ -17,7 +14,6 @@ import mage.game.Game;
 import mage.game.GameImpl;
 import mage.game.command.Commander;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentImpl;
 import mage.players.Player;
@@ -25,6 +21,10 @@ import mage.target.TargetPermanent;
 import mage.target.TargetPlayer;
 import mage.target.common.TargetCardInHand;
 import mage.util.CardUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author bunchOfDevs
@@ -51,7 +51,7 @@ public final class KarnLiberated extends CardImpl {
         this.addAbility(new LoyaltyAbility(new KarnLiberatedEffect(), -14));
     }
 
-    public KarnLiberated(final KarnLiberated card) {
+    private KarnLiberated(final KarnLiberated card) {
         super(card);
     }
 
@@ -100,7 +100,7 @@ class KarnLiberatedEffect extends OneShotEffect {
             game.getState().addCard(card);
         }
         for (Player player : game.getPlayers().values()) {
-            if (player.isInGame()) { // only players alive are in the restarted game
+            if (player.canRespond()) { // only players alive are in the restarted game
                 player.getGraveyard().clear();
                 player.getHand().clear();
                 player.getLibrary().clear();
@@ -108,7 +108,7 @@ class KarnLiberatedEffect extends OneShotEffect {
                     if (card.isOwnedBy(player.getId()) && !card.isCopy() // no copies
                             && !player.getSideboard().contains(card.getId())
                             && !cards.contains(card)) { // not the exiled cards
-                        if (game.getCommandersIds(player).contains(card.getId())) {
+                        if (game.getCommandersIds(player, CommanderCardType.ANY, false).contains(card.getId())) {
                             game.addCommander(new Commander(card)); // TODO: check restart and init
                             // no needs in initCommander call -- it's used on game startup (init)
                             game.setZone(card.getId(), Zone.COMMAND);
@@ -150,7 +150,7 @@ class KarnLiberatedDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BEGINNING_PHASE_PRE;
+        return event.getType() == GameEvent.EventType.BEGINNING_PHASE_PRE;
     }
 
     @Override

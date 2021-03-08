@@ -46,7 +46,7 @@ public final class JhoirasTimebug extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JhoirasTimebug(final JhoirasTimebug card) {
+    private JhoirasTimebug(final JhoirasTimebug card) {
         super(card);
     }
 
@@ -79,20 +79,20 @@ class JhoirasTimebugEffect extends OneShotEffect {
             Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
             if (permanent != null && permanent.getCounters(game).containsKey(CounterType.TIME)) {
                 if (controller.chooseUse(Outcome.Benefit, "Add a time counter? (Otherwise remove one)", source, game)) {
-                    permanent.addCounters(CounterType.TIME.createInstance(), source, game);
+                    permanent.addCounters(CounterType.TIME.createInstance(), source.getControllerId(), source, game);
                 }
                 else {
-                    permanent.removeCounters(CounterType.TIME.createInstance(), game);
+                    permanent.removeCounters(CounterType.TIME.createInstance(), source, game);
                 }
             }
             else {
                 Card card = game.getExile().getCard(this.getTargetPointer().getFirst(game, source), game);
                 if (card != null) {
                     if (controller.chooseUse(Outcome.Detriment, "Add a time counter? (Otherwise remove one)", source, game)) {
-                        card.addCounters(CounterType.TIME.createInstance(), source, game);
+                        card.addCounters(CounterType.TIME.createInstance(), source.getControllerId(), source, game);
                     }
                     else {
-                        card.removeCounters(CounterType.TIME.createInstance(), game);
+                        card.removeCounters(CounterType.TIME.createInstance(), source, game);
                     }
                 }
             }

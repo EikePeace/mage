@@ -1,7 +1,6 @@
 package mage.cards.d;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.effects.ContinuousEffect;
@@ -25,6 +24,7 @@ import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author TheElk801
@@ -109,7 +109,7 @@ class DreadhordeArcanistEffect extends OneShotEffect {
                 && controller.chooseUse(Outcome.PlayForFree, "Cast " + card.getLogName() + '?', source, game)) {
             game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
             controller.cast(controller.chooseAbilityForCast(card, game, true),
-                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                    game, true, new ApprovingObject(source, game));
             game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
         }
         ContinuousEffect effect = new DreadhordeArcanistReplacementEffect(card.getId());
@@ -141,15 +141,7 @@ class DreadhordeArcanistReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        Card card = game.getCard(this.cardId);
-        if (controller != null && card != null) {
-            controller.moveCardToExileWithInfo(
-                    card, null, "", source.getSourceId(),
-                    game, Zone.STACK, true
-            );
-            return true;
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 

@@ -42,11 +42,11 @@ public final class JungleBasin extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SacrificeSourceUnlessPaysEffect(new ReturnToHandChosenControlledPermanentCost(new TargetControlledPermanent(filter)))));
 
         // {tap}: Add {C}{G}.
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 0, 0, 0, 0, 0, 1), new TapSourceCost()));
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 0, 1, 0, 0, 1), new TapSourceCost()));
 
     }
 
-    public JungleBasin(final JungleBasin card) {
+    private JungleBasin(final JungleBasin card) {
         super(card);
     }
 

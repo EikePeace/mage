@@ -36,7 +36,7 @@ public final class Shriekgeist extends CardImpl {
         this.addAbility(new ShriekgeistTriggeredAbility());
     }
 
-    public Shriekgeist(final Shriekgeist card) {
+    private Shriekgeist(final Shriekgeist card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class ShriekgeistTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -80,6 +80,6 @@ class ShriekgeistTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever {this} deals combat damage to a player, that player puts the top two cards of their library into their graveyard.";
+        return "Whenever {this} deals combat damage to a player, that player mills two cards.";
     }
 }

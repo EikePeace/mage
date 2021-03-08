@@ -34,7 +34,7 @@ public final class Trickbind extends CardImpl {
         this.getSpellAbility().addTarget(new TargetActivatedOrTriggeredAbility());
     }
 
-    public Trickbind(final Trickbind card) {
+    private Trickbind(final Trickbind card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class TrickbindCounterEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         StackObject stackObject = game.getStack().getStackObject(source.getFirstTarget());
-        if (stackObject != null && game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game)) {
+        if (stackObject != null && game.getStack().counter(source.getFirstTarget(), source, game)) {
             TrickbindCantActivateEffect effect = new TrickbindCantActivateEffect();
             effect.setTargetPointer(new FixedTarget(stackObject.getSourceId()));
             game.getContinuousEffects().addEffect(effect, source);

@@ -10,7 +10,7 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentCard;
 import mage.game.permanent.PermanentToken;
-import mage.util.functions.ApplyToPermanent;
+import mage.util.functions.CopyApplier;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class CopyEffect extends ContinuousEffectImpl {
     protected MageObject copyFromObject;
 
     protected UUID copyToObjectId;
-    protected ApplyToPermanent applier;
+    protected CopyApplier applier;
 
     public CopyEffect(MageObject copyFromObject, UUID copyToObjectId) {
         this(Duration.Custom, copyFromObject, copyToObjectId);
@@ -103,10 +103,10 @@ public class CopyEffect extends ContinuousEffectImpl {
         for (CardType type : copyFromObject.getCardType()) {
             permanent.addCardType(type);
         }
-        permanent.getSubtype(game).clear();
-        for (SubType type : copyFromObject.getSubtype(game)) {
-            permanent.getSubtype(game).add(type);
-        }
+
+        permanent.removeAllSubTypes(game);
+        permanent.copySubTypesFrom(game, copyFromObject);
+
         permanent.getSuperType().clear();
         for (SuperType type : copyFromObject.getSuperType()) {
             permanent.addSuperType(type);
@@ -115,11 +115,11 @@ public class CopyEffect extends ContinuousEffectImpl {
         permanent.removeAllAbilities(source.getSourceId(), game);
         if (copyFromObject instanceof Permanent) {
             for (Ability ability : ((Permanent) copyFromObject).getAbilities(game)) {
-                permanent.addAbility(ability, getSourceId(), game, false); // no new Id so consumed replacement effects are known while new continuousEffects.apply happen.
+                permanent.addAbility(ability, getSourceId(), game);
             }
         } else {
             for (Ability ability : copyFromObject.getAbilities()) {
-                permanent.addAbility(ability, getSourceId(), game, false); // no new Id so consumed replacement effects are known while new continuousEffects.apply happen.
+                permanent.addAbility(ability, getSourceId(), game);
             }
         }
 
@@ -164,11 +164,11 @@ public class CopyEffect extends ContinuousEffectImpl {
         return copyToObjectId;
     }
 
-    public ApplyToPermanent getApplier() {
+    public CopyApplier getApplier() {
         return applier;
     }
 
-    public void setApplier(ApplyToPermanent applier) {
+    public void setApplier(CopyApplier applier) {
         this.applier = applier;
     }
 

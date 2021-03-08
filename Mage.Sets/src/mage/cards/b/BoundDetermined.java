@@ -50,7 +50,7 @@ public final class BoundDetermined extends SplitCard {
 
     }
 
-    public BoundDetermined(final BoundDetermined card) {
+    private BoundDetermined(final BoundDetermined card) {
         super(card);
     }
 
@@ -85,8 +85,8 @@ class BoundEffect extends OneShotEffect {
                 if (controller.chooseTarget(outcome, target, source, game)) {
                     Permanent toSacrifice = game.getPermanent(target.getFirstTarget());
                     if (toSacrifice != null) {
-                        toSacrifice.sacrifice(source.getSourceId(), game);
-                        game.applyEffects();
+                        toSacrifice.sacrifice(source, game);
+                        game.getState().processAction(game);
                         int colors = toSacrifice.getColor(game).getColorCount();
                         if (colors > 0) {
                             TargetCardInYourGraveyard targetCard = new TargetCardInYourGraveyard(0, colors,

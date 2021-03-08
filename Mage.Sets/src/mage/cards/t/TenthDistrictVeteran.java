@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -43,7 +43,7 @@ public final class TenthDistrictVeteran extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TenthDistrictVeteran(final TenthDistrictVeteran card) {
+    private TenthDistrictVeteran(final TenthDistrictVeteran card) {
         super(card);
     }
 

@@ -40,7 +40,7 @@ public final class JediTraining extends CardImpl {
         this.addAbility(new JediTrainingTriggeredAbility());
     }
 
-    public JediTraining(final JediTraining card) {
+    private JediTraining(final JediTraining card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class JediTrainingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.MEDITATED;
+        return event.getType() == GameEvent.EventType.MEDITATED;
     }
 
     @Override

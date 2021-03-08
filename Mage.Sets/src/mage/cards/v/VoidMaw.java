@@ -47,7 +47,7 @@ public final class VoidMaw extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(2, 2, Duration.EndOfTurn), new VoidMawCost()));
     }
 
-    public VoidMaw(final VoidMaw card) {
+    private VoidMaw(final VoidMaw card) {
         super(card);
     }
 
@@ -132,17 +132,18 @@ class VoidMawCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
             TargetCardInExile target = new TargetCardInExile(new FilterCard(), CardUtil.getCardExileZoneId(game, ability));
             target.setNotTarget(true);
             Cards cards = game.getExile().getExileZone(CardUtil.getCardExileZoneId(game, ability));
-            if (!cards.isEmpty()
+            if (cards != null
+                    && !cards.isEmpty()
                     && controller.choose(Outcome.Benefit, cards, target, game)) {
                 Card card = game.getCard(target.getFirstTarget());
                 if (card != null) {
-                    if (controller.moveCardToGraveyardWithInfo(card, sourceId, game, Zone.EXILED)) {
+                    if (controller.moveCardToGraveyardWithInfo(card, source, game, Zone.EXILED)) {
                         paid = true;
                     }
                 }
@@ -152,7 +153,7 @@ class VoidMawCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         Player player = game.getPlayer(controllerId);
         return player != null;
     }

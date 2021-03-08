@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterSpell;
 import mage.filter.StaticFilters;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.target.TargetSpell;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -53,7 +53,7 @@ public final class VigilantMartyr extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VigilantMartyr(final VigilantMartyr card) {
+    private VigilantMartyr(final VigilantMartyr card) {
         super(card);
     }
 

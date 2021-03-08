@@ -53,7 +53,7 @@ public final class DereviEmpyrialTactician extends CardImpl {
         this.addAbility(new DereviEmpyrialTacticianAbility());
     }
 
-    public DereviEmpyrialTactician(final DereviEmpyrialTactician card) {
+    private DereviEmpyrialTactician(final DereviEmpyrialTactician card) {
         super(card);
     }
 
@@ -75,8 +75,8 @@ class DereviEmpyrialTacticianTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD 
-                || event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD 
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -99,7 +99,7 @@ class DereviEmpyrialTacticianTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever {this} enters the battlefield or a creature you control deals combat damage to a player, you may tap or untap target permanent";
+        return "Whenever {this} enters the battlefield or a creature you control deals combat damage to a player, you may tap or untap target permanent.";
     }
 
     @Override

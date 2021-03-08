@@ -5,7 +5,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -47,7 +47,7 @@ public final class OrcishLumberjack extends CardImpl {
 
     }
 
-    public OrcishLumberjack(final OrcishLumberjack card) {
+    private OrcishLumberjack(final OrcishLumberjack card) {
         super(card);
     }
 
@@ -64,10 +64,10 @@ class OrcishLumberjackManaEffect extends ManaEffect {
     public OrcishLumberjackManaEffect() {
         super();
         this.staticText = "Add three mana in any combination of {R} and/or {G}";
-        netMana.add(new Mana(0, 3, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(1, 2, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(2, 1, 0, 0, 0, 0, 0, 0));
-        netMana.add(new Mana(3, 0, 0, 0, 0, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 0, 3, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 1, 2, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 2, 1, 0, 0, 0));
+        netMana.add(new Mana(0, 0, 0, 3, 0, 0, 0, 0));
     }
 
     public OrcishLumberjackManaEffect(final OrcishLumberjackManaEffect effect) {

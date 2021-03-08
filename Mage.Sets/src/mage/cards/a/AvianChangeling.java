@@ -22,11 +22,11 @@ public final class AvianChangeling extends CardImpl {
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(FlyingAbility.getInstance());
     }
 
-    public AvianChangeling(final AvianChangeling card) {
+    private AvianChangeling(final AvianChangeling card) {
         super(card);
     }
 

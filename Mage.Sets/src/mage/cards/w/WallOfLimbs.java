@@ -53,7 +53,7 @@ public final class WallOfLimbs extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WallOfLimbs(final WallOfLimbs card) {
+    private WallOfLimbs(final WallOfLimbs card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class WallOfLimbsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAINED_LIFE;
+        return event.getType() == GameEvent.EventType.GAINED_LIFE;
     }
     
     @Override

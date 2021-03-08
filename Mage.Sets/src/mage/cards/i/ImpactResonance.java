@@ -36,7 +36,7 @@ public final class ImpactResonance extends CardImpl {
         this.getSpellAbility().addWatcher(new GreatestAmountOfDamageWatcher());
     }
 
-    public ImpactResonance(final ImpactResonance card) {
+    private ImpactResonance(final ImpactResonance card) {
         super(card);
     }
 
@@ -96,8 +96,7 @@ class GreatestAmountOfDamageWatcher extends Watcher {
     @Override
     public void watch(GameEvent event, Game game) {
         switch(event.getType()) {
-            case DAMAGED_CREATURE:
-            case DAMAGED_PLANESWALKER:
+            case DAMAGED_PERMANENT:
             case DAMAGED_PLAYER:
                 if (event.getAmount() > damageAmount) {
                     damageAmount = event.getAmount();

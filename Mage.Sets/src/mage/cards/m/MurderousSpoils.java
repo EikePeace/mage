@@ -44,7 +44,7 @@ public final class MurderousSpoils extends CardImpl {
         
     }
 
-    public MurderousSpoils(final MurderousSpoils card) {
+    private MurderousSpoils(final MurderousSpoils card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class MurderousSpoilsEffect extends OneShotEffect {
                 gainControl.setTargetPointer(new FixedTarget(p, game));
                 game.addEffect(gainControl, source);
             }
-            target.destroy(source.getId(), game, true);
+            target.destroy(source, game, true);
             return true;
         }
         return false;

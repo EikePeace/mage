@@ -17,7 +17,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPlayer;
 import mage.target.common.TargetControlledPermanent;
 
@@ -53,7 +53,7 @@ public final class BloodChinFanatic extends CardImpl {
         
     }
 
-    public BloodChinFanatic(final BloodChinFanatic card) {
+    private BloodChinFanatic(final BloodChinFanatic card) {
         super(card);
     }
 

@@ -2,7 +2,6 @@
 package mage.cards.t;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.DiesAttachedTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -17,8 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.Zone;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetArtifactPermanent;
@@ -49,7 +46,7 @@ public final class TezzeretsTouch extends CardImpl {
         this.addAbility(new DiesAttachedTriggeredAbility(new ReturnToHandAttachedEffect(), "enchanted artifact", false, false));
     }
 
-    public TezzeretsTouch(final TezzeretsTouch card) {
+    private TezzeretsTouch(final TezzeretsTouch card) {
         super(card);
     }
 

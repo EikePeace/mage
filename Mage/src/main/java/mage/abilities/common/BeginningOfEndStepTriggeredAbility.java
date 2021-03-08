@@ -1,6 +1,5 @@
 package mage.abilities.common;
 
-import java.util.Locale;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.condition.Condition;
 import mage.abilities.effects.Effect;
@@ -8,14 +7,15 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.Locale;
+
 public class BeginningOfEndStepTriggeredAbility extends TriggeredAbilityImpl {
 
-    private TargetController targetController;
-    private Condition interveningIfClauseCondition;
+    private final TargetController targetController;
+    private final Condition interveningIfClauseCondition;
 
     public BeginningOfEndStepTriggeredAbility(Effect effect, TargetController targetController, boolean isOptional) {
         this(Zone.BATTLEFIELD, effect, targetController, null, isOptional);
@@ -40,7 +40,7 @@ public class BeginningOfEndStepTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override
@@ -103,6 +103,7 @@ public class BeginningOfEndStepTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public String getRule() {
         StringBuilder sb = new StringBuilder(getEffects().getText(modes.getMode()));
+
         if (this.optional) {
             if (sb.substring(0, 6).toLowerCase(Locale.ENGLISH).equals("target")) {
                 sb.insert(0, "you may have ");
@@ -112,8 +113,9 @@ public class BeginningOfEndStepTriggeredAbility extends TriggeredAbilityImpl {
         }
         String abilityWordRule = "";
         if (abilityWord != null) {
-            abilityWordRule = "<i>" + abilityWord.toString() + "</i> &mdash ";
+            abilityWordRule = "<i>" + abilityWord.toString() + "</i> &mdash; ";
         }
+
         switch (targetController) {
             case YOU:
                 return sb.insert(0, generateConditionString()).insert(0, abilityWordRule + "At the beginning of your end step, ").toString();
@@ -134,6 +136,13 @@ public class BeginningOfEndStepTriggeredAbility extends TriggeredAbilityImpl {
     private String generateConditionString() {
         if (interveningIfClauseCondition != null) {
             if (interveningIfClauseCondition.toString().startsWith("if")) {
+
+                //Fixes punctuation on multiple sentence if-then construction
+                // see -- Colfenor's Urn
+                if (interveningIfClauseCondition.toString().endsWith(".")) {
+                    return interveningIfClauseCondition.toString() + " ";
+                }
+
                 return interveningIfClauseCondition.toString() + ", ";
             } else {
                 return "if {this} is " + interveningIfClauseCondition.toString() + ", ";

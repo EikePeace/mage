@@ -4,9 +4,9 @@ package mage.cards.r;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.effects.common.DoIfCostPaid;
@@ -41,10 +41,10 @@ public final class RebornHero extends CardImpl {
         Ability ability = new SimpleStaticAbility(
                 Zone.BATTLEFIELD,
                 new ConditionalContinuousEffect(
-                        new GainAbilitySourceEffect(new DiesTriggeredAbility(new DoIfCostPaid(
+                        new GainAbilitySourceEffect(new DiesSourceTriggeredAbility(new DoIfCostPaid(
                                 new ReturnSourceFromGraveyardToBattlefieldEffect(), new ManaCostsImpl("{W}{W}")
                         ))),
-                        new CardsInControllerGraveCondition(7),
+                        new CardsInControllerGraveyardCondition(7),
                         "As long as seven or more cards are in your graveyard, "
                         + "{this} has \"When {this} dies, you may pay {W}{W}. "
                         + "If you do, return {this} to the battlefield under your control.\""
@@ -54,7 +54,7 @@ public final class RebornHero extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RebornHero(final RebornHero card) {
+    private RebornHero(final RebornHero card) {
         super(card);
     }
 

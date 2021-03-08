@@ -7,7 +7,6 @@ import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.mana.BlackManaAbility;
-import mage.abilities.mana.GreenManaAbility;
 import mage.abilities.mana.RedManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -35,7 +34,7 @@ public final class RakdosLocket extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RakdosLocket(final RakdosLocket card) {
+    private RakdosLocket(final RakdosLocket card) {
         super(card);
     }
 

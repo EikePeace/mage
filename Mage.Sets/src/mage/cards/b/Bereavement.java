@@ -29,7 +29,7 @@ public final class Bereavement extends CardImpl {
         this.addAbility(new BereavementTriggeredAbility());
     }
 
-    public Bereavement(final Bereavement card) {
+    private Bereavement(final Bereavement card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class BereavementTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

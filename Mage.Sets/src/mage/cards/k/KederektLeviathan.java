@@ -12,7 +12,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterNonlandPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class KederektLeviathan extends CardImpl {
         this.addAbility(new UnearthAbility(new ManaCostsImpl("{6}{U}")));
     }
 
-    public KederektLeviathan(final KederektLeviathan card) {
+    private KederektLeviathan(final KederektLeviathan card) {
         super(card);
     }
 

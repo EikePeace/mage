@@ -35,7 +35,7 @@ public final class VexingArcanix extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VexingArcanix(final VexingArcanix card) {
+    private VexingArcanix(final VexingArcanix card) {
         super(card);
     }
 
@@ -74,11 +74,11 @@ class VexingArcanixEffect extends OneShotEffect {
             if (card != null) {
                 Cards cards = new CardsImpl(card);
                 player.revealCards(sourceObject.getIdName(), cards, game);
-                if (CardUtil.haveSameNames(card.getName(), cardName)) {
+                if (CardUtil.haveSameNames(card, cardName, game)) {
                     player.moveCards(cards, Zone.HAND, source, game);
                 } else {
                     player.moveCards(cards, Zone.GRAVEYARD, source, game);
-                    player.damage(2, source.getSourceId(), game);
+                    player.damage(2, source.getSourceId(), source, game);
                 }
             }
             return true;

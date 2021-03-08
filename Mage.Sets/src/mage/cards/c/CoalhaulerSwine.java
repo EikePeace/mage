@@ -31,7 +31,7 @@ public final class CoalhaulerSwine extends CardImpl {
         this.addAbility(new DealtDamageToSourceTriggeredAbility(new CoalhaulerSwineEffect(), false, false, true));
     }
 
-    public CoalhaulerSwine(final CoalhaulerSwine card) {
+    private CoalhaulerSwine(final CoalhaulerSwine card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ public final class CoalhaulerSwine extends CardImpl {
             for (UUID playerId : game.getPlayers().keySet()) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
-                    player.damage((Integer) this.getValue("damage"), source.getSourceId(), game);
+                    player.damage((Integer) this.getValue("damage"), source.getSourceId(), source, game);
                 }
             }
             return true;

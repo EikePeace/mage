@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -48,7 +48,7 @@ public final class DrillSkimmer extends CardImpl {
                 condition, "{this} has shroud as long as you control another artifact creature.")));
     }
 
-    public DrillSkimmer(final DrillSkimmer card) {
+    private DrillSkimmer(final DrillSkimmer card) {
         super(card);
     }
 

@@ -42,7 +42,7 @@ public final class ArsenalThresher extends CardImpl {
                 "you may reveal any number of other artifact cards from your hand. {this} enters the battlefield with a +1/+1 counter on it for each card revealed this way"));
     }
 
-    public ArsenalThresher(final ArsenalThresher card) {
+    private ArsenalThresher(final ArsenalThresher card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class ArsenalThresherEffect extends OneShotEffect {
                     if (arsenalThresher != null) {
                         controller.revealCards(arsenalThresher.getIdName(), cards, game);
                         List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects"); // the basic event is the EntersBattlefieldEvent, so use already applied replacement effects from that event
-                        arsenalThresher.addCounters(CounterType.P1P1.createInstance(cards.size()), source, game, appliedEffects);
+                        arsenalThresher.addCounters(CounterType.P1P1.createInstance(cards.size()), source.getControllerId(), source, game, appliedEffects);
                     }
                 }
             }

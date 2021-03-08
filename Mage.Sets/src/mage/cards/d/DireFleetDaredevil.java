@@ -3,8 +3,9 @@ package mage.cards.d;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
-import mage.abilities.effects.*;
-import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
+import mage.abilities.effects.ContinuousEffect;
+import mage.abilities.effects.OneShotEffect;
+import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.keyword.FirstStrikeAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -14,15 +15,12 @@ import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
-import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.target.common.TargetCardInOpponentsGraveyard;
 import mage.target.targetpointer.FixedTarget;
 import mage.util.CardUtil;
 
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -49,13 +47,15 @@ public final class DireFleetDaredevil extends CardImpl {
         // First strike
         this.addAbility(FirstStrikeAbility.getInstance());
 
-        // When this enters the battlefield, exile target instant or sorcery card from an opponent's graveyard. You may cast that card this turn and you may spend mana as though it were mana of any color. If that card would be put into a graveyard this turn, exile it instead.
+        // When Dire Fleet Daredevil enters the battlefield, exile target instant or sorcery card from an opponent's graveyard. 
+        // You may cast it this turn, and you may spend mana as though it were mana of any type to cast that spell. 
+        // If that spell would be put into a graveyard this turn, exile it instead.
         Ability ability = new EntersBattlefieldTriggeredAbility(new DireFleetDaredevilEffect());
         ability.addTarget(new TargetCardInOpponentsGraveyard(filter));
         this.addAbility(ability);
     }
 
-    public DireFleetDaredevil(final DireFleetDaredevil card) {
+    private DireFleetDaredevil(final DireFleetDaredevil card) {
         super(card);
     }
 
@@ -92,13 +92,10 @@ class DireFleetDaredevilEffect extends OneShotEffect {
                 if (controller.moveCards(targetCard, Zone.EXILED, source, game)) {
                     targetCard = game.getCard(targetCard.getId());
                     if (targetCard != null) {
-                        ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, Duration.EndOfTurn);
-                        effect.setTargetPointer(new FixedTarget(targetCard, game));
-                        game.addEffect(effect, source);
-                        effect = new DireFleetDaredevilSpendAnyManaEffect();
-                        effect.setTargetPointer(new FixedTarget(targetCard, game));
-                        game.addEffect(effect, source);
-                        effect = new DireFleetDaredevilReplacementEffect();
+                        // you may play and spend any mana
+                        CardUtil.makeCardPlayable(game, source, targetCard, Duration.EndOfTurn, true);
+                        // exile from graveyard
+                        ContinuousEffect effect = new DireFleetDaredevilReplacementEffect();
                         effect.setTargetPointer(new FixedTarget(targetCard, game));
                         game.addEffect(effect, source);
                         return true;
@@ -108,44 +105,6 @@ class DireFleetDaredevilEffect extends OneShotEffect {
         }
         return false;
     }
-}
-
-class DireFleetDaredevilSpendAnyManaEffect extends AsThoughEffectImpl implements AsThoughManaEffect {
-
-    public DireFleetDaredevilSpendAnyManaEffect() {
-        super(AsThoughEffectType.SPEND_OTHER_MANA, Duration.EndOfTurn, Outcome.Benefit);
-        staticText = "you may spend mana as though it were mana of any color";
-    }
-
-    public DireFleetDaredevilSpendAnyManaEffect(final DireFleetDaredevilSpendAnyManaEffect effect) {
-        super(effect);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        return true;
-    }
-
-    @Override
-    public DireFleetDaredevilSpendAnyManaEffect copy() {
-        return new DireFleetDaredevilSpendAnyManaEffect(this);
-    }
-
-    @Override
-    public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        objectId = CardUtil.getMainCardId(game, objectId); // for split cards
-        FixedTarget fixedTarget = ((FixedTarget) getTargetPointer());
-        return source.isControlledBy(affectedControllerId)
-                && Objects.equals(objectId, ((FixedTarget) getTargetPointer()).getTarget())
-                && game.getState().getZoneChangeCounter(objectId) <= fixedTarget.getZoneChangeCounter() + 1
-                && (game.getState().getZone(objectId) == Zone.STACK || game.getState().getZone(objectId) == Zone.EXILED);
-    }
-
-    @Override
-    public ManaType getAsThoughManaType(ManaType manaType, ManaPoolItem mana, UUID affectedControllerId, Ability source, Game game) {
-        return mana.getFirstAvailable();
-    }
-
 }
 
 class DireFleetDaredevilReplacementEffect extends ReplacementEffectImpl {
@@ -167,15 +126,16 @@ class DireFleetDaredevilReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Card card = game.getCard(event.getTargetId());
-        if (card != null) {
-            return card.moveToZone(Zone.EXILED, source.getSourceId(), game, false);
+        Player controller = game.getPlayer(source.getControllerId());
+        if (card != null && controller != null) {
+            return controller.moveCards(card, Zone.EXILED, source, game);
         }
         return false;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

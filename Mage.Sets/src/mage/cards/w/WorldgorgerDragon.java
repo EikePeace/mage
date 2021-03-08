@@ -21,7 +21,7 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.ExileZone;
 import mage.game.Game;
 import mage.game.permanent.PermanentToken;
@@ -53,7 +53,7 @@ public final class WorldgorgerDragon extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new WorldgorgerDragonLeavesEffect(), false));
     }
 
-    public WorldgorgerDragon(final WorldgorgerDragon card) {
+    private WorldgorgerDragon(final WorldgorgerDragon card) {
         super(card);
     }
 

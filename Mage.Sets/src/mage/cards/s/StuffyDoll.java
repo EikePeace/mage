@@ -44,7 +44,7 @@ public final class StuffyDoll extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new DamageSelfEffect(1), new TapSourceCost()));
     }
 
-    public StuffyDoll(final StuffyDoll card) {
+    private StuffyDoll(final StuffyDoll card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class StuffyDollTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
@@ -110,7 +110,7 @@ class StuffyDollGainLifeEffect extends OneShotEffect {
         UUID playerId = (UUID) game.getState().getValue(source.getSourceId() + "_player");
         Player player = game.getPlayer(playerId);
         if (player != null && player.canRespond()) {
-            player.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), game);
+            player.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), source, game);
         }
         return true;
     }

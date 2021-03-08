@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -34,7 +34,7 @@ public final class FleshmadSteed extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new TapSourceEffect(), false, filter));
     }
 
-    public FleshmadSteed(final FleshmadSteed card) {
+    private FleshmadSteed(final FleshmadSteed card) {
         super(card);
     }
 

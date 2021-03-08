@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.ObjectColor;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
-import mage.abilities.condition.common.CastFromHandSourceCondition;
+import mage.abilities.condition.common.CastFromHandSourcePermanentCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.DestroyAllEffect;
 import mage.abilities.keyword.FlyingAbility;
@@ -43,12 +43,12 @@ public final class ReiverDemon extends CardImpl {
         // When Reiver Demon enters the battlefield, if you cast it from your hand, destroy all nonartifact, nonblack creatures. They can't be regenerated.
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(
                 new EntersBattlefieldTriggeredAbility(new DestroyAllEffect(filter, true), false),
-                CastFromHandSourceCondition.instance,
+                CastFromHandSourcePermanentCondition.instance,
                 "When {this} enters the battlefield, if you cast it from your hand, destroy all nonartifact, nonblack creatures. They can't be regenerated."),
                 new CastFromHandWatcher());
     }
 
-    public ReiverDemon(final ReiverDemon card) {
+    private ReiverDemon(final ReiverDemon card) {
         super(card);
     }
 

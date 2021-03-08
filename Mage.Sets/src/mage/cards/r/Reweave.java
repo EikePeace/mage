@@ -38,7 +38,7 @@ public final class Reweave extends CardImpl {
         this.addAbility(new SpliceOntoArcaneAbility("{2}{U}{U}"));
     }
 
-    public Reweave(final Reweave card) {
+    private Reweave(final Reweave card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class ReweaveEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         MageObject sourceObject = source.getSourceObject(game);
         if (permanent != null && sourceObject != null) {
-            if (permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent.sacrifice(source, game)) {
                 Player permanentController = game.getPlayer(permanent.getControllerId());
                 if (permanentController != null) {
                     Library library = permanentController.getLibrary();

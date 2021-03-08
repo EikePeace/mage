@@ -26,7 +26,7 @@ public final class BoxOfFreerangeGoblins extends CardImpl {
         this.getSpellAbility().addEffect(new BoxOfFreerangeGoblinsEffect());
     }
 
-    public BoxOfFreerangeGoblins(final BoxOfFreerangeGoblins card) {
+    private BoxOfFreerangeGoblins(final BoxOfFreerangeGoblins card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class BoxOfFreerangeGoblinsEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
             CreateTokenEffect effect = new CreateTokenEffect(new GoblinToken(), amount);
             effect.apply(game, source);
             return true;

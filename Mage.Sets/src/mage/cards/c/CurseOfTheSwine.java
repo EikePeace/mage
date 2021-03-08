@@ -9,7 +9,7 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.game.permanent.token.CurseOfTheSwineBoarToken;
+import mage.game.permanent.token.Boar2Token;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetadjustment.TargetAdjuster;
@@ -17,6 +17,9 @@ import mage.target.targetadjustment.TargetAdjuster;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import mage.cards.Card;
+import mage.cards.Cards;
+import mage.cards.CardsImpl;
 
 /**
  * @author LevelX2
@@ -34,7 +37,7 @@ public final class CurseOfTheSwine extends CardImpl {
 
     }
 
-    public CurseOfTheSwine(final CurseOfTheSwine card) {
+    private CurseOfTheSwine(final CurseOfTheSwine card) {
         super(card);
     }
 
@@ -74,7 +77,41 @@ class CurseOfTheSwineEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
+        Cards creaturesToExile = new CardsImpl();
         if (controller != null) {
+            Map<UUID, Integer> playersWithTargets = new HashMap<>();
+            for (UUID targetId : this.getTargetPointer().getTargets(game, source)) {
+                Permanent creature = game.getPermanent(targetId);
+                if (creature != null) {
+                    creaturesToExile.add(creature);
+                }
+            }
+
+            // move creatures to exile all at once
+            controller.moveCards(creaturesToExile, Zone.EXILED, source, game);
+
+            // Count all creatures actually exiled and add them to the player's count
+            for (Card card : creaturesToExile.getCards(game)) {
+                Permanent lkiP = game.getPermanentOrLKIBattlefield(card.getId());
+                if (lkiP != null
+                        && game.getState().getZone(lkiP.getId()) == Zone.EXILED) {
+                    playersWithTargets.put(lkiP.getControllerId(),
+                            playersWithTargets.getOrDefault(lkiP.getControllerId(), 0) + 1);
+                }
+            }
+            Boar2Token swineToken = new Boar2Token();
+            for (Map.Entry<UUID, Integer> exiledByController : playersWithTargets.entrySet()) {
+                swineToken.putOntoBattlefield(exiledByController.getValue(), game, source, exiledByController.getKey());
+            }
+            return true;
+        }
+        return false;
+    }
+}
+
+
+/*
+if (controller != null) {
             Map<UUID, Integer> playersWithTargets = new HashMap<>();
             for (UUID targetId : this.getTargetPointer().getTargets(game, source)) {
                 Permanent creature = game.getPermanent(targetId);
@@ -85,14 +122,14 @@ class CurseOfTheSwineEffect extends OneShotEffect {
                     }
                 }
             }
-            CurseOfTheSwineBoarToken swineToken = new CurseOfTheSwineBoarToken();
+            Boar2Token swineToken = new Boar2Token();
             for (Map.Entry<UUID, Integer> exiledByController : playersWithTargets.entrySet()) {
-                swineToken.putOntoBattlefield(exiledByController.getValue(),
-                        game, source.getSourceId(), exiledByController.getKey());
+                swineToken.putOntoBattlefield(exiledByController.getValue(), game, source, exiledByController.getKey());
             }
             return true;
         }
-        return false;
 
-    }
-}
+
+
+
+*/

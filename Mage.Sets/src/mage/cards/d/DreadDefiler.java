@@ -45,7 +45,7 @@ public final class DreadDefiler extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DreadDefiler(final DreadDefiler card) {
+    private DreadDefiler(final DreadDefiler card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class DreadDefilerEffect extends OneShotEffect {
         if (amount > 0) {
             Player targetOpponent = game.getPlayer(source.getFirstTarget());
             if (targetOpponent != null) {
-                targetOpponent.loseLife(amount, game, false);
+                targetOpponent.loseLife(amount, game, source, false);
                 return true;
             }
         }

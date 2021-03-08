@@ -4,9 +4,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
-import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ExileTargetEffect;
-import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.abilities.keyword.VigilanceAbility;
@@ -42,7 +40,7 @@ public final class EnfysNest extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EnfysNest(final EnfysNest card) {
+    private EnfysNest(final EnfysNest card) {
         super(card);
     }
 
@@ -65,7 +63,7 @@ class EnfysNestEffect extends ExileTargetEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if(permanent != null) {
             // you may exile target creature an opponent controls
             if(!super.apply(game, source)) {

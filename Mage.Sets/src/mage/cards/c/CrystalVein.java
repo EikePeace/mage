@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import java.util.UUID;
@@ -23,13 +22,14 @@ public final class CrystalVein extends CardImpl {
 
         // {T}: Add {C}.
         this.addAbility(new ColorlessManaAbility());
+
         // {T}, Sacrifice Crystal Vein: Add {C}{C}.
         SimpleManaAbility ability = new SimpleManaAbility(Zone.BATTLEFIELD, Mana.ColorlessMana(2), new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
     }
 
-    public CrystalVein(final CrystalVein card) {
+    private CrystalVein(final CrystalVein card) {
         super(card);
     }
 

@@ -44,7 +44,7 @@ public final class HellkiteCharger extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new HellkiteChargerEffect(),false));
     }
 
-    public HellkiteCharger(final HellkiteCharger card) {
+    private HellkiteCharger(final HellkiteCharger card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class HellkiteChargerEffect extends OneShotEffect {
             ManaCosts cost = new ManaCostsImpl("{5}{R}{R}");
             if (player.chooseUse(Outcome.Damage, "Pay " + cost.getText() + '?', source, game)) {
                 cost.clearPaid();
-                if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
+                if (cost.pay(source, game, source, source.getControllerId(), false, null)) {
                     new UntapAllControllerEffect(new FilterAttackingCreature(),"").apply(game, source);
                     game.getState().getTurnMods().add(new TurnMod(source.getControllerId(), TurnPhase.COMBAT, null, false));
                     return true;

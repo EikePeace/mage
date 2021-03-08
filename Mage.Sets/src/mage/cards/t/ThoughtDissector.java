@@ -37,7 +37,7 @@ public final class ThoughtDissector extends CardImpl {
         this.addAbility(abilitiy);
     }
 
-    public ThoughtDissector(final ThoughtDissector card) {
+    private ThoughtDissector(final ThoughtDissector card) {
         super(card);
     }
 
@@ -90,11 +90,11 @@ class ThoughtDissectorEffect extends OneShotEffect {
             }
             targetOpponent.revealCards(source, reveal, game);
             if (artifact != null) {
-                game.applyEffects();
+                game.getState().processAction(game);
                 controller.moveCards(artifact, Zone.BATTLEFIELD, source, game);
                 Permanent sourcePermanent = source.getSourcePermanentIfItStillExists(game);
                 if (sourcePermanent != null) {
-                    sourcePermanent.sacrifice(source.getSourceId(), game);
+                    sourcePermanent.sacrifice(source, game);
                 }
             }
             targetOpponent.moveCards(nonArtifacts, Zone.GRAVEYARD, source, game);

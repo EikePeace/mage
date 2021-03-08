@@ -1,7 +1,6 @@
 package mage.cards.e;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -24,6 +23,7 @@ import mage.players.Player;
 import mage.target.TargetCard;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author LevelX2
@@ -48,7 +48,7 @@ public final class EliteArcanist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EliteArcanist(final EliteArcanist card) {
+    private EliteArcanist(final EliteArcanist card) {
         super(card);
     }
 
@@ -107,7 +107,7 @@ class EliteArcanistImprintEffect extends OneShotEffect {
                     && player.choose(Outcome.Benefit, player.getHand(), target, game)) {
                 Card card = player.getHand().get(target.getFirstTarget(), game);
                 if (card != null) {
-                    card.moveToExile(source.getSourceId(), "Elite Arcanist", source.getSourceId(), game);
+                    card.moveToExile(source.getSourceId(), "Elite Arcanist", source, game);
                     Permanent permanent = game.getPermanent(source.getSourceId());
                     if (permanent != null) {
                         permanent.imprint(card.getId(), game);
@@ -165,7 +165,7 @@ class EliteArcanistCopyEffect extends OneShotEffect {
                         if (controller.chooseUse(Outcome.PlayForFree, "Cast the copied card without paying mana cost?", source, game)) {
                             game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), Boolean.TRUE);
                             Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(copiedCard, game, true),
-                                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                    game, true, new ApprovingObject(source, game));
                             game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), null);
                             return cardWasCast;
                         }

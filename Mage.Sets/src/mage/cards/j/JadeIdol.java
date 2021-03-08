@@ -13,7 +13,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.filter.StaticFilters;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  * @author Loki
@@ -25,7 +24,7 @@ public final class JadeIdol extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new BecomesCreatureSourceEffect(new JadeIdolToken(), "", Duration.EndOfTurn), StaticFilters.SPIRIT_OR_ARCANE_CARD, false));
     }
 
-    public JadeIdol(final JadeIdol card) {
+    private JadeIdol(final JadeIdol card) {
         super(card);
     }
 

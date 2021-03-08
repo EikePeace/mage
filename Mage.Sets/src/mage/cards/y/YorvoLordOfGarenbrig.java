@@ -14,10 +14,9 @@ import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public final class YorvoLordOfGarenbrig extends CardImpl {
         // Yorvo, Lord of Garenbrig enters the battlefield with four +1/+1 counters on it.
         this.addAbility(new EntersBattlefieldAbility(
                 new AddCountersSourceEffect(CounterType.P1P1.createInstance(4)),
-                "{this} enters the battlefield with four +1/+1 counters on it"
+                "with four +1/+1 counters on it"
         ));
 
         // Whenever another green creature enters the battlefield under your control, put a +1/+1 counter on Yorvo. Then if that creature's power is greater than Yorvo's power, put another +1/+1 counter on Yorvo.
@@ -88,14 +87,14 @@ class YorvoLordOfGarenbrigEffect extends OneShotEffect {
         if (sourcePerm == null) {
             return false;
         }
-        sourcePerm.addCounters(CounterType.P1P1.createInstance(), source, game);
-        Permanent permanent = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
+        sourcePerm.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent == null) {
             return true;
         }
-        game.applyEffects();
+        game.getState().processAction(game);
         if (permanent.getPower().getValue() > sourcePerm.getPower().getValue()) {
-            sourcePerm.addCounters(CounterType.P1P1.createInstance(), source, game);
+            sourcePerm.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
         }
         return true;
     }

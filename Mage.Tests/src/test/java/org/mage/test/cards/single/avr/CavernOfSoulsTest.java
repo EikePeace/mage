@@ -2,12 +2,10 @@ package org.mage.test.cards.single.avr;
 
 import mage.constants.PhaseStep;
 import mage.constants.Zone;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mage.test.serverside.base.CardTestPlayerBase;
 
 /**
- *
  * @author noxx
  */
 public class CavernOfSoulsTest extends CardTestPlayerBase {
@@ -195,10 +193,8 @@ public class CavernOfSoulsTest extends CardTestPlayerBase {
      * Return to the Ranks cannot be countered if mana produced by Cavern of
      * Souls was used to pay X. Can be bug also for all other spells with X in
      * their cost, not sure.
-     *
      */
     @Test
-    @Ignore
     public void testCastWithColorlessManaCanBeCountered() {
         addCard(Zone.BATTLEFIELD, playerA, "Plains", 2);
         addCard(Zone.HAND, playerA, "Cavern of Souls");
@@ -214,8 +210,9 @@ public class CavernOfSoulsTest extends CardTestPlayerBase {
 
         playLand(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cavern of Souls");
         setChoice(playerA, "Drake");
-        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Return to the Ranks", "Silvercoat Lion");
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Return to the Ranks");
         setChoice(playerA, "X=1");
+        addTarget(playerA, "Silvercoat Lion");
 
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerB, "Counterspell", "Return to the Ranks");
 
@@ -255,4 +252,45 @@ public class CavernOfSoulsTest extends CardTestPlayerBase {
 
     }
 
+    @Test
+    public void testBouncedCreatureNotCountered() {
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain", 2);
+        addCard(Zone.HAND, playerA, "Forest");
+        addCard(Zone.HAND, playerA, "Cavern of Souls");
+        addCard(Zone.HAND, playerA, "Runeclaw Bear");
+
+        addCard(Zone.HAND, playerB, "Counterspell", 2);
+        addCard(Zone.HAND, playerB, "Unsummon");
+        addCard(Zone.BATTLEFIELD, playerB, "Island", 5);
+
+        playLand(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Cavern of Souls");
+        setChoice(playerA, "Bear");
+
+        //wait for next turn, we'll need our next land drop
+        castSpell(3, PhaseStep.PRECOMBAT_MAIN, playerA, "Runeclaw Bear");
+
+        //make sure we used our cavern already and try to counter
+        castSpell(3, PhaseStep.PRECOMBAT_MAIN, playerB, "Counterspell");
+        waitStackResolved(3, PhaseStep.PRECOMBAT_MAIN);
+
+        checkPermanentCount("bear not countered", 3, PhaseStep.PRECOMBAT_MAIN, playerA, "Runeclaw Bear", 1);
+
+        //counterspell fizzled, return bear to hand to try countering it again
+        castSpell(3, PhaseStep.BEGIN_COMBAT, playerB, "Unsummon", "Runeclaw Bear");
+        waitStackResolved(3, PhaseStep.BEGIN_COMBAT);
+
+        //recast bear, without cavern of souls conditional mana
+        playLand(3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Forest");
+        castSpell(3, PhaseStep.POSTCOMBAT_MAIN, playerA, "Runeclaw Bear");
+        castSpell(3, PhaseStep.POSTCOMBAT_MAIN, playerB, "Counterspell");
+
+        setStopAt(3, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertPermanentCount(playerA, "Cavern of Souls", 1);
+        assertGraveyardCount(playerA, "Runeclaw Bear", 1);
+        assertGraveyardCount(playerB, "Counterspell", 2);
+        assertGraveyardCount(playerB, "Unsummon", 1);
+    }
 }

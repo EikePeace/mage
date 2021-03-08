@@ -10,7 +10,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.filter.common.FilterControlledCreaturePermanent;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -28,14 +28,14 @@ public final class TormentedThoughts extends CardImpl {
 
 
         // As an additional cost to cast Tormented Thoughts, sacrifice a creature.
-        this.getSpellAbility().addCost(new SacrificeTargetCost(new TargetControlledCreaturePermanent(1,1,new FilterControlledCreaturePermanent("a creature"), false)));
+        this.getSpellAbility().addCost(new SacrificeTargetCost(new TargetControlledCreaturePermanent(1,1,StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT, false)));
 
         // Target player discards a number of cards equal to the sacrificed creature's power.
         this.getSpellAbility().addEffect(new TormentedThoughtsDiscardEffect());
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public TormentedThoughts(final TormentedThoughts card) {
+    private TormentedThoughts(final TormentedThoughts card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class TormentedThoughtsDiscardEffect extends OneShotEffect {
                 }
             }
             if (power > 0) {
-                targetPlayer.discard(power, false, source, game);
+                targetPlayer.discard(power, false, false, source, game);
             }
             return true;
         }

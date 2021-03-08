@@ -25,7 +25,7 @@ public final class Meltdown extends CardImpl {
         this.getSpellAbility().addEffect(new MeltdownEffect());
     }
 
-    public Meltdown(final Meltdown card) {
+    private Meltdown(final Meltdown card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class MeltdownEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         for (Permanent permanent : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
             if (permanent != null && permanent.isArtifact() && permanent.getConvertedManaCost() <= source.getManaCostsToPay().getX()) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

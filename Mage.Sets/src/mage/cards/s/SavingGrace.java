@@ -53,7 +53,7 @@ public final class SavingGrace extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEnchantedEffect(0, 3, Duration.WhileOnBattlefield)));
     }
 
-    public SavingGrace(final SavingGrace card) {
+    private SavingGrace(final SavingGrace card) {
         super(card);
     }
 
@@ -77,9 +77,8 @@ class SavingGraceReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
                 return true;
             default:
                 return false;
@@ -88,10 +87,10 @@ class SavingGraceReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGE_PLAYER && event.getPlayerId().equals(source.getControllerId())) {
-            return true;
+        if (event.getType() == GameEvent.EventType.DAMAGE_PLAYER) {
+            return event.getPlayerId().equals(source.getControllerId());
         }
-        if (event.getType() == GameEvent.EventType.DAMAGE_CREATURE || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent targetPermanent = game.getPermanent(event.getTargetId());
             if (targetPermanent != null
                     && targetPermanent.isControlledBy(source.getControllerId())) {
@@ -131,7 +130,7 @@ class SavingGraceReplacementEffect extends ReplacementEffectImpl {
             }
             game.informPlayers(message.toString());
             // Redirect damage
-            creature.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+            creature.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
             return true;
         }
         return false;

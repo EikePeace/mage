@@ -5,7 +5,6 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.dynamicvalue.common.SourcePermanentPowerCount;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.continuous.BoostControlledEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -38,7 +37,7 @@ public final class WildBeastmaster extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(effect, false));
     }
 
-    public WildBeastmaster(final WildBeastmaster card) {
+    private WildBeastmaster(final WildBeastmaster card) {
         super(card);
     }
 

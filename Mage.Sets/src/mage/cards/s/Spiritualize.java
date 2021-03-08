@@ -37,7 +37,7 @@ public final class Spiritualize extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public Spiritualize(final Spiritualize card) {
+    private Spiritualize(final Spiritualize card) {
         super(card);
     }
 
@@ -64,9 +64,8 @@ class SpiritualizeTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER
-                || event.getType() == EventType.DAMAGED_CREATURE
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER
+                || event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

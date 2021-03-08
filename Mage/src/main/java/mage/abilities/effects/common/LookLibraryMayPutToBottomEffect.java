@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package mage.abilities.effects.common;
 
 import mage.MageObject;
@@ -39,14 +33,14 @@ public class LookLibraryMayPutToBottomEffect extends OneShotEffect {
         if (sourceObject == null || controller == null) {
             return false;
         }
-        if (!controller.getLibrary().isEmptyDraw()) {
+        if (controller.getLibrary().hasCards()) {
             Card card = controller.getLibrary().getFromTop(game);
             if (card == null) {
                 return false;
             }
             controller.lookAtCards(sourceObject.getName(), new CardsImpl(card), game);
             boolean toBottom = controller.chooseUse(outcome, "Put card on the bottom of your library?", source, game);
-            return controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, !toBottom, false);
+            return controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, !toBottom, false);
         }
         return true;
     }

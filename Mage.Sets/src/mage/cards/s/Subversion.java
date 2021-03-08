@@ -25,7 +25,7 @@ public final class Subversion extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new SubversionEffect(), TargetController.YOU, false));
     }
 
-    public Subversion(final Subversion card) {
+    private Subversion(final Subversion card) {
         super(card);
     }
 
@@ -50,7 +50,7 @@ public final class Subversion extends CardImpl {
         public boolean apply(Game game, Ability source) {
             int damage = 0;
             for (UUID opponentId : game.getOpponents(source.getControllerId())) {
-                damage += game.getPlayer(opponentId).damage(1, source.getSourceId(), game);
+                damage += game.getPlayer(opponentId).damage(1, source.getSourceId(), source, game);
             }
             game.getPlayer(source.getControllerId()).gainLife(damage, game, source);
             return true;

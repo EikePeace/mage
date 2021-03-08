@@ -45,7 +45,7 @@ public final class RayOfCommand extends CardImpl {
         
     }
 
-    public RayOfCommand(final RayOfCommand card) {
+    private RayOfCommand(final RayOfCommand card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class RayOfCommandDelayedTriggeredAbility extends DelayedTriggeredAbility {
     
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST_CONTROL;
+        return event.getType() == GameEvent.EventType.LOST_CONTROL;
     }
 
     @Override

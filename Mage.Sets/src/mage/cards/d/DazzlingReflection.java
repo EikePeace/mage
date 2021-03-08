@@ -1,4 +1,3 @@
-
 package mage.cards.d;
 
 import java.util.UUID;
@@ -25,14 +24,14 @@ import mage.target.targetpointer.FixedTarget;
 public final class DazzlingReflection extends CardImpl {
 
     public DazzlingReflection(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{1}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{1}{W}");
 
         // You gain life equal to target creature's power. The next time that creature would deal damage this turn, prevent that damage.
         getSpellAbility().addEffect(new DazzlingReflectionEffect());
         getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public DazzlingReflection(final DazzlingReflection card) {
+    private DazzlingReflection(final DazzlingReflection card) {
         super(card);
     }
 
@@ -62,12 +61,14 @@ class DazzlingReflectionEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent targetCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
-            controller.gainLife(targetCreature.getPower().getValue(), game, source);
-            ContinuousEffect effect = new DazzlingReflectionPreventEffect();
-            effect.setTargetPointer(new FixedTarget(targetCreature, game));
-            game.addEffect(effect, source);
-            return true;
+            Permanent targetCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
+            if (targetCreature != null) {
+                controller.gainLife(targetCreature.getPower().getValue(), game, source);
+                ContinuousEffect effect = new DazzlingReflectionPreventEffect();
+                effect.setTargetPointer(new FixedTarget(targetCreature, game));
+                game.addEffect(effect, source);
+                return true;
+            }
         }
         return false;
     }

@@ -27,7 +27,7 @@ public final class Wurmcalling extends CardImpl {
         this.getSpellAbility().addEffect(new WurmcallingEffect());
     }
 
-    public Wurmcalling(final Wurmcalling card) {
+    private Wurmcalling(final Wurmcalling card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class WurmcallingEffect extends OneShotEffect {
         WurmCallingWurmToken token = new WurmCallingWurmToken();
         token.getPower().modifyBaseValue(count);
         token.getToughness().modifyBaseValue(count);
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(1, game, source, source.getControllerId());
         return true;
     }
 

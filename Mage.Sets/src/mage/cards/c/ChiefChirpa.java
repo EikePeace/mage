@@ -20,7 +20,7 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.EwokToken;
 import mage.target.common.TargetControlledCreaturePermanent;
 
@@ -62,7 +62,7 @@ public final class ChiefChirpa extends CardImpl {
 
     }
 
-    public ChiefChirpa(final ChiefChirpa card) {
+    private ChiefChirpa(final ChiefChirpa card) {
         super(card);
     }
 

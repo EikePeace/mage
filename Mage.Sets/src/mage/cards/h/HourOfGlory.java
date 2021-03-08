@@ -34,7 +34,7 @@ public final class HourOfGlory extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public HourOfGlory(final HourOfGlory card) {
+    private HourOfGlory(final HourOfGlory card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class HourOfGloryEffect extends OneShotEffect {
             if (targetCreature != null) {
                 controller.moveCards(targetCreature, Zone.EXILED, source, game);
                 if (targetCreature.hasSubtype(SubType.GOD, game)) {
-                    game.applyEffects();
+                    game.getState().processAction(game);
                     Player targetController = game.getPlayer(targetCreature.getControllerId());
                     if (targetController != null) {
                         targetController.revealCards(sourceObject.getIdName(), targetController.getHand(), game);

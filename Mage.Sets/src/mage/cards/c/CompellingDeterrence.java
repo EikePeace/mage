@@ -30,7 +30,7 @@ public final class CompellingDeterrence extends CardImpl {
         getSpellAbility().addTarget(new TargetNonlandPermanent());
     }
 
-    public CompellingDeterrence(final CompellingDeterrence card) {
+    private CompellingDeterrence(final CompellingDeterrence card) {
         super(card);
     }
 
@@ -63,11 +63,11 @@ class CompellingDeterrenceEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && player != null) {
             player.moveCards(target, Zone.HAND, source, game);
-            game.applyEffects();
+            game.getState().processAction(game);
             FilterPermanent zombieFilter = new FilterPermanent();
             zombieFilter.add(SubType.ZOMBIE.getPredicate());
             if (game.getState().getBattlefield().countAll(zombieFilter, controller.getId(), game) > 0) {
-                player.discard(1, false, source, game);
+                player.discard(1, false, false, source, game);
             }
             return true;
         }

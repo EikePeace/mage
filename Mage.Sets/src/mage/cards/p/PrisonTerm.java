@@ -57,7 +57,7 @@ public final class PrisonTerm extends CardImpl {
                 Zone.BATTLEFIELD, new PrisonTermEffect(), filter, true, SetTargetPointer.PERMANENT, "Whenever a creature enters the battlefield under an opponent's control, you may attach Prison Term to that creature."));
     }
 
-    public PrisonTerm(final PrisonTerm card) {
+    private PrisonTerm(final PrisonTerm card) {
         super(card);
     }
 
@@ -87,8 +87,8 @@ class PrisonTermEffect extends OneShotEffect {
             if (oldCreature == null) {
                 return false;
             }
-            if (oldCreature.removeAttachment(prisonTerm.getId(), game)) {
-                return opponentCreature.addAttachment(prisonTerm.getId(), game);
+            if (oldCreature.removeAttachment(prisonTerm.getId(), source, game)) {
+                return opponentCreature.addAttachment(prisonTerm.getId(), source, game);
             }
         }
         return false;

@@ -28,7 +28,7 @@ public final class MemoryErosion extends CardImpl {
         this.addAbility(new SpellCastTriggeredAbility());
     }
 
-    public MemoryErosion(final MemoryErosion card) {
+    private MemoryErosion(final MemoryErosion card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class SpellCastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -68,7 +68,7 @@ class SpellCastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever an opponent casts a spell, that player puts the top two cards of their library into their graveyard";
+        return "Whenever an opponent casts a spell, that player mills two cards";
     }
 
     @Override

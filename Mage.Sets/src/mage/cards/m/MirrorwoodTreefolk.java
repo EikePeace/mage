@@ -36,7 +36,7 @@ public final class MirrorwoodTreefolk extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MirrorwoodTreefolk(final MirrorwoodTreefolk card) {
+    private MirrorwoodTreefolk(final MirrorwoodTreefolk card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class MirrorwoodTreefolkEffect extends RedirectionEffect {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override

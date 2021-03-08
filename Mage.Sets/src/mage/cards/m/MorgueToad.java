@@ -25,11 +25,11 @@ public final class MorgueToad extends CardImpl {
         this.toughness = new MageInt(2);
 
         // Sacrifice Morgue Toad: Add {U}{R}.
-        SimpleManaAbility ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 1, 0, 0, 0, 0, 0), new SacrificeSourceCost());
+        SimpleManaAbility ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 0, 1, 0, 0, 0, 0), new SacrificeSourceCost());
         this.addAbility(ability);
     }
 
-    public MorgueToad(final MorgueToad card) {
+    private MorgueToad(final MorgueToad card) {
         super(card);
     }
 

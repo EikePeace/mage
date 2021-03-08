@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -49,7 +49,7 @@ public final class SmokeTeller extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SmokeTeller(final SmokeTeller card) {
+    private SmokeTeller(final SmokeTeller card) {
         super(card);
     }
 

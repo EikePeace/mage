@@ -14,7 +14,6 @@ import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
 /**
@@ -35,7 +34,7 @@ public final class DearlyDeparted extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.GRAVEYARD, new DearlyDepartedEntersBattlefieldEffect()));
     }
 
-    public DearlyDeparted(final DearlyDeparted card) {
+    private DearlyDeparted(final DearlyDeparted card) {
         super(card);
     }
 
@@ -58,7 +57,7 @@ class DearlyDepartedEntersBattlefieldEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
@@ -74,7 +73,7 @@ class DearlyDepartedEntersBattlefieldEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent target = ((EntersTheBattlefieldEvent) event).getTarget();
         if (target != null) {
-            target.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            target.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         return false;
     }

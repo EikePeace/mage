@@ -42,7 +42,7 @@ public final class CurseOfInertia extends CardImpl {
 
     }
 
-    public CurseOfInertia(final CurseOfInertia card) {
+    private CurseOfInertia(final CurseOfInertia card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class CurseOfInertiaTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override
@@ -115,7 +115,7 @@ class CurseOfInertiaTapOrUntapTargetEffect extends OneShotEffect {
                     }
                 } else {
                     if (player.chooseUse(Outcome.Tap, "Tap that permanent?", source, game)) {
-                        targetPermanent.tap(game);
+                        targetPermanent.tap(source, game);
                     }
                 }
                 return true;

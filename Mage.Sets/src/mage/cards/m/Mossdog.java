@@ -24,7 +24,7 @@ public final class Mossdog extends CardImpl {
     public Mossdog(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{G}");
         this.subtype.add(SubType.PLANT);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
 
@@ -32,7 +32,7 @@ public final class Mossdog extends CardImpl {
         this.addAbility(new MossdogAbility());
     }
 
-    public Mossdog(final Mossdog card) {
+    private Mossdog(final Mossdog card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class MossdogAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

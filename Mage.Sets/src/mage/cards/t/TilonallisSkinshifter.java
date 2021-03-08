@@ -16,12 +16,12 @@ import mage.constants.Outcome;
 import mage.constants.SuperType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 /**
  *
@@ -54,7 +54,7 @@ public final class TilonallisSkinshifter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TilonallisSkinshifter(final TilonallisSkinshifter card) {
+    private TilonallisSkinshifter(final TilonallisSkinshifter card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class TilonallisSkinshifterCopyEffect extends OneShotEffect {
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
         Permanent copyFromPermanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (sourcePermanent != null && copyFromPermanent != null) {
-            game.copyPermanent(Duration.EndOfTurn, copyFromPermanent, sourcePermanent.getId(), source, new EmptyApplyToPermanent());
+            game.copyPermanent(Duration.EndOfTurn, copyFromPermanent, sourcePermanent.getId(), source, new EmptyCopyApplier());
             return true;
         }
         return false;

@@ -31,7 +31,7 @@ public final class RitesOfFlourishing extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayAdditionalLandsAllEffect()));
     }
 
-    public RitesOfFlourishing(final RitesOfFlourishing card) {
+    private RitesOfFlourishing(final RitesOfFlourishing card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class RitesOfFlourishingAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_STEP_PRE;
+        return event.getType() == GameEvent.EventType.DRAW_STEP_PRE;
     }
 
     @Override

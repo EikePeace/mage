@@ -15,7 +15,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterEnchantmentPermanent;
-import mage.filter.predicate.mageobject.AttachmentAttachedToCardTypePredicate;
+import mage.filter.predicate.permanent.AttachmentAttachedToCardTypePredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -45,7 +45,7 @@ public final class KitsuneMystic extends CardImpl {
                 new EnchantedSourceCondition(2), "At the beginning of the end step, if {this} is enchanted by two or more Auras, flip it."));
     }
 
-    public KitsuneMystic(final KitsuneMystic card) {
+    private KitsuneMystic(final KitsuneMystic card) {
         super(card);
     }
 
@@ -114,8 +114,8 @@ class AutumnTailEffect extends OneShotEffect {
             if (oldCreature == null || oldCreature.equals(creature)) {
                 return false;
             }
-            if (oldCreature.removeAttachment(aura.getId(), game)) {
-                return creature.addAttachment(aura.getId(), game);
+            if (oldCreature.removeAttachment(aura.getId(), source, game)) {
+                return creature.addAttachment(aura.getId(), source, game);
             }
         }
         return false;

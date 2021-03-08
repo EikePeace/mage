@@ -35,7 +35,7 @@ public final class BloodSeeker extends CardImpl {
         this.addAbility(new BloodSeekerTriggeredAbility());
     }
 
-    public BloodSeeker(final BloodSeeker card) {
+    private BloodSeeker(final BloodSeeker card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class BloodSeekerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

@@ -40,7 +40,7 @@ public final class DeathWatch extends CardImpl {
 		this.addAbility( new DiesAttachedTriggeredAbility(new DeathWatchEffect(), "enchanted creature"));
     }
 
-    public DeathWatch(final DeathWatch card) {
+    private DeathWatch(final DeathWatch card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ public final class DeathWatch extends CardImpl {
                     Player controller = game.getPlayer(source.getControllerId());
                     if (controller != null) {
                         controller.gainLife(creature.getToughness().getValue(), game, source);
-                        opponent.loseLife(creature.getPower().getValue(), game, false);
+                        opponent.loseLife(creature.getPower().getValue(), game, source, false);
                         return true;
                     }
                 }

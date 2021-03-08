@@ -12,7 +12,7 @@ import mage.cards.mock.MockCard;
 import mage.cards.mock.MockSplitCard;
 import mage.constants.*;
 import mage.util.CardUtil;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 import org.apache.log4j.Logger;
 
 import java.util.*;
@@ -34,6 +34,12 @@ public class CardInfo {
 
     @DatabaseField(indexName = "name_index")
     protected String name;
+    /**
+     * lower_name exists to speed up importing decks, specifically to provide an indexed column.
+     * H2 does not support expressions in indices, so we need a physical column.
+     */
+    @DatabaseField(indexName = "lower_name_index")
+    protected String lower_name;
     @DatabaseField(indexName = "setCode_cardNumber_index")
     protected String cardNumber;
     @DatabaseField(indexName = "setCode_cardNumber_index")
@@ -98,6 +104,12 @@ public class CardInfo {
     protected boolean adventureCard;
     @DatabaseField
     protected String adventureSpellName;
+    @DatabaseField
+    protected boolean modalDoubleFacesCard;
+    @DatabaseField
+    protected String modalDoubleFacesSecondSideName;
+
+    // if you add new field with card side name then update CardRepository.addNewNames too
 
     public enum ManaCostSide {
         LEFT, RIGHT, ALL
@@ -108,6 +120,7 @@ public class CardInfo {
 
     public CardInfo(Card card) {
         this.name = card.getName();
+        this.lower_name = name.toLowerCase(Locale.ENGLISH);
         this.cardNumber = card.getCardNumber();
         this.setCode = card.getExpansionSetCode();
         this.className = card.getClass().getCanonicalName();
@@ -115,7 +128,7 @@ public class CardInfo {
         this.toughness = card.getToughness().toString();
         this.convertedManaCost = card.getConvertedManaCost();
         this.rarity = card.getRarity();
-        this.splitCard = card.isSplitCard();
+        this.splitCard = card instanceof SplitCard;
         this.splitCardFuse = card.getSpellAbility() != null && card.getSpellAbility().getSpellAbilityType() == SpellAbilityType.SPLIT_FUSED;
         this.splitCardAftermath = card.getSpellAbility() != null && card.getSpellAbility().getSpellAbilityType() == SpellAbilityType.SPLIT_AFTERMATH;
 
@@ -134,6 +147,11 @@ public class CardInfo {
             this.adventureSpellName = ((AdventureCard) card).getSpellCard().getName();
         }
 
+        if (card instanceof ModalDoubleFacesCard) {
+            this.modalDoubleFacesCard = true;
+            this.modalDoubleFacesSecondSideName = ((ModalDoubleFacesCard) card).getRightHalfCard().getName();
+        }
+
         this.frameStyle = card.getFrameStyle().toString();
         this.frameColor = card.getFrameColor(null).toString();
         this.variousArt = card.getUsesVariousArt();
@@ -144,20 +162,24 @@ public class CardInfo {
         this.white = card.getColor(null).isWhite();
 
         this.setTypes(card.getCardType());
-        this.setSubtypes(card.getSubtype(null).stream().map(SubType::toString).collect(Collectors.toList()));
+        this.setSubtypes(card.getSubtype().stream().map(SubType::toString).collect(Collectors.toList()));
         this.setSuperTypes(card.getSuperType());
 
-        // mana cost can contains multiple cards (split left/right, card/adventure)
+        // mana cost can contains multiple cards (split left/right, modal double faces, card/adventure)
         if (card instanceof SplitCard) {
-            List<String> manaCostLeft = ((SplitCard) card).getLeftHalfCard().getManaCost().getSymbols();
-            List<String> manaCostRight = ((SplitCard) card).getRightHalfCard().getManaCost().getSymbols();
+            List<String> manaCostLeft = ((SplitCard) card).getLeftHalfCard().getManaCostSymbols();
+            List<String> manaCostRight = ((SplitCard) card).getRightHalfCard().getManaCostSymbols();
+            this.setManaCosts(CardUtil.concatManaSymbols(SPLIT_MANA_SEPARATOR_FULL, manaCostLeft, manaCostRight));
+        } else if (card instanceof ModalDoubleFacesCard) {
+            List<String> manaCostLeft = ((ModalDoubleFacesCard) card).getLeftHalfCard().getManaCostSymbols();
+            List<String> manaCostRight = ((ModalDoubleFacesCard) card).getRightHalfCard().getManaCostSymbols();
             this.setManaCosts(CardUtil.concatManaSymbols(SPLIT_MANA_SEPARATOR_FULL, manaCostLeft, manaCostRight));
         } else if (card instanceof AdventureCard) {
-            List<String> manaCostLeft = ((AdventureCard) card).getSpellCard().getManaCost().getSymbols(); // Spell from left like MTGA
-            List<String> manaCostRight = card.getManaCost().getSymbols();
+            List<String> manaCostLeft = ((AdventureCard) card).getSpellCard().getManaCostSymbols();
+            List<String> manaCostRight = card.getManaCostSymbols();
             this.setManaCosts(CardUtil.concatManaSymbols(SPLIT_MANA_SEPARATOR_FULL, manaCostLeft, manaCostRight));
         } else {
-            this.setManaCosts(card.getManaCost().getSymbols());
+            this.setManaCosts(card.getManaCostSymbols());
         }
 
         int length = 0;
@@ -171,6 +193,12 @@ public class CardInfo {
                 length += rule.length();
                 rulesList.add(rule);
             }
+            for (String rule : card.getRules()) {
+                length += rule.length();
+                rulesList.add(rule);
+            }
+        } else if (card instanceof ModalDoubleFacesCard) {
+            // mdf card return main side's rules only (GUI can toggle it to another side)
             for (String rule : card.getRules()) {
                 length += rule.length();
                 rulesList.add(rule);
@@ -216,7 +244,6 @@ public class CardInfo {
                 }
             }
             if (this.startingLoyalty == null) {
-                //Logger.getLogger(CardInfo.class).warn("Planeswalker `" + card.getName() + "` missing starting loyalty");
                 this.startingLoyalty = "";
             }
         } else {
@@ -266,7 +293,7 @@ public class CardInfo {
         return sb.toString();
     }
 
-    private List<String> parseList(String list, ManaCostSide manaCostSide) {
+    public static List<String> parseList(String list, ManaCostSide manaCostSide) {
         if (list.isEmpty()) {
             return Collections.emptyList();
         }
@@ -289,8 +316,8 @@ public class CardInfo {
         return res;
     }
 
-    public final Set<CardType> getTypes() {
-        Set<CardType> list = EnumSet.noneOf(CardType.class);
+    public final ArrayList<CardType> getTypes() {
+        ArrayList<CardType> list = new ArrayList<>();
         for (String type : this.types.split(SEPARATOR)) {
             try {
                 list.add(CardType.valueOf(type));
@@ -300,7 +327,7 @@ public class CardInfo {
         return list;
     }
 
-    public final void setTypes(Set<CardType> types) {
+    public final void setTypes(ArrayList<CardType> types) {
         StringBuilder sb = new StringBuilder();
         for (CardType item : types) {
             sb.append(item.name()).append(SEPARATOR);
@@ -340,8 +367,8 @@ public class CardInfo {
         this.rules = joinList(rules);
     }
 
-    public final SubTypeList getSubTypes() {
-        SubTypeList sl = new SubTypeList();
+    public final SubTypes getSubTypes() {
+        SubTypes sl = new SubTypes();
         if (subtypes.trim().isEmpty()) {
             return sl;
         }
@@ -440,5 +467,13 @@ public class CardInfo {
 
     public String getAdventureSpellName() {
         return adventureSpellName;
+    }
+
+    public boolean isModalDoubleFacesCard() {
+        return modalDoubleFacesCard;
+    }
+
+    public String getModalDoubleFacesSecondSideName() {
+        return modalDoubleFacesSecondSideName;
     }
 }

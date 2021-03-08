@@ -41,7 +41,7 @@ public final class BrigidHeroOfKinsbaile extends CardImpl {
 
     }
 
-    public BrigidHeroOfKinsbaile(final BrigidHeroOfKinsbaile card) {
+    private BrigidHeroOfKinsbaile(final BrigidHeroOfKinsbaile card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class BrigidHeroOfKinsbaileEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
         if (targetPlayer != null) {
             for (Permanent creature : game.getBattlefield().getAllActivePermanents(new FilterAttackingOrBlockingCreature(), targetPlayer.getId(), game)) {
-                creature.damage(2, source.getSourceId(), game, false, true);
+                creature.damage(2, source.getSourceId(), source, game, false, true);
             }
             return true;
         }

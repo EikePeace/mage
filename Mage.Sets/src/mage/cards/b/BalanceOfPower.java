@@ -27,7 +27,7 @@ public final class BalanceOfPower extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public BalanceOfPower(final BalanceOfPower card) {
+    private BalanceOfPower(final BalanceOfPower card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class BalanceOfPowerEffect extends OneShotEffect {
         Player opponent = game.getPlayer(source.getFirstTarget());
 
         if (opponent != null && player != null && opponent.getHand().size() > player.getHand().size()) {
-            player.drawCards(opponent.getHand().size() - player.getHand().size(), game);
+            player.drawCards(opponent.getHand().size() - player.getHand().size(), source, game);
             return true;
         }
 

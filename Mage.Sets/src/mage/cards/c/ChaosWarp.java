@@ -34,7 +34,7 @@ public final class ChaosWarp extends CardImpl {
 
     }
 
-    public ChaosWarp(final ChaosWarp card) {
+    private ChaosWarp(final ChaosWarp card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ChaosWarpShuffleIntoLibraryEffect extends OneShotEffect {
         if (permanent != null) {
             Player owner = game.getPlayer(permanent.getOwnerId());
             if (owner != null) {
-                owner.moveCardToLibraryWithInfo(permanent, source.getSourceId(), game, Zone.BATTLEFIELD, true, true);
+                owner.moveCardToLibraryWithInfo(permanent, source, game, Zone.BATTLEFIELD, true, true);
                 owner.shuffleLibrary(source, game);
                 return true;
             }

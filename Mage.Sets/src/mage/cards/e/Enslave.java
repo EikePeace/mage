@@ -41,7 +41,7 @@ public final class Enslave extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new EnslaveEffect(), TargetController.YOU, false, false));
     }
 
-    public Enslave(final Enslave card) {
+    private Enslave(final Enslave card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class EnslaveEffect extends OneShotEffect {
             if (attached != null) {
                 Player owner = game.getPlayer(attached.getOwnerId());
                 if (owner != null) {
-                    owner.damage(1, attached.getId(), game);
+                    owner.damage(1, attached.getId(), source, game);
                     return true;
                 }
             }

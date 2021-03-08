@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -53,7 +53,7 @@ public final class PlagueBelcher extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new LoseLifeOpponentsEffect(1), false, filter));
     }
 
-    public PlagueBelcher(final PlagueBelcher card) {
+    private PlagueBelcher(final PlagueBelcher card) {
         super(card);
     }
 

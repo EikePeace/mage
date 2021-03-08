@@ -34,7 +34,7 @@ public final class SithRavager extends CardImpl {
         this.addAbility(new LostNonCombatLifeTriggeredAbility());
     }
 
-    public SithRavager(final SithRavager card) {
+    private SithRavager(final SithRavager card) {
         super(card);
     }
 
@@ -67,6 +67,7 @@ public final class SithRavager extends CardImpl {
 
         @Override
         public boolean checkTrigger(GameEvent event, Game game) {
+            // non combat lose life
             return !event.getFlag() && game.getOpponents(game.getControllerId(getSourceId())).contains(event.getPlayerId());
         }
 

@@ -45,7 +45,7 @@ public final class WildResearch extends CardImpl {
 
     }
 
-    public WildResearch(final WildResearch card) {
+    private WildResearch(final WildResearch card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class WildResearchEffect extends OneShotEffect {
                     }
                 }
             }
-            controller.discardOne(true, source, game);
+            controller.discardOne(true, false, source, game);
             controller.shuffleLibrary(source, game);
             return true;
         }

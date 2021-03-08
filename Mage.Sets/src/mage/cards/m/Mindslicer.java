@@ -3,7 +3,7 @@ package mage.cards.m;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.discard.DiscardHandAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -24,10 +24,10 @@ public final class Mindslicer extends CardImpl {
         this.toughness = new MageInt(3);
 
         // When Mindslicer dies, each player discards their hand.
-        this.addAbility(new DiesTriggeredAbility(new DiscardHandAllEffect(),false));
+        this.addAbility(new DiesSourceTriggeredAbility(new DiscardHandAllEffect(),false));
     }
 
-    public Mindslicer(final Mindslicer card) {
+    private Mindslicer(final Mindslicer card) {
         super(card);
     }
 

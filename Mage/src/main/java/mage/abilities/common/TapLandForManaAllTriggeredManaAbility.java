@@ -2,7 +2,7 @@
 
 package mage.abilities.common;
 
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.TriggeredManaAbility;
 import mage.constants.Zone;
 import mage.game.Game;
@@ -38,7 +38,7 @@ public class TapLandForManaAllTriggeredManaAbility extends TriggeredManaAbility 
         Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
         if (permanent != null && permanent.isLand()) {
             if (setTargetPointer) {
-                getEffects().get(0).setTargetPointer(new FixedTarget(permanent.getId()));
+                getEffects().get(0).setTargetPointer(new FixedTarget(permanent, game));
             }
             return true;
         }

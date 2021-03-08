@@ -48,7 +48,7 @@ public final class GuardianOfTazeem extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GuardianOfTazeem(final GuardianOfTazeem card) {
+    private GuardianOfTazeem(final GuardianOfTazeem card) {
         super(card);
     }
 
@@ -119,7 +119,7 @@ class GuardianOfTazeemEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent land = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent land = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         Permanent targetCreature = game.getPermanent(source.getFirstTarget());
         if (land != null && targetCreature != null && land.hasSubtype(SubType.ISLAND, game)) {
             ContinuousEffect effect = new DontUntapInControllersNextUntapStepTargetEffect("that creature");

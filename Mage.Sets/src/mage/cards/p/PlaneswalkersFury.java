@@ -28,7 +28,7 @@ public final class PlaneswalkersFury extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PlaneswalkersFury(final PlaneswalkersFury card) {
+    private PlaneswalkersFury(final PlaneswalkersFury card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class PlaneswalkersFuryEffect extends OneShotEffect {
             if (card != null) {
                 revealed.add(card);
                 opponent.revealCards("Planeswalker's Fury", revealed, game);
-                opponent.damage(card.getConvertedManaCost(), source.getSourceId(), game);
+                opponent.damage(card.getConvertedManaCost(), source.getSourceId(), source, game);
             }
             return true;
         }

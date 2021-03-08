@@ -35,7 +35,7 @@ public final class ThranFoundry extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ThranFoundry(final ThranFoundry card) {
+    private ThranFoundry(final ThranFoundry card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ThranFoundryEffect extends OneShotEffect {
         Player player = game.getPlayer(this.getTargetPointer().getFirst(game, source));
         if (player != null) {
             for (Card card: player.getGraveyard().getCards(game)) {
-                player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+                player.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             }              
             player.shuffleLibrary(source, game);
             return true;

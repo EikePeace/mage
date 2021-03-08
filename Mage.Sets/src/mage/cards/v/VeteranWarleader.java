@@ -22,7 +22,7 @@ import mage.choices.ChoiceImpl;
 import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.players.Player;
@@ -63,7 +63,7 @@ public final class VeteranWarleader extends CardImpl {
                 new VeteranWarleaderEffect(), new TapTargetCost(new TargetControlledPermanent(1, 1, filter, true))));
     }
 
-    public VeteranWarleader(final VeteranWarleader card) {
+    private VeteranWarleader(final VeteranWarleader card) {
         super(card);
     }
 

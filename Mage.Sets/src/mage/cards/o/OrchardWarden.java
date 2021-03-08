@@ -10,7 +10,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -39,7 +39,7 @@ public final class OrchardWarden extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new OrchardWardenffect(), filter, true, SetTargetPointer.PERMANENT, ""));
     }
 
-    public OrchardWarden(final OrchardWarden card) {
+    private OrchardWarden(final OrchardWarden card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class OrchardWardenffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && permanent != null) {
             controller.gainLife(permanent.getToughness().getValue(), game, source);
             return true;

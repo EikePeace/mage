@@ -12,7 +12,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.turn.TurnMod;
@@ -35,7 +35,7 @@ public final class Expropriate extends CardImpl {
         this.getSpellAbility().addEffect(ExileSpellEffect.getInstance());
     }
 
-    public Expropriate(final Expropriate card) {
+    private Expropriate(final Expropriate card) {
         super(card);
     }
 
@@ -51,7 +51,7 @@ class ExpropriateDilemmaEffect extends CouncilsDilemmaVoteEffect {
 
     public ExpropriateDilemmaEffect() {
         super(Outcome.Benefit);
-        this.staticText = "<i>Council's dilemma</i> — Starting with you, each player votes for time or money. For each time vote, take an extra turn after this one. For each money vote, choose a permanent owned by the voter and gain control of it";
+        this.staticText = "<i>Council's dilemma</i> &mdash; Starting with you, each player votes for time or money. For each time vote, take an extra turn after this one. For each money vote, choose a permanent owned by the voter and gain control of it";
     }
 
     public ExpropriateDilemmaEffect(final ExpropriateDilemmaEffect effect) {
@@ -85,9 +85,9 @@ class ExpropriateDilemmaEffect extends CouncilsDilemmaVoteEffect {
 
     private void turnsForTimeVote(int timeCount, Player controller, Game game, Ability source) {
         if (timeCount == 1) {
-            game.informPlayers(controller.getName() + " will take an extra turn");
+            game.informPlayers(controller.getLogName() + " will take an extra turn");
         } else {
-            game.informPlayers(controller.getName() + " will take " + timeCount + " extra turns");
+            game.informPlayers(controller.getLogName() + " will take " + timeCount + " extra turns");
         }
         do {
             game.getState().getTurnMods().add(new TurnMod(source.getControllerId(), false));
@@ -119,7 +119,7 @@ class ExpropriateDilemmaEffect extends CouncilsDilemmaVoteEffect {
                 ContinuousEffect effect = new ExpropriateControlEffect(controller.getId());
                 effect.setTargetPointer(new FixedTarget(permanent, game));
                 game.addEffect(effect, source);
-                game.informPlayers(controller.getName() + " gained control of " + permanent.getIdName() + " owned by " + game.getPlayer(permanent.getOwnerId()).getName());
+                game.informPlayers(controller.getLogName() + " gained control of " + permanent.getIdName() + " owned by " + game.getPlayer(permanent.getOwnerId()).getName());
             }
         }
     }
@@ -133,10 +133,10 @@ class ExpropriateDilemmaEffect extends CouncilsDilemmaVoteEffect {
                         "Choose " + choiceOne + " or " + choiceTwo + "?",
                         source.getRule(), choiceOne, choiceTwo, source, game)) {
                     voteOneCount++;
-                    game.informPlayers(player.getName() + " has voted for " + choiceOne);
+                    game.informPlayers(player.getLogName() + " has voted for " + choiceOne);
                 } else {
                     voteTwoCount++;
-                    game.informPlayers(player.getName() + " has voted for " + choiceTwo);
+                    game.informPlayers(player.getLogName() + " has voted for " + choiceTwo);
                     choiceTwoVoters.add(player.getId());
                 }
             }
@@ -175,7 +175,7 @@ class ExpropriateControlEffect extends ContinuousEffectImpl {
         if (permanent == null || controllerId == null) {
             this.discard();
         } else {
-            permanent.changeControllerId(controllerId, game);
+            permanent.changeControllerId(controllerId, game, source);
         }
         return true;
     }

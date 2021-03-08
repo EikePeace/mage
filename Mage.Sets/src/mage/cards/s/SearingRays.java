@@ -27,7 +27,7 @@ public final class SearingRays extends CardImpl {
         this.getSpellAbility().addEffect(new SearingRaysEffect());
     }
 
-    public SearingRays(final SearingRays card) {
+    private SearingRays(final SearingRays card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class SearingRaysEffect extends OneShotEffect {
                 if (amount > 0) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.damage(amount, source.getSourceId(), game);
+                        player.damage(amount, source.getSourceId(), source, game);
                     }
                 }
             }

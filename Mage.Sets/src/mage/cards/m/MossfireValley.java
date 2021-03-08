@@ -22,12 +22,12 @@ public final class MossfireValley extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.LAND},"");
 
         // {1}, {tap}: Add {R}{G}.
-        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 0, 0, 0, 0, 0, 0), new ManaCostsImpl("{1}"));
+        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 1, 1, 0, 0, 0), new ManaCostsImpl("{1}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
     }
 
-    public MossfireValley(final MossfireValley card) {
+    private MossfireValley(final MossfireValley card) {
         super(card);
     }
 

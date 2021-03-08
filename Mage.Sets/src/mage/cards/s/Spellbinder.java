@@ -1,7 +1,7 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -49,7 +49,7 @@ public final class Spellbinder extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(4)));
     }
 
-    public Spellbinder(final Spellbinder card) {
+    private Spellbinder(final Spellbinder card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class SpellbinderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -125,7 +125,7 @@ class SpellbinderImprintEffect extends OneShotEffect {
                     Card card = controller.getHand().get(target.getFirstTarget(), game);
                     if (card != null) {
                         controller.moveCardToExileWithInfo(card, source.getSourceId(),
-                                sourcePermanent.getIdName() + " (Imprint)", source.getSourceId(), game, Zone.HAND, true);
+                                sourcePermanent.getIdName() + " (Imprint)", source, game, Zone.HAND, true);
                         Permanent permanent = game.getPermanent(source.getSourceId());
                         if (permanent != null) {
                             permanent.imprint(card.getId(), game);
@@ -182,7 +182,7 @@ class SpellbinderCopyEffect extends OneShotEffect {
                                 if (copiedCard.getSpellAbility() != null) {
                                     game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), Boolean.TRUE);
                                     controller.cast(controller.chooseAbilityForCast(copiedCard, game, true),
-                                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                            game, true, new ApprovingObject(source, game));
                                     game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), null);
                                 } else {
                                     Logger.getLogger(SpellbinderCopyEffect.class).error(

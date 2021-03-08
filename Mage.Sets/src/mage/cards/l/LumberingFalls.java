@@ -17,7 +17,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -39,7 +38,7 @@ public final class LumberingFalls extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new LumberingFallsToken(), "land", Duration.EndOfTurn), new ManaCostsImpl("{2}{G}{U}")));
     }
 
-    public LumberingFalls(final LumberingFalls card) {
+    private LumberingFalls(final LumberingFalls card) {
         super(card);
     }
 

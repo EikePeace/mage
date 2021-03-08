@@ -34,7 +34,7 @@ public final class IndomitableCreativity extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(IndomitableCreativityAdjuster.instance);
     }
 
-    public IndomitableCreativity(final IndomitableCreativity card) {
+    private IndomitableCreativity(final IndomitableCreativity card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class IndomitableCreativityEffect extends OneShotEffect {
             for (UUID targetId : getTargetPointer().getTargets(game, source)) {
                 Permanent target = game.getPermanent(targetId);
                 if (target != null) {
-                    if (target.destroy(source.getSourceId(), game, false)) {
+                    if (target.destroy(source, game, false)) {
                         destroyedPermanents.add(target);
                     }
                 }

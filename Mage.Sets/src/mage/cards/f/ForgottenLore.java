@@ -11,7 +11,7 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInGraveyard;
@@ -32,7 +32,7 @@ public final class ForgottenLore extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public ForgottenLore(final ForgottenLore card) {
+    private ForgottenLore(final ForgottenLore card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ForgottenLoreEffect extends OneShotEffect {
             do {
                 chosenCard = new TargetCardInGraveyard(filter);
                 chosenCard.setNotTarget(true);
-                if (chosenCard.canChoose(opponent.getId(), game)) {
+                if (chosenCard.canChoose(source.getSourceId(), opponent.getId(), game)) {
                     opponent.chooseTarget(Outcome.ReturnToHand, chosenCard, source, game);
                     card = game.getCard(chosenCard.getFirstTarget());
                     if (card != null) {
@@ -84,9 +84,9 @@ class ForgottenLoreEffect extends OneShotEffect {
                 }
 
                 if (!done) {
-                    if (cost.canPay(source, source.getSourceId(), you.getId(), game) && you.chooseUse(Outcome.Benefit, "Pay {G} to choose a different card ?", source, game)) {
+                    if (cost.canPay(source, source, you.getId(), game) && you.chooseUse(Outcome.Benefit, "Pay {G} to choose a different card ?", source, game)) {
                         cost.clearPaid();
-                        if (!cost.pay(source, game, source.getSourceId(), you.getId(), false, null)) {
+                        if (!cost.pay(source, game, source, you.getId(), false, null)) {
                             done = true;
                         }
                     } else {

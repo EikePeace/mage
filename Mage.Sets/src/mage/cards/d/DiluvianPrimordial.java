@@ -1,7 +1,6 @@
 package mage.cards.d;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.ContinuousEffect;
@@ -14,10 +13,9 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.players.Player;
 import mage.target.Target;
@@ -26,6 +24,7 @@ import mage.target.targetadjustment.TargetAdjuster;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author LevelX2
@@ -51,7 +50,7 @@ public final class DiluvianPrimordial extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DiluvianPrimordial(final DiluvianPrimordial card) {
+    private DiluvianPrimordial(final DiluvianPrimordial card) {
         super(card);
     }
 
@@ -112,7 +111,7 @@ class DiluvianPrimordialEffect extends OneShotEffect {
                         if (controller.chooseUse(Outcome.PlayForFree, "Cast " + targetCard.getLogName() + '?', source, game)) {
                             game.getState().setValue("PlayFromNotOwnHandZone" + targetCard.getId(), Boolean.TRUE);
                             Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(targetCard, game, true),
-                                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                    game, true, new ApprovingObject(source, game));
                             game.getState().setValue("PlayFromNotOwnHandZone" + targetCard.getId(), null);
                             if (cardWasCast) {
                                 ContinuousEffect effect = new DiluvianPrimordialReplacementEffect();
@@ -152,20 +151,13 @@ class DiluvianPrimordialReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            Card card = game.getCard(getTargetPointer().getFirst(game, source));
-            if (card != null) {
-                controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.STACK, true);
-                return true;
-            }
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

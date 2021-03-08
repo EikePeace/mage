@@ -14,7 +14,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.RebelToken;
 
 import java.util.UUID;
@@ -53,7 +53,7 @@ public final class PrincessLeia extends CardImpl {
 
     }
 
-    public PrincessLeia(final PrincessLeia card) {
+    private PrincessLeia(final PrincessLeia card) {
         super(card);
     }
 

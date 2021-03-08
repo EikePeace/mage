@@ -45,7 +45,7 @@ public final class SeshiroTheAnointed extends CardImpl {
         this.addAbility(new SeshiroTheAnointedAbility());
     }
 
-    public SeshiroTheAnointed(final SeshiroTheAnointed card) {
+    private SeshiroTheAnointed(final SeshiroTheAnointed card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class SeshiroTheAnointedAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

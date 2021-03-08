@@ -1,4 +1,3 @@
-
 package mage.abilities.keyword;
 
 import mage.abilities.Ability;
@@ -84,13 +83,15 @@ class CumulativeUpkeepEffect extends OneShotEffect {
                 }
                 if (player.chooseUse(Outcome.Benefit, "Pay " + totalCost.getText() + '?', source, game)) {
                     totalCost.clearPaid();
-                    if (totalCost.payOrRollback(source, game, source.getSourceId(), source.getControllerId())) {
-                        game.fireEvent(new ManaEvent(EventType.PAID_CUMULATIVE_UPKEEP, permanent.getId(), permanent.getId(), player.getId(), totalCost.getUsedManaToPay()));
+                    if (totalCost.payOrRollback(source, game, source, source.getControllerId())) {
+                        game.fireEvent(new ManaEvent(EventType.PAID_CUMULATIVE_UPKEEP, permanent.getId(), source, player.getId(), totalCost.getUsedManaToPay()));
                         return true;
                     }
                 }
-                game.fireEvent(new GameEvent(EventType.DIDNT_PAY_CUMULATIVE_UPKEEP, permanent.getId(), permanent.getId(), player.getId(), ageCounter, false));
-                permanent.sacrifice(source.getSourceId(), game);
+                game.fireEvent(new GameEvent(GameEvent.EventType.DIDNT_PAY_CUMULATIVE_UPKEEP, permanent.getId(), source, player.getId(), ageCounter, false));
+                if (source.getControllerId().equals(permanent.getControllerId())) { // Permanent can only be sacrificed if you still control it
+                    permanent.sacrifice(source, game);
+                }
                 return true;
             } else {
                 CostsImpl<Cost> totalCost = new CostsImpl<>();
@@ -100,15 +101,15 @@ class CumulativeUpkeepEffect extends OneShotEffect {
                 if (player.chooseUse(Outcome.Benefit, totalCost.getText() + '?', source, game)) {
                     totalCost.clearPaid();
                     int bookmark = game.bookmarkState();
-                    if (totalCost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
-                        game.fireEvent(new GameEvent(EventType.PAID_CUMULATIVE_UPKEEP, permanent.getId(), permanent.getId(), player.getId(), ageCounter, false));
+                    if (totalCost.pay(source, game, source, source.getControllerId(), false, null)) {
+                        game.fireEvent(new GameEvent(GameEvent.EventType.PAID_CUMULATIVE_UPKEEP, permanent.getId(), source, player.getId(), ageCounter, false));
                         return true;
                     } else {
-                        game.restoreState(bookmark, source.getRule());
+                        player.restoreState(bookmark, source.getRule(), game);
                     }
                 }
-                game.fireEvent(new GameEvent(EventType.DIDNT_PAY_CUMULATIVE_UPKEEP, permanent.getId(), permanent.getId(), player.getId(), ageCounter, false));
-                permanent.sacrifice(source.getSourceId(), game);
+                game.fireEvent(new GameEvent(GameEvent.EventType.DIDNT_PAY_CUMULATIVE_UPKEEP, permanent.getId(), source, player.getId(), ageCounter, false));
+                permanent.sacrifice(source, game);
                 return true;
             }
         }

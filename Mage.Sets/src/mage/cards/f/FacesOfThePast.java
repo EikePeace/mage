@@ -28,7 +28,7 @@ public final class FacesOfThePast extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new FacesOfThePastEffect(), false, false, true));
     }
 
-    public FacesOfThePast(final FacesOfThePast card) {
+    private FacesOfThePast(final FacesOfThePast card) {
         super(card);
     }
 
@@ -62,13 +62,13 @@ class FacesOfThePastEffect extends OneShotEffect {
             if (controller != null) {
                 if (controller.chooseUse(outcome, "Tap all untapped creatures that share a creature type with " + targetPermanent.getLogName() + "? (Otherwise, untaps all tapped)", source, game)) {
                     for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, game)) {
-                        if (!permanent.isTapped() && targetPermanent.shareSubtypes(permanent, game)) {
-                            permanent.tap(game);
+                        if (!permanent.isTapped() && targetPermanent.shareCreatureTypes(game, permanent)) {
+                            permanent.tap(source, game);
                         }
                     }
                 } else {
                     for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, game)) {
-                        if (permanent.isTapped() && targetPermanent.shareSubtypes(permanent, game)) {
+                        if (permanent.isTapped() && targetPermanent.shareCreatureTypes(game, permanent)) {
                             permanent.untap(game);
                         }
                     }

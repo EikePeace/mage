@@ -11,7 +11,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetLandPermanent;
 
 /**
@@ -29,7 +28,7 @@ public final class Hydroform extends CardImpl {
         this.getSpellAbility().addTarget(new TargetLandPermanent());
     }
 
-    public Hydroform(final Hydroform card) {
+    private Hydroform(final Hydroform card) {
         super(card);
     }
 
@@ -44,7 +43,7 @@ class HydroformToken extends TokenImpl {
     public HydroformToken() {
         super("", "3/3 Elemental creature with flying");
         this.cardType.add(CardType.CREATURE);
-        this.getSubtype(null).add(SubType.ELEMENTAL);
+        this.subtype.add(SubType.ELEMENTAL);
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(3);

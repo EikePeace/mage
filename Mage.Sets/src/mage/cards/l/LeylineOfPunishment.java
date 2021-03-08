@@ -35,7 +35,7 @@ public final class LeylineOfPunishment extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new LeylineOfPunishmentEffect2()));
     }
 
-    public LeylineOfPunishment(final LeylineOfPunishment card) {
+    private LeylineOfPunishment(final LeylineOfPunishment card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class LeylineOfPunishmentEffect2 extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.PREVENT_DAMAGE;
+        return event.getType() == GameEvent.EventType.PREVENT_DAMAGE;
     }
 
     @Override

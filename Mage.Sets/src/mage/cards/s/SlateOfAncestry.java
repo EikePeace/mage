@@ -14,7 +14,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterControlledCreaturePermanent;
 
 /**
  *
@@ -35,7 +34,7 @@ public final class SlateOfAncestry extends CardImpl {
 
     }
 
-    public SlateOfAncestry(final SlateOfAncestry card) {
+    private SlateOfAncestry(final SlateOfAncestry card) {
         super(card);
     }
 

@@ -51,7 +51,7 @@ public final class SoulReap extends CardImpl {
 
     }
 
-    public SoulReap(final SoulReap card) {
+    private SoulReap(final SoulReap card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class SoulReapWatcher extends Watcher {
         if (condition == true) { //no need to check - condition has already occured
             return;
         }
-        if (event.getType() == EventType.SPELL_CAST
+        if (event.getType() == GameEvent.EventType.SPELL_CAST
                 && controllerId.equals(event.getPlayerId())) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (!spell.getSourceId().equals(cardId) && filter.match(spell, game)) {
@@ -127,11 +127,11 @@ class SoulReapEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent creature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent creature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (creature != null) {
             Player controller = game.getPlayer(creature.getControllerId());
             if (controller != null) {
-                controller.loseLife(3, game, false);
+                controller.loseLife(3, game, source, false);
                 return true;
             }
         }

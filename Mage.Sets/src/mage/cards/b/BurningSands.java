@@ -7,7 +7,6 @@ import mage.abilities.effects.common.SacrificeEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -32,7 +31,7 @@ public final class BurningSands extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BurningSands(final BurningSands card) {
+    private BurningSands(final BurningSands card) {
         super(card);
     }
 

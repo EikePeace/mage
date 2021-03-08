@@ -1,4 +1,3 @@
-
 package mage.cards.p;
 
 import mage.abilities.Ability;
@@ -48,7 +47,7 @@ public final class ProfaneCommand extends CardImpl {
 
         // * Return target creature card with converted mana cost X or less from your graveyard to the battlefield.
         Mode mode = new Mode();
-        mode.addEffect(new ReturnFromGraveyardToBattlefieldTargetEffect());
+        mode.addEffect(new ReturnFromGraveyardToBattlefieldTargetEffect(false, false));
         mode.addTarget(new TargetCardInYourGraveyard(new FilterCreatureCard("creature card with converted mana cost X or less from your graveyard")));
         this.getSpellAbility().addMode(mode);
 
@@ -70,7 +69,7 @@ public final class ProfaneCommand extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(ProfaneCommandAdjuster.instance);
     }
 
-    public ProfaneCommand(final ProfaneCommand card) {
+    private ProfaneCommand(final ProfaneCommand card) {
         super(card);
     }
 

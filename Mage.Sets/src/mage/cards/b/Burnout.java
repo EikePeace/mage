@@ -44,7 +44,7 @@ public final class Burnout extends CardImpl {
                 new AtTheBeginOfNextUpkeepDelayedTriggeredAbility(new DrawCardSourceControllerEffect(1), Duration.OneUse), false));
     }
 
-    public Burnout(final Burnout card) {
+    private Burnout(final Burnout card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class BurnoutCounterTargetEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Spell targetSpell = game.getStack().getSpell(source.getFirstTarget());
         if(targetSpell != null && targetSpell.getColor(game).isBlue()){
-            game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            game.getStack().counter(source.getFirstTarget(), source, game);
         }
         return true;
     }

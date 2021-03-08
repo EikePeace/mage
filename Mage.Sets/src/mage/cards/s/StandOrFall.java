@@ -38,7 +38,7 @@ public final class StandOrFall extends CardImpl {
         this.addAbility(new BeginningOfCombatTriggeredAbility(new StandOrFallEffect(), TargetController.YOU, false));
     }
 
-    public StandOrFall(final StandOrFall card) {
+    private StandOrFall(final StandOrFall card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class StandOrFallEffect extends OneShotEffect {
 
     public StandOrFallEffect() {
         super(Outcome.Detriment);
-        this.staticText = "separate all creatures defending player controls into two piles. Only creatures in the pile of that player's choice can block this turn";
+        this.staticText = "separate all creatures that player controls into two piles and that player chooses one. Only creatures in the chosen piles can block this turn";
     }
 
     public StandOrFallEffect(final StandOrFallEffect effect) {
@@ -117,7 +117,7 @@ class StandOrFallEffect extends OneShotEffect {
                     if (permanent != null) {
                         RestrictionEffect effect = new CantBlockTargetEffect(Duration.EndOfTurn);
                         effect.setText("");
-                        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                        effect.setTargetPointer(new FixedTarget(permanent, game));
                         game.addEffect(effect, source);
                     }
                 }

@@ -29,7 +29,7 @@ public final class SwiftSilence extends CardImpl {
         this.getSpellAbility().addEffect(new SwiftSilenceEffect());
     }
 
-    public SwiftSilence(final SwiftSilence card) {
+    private SwiftSilence(final SwiftSilence card) {
         super(card);
     }
 
@@ -60,13 +60,13 @@ class SwiftSilenceEffect extends OneShotEffect {
         }
         int toDraw = 0;
         for (Spell spell : spellsToCounter) {
-            if (game.getStack().counter(spell.getId(), source.getSourceId(), game)){
+            if (game.getStack().counter(spell.getId(), source, game)){
                 toDraw++;
             }
         }
         Player controller = game.getPlayer(source.getControllerId());
         if (toDraw > 0 && controller != null){
-            controller.drawCards(toDraw, game);
+            controller.drawCards(toDraw, source, game);
         }
         return true;
     }

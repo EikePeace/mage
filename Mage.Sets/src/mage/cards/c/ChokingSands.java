@@ -40,7 +40,7 @@ public final class ChokingSands extends CardImpl {
         this.getSpellAbility().addEffect(new ChokingSandsEffect());
     }
 
-    public ChokingSands(final ChokingSands card) {
+    private ChokingSands(final ChokingSands card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ChokingSandsEffect extends OneShotEffect {
         if (permanent != null && !permanent.isBasic()) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
-                player.damage(2, source.getSourceId(), game);
+                player.damage(2, source.getSourceId(), source, game);
                 return true;
             }
         }

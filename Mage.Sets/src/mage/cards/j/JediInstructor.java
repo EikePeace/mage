@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class JediInstructor extends CardImpl {
         this.addAbility(new MeditateAbility(new ManaCostsImpl("{1}{W}")));
     }
 
-    public JediInstructor(final JediInstructor card) {
+    private JediInstructor(final JediInstructor card) {
         super(card);
     }
 

@@ -43,7 +43,7 @@ public final class Glarecaster extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Glarecaster(final Glarecaster card) {
+    private Glarecaster(final Glarecaster card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class GlarecasterEffect extends RedirectionEffect {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE || event.getType() == EventType.DAMAGE_PLAYER;
+        return event.getType() == EventType.DAMAGE_PERMANENT || event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override

@@ -10,7 +10,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateDelayedTriggeredAbilityEffect;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.effects.common.DrawCardTargetEffect;
-import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -39,7 +38,7 @@ public final class ArcaneDenial extends CardImpl {
                         new DrawCardSourceControllerEffect(1)), false));
     }
 
-    public ArcaneDenial(final ArcaneDenial card) {
+    private ArcaneDenial(final ArcaneDenial card) {
         super(card);
     }
 
@@ -75,7 +74,7 @@ class ArcaneDenialEffect extends OneShotEffect {
             controller = game.getPlayer(game.getControllerId(targetId));
         }
         if (targetId != null
-                && game.getStack().counter(targetId, source.getSourceId(), game)) {
+                && game.getStack().counter(targetId, source, game)) {
             countered = true;
         }
         if (controller != null) {

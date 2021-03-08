@@ -21,7 +21,7 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
@@ -54,7 +54,7 @@ public final class PrimevalProtector extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(), filter), false));
     }
 
-    public PrimevalProtector(final PrimevalProtector card) {
+    private PrimevalProtector(final PrimevalProtector card) {
         super(card);
     }
 

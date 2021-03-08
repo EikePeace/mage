@@ -30,7 +30,7 @@ public final class SuddenDemise extends CardImpl {
 
     }
 
-    public SuddenDemise(final SuddenDemise card) {
+    private SuddenDemise(final SuddenDemise card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class SuddenDemiseDamageEffect extends OneShotEffect {
             FilterPermanent filter = new FilterCreaturePermanent();
             filter.add(new ColorPredicate(choice.getColor()));
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-                permanent.damage(damage, source.getSourceId(), game, false, true);
+                permanent.damage(damage, source.getSourceId(), source, game, false, true);
             }
             return true;
         }

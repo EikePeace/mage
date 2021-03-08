@@ -35,7 +35,7 @@ public final class DauntingDefender extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new DauntingDefenderEffect(1)));
     }
 
-    public DauntingDefender(final DauntingDefender card) {
+    private DauntingDefender(final DauntingDefender card) {
         super(card);
     }
 
@@ -63,9 +63,9 @@ class DauntingDefenderEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGE_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.isControlledBy(source.getControllerId()) && permanent.hasSubtype(SubType.CLERIC, game)) {
+            if (permanent != null && permanent.isControlledBy(source.getControllerId()) && permanent.isCreature() && permanent.hasSubtype(SubType.CLERIC, game)) {
                 return super.applies(event, source, game);
             }
         }

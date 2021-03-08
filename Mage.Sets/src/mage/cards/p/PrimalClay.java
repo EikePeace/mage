@@ -42,7 +42,7 @@ public final class PrimalClay extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new PrimalPlasmaReplacementEffect()));
     }
 
-    public PrimalClay(final PrimalClay card) {
+    private PrimalClay(final PrimalClay card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ public final class PrimalClay extends CardImpl {
 
         @Override
         public boolean checksEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+            return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
         }
 
         @Override

@@ -40,7 +40,7 @@ public final class FruitOfTheFirstTree extends CardImpl {
         this.addAbility( new DiesAttachedTriggeredAbility(new FruitOfTheFirstTreeEffect(), "enchanted creature"));
     }
 
-    public FruitOfTheFirstTree(final FruitOfTheFirstTree card) {
+    private FruitOfTheFirstTree(final FruitOfTheFirstTree card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class FruitOfTheFirstTreeEffect extends OneShotEffect {
         Permanent creature = (Permanent) getValue("attachedTo");
         if (controller != null && creature != null) {
             controller.gainLife(creature.getToughness().getValue(), game, source);
-            controller.drawCards(creature.getToughness().getValue(), game);
+            controller.drawCards(creature.getToughness().getValue(), source, game);
             return true;            
         }
         return false;

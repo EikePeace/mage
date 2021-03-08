@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.cards.CardImpl;
@@ -35,14 +35,14 @@ public final class KrosanBeast extends CardImpl {
                 Zone.BATTLEFIELD,
                 new ConditionalContinuousEffect(
                     new BoostSourceEffect(7, 7, Duration.WhileOnBattlefield),
-                    new CardsInControllerGraveCondition(7),
+                    new CardsInControllerGraveyardCondition(7),
                     "{this} gets +7/+7 as long as seven or more cards are in your graveyard"
                 ));
         thresholdAbility.setAbilityWord(AbilityWord.THRESHOLD);
         this.addAbility(thresholdAbility);
     }
 
-    public KrosanBeast(final KrosanBeast card) {
+    private KrosanBeast(final KrosanBeast card) {
         super(card);
     }
 

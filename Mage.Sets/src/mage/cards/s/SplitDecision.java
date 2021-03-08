@@ -28,7 +28,7 @@ public final class SplitDecision extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(StaticFilters.FILTER_SPELL_INSTANT_OR_SORCERY));
     }
 
-    public SplitDecision(final SplitDecision card) {
+    private SplitDecision(final SplitDecision card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class SplitDecisionEffect extends OneShotEffect {
                 }
             }
             if (denialCount > duplicationCount) {
-                return game.getStack().counter(getTargetPointer().getFirst(game, source), source.getSourceId(), game);
+                return game.getStack().counter(getTargetPointer().getFirst(game, source), source, game);
             } else {
                 return new CopyTargetSpellEffect().apply(game, source);
             }

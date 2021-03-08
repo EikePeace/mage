@@ -1,8 +1,11 @@
 package org.mage.test.testapi;
 
+import mage.cards.Card;
+import mage.cards.repository.CardRepository;
 import mage.constants.EmptyNames;
 import mage.constants.PhaseStep;
 import mage.constants.Zone;
+import mage.game.stack.Spell;
 import mage.util.CardUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,6 +47,34 @@ public class TestAliases extends CardTestPlayerBase {
         Assert.assertFalse(CardUtil.haveSameNames("Name", "123", true));
         Assert.assertFalse(CardUtil.haveSameNames("Name", EmptyNames.FACE_DOWN_CREATURE.toString(), true));
         Assert.assertFalse(CardUtil.haveSameNames("Name1", "Name2", true));
+
+        // name with split card
+        Card splitCard1 = CardRepository.instance.findCard("Armed // Dangerous").getCard();
+        Card splitCard2 = CardRepository.instance.findCard("Alive // Well").getCard();
+        Assert.assertTrue(CardUtil.haveSameNames(splitCard1, "Armed", currentGame));
+        Assert.assertTrue(CardUtil.haveSameNames(splitCard1, "Dangerous", currentGame));
+        Assert.assertTrue(CardUtil.haveSameNames(splitCard1, "Armed // Dangerous", currentGame));
+        Assert.assertTrue(CardUtil.haveSameNames(splitCard1, splitCard1));
+        Assert.assertFalse(CardUtil.haveSameNames(splitCard1, "Other", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(splitCard1, "Other // Dangerous", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(splitCard1, "Armed // Other", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(splitCard1, splitCard2));
+
+        // name with face down spells: face down spells don't have names, see https://github.com/magefree/mage/issues/6569
+        Card bearCard = CardRepository.instance.findCard("Balduvian Bears").getCard();
+        Spell normalSpell = new Spell(bearCard, bearCard.getSpellAbility(), playerA.getId(), Zone.HAND, currentGame);
+        Spell faceDownSpell = new Spell(bearCard, bearCard.getSpellAbility(), playerA.getId(), Zone.HAND, currentGame);
+        faceDownSpell.setFaceDown(true, currentGame);
+        // normal spell
+        Assert.assertFalse(CardUtil.haveSameNames(normalSpell, "", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(normalSpell, "Other", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(normalSpell, EmptyNames.FACE_DOWN_CREATURE.toString(), currentGame));
+        Assert.assertTrue(CardUtil.haveSameNames(normalSpell, "Balduvian Bears", currentGame));
+        // face down spell
+        Assert.assertFalse(CardUtil.haveSameNames(faceDownSpell, "", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(faceDownSpell, "Other", currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(faceDownSpell, EmptyNames.FACE_DOWN_CREATURE.toString(), currentGame));
+        Assert.assertFalse(CardUtil.haveSameNames(faceDownSpell, "Balduvian Bears", currentGame));
     }
 
     @Test
@@ -53,7 +84,6 @@ public class TestAliases extends CardTestPlayerBase {
         addCard(Zone.BATTLEFIELD, playerA, "Swamp@battle", 1);
         addCard(Zone.GRAVEYARD, playerA, "Swamp@grave", 1);
 
-//        showAliases("A aliases", 1, PhaseStep.UPKEEP, playerA);
         checkAliasZone("lib", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "lib", Zone.LIBRARY);
         checkAliasZone("hand", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "hand", Zone.HAND);
         checkAliasZone("battle", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "battle", Zone.BATTLEFIELD);
@@ -76,8 +106,6 @@ public class TestAliases extends CardTestPlayerBase {
         checkPermanentCount("Plains must exists", 1, PhaseStep.UPKEEP, playerB, "Plains", 5);
         checkPermanentCount("Mountain must exists", 1, PhaseStep.UPKEEP, playerB, "Mountain", 5);
         //
-//        showAliases("A aliases", 1, PhaseStep.UPKEEP, playerA);
-//        showAliases("B aliases", 1, PhaseStep.UPKEEP, playerB);
         // A
         checkAliasZone("Swamp must not", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Swamp", Zone.BATTLEFIELD, false);
         checkAliasZone("Swamp.1 must not", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "Swamp.1", Zone.BATTLEFIELD, false);
@@ -110,7 +138,6 @@ public class TestAliases extends CardTestPlayerBase {
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", "@lion.3");
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", "@lion.5");
 
-//        showAliases("A aliases", 1, PhaseStep.POSTCOMBAT_MAIN, playerA);
         checkAliasZone("1", 1, PhaseStep.POSTCOMBAT_MAIN, playerA, "lion.1", Zone.BATTLEFIELD, false);
         checkAliasZone("2", 1, PhaseStep.POSTCOMBAT_MAIN, playerA, "lion.2", Zone.BATTLEFIELD, true);
         checkAliasZone("3", 1, PhaseStep.POSTCOMBAT_MAIN, playerA, "lion.3", Zone.BATTLEFIELD, false);
@@ -123,5 +150,101 @@ public class TestAliases extends CardTestPlayerBase {
 
         assertGraveyardCount(playerA, "Lightning Bolt", 3);
         assertGraveyardCount(playerA, "Silvercoat Lion", 3);
+    }
+
+    @Test
+    public void test_CastSpell_Normal() {
+        addCard(Zone.BATTLEFIELD, playerA, "Silvercoat Lion", 1);
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain", 1);
+        addCard(Zone.HAND, playerA, "Lightning Bolt", 1);
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Lightning Bolt", "Silvercoat Lion");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertGraveyardCount(playerA, "Lightning Bolt", 1);
+        assertGraveyardCount(playerA, "Silvercoat Lion", 1);
+    }
+
+    @Test
+    public void test_CastSpell_Alias() {
+        addCard(Zone.BATTLEFIELD, playerA, "Silvercoat Lion@lion", 1);
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain", 1);
+        addCard(Zone.HAND, playerA, "Lightning Bolt@bolt", 1);
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "@bolt", "@lion");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertGraveyardCount(playerA, "@bolt", 1);
+        assertGraveyardCount(playerA, "@lion", 1);
+    }
+
+    @Test
+    public void test_ActivateAbility_Normal() {
+        // {T}: Embermage Goblin deals 1 damage to any target.
+        addCard(Zone.BATTLEFIELD, playerA, "Embermage Goblin", 2);
+        addCard(Zone.BATTLEFIELD, playerA, "Silvercoat Lion", 1);
+
+        showAvailableAbilities("before", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
+        activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: {this} deals", "Silvercoat Lion");
+        activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: {this} deals", "Silvercoat Lion");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertPermanentCount(playerA, "Embermage Goblin", 2);
+        assertGraveyardCount(playerA, "Silvercoat Lion", 1);
+    }
+
+    @Test
+    public void test_ActivateAbility_Alias() {
+        // {T}: Embermage Goblin deals 1 damage to any target.
+        addCard(Zone.BATTLEFIELD, playerA, "Embermage Goblin@goblin", 3);
+        addCard(Zone.BATTLEFIELD, playerA, "Silvercoat Lion@lion", 1);
+
+        // use 2 of 3 goblins
+        showAvailableAbilities("before", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
+        showAliases("before", 1, PhaseStep.PRECOMBAT_MAIN, playerA);
+        activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "@goblin.1 {T}: {this} deals", "@lion");
+        activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "@goblin.3 {T}: {this} deals", "@lion");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertPermanentCount(playerA, "@goblin.1", 1);
+        assertPermanentCount(playerA, "@goblin.2", 1);
+        assertPermanentCount(playerA, "@goblin.3", 1);
+        assertGraveyardCount(playerA, "@lion", 1);
+        assertTapped("@goblin.1", true);
+        assertTapped("@goblin.2", false);
+        assertTapped("@goblin.3", true);
+    }
+
+    @Test
+    public void test_ActivateManaAbility_Alias() {
+        addCard(Zone.BATTLEFIELD, playerA, "Silvercoat Lion@lion", 1);
+        addCard(Zone.BATTLEFIELD, playerA, "Mountain@mana", 3);
+        addCard(Zone.HAND, playerA, "Lightning Bolt@bolt", 1);
+
+        // testing alias for ability
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "@mana.2 {T}: Add {R}");
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "@bolt", "@lion");
+
+        setStopAt(1, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        assertTapped("@mana.1", false);
+        assertTapped("@mana.2", true);
+        assertTapped("@mana.3", false);
+        assertGraveyardCount(playerA, "@bolt", 1);
+        assertGraveyardCount(playerA, "@lion", 1);
     }
 }

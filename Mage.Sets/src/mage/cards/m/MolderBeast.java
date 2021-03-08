@@ -34,7 +34,7 @@ public final class MolderBeast extends CardImpl {
         this.addAbility(new MolderBeastTriggeredAbility());
     }
 
-    public MolderBeast(final MolderBeast card) {
+    private MolderBeast(final MolderBeast card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class MolderBeastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

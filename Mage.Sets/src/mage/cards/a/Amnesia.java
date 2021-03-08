@@ -1,35 +1,32 @@
-
 package mage.cards.a;
 
-import java.util.Set;
-import java.util.UUID;
+import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
 
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author fireshoes
  */
 public final class Amnesia extends CardImpl {
 
     public Amnesia(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{3}{U}{U}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{U}{U}{U}");
 
         // Target player reveals their hand and discards all nonland cards.
         this.getSpellAbility().addEffect(new AmnesiaEffect());
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Amnesia(final Amnesia card) {
+    private Amnesia(final Amnesia card) {
         super(card);
     }
 
@@ -60,13 +57,10 @@ class AmnesiaEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getFirstTarget());
         if (player != null) {
             Cards hand = player.getHand();
-            player.revealCards("Amnesia", hand, game);
+            player.revealCards(source, hand, game);
             Set<Card> cards = hand.getCards(game);
-            for (Card card : cards) {
-                if (card != null && !card.isLand()) {
-                    player.discard(card, source, game);
-                }
-            }
+            cards.removeIf(MageObject::isLand);
+            player.discard(new CardsImpl(cards), false, source, game);
             return true;
         }
         return false;

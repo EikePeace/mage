@@ -30,7 +30,7 @@ public final class Bulwark extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Bulwark(final Bulwark card) {
+    private Bulwark(final Bulwark card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class BulwarkDamageEffect extends OneShotEffect {
         if (opponent != null && controller != null) {
             int amount = controller.getHand().size() - opponent.getHand().size();
             if (amount > 0) {
-                opponent.damage(amount, source.getSourceId(), game);
+                opponent.damage(amount, source.getSourceId(), source, game);
                 return true;
             }
         }

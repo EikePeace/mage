@@ -51,7 +51,7 @@ public final class StalkingYeti extends CardImpl {
         this.addAbility(new ActivateAsSorceryActivatedAbility(Zone.BATTLEFIELD, new ReturnToHandSourceEffect(true), new ManaCostsImpl("{2}{S}")));
     }
 
-    public StalkingYeti(final StalkingYeti card) {
+    private StalkingYeti(final StalkingYeti card) {
         super(card);
     }
 
@@ -85,8 +85,8 @@ class StalkingYetiEffect extends OneShotEffect {
         if (thisCreature == null || thatCreature == null) {
             return false;
         }
-        thatCreature.damage(thisCreature.getPower().getValue(), thisCreature.getId(), game, false, true);
-        thisCreature.damage(thatCreature.getPower().getValue(), thatCreature.getId(), game, false, true);
+        thatCreature.damage(thisCreature.getPower().getValue(), thisCreature.getId(), source, game, false, true);
+        thisCreature.damage(thatCreature.getPower().getValue(), thatCreature.getId(), source, game, false, true);
         return true;
     }
 }

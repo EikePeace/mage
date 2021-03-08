@@ -25,7 +25,7 @@ public final class UginsInsight extends CardImpl {
         this.getSpellAbility().addEffect(new UginsInsightEffect());
     }
 
-    public UginsInsight(final UginsInsight card) {
+    private UginsInsight(final UginsInsight card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class UginsInsightEffect extends OneShotEffect {
             if (highCMC > 0) {
                 controller.scry(highCMC, source, game);
             }
-            controller.drawCards(3, game);
+            controller.drawCards(3, source, game);
             return true;
         }
         return false;

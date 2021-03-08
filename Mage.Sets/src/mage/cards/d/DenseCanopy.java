@@ -29,7 +29,7 @@ public final class DenseCanopy extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new DenseCanopyCantBlockEffect()));
     }
 
-    public DenseCanopy(final DenseCanopy card) {
+    private DenseCanopy(final DenseCanopy card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class DenseCanopyCantBlockEffect extends RestrictionEffect {
         if (attacker == null) {
             return true;
         }
-        return attacker.hasAbility(FlyingAbility.getInstance().getId(), game);
+        return attacker.hasAbility(FlyingAbility.getInstance(), game);
     }
 
     @Override

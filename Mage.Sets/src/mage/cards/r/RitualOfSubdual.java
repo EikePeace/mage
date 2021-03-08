@@ -6,8 +6,6 @@ import mage.MageObject;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.costs.Cost;
-import mage.abilities.costs.CostImpl;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.keyword.CumulativeUpkeepAbility;
@@ -21,7 +19,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.events.ManaEvent;
-import mage.players.Player;
 
 /**
  *
@@ -40,7 +37,7 @@ public final class RitualOfSubdual extends CardImpl {
 
     }
 
-    public RitualOfSubdual(final RitualOfSubdual card) {
+    private RitualOfSubdual(final RitualOfSubdual card) {
         super(card);
     }
 
@@ -81,12 +78,12 @@ class RitualOfSubdualReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        MageObject mageObject = game.getObject(event.getSourceId());
+        MageObject mageObject = game.getPermanentOrLKIBattlefield(event.getSourceId());
         return mageObject != null && mageObject.isLand();
     }
 }

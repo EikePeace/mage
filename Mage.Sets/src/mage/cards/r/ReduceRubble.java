@@ -7,7 +7,6 @@ import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.CounterUnlessPaysEffect;
 import mage.abilities.effects.common.DontUntapInControllersNextUntapStepTargetEffect;
 import mage.abilities.keyword.AftermathAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -39,7 +38,7 @@ public final class ReduceRubble extends SplitCard {
         getRightHalfCard().getSpellAbility().addTarget(new TargetPermanent(0, 3, new FilterLandPermanent(), false));
     }
 
-    public ReduceRubble(final ReduceRubble card) {
+    private ReduceRubble(final ReduceRubble card) {
         super(card);
     }
 

@@ -32,7 +32,7 @@ public final class LearnFromThePast extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public LearnFromThePast(final LearnFromThePast card) {
+    private LearnFromThePast(final LearnFromThePast card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class LearnFromThePastEffect extends OneShotEffect {
         Player player = game.getPlayer(this.getTargetPointer().getFirst(game, source));
         if (player != null) {
             for (Card card: player.getGraveyard().getCards(game)) {
-                player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+                player.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             }            
             player.shuffleLibrary(source, game);
             return true;

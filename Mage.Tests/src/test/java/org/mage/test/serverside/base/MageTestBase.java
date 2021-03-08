@@ -14,11 +14,14 @@ import mage.players.Player;
 import mage.players.PlayerType;
 import mage.server.game.GameFactory;
 import mage.server.game.PlayerFactory;
+import mage.server.managers.ConfigSettings;
 import mage.server.tournament.TournamentFactory;
-import mage.server.util.ConfigSettings;
+import mage.server.util.ConfigFactory;
+import mage.server.util.ConfigWrapper;
 import mage.server.util.PluginClassLoader;
 import mage.server.util.config.GamePlugin;
 import mage.server.util.config.Plugin;
+import mage.util.CardUtil;
 import mage.util.Copier;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -99,10 +102,8 @@ public abstract class MageTestBase {
     @BeforeClass
     public static void init() {
         Logger.getRootLogger().setLevel(Level.DEBUG);
-        logger.info("Starting MAGE tests");
-        logger.info("Logging level: " + logger.getLevel());
         deleteSavedGames();
-        ConfigSettings config = ConfigSettings.instance;
+        ConfigSettings config = new ConfigWrapper(ConfigFactory.loadFromFile("config/config.xml"));
         config.getGameTypes().forEach((gameType) -> {
             GameFactory.instance.addGameType(gameType.getName(), loadGameType(gameType), loadPlugin(gameType));
         });
@@ -148,7 +149,6 @@ public abstract class MageTestBase {
     private static TournamentType loadTournamentType(GamePlugin plugin) {
         try {
             classLoader.addURL(new File(PLUGIN_FOLDER + '/' + plugin.getJar()).toURI().toURL());
-            logger.info("Loading tournament type: " + plugin.getClassName());
             return (TournamentType) Class.forName(plugin.getTypeName(), true, classLoader).getConstructor().newInstance();
         } catch (ClassNotFoundException ex) {
             logger.warn("Tournament type not found:" + plugin.getJar() + " - check plugin folder");
@@ -174,7 +174,7 @@ public abstract class MageTestBase {
     protected void parseScenario(String filename) throws FileNotFoundException {
         parserState = ParserState.INIT;
         File f = new File(filename);
-        try(Scanner scanner = new Scanner(f)) {
+        try (Scanner scanner = new Scanner(f)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine().trim();
                 if (line == null || line.isEmpty() || line.startsWith("#")) {
@@ -248,14 +248,15 @@ public abstract class MageTestBase {
                 } else {
                     for (int i = 0; i < amount; i++) {
                         CardInfo cardInfo = CardRepository.instance.findCard(cardName);
-                        Card card = cardInfo != null ? cardInfo.getCard() : null;
-                        if (card != null) {
+                        Card newCard = cardInfo != null ? cardInfo.getCard() : null;
+                        if (newCard != null) {
                             if (gameZone == Zone.BATTLEFIELD) {
-                                PermanentCard p = new PermanentCard(card, null, currentGame);
+                                Card permCard = CardUtil.getDefaultCardSideForBattlefield(newCard);
+                                PermanentCard p = new PermanentCard(permCard, null, currentGame);
                                 p.setTapped(tapped);
                                 perms.add(p);
                             } else {
-                                cards.add(card);
+                                cards.add(newCard);
                             }
                         } else {
                             logger.fatal("Couldn't find a card: " + cardName);

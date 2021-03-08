@@ -12,10 +12,10 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
-import mage.filter.FilterPermanent;
+import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterEnchantmentPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCardInGraveyard;
@@ -47,15 +47,15 @@ public final class StarfieldOfNyx extends CardImpl {
     public StarfieldOfNyx(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{4}{W}");
 
-        // At the beginning of your upkeep, you may return target enchantment card 
+        // At the beginning of your upkeep, you may return target enchantment card
         // from your graveyard to the battlefield.
         Ability ability = new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD,
                 new ReturnFromGraveyardToBattlefieldTargetEffect(), TargetController.YOU, true);
         ability.addTarget(new TargetCardInGraveyard(filterGraveyardEnchantment));
         this.addAbility(ability);
 
-        // As long as you control five or more enchantments, each other non-Aura enchantment 
-        // you control is a creature in addition to its other types and has base power and 
+        // As long as you control five or more enchantments, each other non-Aura enchantment
+        // you control is a creature in addition to its other types and has base power and
         // base toughness each equal to its converted mana cost.
         ConditionalContinuousEffect effect = new ConditionalContinuousEffect(
                 new StarfieldOfNyxEffect(), new PermanentsOnTheBattlefieldCondition(
@@ -63,7 +63,7 @@ public final class StarfieldOfNyx extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public StarfieldOfNyx(final StarfieldOfNyx card) {
+    private StarfieldOfNyx(final StarfieldOfNyx card) {
         super(card);
     }
 
@@ -74,13 +74,13 @@ public final class StarfieldOfNyx extends CardImpl {
 
     static class StarfieldOfNyxEffect extends ContinuousEffectImpl {
 
-        private static final FilterPermanent filter
-                = new FilterPermanent("Each other non-Aura enchantment you control");
-        private static final FilterEnchantmentPermanent filter2
-                = new FilterEnchantmentPermanent();
+        private static final FilterControlledPermanent filter
+                = new FilterControlledPermanent("Each other non-Aura enchantment you control");
 
         static {
-            filter2.add(TargetController.YOU.getControllerPredicate());
+            filter.add(CardType.ENCHANTMENT.getPredicate());
+            filter.add(Predicates.not(SubType.AURA.getPredicate()));
+            filter.add(AnotherPredicate.instance);
         }
 
         public StarfieldOfNyxEffect() {
@@ -91,8 +91,14 @@ public final class StarfieldOfNyx extends CardImpl {
 
             this.dependendToTypes.add(DependencyType.EnchantmentAddingRemoving); // Enchanted Evening
             this.dependendToTypes.add(DependencyType.AuraAddingRemoving); // Cloudform
+            this.dependendToTypes.add(DependencyType.BecomeForest); // Song of the Dryads
+            this.dependendToTypes.add(DependencyType.BecomeMountain);
+            this.dependendToTypes.add(DependencyType.BecomePlains);
+            this.dependendToTypes.add(DependencyType.BecomeSwamp);
+            this.dependendToTypes.add(DependencyType.BecomeIsland);
 
             this.dependencyTypes.add(DependencyType.BecomeCreature);  // Conspiracy
+
         }
 
         public StarfieldOfNyxEffect(final StarfieldOfNyxEffect effect) {
@@ -106,16 +112,13 @@ public final class StarfieldOfNyx extends CardImpl {
 
         @Override
         public boolean apply(Layer layer, SubLayer sublayer, Ability source, Game game) {
-            filter.add(CardType.ENCHANTMENT.getPredicate());
-            filter.add(Predicates.not(SubType.AURA.getPredicate()));
-            filter.add(AnotherPredicate.instance);
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter,
                     source.getControllerId(), source.getSourceId(), game)) {
                 switch (layer) {
                     case TypeChangingEffects_4:
                         if (sublayer == SubLayer.NA) {
                             if (!permanent.isCreature()
-                                    && !permanent.getSubtype(game).contains(SubType.AURA)) {
+                                    && !permanent.hasSubtype(SubType.AURA, game)) {
                                 permanent.addCardType(CardType.CREATURE);
                             }
                         }
@@ -124,7 +127,7 @@ public final class StarfieldOfNyx extends CardImpl {
                     case PTChangingEffects_7:
                         if (sublayer == SubLayer.SetPT_7b
                                 && permanent.isCreature()
-                                && !permanent.getSubtype(game).contains(SubType.AURA)) {
+                                && !permanent.hasSubtype(SubType.AURA, game)) {
                             int manaCost = permanent.getConvertedManaCost();
                             permanent.getPower().setValue(manaCost);
                             permanent.getToughness().setValue(manaCost);

@@ -29,9 +29,7 @@ public class AddCardSubTypeTargetEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent target = game.getPermanent(targetPointer.getFirst(game, source));
         if (target != null) {
-            if (!target.hasSubtype(addedSubType, game)) {
-                target.getSubtype(game).add(addedSubType);
-            }
+            target.addSubType(game, addedSubType);
         } else {
             if (duration == Duration.Custom) {
                 discard();
@@ -47,13 +45,21 @@ public class AddCardSubTypeTargetEffect extends ContinuousEffectImpl {
 
     @Override
     public String getText(Mode mode) {
+        if (staticText != null && !staticText.isEmpty()) {
+            return staticText;
+        }
         StringBuilder sb = new StringBuilder();
         if (!mode.getTargets().isEmpty()) {
             sb.append("Target ").append(mode.getTargets().get(0).getTargetName());
         } else {
             sb.append("It ");
         }
-        sb.append(" becomes ").append(addedSubType).append(" in addition to its other types ").append(duration.toString());
+        if (addedSubType.toString().matches("(?i)^[AEIOUYaeiouy].*$")) {
+            sb.append(" becomes an ");
+        } else {
+            sb.append(" becomes a ");
+        }
+        sb.append(addedSubType).append(" in addition to its other types ").append(duration.toString());
         return sb.toString();
     }
 }

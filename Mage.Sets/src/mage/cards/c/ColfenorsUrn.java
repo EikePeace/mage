@@ -47,7 +47,7 @@ public final class ColfenorsUrn extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(Zone.BATTLEFIELD, new ColfenorsUrnEffect(), TargetController.ANY, new ColfenorsUrnCondition(), false));
     }
 
-    public ColfenorsUrn(final ColfenorsUrn card) {
+    private ColfenorsUrn(final ColfenorsUrn card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class ColfenorsUrnEffect extends OneShotEffect {
         if (controller != null && permanent != null) {
             UUID exileId = CardUtil.getCardExileZoneId(game, source);
             ExileZone exile = game.getExile().getExileZone(exileId);
-            if (permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent.sacrifice(source, game)) {
                 controller.moveCards(exile.getCards(game), Zone.BATTLEFIELD, source, game);
             }
             return true;

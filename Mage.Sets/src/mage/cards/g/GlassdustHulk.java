@@ -17,7 +17,7 @@ import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterArtifactPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -48,7 +48,7 @@ public final class GlassdustHulk extends CardImpl {
         this.addAbility(new CyclingAbility(new ManaCostsImpl("{W/U}")));
     }
 
-    public GlassdustHulk(final GlassdustHulk card) {
+    private GlassdustHulk(final GlassdustHulk card) {
         super(card);
     }
 

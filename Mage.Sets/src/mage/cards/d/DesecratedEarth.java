@@ -30,7 +30,7 @@ public final class DesecratedEarth extends CardImpl {
 
     }
 
-    public DesecratedEarth(final DesecratedEarth card) {
+    private DesecratedEarth(final DesecratedEarth card) {
         super(card);
     }
 
@@ -58,11 +58,11 @@ class DesecratedEarthEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
-                player.discard(1, false, source, game);
+                player.discard(1, false, false, source, game);
                 return true;
             }
         }

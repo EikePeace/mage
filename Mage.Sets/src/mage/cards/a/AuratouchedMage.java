@@ -12,7 +12,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.AuraCardCanAttachToLKIPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToLKIPermanentId;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -37,7 +37,7 @@ public final class AuratouchedMage extends CardImpl {
 
     }
 
-    public AuratouchedMage(final AuratouchedMage card) {
+    private AuratouchedMage(final AuratouchedMage card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class AuratouchedMageEffect extends OneShotEffect {
                             && game.getState().getZoneChangeCounter(source.getSourceId()) == source.getSourceObjectZoneChangeCounter()) {
                         game.getState().setValue("attachTo:" + aura.getId(), auratouchedMage);
                         if (controller.moveCards(aura, Zone.BATTLEFIELD, source, game)) {
-                            auratouchedMage.addAttachment(aura.getId(), game);
+                            auratouchedMage.addAttachment(aura.getId(), source, game);
                         }
                     } else {
                         Cards auraRevealed = new CardsImpl(aura);

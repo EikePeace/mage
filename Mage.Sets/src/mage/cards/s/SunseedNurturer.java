@@ -39,7 +39,7 @@ public final class SunseedNurturer extends CardImpl {
         this.addAbility(new ColorlessManaAbility());
     }
 
-    public SunseedNurturer(final SunseedNurturer card) {
+    private SunseedNurturer(final SunseedNurturer card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class SunseedNurturerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override

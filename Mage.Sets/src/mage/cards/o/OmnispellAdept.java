@@ -1,7 +1,6 @@
 package mage.cards.o;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.TapSourceCost;
@@ -23,6 +22,7 @@ import mage.target.Target;
 import mage.target.common.TargetCardInHand;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author TheElk801
@@ -46,7 +46,7 @@ public final class OmnispellAdept extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OmnispellAdept(final OmnispellAdept card) {
+    private OmnispellAdept(final OmnispellAdept card) {
         super(card);
     }
 
@@ -97,13 +97,13 @@ class OmnispellAdeptEffect extends OneShotEffect {
                 }
                 realFilter.add(Predicates.not(new CardIdPredicate(cardToCast.getId()))); // remove card from choose dialog (infinite fix)
 
-                if (!cardToCast.getSpellAbility().canChooseTarget(game)) {
+                if (!cardToCast.getSpellAbility().canChooseTarget(game, controller.getId())) {
                     continue;
                 }
 
                 game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), Boolean.TRUE);
                 Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(cardToCast, game, true),
-                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game, true, new ApprovingObject(source, game));
                 game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), null);
 
                 if (cardWasCast) {

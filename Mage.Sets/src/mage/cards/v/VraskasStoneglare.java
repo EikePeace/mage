@@ -38,7 +38,7 @@ public final class VraskasStoneglare extends CardImpl {
         );
     }
 
-    public VraskasStoneglare(final VraskasStoneglare card) {
+    private VraskasStoneglare(final VraskasStoneglare card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class VraskasStoneglareEffect extends OneShotEffect {
         }
         Player player = game.getPlayer(source.getControllerId());
         int toughness = permanent.getToughness().getValue();
-        permanent.destroy(source.getSourceId(), game, false);
+        permanent.destroy(source, game, false);
         if (player != null) {
             player.gainLife(toughness, game, source);
         }

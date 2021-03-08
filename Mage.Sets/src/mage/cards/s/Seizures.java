@@ -19,6 +19,7 @@ import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
 import java.util.UUID;
+import mage.constants.Zone;
 
 /**
  * @author LoneFox
@@ -39,7 +40,7 @@ public final class Seizures extends CardImpl {
         this.addAbility(new BecomesTappedAttachedTriggeredAbility(new SeizuresEffect(), "enchanted creature"));
     }
 
-    public Seizures(final Seizures card) {
+    private Seizures(final Seizures card) {
         super(card);
     }
 
@@ -48,7 +49,6 @@ public final class Seizures extends CardImpl {
         return new Seizures(this);
     }
 }
-
 
 class SeizuresEffect extends OneShotEffect {
 
@@ -68,7 +68,12 @@ class SeizuresEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        // In the case that the enchantment is blinked
+        Permanent enchantment = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+        if (enchantment == null) {
+            // It was not blinked, use the standard method
+            enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        }
         if (enchantment == null) {
             return false;
         }
@@ -79,14 +84,14 @@ class SeizuresEffect extends OneShotEffect {
         Player player = game.getPlayer(enchanted.getControllerId());
         if (player != null) {
             Cost cost = new ManaCostsImpl("{3}");
-            if (cost.canPay(source, source.getSourceId(), player.getId(), game)
+            if (cost.canPay(source, source, player.getId(), game)
                     && player.chooseUse(Outcome.Benefit, "Pay " + cost.getText() + " to avoid damage?", source, game)) {
                 cost.clearPaid();
-                if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                if (cost.pay(source, game, source, player.getId(), false, null)) {
                     return true;
                 }
             }
-            player.damage(3, source.getSourceId(), game);
+            player.damage(3, source.getSourceId(), source, game);
             return true;
         }
         return false;

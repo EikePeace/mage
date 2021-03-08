@@ -1,5 +1,8 @@
 package mage.cards.c;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -7,7 +10,7 @@ import mage.abilities.common.AsEntersBattlefieldAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.ContinuousEffectImpl;
 import mage.abilities.effects.common.ChooseColorEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.TriggeredManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -17,8 +20,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
-
-import java.util.UUID;
 
 /**
  * @author BetaSteward
@@ -38,7 +39,7 @@ public final class CagedSun extends CardImpl {
         this.addAbility(new CagedSunTriggeredAbility());
     }
 
-    public CagedSun(final CagedSun card) {
+    private CagedSun(final CagedSun card) {
         super(card);
     }
 
@@ -99,7 +100,7 @@ class CagedSunTriggeredAbility extends TriggeredManaAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.MANA_ADDED;
+        return event.getType() == GameEvent.EventType.MANA_ADDED;
     }
 
     @Override
@@ -133,6 +134,19 @@ class CagedSunEffect extends ManaEffect {
 
     public CagedSunEffect(final CagedSunEffect effect) {
         super(effect);
+    }
+
+    @Override
+    public List<Mana> getNetMana(Game game, Ability source) {
+        if (game != null && game.inCheckPlayableState()) {
+            ObjectColor color = (ObjectColor) game.getState().getValue(source.getSourceId() + "_color");
+            if (color != null) {
+                List<Mana> availableNetMana = new ArrayList<>();
+                availableNetMana.add(new Mana(ColoredManaSymbol.lookup(color.toString().charAt(0))));
+                return availableNetMana;
+            }
+        }
+        return super.getNetMana(game, source);
     }
 
     @Override

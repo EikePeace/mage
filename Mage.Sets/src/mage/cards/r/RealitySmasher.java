@@ -40,7 +40,7 @@ public final class RealitySmasher extends CardImpl {
         this.addAbility(new RealitySmasherTriggeredAbility());
     }
 
-    public RealitySmasher(final RealitySmasher card) {
+    private RealitySmasher(final RealitySmasher card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class RealitySmasherTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

@@ -18,8 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.counters.CounterType;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.common.TargetLandPermanent;
@@ -54,7 +52,7 @@ public final class SpikeTiller extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public SpikeTiller(final SpikeTiller card) {
+    private SpikeTiller(final SpikeTiller card) {
         super(card);
     }
 

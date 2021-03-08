@@ -61,7 +61,7 @@ public final class CircuDimirLobotomist extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CircuDimirLobotomistRuleModifyingEffect()));
     }
 
-    public CircuDimirLobotomist(final CircuDimirLobotomist card) {
+    private CircuDimirLobotomist(final CircuDimirLobotomist card) {
         super(card);
     }
 
@@ -95,7 +95,7 @@ class CircuDimirLobotomistEffect extends OneShotEffect {
         if (controller != null && playerTargetLibrary != null && sourcePermanent != null) {
             UUID exileId = CardUtil.getCardExileZoneId(game, source);
             controller.moveCardToExileWithInfo(playerTargetLibrary.getLibrary().getFromTop(game), exileId,
-                    sourcePermanent.getIdName() + " (" + sourcePermanent.getZoneChangeCounter(game) + ')', source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                    sourcePermanent.getIdName() + " (" + sourcePermanent.getZoneChangeCounter(game) + ')', source, game, Zone.BATTLEFIELD, true);
             return true;
         }
         return false;
@@ -129,7 +129,7 @@ class CircuDimirLobotomistRuleModifyingEffect extends ContinuousRuleModifyingEff
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == EventType.CAST_SPELL && game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) {
+        if (event.getType() == GameEvent.EventType.CAST_SPELL && game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) {
             MageObject object = game.getObject(event.getSourceId());
             if (object != null) {
                 ExileZone exileZone = game.getExile().getExileZone(CardUtil.getCardExileZoneId(game, source));

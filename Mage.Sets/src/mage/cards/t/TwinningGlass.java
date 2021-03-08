@@ -1,6 +1,6 @@
 package mage.cards.t;
 
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.TapSourceCost;
@@ -12,18 +12,21 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
-import mage.filter.FilterCard;
+import mage.filter.common.FilterNonlandCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.players.Player;
-import mage.target.common.TargetCardInHand;
+import mage.target.TargetCard;
 import mage.watchers.common.SpellsCastWatcher;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author jeffwadsworth
@@ -42,7 +45,7 @@ public final class TwinningGlass extends CardImpl {
 
     }
 
-    public TwinningGlass(final TwinningGlass card) {
+    private TwinningGlass(final TwinningGlass card) {
         super(card);
     }
 
@@ -72,8 +75,7 @@ class TwinningGlassEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        FilterCard filterCard = new FilterCard();
-        filterCard.add(Predicates.not(CardType.LAND.getPredicate()));
+        List<Spell> spells = new ArrayList<>();
         Permanent twinningGlass = game.getPermanent(source.getSourceId());
         Player controller = game.getPlayer(source.getControllerId());
         SpellsCastWatcher watcher = game.getState().getWatcher(SpellsCastWatcher.class);
@@ -84,22 +86,32 @@ class TwinningGlassEffect extends OneShotEffect {
                 && controller != null
                 && watcher != null) {
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
-                List<Spell> spells = watcher.getSpellsCastThisTurn(playerId);
-                if (spells != null
-                        && !spells.isEmpty()) {
-                    for (Spell spell : spells) {
-                        filterCard.add(new NamePredicate(spell.getName()));
+                if (watcher.getSpellsCastThisTurn(playerId) != null) {
+                    for (Spell spell : watcher.getSpellsCastThisTurn(playerId)) {
+                        spells.add(spell);
                     }
                 }
             }
-            TargetCardInHand target = new TargetCardInHand(0, 1, filterCard);
+            if (spells.isEmpty()) {
+                return false;
+            }
+            List<NamePredicate> predicates = spells.stream()
+                    .map(Spell::getName)
+                    .filter(Objects::nonNull)
+                    .filter(s -> !s.isEmpty())
+                    .map(NamePredicate::new)
+                    .collect(Collectors.toList());
+            FilterNonlandCard filterCard = new FilterNonlandCard("nonland card that was cast this turn");
+            filterCard.add(Predicates.or(predicates));
+            TargetCard target = new TargetCard(0, 1, Zone.HAND, filterCard);
             if (controller.choose(Outcome.PlayForFree, controller.getHand(), target, game)) {
                 Card chosenCard = game.getCard(target.getFirstTarget());
                 if (chosenCard != null) {
-                    if (controller.chooseUse(Outcome.PlayForFree, "Cast the card without paying mana cost?", source, game)) {
+                    if (controller.chooseUse(Outcome.PlayForFree, "Cast "
+                            + chosenCard.getName() + " without paying its mana cost?", source, game)) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + chosenCard.getId(), Boolean.TRUE);
                         Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(chosenCard, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + chosenCard.getId(), null);
                         return cardWasCast;
                     }

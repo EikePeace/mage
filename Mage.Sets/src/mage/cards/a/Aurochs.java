@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -42,7 +42,7 @@ public final class Aurochs extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(value, StaticValue.get(0), Duration.EndOfTurn, true), false));
     }
 
-    public Aurochs(final Aurochs card) {
+    private Aurochs(final Aurochs card) {
         super(card);
     }
 

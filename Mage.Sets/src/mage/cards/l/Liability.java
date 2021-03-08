@@ -35,7 +35,7 @@ public final class Liability extends CardImpl {
         this.addAbility(new PutIntoGraveFromBattlefieldAllTriggeredAbility(new LiabilityEffect(), false, filter, true));
     }
 
-    public Liability(final Liability card) {
+    private Liability(final Liability card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class LiabilityEffect extends OneShotEffect {
         if (permanent != null) {
             Player controller = game.getPlayer(permanent.getControllerId());
             if (controller != null) {
-                controller.loseLife(1, game, false);
+                controller.loseLife(1, game, source, false);
                 return true;
             }
         }

@@ -7,7 +7,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.target.TargetSpell;
 
 /**
@@ -32,7 +32,7 @@ public final class Swerve extends CardImpl {
         
     }
 
-    public Swerve(final Swerve card) {
+    private Swerve(final Swerve card) {
         super(card);
     }
 

@@ -42,7 +42,7 @@ public final class PsychicVortex extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PsychicVortex(final PsychicVortex card) {
+    private PsychicVortex(final PsychicVortex card) {
         super(card);
     }
 
@@ -55,14 +55,14 @@ public final class PsychicVortex extends CardImpl {
 class PsychicVortexCost extends CostImpl {
     
     PsychicVortexCost() {
-        this.text = "Draw a card.";
+        this.text = "Draw a card";
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
             this.paid = true;
             return true;
             }
@@ -70,7 +70,7 @@ class PsychicVortexCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         Player controller = game.getPlayer(controllerId);
         return controller != null && controller.getLibrary().hasCards();
     }

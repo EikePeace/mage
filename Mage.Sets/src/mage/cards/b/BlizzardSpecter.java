@@ -47,7 +47,7 @@ public final class BlizzardSpecter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BlizzardSpecter(final BlizzardSpecter card) {
+    private BlizzardSpecter(final BlizzardSpecter card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class ReturnToHandEffect extends OneShotEffect {
             return false;
         }
         Target target = new TargetControlledPermanent(1, 1, new FilterControlledPermanent(), true);
-        if (target.canChoose(targetPlayer.getId(), game)) {
+        if (target.canChoose(source.getSourceId(), targetPlayer.getId(), game)) {
             targetPlayer.chooseTarget(Outcome.ReturnToHand, target, source, game);
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {

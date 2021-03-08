@@ -31,7 +31,7 @@ public final class ChameleonColossus extends CardImpl {
         this.toughness = new MageInt(4);
 
         // Changeling (This card is every creature type at all times.)
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         // Protection from black
         this.addAbility(ProtectionAbility.from(ObjectColor.BLACK));
@@ -41,7 +41,7 @@ public final class ChameleonColossus extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(x, x, Duration.EndOfTurn, true), new ManaCostsImpl("{2}{G}{G}")));
     }
 
-    public ChameleonColossus(final ChameleonColossus card) {
+    private ChameleonColossus(final ChameleonColossus card) {
         super(card);
     }
 

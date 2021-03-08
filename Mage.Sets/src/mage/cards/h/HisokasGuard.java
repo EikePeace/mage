@@ -20,7 +20,7 @@ import mage.constants.Outcome;
 import mage.constants.SubLayer;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
@@ -54,7 +54,7 @@ public final class HisokasGuard extends CardImpl {
 
     }
 
-    public HisokasGuard(final HisokasGuard card) {
+    private HisokasGuard(final HisokasGuard card) {
         super(card);
     }
 
@@ -100,7 +100,7 @@ class HisokasGuardGainAbilityTargetEffect extends ContinuousEffectImpl {
         if (hisokasGuard != null && !hisokasGuard.getConnectedCards("HisokasGuard").isEmpty()) {
             Permanent guardedCreature = game.getPermanent(hisokasGuard.getConnectedCards("HisokasGuard").get(0));
             if (guardedCreature != null && hisokasGuard.isTapped()) {
-                guardedCreature.addAbility(ability, game);
+                guardedCreature.addAbility(ability, source.getSourceId(), game);
                 return true;
             } else {
                 // if guard isn't tapped, the effect is no more valid

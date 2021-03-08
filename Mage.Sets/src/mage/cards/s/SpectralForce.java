@@ -38,7 +38,7 @@ public final class SpectralForce extends CardImpl {
         this.addAbility(new SpectralForceTriggeredAbility());
     }
 
-    public SpectralForce(final SpectralForce card) {
+    private SpectralForce(final SpectralForce card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class SpectralForceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

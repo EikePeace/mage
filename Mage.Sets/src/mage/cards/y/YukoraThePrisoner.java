@@ -44,7 +44,7 @@ public final class YukoraThePrisoner extends CardImpl {
 
     }
 
-    public YukoraThePrisoner(final YukoraThePrisoner card) {
+    private YukoraThePrisoner(final YukoraThePrisoner card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class YukoraThePrisonerEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<Permanent> permanents = game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
         }
         return true;
     }

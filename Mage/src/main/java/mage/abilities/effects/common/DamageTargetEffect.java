@@ -24,7 +24,7 @@ public class DamageTargetEffect extends OneShotEffect {
     protected boolean preventable;
     protected String targetDescription;
     protected boolean useOnlyTargetPointer;
-    protected String sourceName = "{source}";
+    protected String sourceName = "{this}";
 
     public DamageTargetEffect(int amount) {
         this(StaticValue.get(amount), true);
@@ -119,12 +119,11 @@ public class DamageTargetEffect extends OneShotEffect {
                 for (UUID targetId : target.getTargets()) {
                     Permanent permanent = game.getPermanent(targetId);
                     if (permanent != null) {
-                        permanent.damage(amount.calculate(game, source, this), source.getSourceId(), game, false, preventable);
+                        permanent.damage(amount.calculate(game, source, this), source.getSourceId(), source, game, false, preventable);
                     }
                     Player player = game.getPlayer(targetId);
-                    if (player != null
-                            && player.isInGame()) {
-                        player.damage(amount.calculate(game, source, this), source.getSourceId(), game, false, preventable);
+                    if (player != null) {
+                        player.damage(amount.calculate(game, source, this), source.getSourceId(), source, game, false, preventable);
                     }
                 }
             }
@@ -133,12 +132,11 @@ public class DamageTargetEffect extends OneShotEffect {
         for (UUID targetId : this.getTargetPointer().getTargets(game, source)) {
             Permanent permanent = game.getPermanent(targetId);
             if (permanent != null) {
-                permanent.damage(amount.calculate(game, source, this), source.getSourceId(), game, false, preventable);
+                permanent.damage(amount.calculate(game, source, this), source.getSourceId(), source, game, false, preventable);
             } else {
                 Player player = game.getPlayer(targetId);
-                if (player != null
-                        && player.isInGame()) {
-                    player.damage(amount.calculate(game, source, this), source.getSourceId(), game, false, preventable);
+                if (player != null) {
+                    player.damage(amount.calculate(game, source, this), source.getSourceId(), source, game, false, preventable);
                 }
             }
         }

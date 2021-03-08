@@ -1,10 +1,4 @@
-
 package mage.cards.m;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
@@ -14,8 +8,8 @@ import mage.abilities.keyword.EnchantAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterArtifactPermanent;
 import mage.filter.common.FilterControlledArtifactPermanent;
@@ -26,6 +20,11 @@ import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetControlledPermanent;
 import mage.util.CardUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 /**
  * @author LevelX2
@@ -48,7 +47,7 @@ public final class MechanizedProduction extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new MechanizedProductionEffect(), TargetController.YOU, false));
     }
 
-    public MechanizedProduction(final MechanizedProduction card) {
+    private MechanizedProduction(final MechanizedProduction card) {
         super(card);
     }
 
@@ -81,8 +80,8 @@ class MechanizedProductionEffect extends OneShotEffect {
             Permanent enchantedArtifact = game.getPermanentOrLKIBattlefield(sourceObject.getAttachedTo());
             if (enchantedArtifact != null) {
                 EmptyToken token = new EmptyToken();
-                CardUtil.copyTo(token).from(enchantedArtifact);
-                token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+                CardUtil.copyTo(token).from(enchantedArtifact, game);
+                token.putOntoBattlefield(1, game, source, source.getControllerId());
             }
             Map<String, Integer> countNames = new HashMap<>();
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(new FilterArtifactPermanent(), source.getControllerId(), game)) {

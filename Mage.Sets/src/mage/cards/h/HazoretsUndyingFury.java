@@ -1,7 +1,6 @@
 package mage.cards.h;
 
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DontUntapInControllersUntapStepAllEffect;
@@ -17,6 +16,7 @@ import mage.players.Player;
 import mage.target.TargetCard;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author ciaccona007
@@ -38,7 +38,7 @@ public final class HazoretsUndyingFury extends CardImpl {
                 .setText("Lands you control don't untap during your next untap phase"));
     }
 
-    public HazoretsUndyingFury(final HazoretsUndyingFury card) {
+    private HazoretsUndyingFury(final HazoretsUndyingFury card) {
         super(card);
     }
 
@@ -105,7 +105,7 @@ class HazoretsUndyingFuryEffect extends OneShotEffect {
                     if (card != null) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                         Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                         cardsToCast.remove(card);
                         if (!cardWasCast) {

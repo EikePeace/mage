@@ -33,7 +33,7 @@ public final class RousingOfSouls extends CardImpl {
         this.getSpellAbility().addEffect(effect);
     }
 
-    public RousingOfSouls(final RousingOfSouls card) {
+    private RousingOfSouls(final RousingOfSouls card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class RousingOfSoulsEffect extends OneShotEffect {
 
     public RousingOfSoulsEffect() {
         super(Outcome.Benefit);
-        this.staticText = "<i>Parley &mdash; </i> Each player reveals the top card of their library. For each nonland card revealed this way, you create a 1/1 white Spirit creature token with flying";
+        this.staticText = "<i>Parley</i> &mdash; Each player reveals the top card of their library. For each nonland card revealed this way, you create a 1/1 white Spirit creature token with flying";
     }
 
     public RousingOfSoulsEffect(final RousingOfSoulsEffect effect) {

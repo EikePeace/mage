@@ -55,7 +55,7 @@ public final class NecroticPlague extends CardImpl {
 
     }
 
-    public NecroticPlague(final NecroticPlague card) {
+    private NecroticPlague(final NecroticPlague card) {
         super(card);
     }
 
@@ -85,6 +85,7 @@ enum NecroticPlagueAdjuster implements TargetAdjuster {
         ability.setControllerId(creatureController.getId());
         ability.getTargets().clear();
         TargetPermanent target = new TargetOpponentsCreaturePermanent();
+        target.setTargetController(creatureController.getId());
         ability.getTargets().add(target);
     }
 }
@@ -112,7 +113,7 @@ class NecroticPlagueEffect extends OneShotEffect {
                 if (sourceEnchantmentCard != null && creature != null) {
                     game.getState().setValue("attachTo:" + sourceEnchantmentCard.getId(), creature);
                     creatureController.moveCards(sourceEnchantmentCard, Zone.BATTLEFIELD, source, game);
-                    return creature.addAttachment(sourceEnchantmentCard.getId(), game);
+                    return creature.addAttachment(sourceEnchantmentCard.getId(), source, game);
                 }
             }
         }

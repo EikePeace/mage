@@ -1,6 +1,6 @@
 package mage.abilities.effects.common.cost;
 
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.StaticValue;
@@ -76,7 +76,7 @@ public class CastWithoutPayingManaCostEffect extends OneShotEffect {
                                     + cardToCast.getName() + " is no land and has no spell ability!");
                             cancel = true;
                         }
-                        if (cardToCast.getSpellAbility().canChooseTarget(game)) {
+                        if (cardToCast.getSpellAbility().canChooseTarget(game, controller.getId())) {
                             cancel = true;
                         }
                     }
@@ -87,7 +87,7 @@ public class CastWithoutPayingManaCostEffect extends OneShotEffect {
             if (cardToCast != null) {
                 game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), Boolean.TRUE);
                 controller.cast(controller.chooseAbilityForCast(cardToCast, game, true),
-                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game, true, new ApprovingObject(source, game));
                 game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), null);
             }
         }

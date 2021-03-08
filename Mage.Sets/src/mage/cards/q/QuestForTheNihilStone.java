@@ -35,7 +35,7 @@ public final class QuestForTheNihilStone extends CardImpl {
         this.addAbility(new QuestForTheNihilStoneTriggeredAbility());
     }
 
-    public QuestForTheNihilStone(final QuestForTheNihilStone card) {
+    private QuestForTheNihilStone(final QuestForTheNihilStone card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class QuestForTheNihilStoneTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

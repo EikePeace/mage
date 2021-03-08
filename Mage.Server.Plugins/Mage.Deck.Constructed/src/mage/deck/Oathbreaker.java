@@ -5,6 +5,7 @@ import mage.abilities.keyword.PartnerAbility;
 import mage.abilities.keyword.PartnerWithAbility;
 import mage.cards.Card;
 import mage.cards.decks.Deck;
+import mage.cards.decks.DeckValidatorErrorType;
 import mage.filter.FilterMana;
 import mage.util.ManaUtil;
 
@@ -20,23 +21,32 @@ public class Oathbreaker extends Vintage {
 
     public Oathbreaker() {
         super();
-        this.name = "Oathbreaker";
+        setName("Oathbreaker");
 
-        // banned = vintage + oathbreaker's list: https://weirdcards.org/oathbreaker-ban-list
-        // last updated 8/2/19 - Primeval Titan unbanned
+        // banned = vintage + oathbreaker's list: https://oathbreakermtg.org/banned-list/
+        // last updated 4/24/20 - Dark Ritual banned
         banned.add("Ad Nauseam");
         banned.add("Ancestral Recall");
         banned.add("Balance");
         banned.add("Biorhythm");
         banned.add("Black Lotus");
         banned.add("Channel");
+        banned.add("Chaos Orb");
+        banned.add("Cleanse");
+        banned.add("Crusade");
+        banned.add("Dark Ritual");
         banned.add("Doomsday");
         banned.add("Emrakul, the Aeons Torn");
         banned.add("Expropriate");
+        banned.add("Falling Star");
         banned.add("Fastbond");
         banned.add("Gifts Ungiven");
         banned.add("Griselbrand");
         banned.add("High Tide");
+        banned.add("Imprison");
+        banned.add("Invoke Prejudice");
+        banned.add("Jihad");
+        banned.add("Jeweled Lotus");
         banned.add("Library of Alexandria");
         banned.add("Limited Resources");
         banned.add("Lion's Eye Diamond");
@@ -51,11 +61,13 @@ public class Oathbreaker extends Vintage {
         banned.add("Natural Order");
         banned.add("Painter's Servant");
         banned.add("Panoptic Mirror");
+        banned.add("Pradesh Gypsies");
         banned.add("Primal Surge");
         banned.add("Saheeli, the Gifted");
+        banned.add("Shahrazad");
         banned.add("Sol Ring");
+        banned.add("Stone-Throwing Devils");
         banned.add("Sundering Titan");
-        banned.add("Sway of the Stars");
         banned.add("Sylvan Primordial");
         banned.add("Time Vault");
         banned.add("Time Walk");
@@ -81,9 +93,10 @@ public class Oathbreaker extends Vintage {
     @Override
     public boolean validate(Deck deck) {
         boolean valid = true;
+        errorsList.clear();
 
         if (deck.getCards().size() + deck.getSideboard().size() != 60) {
-            invalid.put("Deck", "Must contain " + 60 + " cards: has " + (deck.getCards().size() + deck.getSideboard().size()) + " cards");
+            addError(DeckValidatorErrorType.DECK_SIZE, "Deck", "Must contain " + 60 + " cards: has " + (deck.getCards().size() + deck.getSideboard().size()) + " cards");
             valid = false;
         }
 
@@ -93,7 +106,7 @@ public class Oathbreaker extends Vintage {
 
         for (String bannedCard : banned) {
             if (counts.containsKey(bannedCard)) {
-                invalid.put(bannedCard, "Banned");
+                addError(DeckValidatorErrorType.BANNED, bannedCard, "Banned", true);
                 valid = false;
             }
         }
@@ -104,7 +117,7 @@ public class Oathbreaker extends Vintage {
         Set<String> signatureSpells = new HashSet<>();
         FilterMana allCommandersColor = new FilterMana();
         if (deck.getSideboard().size() < 2 || deck.getSideboard().size() > 4) {
-            invalid.put("Oathbreaker", "Sideboard must contain only 2 or 4 cards (oathbreaker + signature spell)");
+            addError(DeckValidatorErrorType.PRIMARY, "Oathbreaker", "Sideboard must contain only 2 or 4 cards (oathbreaker + signature spell)");
             valid = false;
         } else {
             // collect data
@@ -118,7 +131,7 @@ public class Oathbreaker extends Vintage {
                         // color identity from commanders only, not spell
                         ManaUtil.collectColorIdentity(allCommandersColor, commander.getColorIdentity());
                     } else {
-                        invalid.put("Oathbreaker", "Only planeswalker can be Oathbreaker, not " + commander.getName());
+                        addError(DeckValidatorErrorType.PRIMARY, commander.getName(), "Oathbreaker (only planeswalker can be Oathbreaker, not " + commander.getName(), true);
                         valid = false;
                     }
                 }
@@ -126,15 +139,15 @@ public class Oathbreaker extends Vintage {
 
             // check size (1+1 or 2+2 allows)
             if (commanderNames.isEmpty() || commanderNames.size() > 2) {
-                invalid.put("Oathbreaker", "Sideboard must contains 1 or 2 oathbreakers, but found: " + commanderNames.size());
+                addError(DeckValidatorErrorType.PRIMARY, "Oathbreaker", "Sideboard must contains 1 or 2 oathbreakers, but found: " + commanderNames.size());
                 valid = false;
             }
             if (signatureSpells.isEmpty() || signatureSpells.size() > 2) {
-                invalid.put("Signature Spell", "Sideboard must contains 1 or 2 signature spells, but found: " + signatureSpells.size());
+                addError(DeckValidatorErrorType.PRIMARY, "Signature Spell", "Sideboard must contains 1 or 2 signature spells, but found: " + signatureSpells.size());
                 valid = false;
             }
             if (signatureSpells.size() != commanderNames.size()) {
-                invalid.put("Oathbreaker", "Sideboard must contains 1 + 1 or 2 + 2 cards, but found: " + commanderNames.size() + " + " + signatureSpells.size());
+                addError(DeckValidatorErrorType.PRIMARY, "Oathbreaker", "Sideboard must contains 1 + 1 or 2 + 2 cards, but found: " + commanderNames.size() + " + " + signatureSpells.size());
                 valid = false;
             }
 
@@ -151,7 +164,7 @@ public class Oathbreaker extends Vintage {
                             }
                         }
                         if (!partnersWith) {
-                            invalid.put("Oathbreaker", "Oathbreaker without Partner (" + commander.getName() + ')');
+                            addError(DeckValidatorErrorType.PRIMARY, commander.getName(), "Oathbreaker without Partner (" + commander.getName() + ')', true);
                             valid = false;
                         }
                     }
@@ -173,7 +186,7 @@ public class Oathbreaker extends Vintage {
                         }
                     }
                     if (!haveSameColor) {
-                        invalid.put("Signature Spell", "Can't find oathbreaker with compatible color identity (" + spell.getName() + " - " + spellColor + ")");
+                        addError(DeckValidatorErrorType.PRIMARY, spell.getName(), "Signature Spell (can't find oathbreaker with compatible color identity: " + spell.getName() + " - " + spellColor + ")", true);
                         valid = false;
                     }
                 }
@@ -187,7 +200,7 @@ public class Oathbreaker extends Vintage {
 
         for (Card card : deck.getCards()) {
             if (!ManaUtil.isColorIdentityCompatible(allCommandersColor, card.getColorIdentity())) {
-                invalid.put(card.getName(), "Invalid color (" + card.getColorIdentity() + ')');
+                addError(DeckValidatorErrorType.OTHER, card.getName(), "Invalid color (" + card.getColorIdentity() + ')', true);
                 valid = false;
             }
         }
@@ -195,7 +208,7 @@ public class Oathbreaker extends Vintage {
         for (Card card : deck.getSideboard()) {
             if (!isSetAllowed(card.getExpansionSetCode())) {
                 if (!legalSets(card)) {
-                    invalid.put(card.getName(), "Not allowed Set: " + card.getExpansionSetCode());
+                    addError(DeckValidatorErrorType.WRONG_SET, card.getName(), "Not allowed Set: " + card.getExpansionSetCode(), true);
                     valid = false;
                 }
             }

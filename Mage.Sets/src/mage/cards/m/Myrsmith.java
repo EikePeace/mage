@@ -34,7 +34,7 @@ public final class Myrsmith extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new MyrsmithEffect(), filter, false));
     }
 
-    public Myrsmith(final Myrsmith card) {
+    private Myrsmith(final Myrsmith card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class MyrsmithEffect extends CreateTokenEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Cost cost = ManaUtil.createManaCost(1, false);
-        if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
+        if (cost.pay(source, game, source, source.getControllerId(), false, null)) {
             super.apply(game, source);
         }
         return true;

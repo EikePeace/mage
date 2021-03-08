@@ -49,7 +49,7 @@ public final class GlisteningOil extends CardImpl {
         this.addAbility(new PutIntoGraveFromBattlefieldSourceTriggeredAbility(new ReturnToHandSourceEffect()));
     }
 
-    public GlisteningOil(final GlisteningOil card) {
+    private GlisteningOil(final GlisteningOil card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class GlisteningOilEffect extends OneShotEffect {
         if (enchantment != null && enchantment.getAttachedTo() != null) {
             Permanent creature = game.getPermanent(enchantment.getAttachedTo());
             if (creature != null) {
-                creature.addCounters(CounterType.M1M1.createInstance(), source, game);
+                creature.addCounters(CounterType.M1M1.createInstance(), source.getControllerId(), source, game);
             }
         }
         return true;

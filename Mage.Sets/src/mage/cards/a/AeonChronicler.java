@@ -45,7 +45,7 @@ public final class AeonChronicler extends CardImpl {
         this.addAbility(new AeonChroniclerTriggeredAbility());
     }
 
-    public AeonChronicler(final AeonChronicler card) {
+    private AeonChronicler(final AeonChronicler card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class AeonChroniclerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_REMOVED;
+        return event.getType() == GameEvent.EventType.COUNTER_REMOVED;
     }
 
     @Override

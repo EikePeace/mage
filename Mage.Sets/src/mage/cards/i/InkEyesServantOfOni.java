@@ -15,7 +15,7 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
@@ -47,7 +47,7 @@ public final class InkEyesServantOfOni extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RegenerateSourceEffect(), new ManaCostsImpl("{1}{B}")));
     }
 
-    public InkEyesServantOfOni(final InkEyesServantOfOni card) {
+    private InkEyesServantOfOni(final InkEyesServantOfOni card) {
         super(card);
     }
 

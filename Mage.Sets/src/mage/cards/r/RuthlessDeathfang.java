@@ -39,7 +39,7 @@ public final class RuthlessDeathfang extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RuthlessDeathfang(final RuthlessDeathfang card) {
+    private RuthlessDeathfang(final RuthlessDeathfang card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class RuthlessDeathfangTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

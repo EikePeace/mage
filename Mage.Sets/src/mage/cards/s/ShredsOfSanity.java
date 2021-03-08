@@ -42,7 +42,7 @@ public final class ShredsOfSanity extends CardImpl {
         this.getSpellAbility().addEffect(new ExileSourceEffect());
     }
 
-    public ShredsOfSanity(final ShredsOfSanity card) {
+    private ShredsOfSanity(final ShredsOfSanity card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class ShredsOfSanityEffect extends OneShotEffect {
                 cardsToHand.add(card);
             }
             controller.moveCards(cardsToHand, Zone.HAND, source, game);
-            controller.discardOne(false, source, game);
+            controller.discardOne(false, false, source, game);
             return true;
         }
         return false;

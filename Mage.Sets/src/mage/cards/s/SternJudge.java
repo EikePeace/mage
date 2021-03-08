@@ -34,7 +34,7 @@ public final class SternJudge extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(new SternJudgeEffect(), new TapSourceCost()));
     }
 
-    public SternJudge(final SternJudge card) {
+    private SternJudge(final SternJudge card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class SternJudgeEffect extends OneShotEffect {
             Player player = game.getPlayer(source.getSourceId());
             if (player != null) {
                 int lifeToLose = game.getBattlefield().getAllActivePermanents(filter, playerId, game).size();
-                player.loseLife(lifeToLose, game, false);
+                player.loseLife(lifeToLose, game, source, false);
             }
         }
         return true;

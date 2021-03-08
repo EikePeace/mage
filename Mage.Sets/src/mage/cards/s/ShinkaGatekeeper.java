@@ -31,7 +31,7 @@ public final class ShinkaGatekeeper extends CardImpl {
         this.addAbility(new DealtDamageToSourceTriggeredAbility(new ShinkaGatekeeperDealDamageEffect(), false, false, true));
     }
 
-    public ShinkaGatekeeper(final ShinkaGatekeeper card) {
+    private ShinkaGatekeeper(final ShinkaGatekeeper card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class ShinkaGatekeeperDealDamageEffect extends OneShotEffect {
         if (amount > 0) {
             Player player = game.getPlayer(source.getControllerId());
             if (player != null) {
-                player.damage(amount, source.getSourceId(), game);
+                player.damage(amount, source.getSourceId(), source, game);
                 return true;
             }
         }

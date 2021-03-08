@@ -39,7 +39,7 @@ public final class BitterFeud extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BitterFeudEffect()));
     }
 
-    public BitterFeud(final BitterFeud card) {
+    private BitterFeud(final BitterFeud card) {
         super(card);
     }
 
@@ -111,9 +111,8 @@ class BitterFeudEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
                 return true;
             default:
                 return false;
@@ -130,8 +129,7 @@ class BitterFeudEffect extends ReplacementEffectImpl {
                 case DAMAGE_PLAYER:
                     targetPlayerId = event.getTargetId();
                     break;
-                case DAMAGE_CREATURE:
-                case DAMAGE_PLANESWALKER:
+                case DAMAGE_PERMANENT:
                     Permanent permanent = game.getPermanent(event.getTargetId());
                     if (permanent != null) {
                         targetPlayerId = permanent.getControllerId();
@@ -169,7 +167,7 @@ class BitterFeudEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

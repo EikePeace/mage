@@ -12,7 +12,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.common.FilterCreaturePlayerOrPlaneswalker;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -43,9 +43,8 @@ public final class DrakusethMawOfFlames extends CardImpl {
         target.setTargetTag(1);
         ability.addTarget(target);
         FilterCreaturePlayerOrPlaneswalker filter = new FilterCreaturePlayerOrPlaneswalker("any target");
-        filter.getCreatureFilter().add(new AnotherTargetPredicate(2, true));
         filter.getPlayerFilter().add(new AnotherTargetPredicate(2, true));
-        filter.getPlaneswalkerFilter().add(new AnotherTargetPredicate(2, true));
+        filter.getPermanentFilter().add(new AnotherTargetPredicate(2, true));
         target = new TargetAnyTarget(0, 2, filter).withChooseHint("to deal 3 damage");
         target.setTargetTag(2);
         ability.addTarget(target);
@@ -93,11 +92,11 @@ class DrakusethMawOfFlamesEffect extends OneShotEffect {
     private static void damage(int damage, UUID targetId, Game game, Ability source) {
         Permanent permanent = game.getPermanent(targetId);
         if (permanent != null) {
-            permanent.damage(damage, source.getSourceId(), game, false, true);
+            permanent.damage(damage, source.getSourceId(), source, game, false, true);
         }
         Player player = game.getPlayer(targetId);
         if (player != null) {
-            player.damage(damage, source.getSourceId(), game);
+            player.damage(damage, source.getSourceId(), source, game);
         }
     }
 }

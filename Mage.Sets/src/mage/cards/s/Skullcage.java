@@ -26,7 +26,7 @@ public final class Skullcage extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new SkullcageEffect(), TargetController.OPPONENT, false, true));
     }
 
-    public Skullcage(final Skullcage card) {
+    private Skullcage(final Skullcage card) {
         super(card);
     }
 
@@ -41,7 +41,7 @@ class SkullcageEffect extends OneShotEffect {
 
     public SkullcageEffect() {
         super(Outcome.Damage);
-        staticText = "{source} deals 2 damage to that player unless they have exactly three or exactly four cards in hand";
+        staticText = "{this} deals 2 damage to that player unless they have exactly three or exactly four cards in hand";
     }
 
     public SkullcageEffect(final SkullcageEffect effect) {
@@ -58,7 +58,7 @@ class SkullcageEffect extends OneShotEffect {
         Player player = game.getPlayer(getTargetPointer().getFirst(game, source));
         if (player != null) {
             if (player.getHand().size() != 3 && player.getHand().size() != 4) {
-                player.damage(2, source.getSourceId(), game);
+                player.damage(2, source.getSourceId(), source, game);
             }
         }
         return false;

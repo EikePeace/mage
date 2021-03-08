@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -47,7 +47,7 @@ public final class ApothecaryGeist extends CardImpl {
                 "When {this} enters the battlefield, if you control another Spirit, you gain 3 life."));
     }
 
-    public ApothecaryGeist(final ApothecaryGeist card) {
+    private ApothecaryGeist(final ApothecaryGeist card) {
         super(card);
     }
 

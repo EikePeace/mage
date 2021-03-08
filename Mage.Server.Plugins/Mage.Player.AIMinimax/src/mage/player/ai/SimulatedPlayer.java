@@ -3,6 +3,7 @@
 package mage.player.ai;
 
 import mage.abilities.Ability;
+import mage.abilities.ActivatedAbility;
 import mage.abilities.SpellAbility;
 import mage.abilities.TriggeredAbility;
 import mage.abilities.common.PassAbility;
@@ -59,10 +60,10 @@ public class SimulatedPlayer extends ComputerPlayer {
         return list;
     }
 
-    protected void simulateOptions(Game game, Ability previousActions) {
+    protected void simulateOptions(Game game, ActivatedAbility previousActions) {
         allActions.add(previousActions);
-        List<Ability> playables = game.getPlayer(playerId).getPlayable(game, isSimulatedPlayer);
-        for (Ability ability: playables) {
+        List<ActivatedAbility> playables = game.getPlayer(playerId).getPlayable(game, isSimulatedPlayer);
+        for (ActivatedAbility ability: playables) {
             List<Ability> options = game.getPlayer(playerId).getPlayableOptions(ability, game);
             if (options.isEmpty()) {
                 if (!ability.getManaCosts().getVariableCosts().isEmpty()) {
@@ -213,7 +214,7 @@ public class SimulatedPlayer extends ComputerPlayer {
                 logger.debug("simulating -- triggered ability:" + ability);
             game.getStack().push(new StackAbility(ability, playerId));
             if (ability.activate(game, false) && ability.isUsesStack()) {
-                game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability.getSourceId(), ability.getControllerId()));
+                game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability, ability.getControllerId()));
             }
             game.applyEffects();
             game.getPlayers().resetPassed();
@@ -234,7 +235,7 @@ public class SimulatedPlayer extends ComputerPlayer {
         sim.getStack().push(new StackAbility(ability, playerId));
         ability.activate(sim, false);
         if (ability.activate(sim, false) && ability.isUsesStack()) {
-            game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability.getSourceId(), ability.getControllerId()));
+            game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability, ability.getControllerId()));
         }
         sim.applyEffects();
         SimulationNode newNode = new SimulationNode(parent, sim, playerId);

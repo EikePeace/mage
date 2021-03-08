@@ -30,7 +30,7 @@ public final class BelbesPortal extends CardImpl {
         this.addAbility(new AsEntersBattlefieldAbility(new ChooseCreatureTypeEffect(Outcome.PutCreatureInPlay)));
         // {3}, {tap}: You may put a creature card of the chosen type from your hand onto the battlefield.
         FilterCreatureCard filter = new FilterCreatureCard("a creature card of the chosen type");
-        filter.add(ChosenSubtypePredicate.instance);
+        filter.add(ChosenSubtypePredicate.TRUE);
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD,
                 new PutCardFromHandOntoBattlefieldEffect(filter),
                 new ManaCostsImpl("{3}"));
@@ -38,7 +38,7 @@ public final class BelbesPortal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BelbesPortal(final BelbesPortal card) {
+    private BelbesPortal(final BelbesPortal card) {
         super(card);
     }
 

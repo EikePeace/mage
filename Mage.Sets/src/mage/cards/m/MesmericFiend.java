@@ -46,7 +46,7 @@ public final class MesmericFiend extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new MesmericFiendLeaveEffect(), false));
     }
     
-    public MesmericFiend(final MesmericFiend card) {
+    private MesmericFiend(final MesmericFiend card) {
         super(card);
     }
     
@@ -122,7 +122,7 @@ class MesmericFiendLeaveEffect extends OneShotEffect {
             UUID exileId = (UUID) game.getState().getValue(source.getSourceId().toString() + zoneChangeMinusOne);
             if (exileId != null) {
                 Cards cards = game.getExile().getExileZone(exileId);
-                if (!cards.isEmpty()) {
+                if (cards != null && !cards.isEmpty()) {
                     return controller.moveCards(cards, Zone.HAND, source, game);
                 }
             }

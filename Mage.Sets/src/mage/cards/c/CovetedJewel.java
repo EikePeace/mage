@@ -45,7 +45,7 @@ public final class CovetedJewel extends CardImpl {
         this.addAbility(new CovetedJewelTriggeredAbility());
     }
 
-    public CovetedJewel(final CovetedJewel card) {
+    private CovetedJewel(final CovetedJewel card) {
         super(card);
     }
 
@@ -123,11 +123,11 @@ class CovetedJewelControlEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
         Player newControllingPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
-        if (permanent == null || newControllingPlayer == null || !newControllingPlayer.isInGame()) {
+        if (permanent == null || newControllingPlayer == null || !newControllingPlayer.canRespond()) {
             this.discard();
             return false;
         }
-        permanent.changeControllerId(getTargetPointer().getFirst(game, source), game);
+        permanent.changeControllerId(getTargetPointer().getFirst(game, source), game, source);
         return true;
     }
 }

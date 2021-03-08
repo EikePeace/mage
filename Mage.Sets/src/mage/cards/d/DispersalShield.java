@@ -29,7 +29,7 @@ public final class DispersalShield extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public DispersalShield(final DispersalShield card) {
+    private DispersalShield(final DispersalShield card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class DispersalShieldEffect extends OneShotEffect {
         DynamicValue amount = new HighestConvertedManaCostValue();
         Spell spell = game.getStack().getSpell(targetPointer.getFirst(game, source));
         if (spell != null && spell.getConvertedManaCost() <= amount.calculate(game, source, this)) {
-            return game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            return game.getStack().counter(source.getFirstTarget(), source, game);
         }
         return false;
     }

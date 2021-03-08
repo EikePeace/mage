@@ -2,7 +2,6 @@
 package mage.cards.r;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.Mode;
 import mage.abilities.effects.common.UntapAllLandsControllerEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureAllEffect;
@@ -12,8 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 
 /**
@@ -41,7 +38,7 @@ public final class RudeAwakening extends CardImpl {
         this.addAbility(new EntwineAbility("{2}{G}"));
     }
 
-    public RudeAwakening(final RudeAwakening card) {
+    private RudeAwakening(final RudeAwakening card) {
         super(card);
     }
 

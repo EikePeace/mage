@@ -41,7 +41,7 @@ public final class SpelltitheEnforcer extends CardImpl {
         ));
     }
 
-    public SpelltitheEnforcer(final SpelltitheEnforcer card) {
+    private SpelltitheEnforcer(final SpelltitheEnforcer card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class SpelltitheEnforcerEffect extends SacrificeEffect {
         Player player = game.getPlayer(this.getTargetPointer().getFirst(game, source));
         if (player != null) {
             Cost cost = ManaUtil.createManaCost(1, false);
-            if (!cost.pay(source, game, player.getId(), player.getId(), false)) {
+            if (!cost.pay(source, game, source, player.getId(), false)) {
                 super.apply(game, source);
             }
             return true;

@@ -12,11 +12,8 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
-import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.token.GoblinToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 
@@ -44,7 +41,7 @@ public final class GarbageElementalC extends CardImpl {
 
     }
 
-    public GarbageElementalC(final GarbageElementalC card) {
+    private GarbageElementalC(final GarbageElementalC card) {
         super(card);
     }
 
@@ -74,11 +71,11 @@ class GarbageElementalCEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int thisRoll = controller.rollDice(game, 6);
-            int thatRoll = controller.rollDice(game, 6);
+            int thisRoll = controller.rollDice(source, game, 6);
+            int thatRoll = controller.rollDice(source, game, 6);
 
             Token token = new GoblinToken();
-            return token.putOntoBattlefield(Math.abs(thatRoll - thisRoll), game, source.getSourceId(), source.getControllerId());
+            return token.putOntoBattlefield(Math.abs(thatRoll - thisRoll), game, source, source.getControllerId());
         }
         return false;
     }

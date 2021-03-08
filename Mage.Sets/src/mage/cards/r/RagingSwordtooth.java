@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -39,7 +39,7 @@ public final class RagingSwordtooth extends CardImpl {
         addAbility(new EntersBattlefieldTriggeredAbility(new DamageAllEffect(1, "it", filter)));
     }
 
-    public RagingSwordtooth(final RagingSwordtooth card) {
+    private RagingSwordtooth(final RagingSwordtooth card) {
         super(card);
     }
 

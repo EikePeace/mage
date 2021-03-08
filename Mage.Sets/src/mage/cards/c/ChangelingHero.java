@@ -24,7 +24,7 @@ public final class ChangelingHero extends CardImpl {
         this.toughness = new MageInt(4);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         
         // Champion a creature
         this.addAbility(new ChampionAbility(this, true));
@@ -33,7 +33,7 @@ public final class ChangelingHero extends CardImpl {
         this.addAbility(LifelinkAbility.getInstance());
     }
 
-    public ChangelingHero(final ChangelingHero card) {
+    private ChangelingHero(final ChangelingHero card) {
         super(card);
     }
 

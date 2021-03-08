@@ -32,7 +32,7 @@ public final class InsultInjury extends SplitCard {
         // Insult
         // Damage can't be prevented this turn. If a source you control would deal damage this turn it deals
         // double that damage instead.
-        getLeftHalfCard().getSpellAbility().addEffect(new DamageCantBePreventedEffect(Duration.EndOfTurn, "Damage can't be prevented this turn.", true, false));
+        getLeftHalfCard().getSpellAbility().addEffect(new DamageCantBePreventedEffect(Duration.EndOfTurn, "Damage can't be prevented this turn", true, false));
         getLeftHalfCard().getSpellAbility().addEffect(new InsultDoubleDamageEffect());
 
         // to
@@ -44,7 +44,7 @@ public final class InsultInjury extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(new InjuryEffect());
     }
 
-    public InsultInjury(final InsultInjury card) {
+    private InsultInjury(final InsultInjury card) {
         super(card);
     }
 
@@ -72,9 +72,8 @@ class InsultDoubleDamageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PLAYER
+                || event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -89,7 +88,7 @@ class InsultDoubleDamageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }
@@ -111,11 +110,11 @@ class InjuryEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getTargets().get(1).getFirstTarget());
 
         if (permanent != null) {
-            permanent.damage(2, source.getSourceId(), game, false, true);
+            permanent.damage(2, source.getSourceId(), source, game, false, true);
         }
 
         if (player != null) {
-            player.damage(2, source.getSourceId(), game);
+            player.damage(2, source.getSourceId(), source, game);
         }
 
         return true;

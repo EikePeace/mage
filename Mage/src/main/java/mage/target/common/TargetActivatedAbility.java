@@ -1,11 +1,6 @@
-
 package mage.target.common;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.abilities.Ability;
-import mage.abilities.ActivatedAbility;
 import mage.constants.AbilityType;
 import mage.constants.Zone;
 import mage.filter.Filter;
@@ -16,8 +11,11 @@ import mage.game.stack.StackAbility;
 import mage.game.stack.StackObject;
 import mage.target.TargetObject;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public class TargetActivatedAbility extends TargetObject {
@@ -43,6 +41,7 @@ public class TargetActivatedAbility extends TargetObject {
 
     @Override
     public boolean canTarget(UUID id, Ability source, Game game) {
+        // 114.4. A spell or ability on the stack is an illegal target for itself.
         if (source != null && source.getSourceId().equals(id)) {
             return false;
         }
@@ -82,7 +81,7 @@ public class TargetActivatedAbility extends TargetObject {
         for (StackObject stackObject : game.getStack()) {
             if (stackObject.getStackAbility().getAbilityType() == AbilityType.ACTIVATED
                     && game.getState().getPlayersInRange(sourceControllerId, game).contains(stackObject.getStackAbility().getControllerId())
-                    && filter.match(((StackAbility) stackObject), game)) {
+                    && filter.match(stackObject, game)) {
                 possibleTargets.add(stackObject.getStackAbility().getId());
             }
         }
@@ -108,7 +107,6 @@ public class TargetActivatedAbility extends TargetObject {
                 sb.append(object.getRule()).append(' ');
             }
         }
-        sb.append(')');
-        return sb.toString();
+        return sb.toString().trim() + ")";
     }
 }

@@ -28,7 +28,7 @@ public final class EssenceHarvest extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public EssenceHarvest(final EssenceHarvest card) {
+    private EssenceHarvest(final EssenceHarvest card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class EssenceHarvestEffect extends OneShotEffect {
             }
 
             if (amount > 0) {
-                targetPlayer.loseLife(amount, game, false);
+                targetPlayer.loseLife(amount, game, source, false);
                 controller.gainLife(amount, game, source);
             }
             return true;

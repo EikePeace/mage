@@ -36,7 +36,7 @@ public final class BenefactorsDraught extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public BenefactorsDraught(final BenefactorsDraught card) {
+    private BenefactorsDraught(final BenefactorsDraught card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class BenefactorsDraughtTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override
@@ -75,6 +75,6 @@ class BenefactorsDraughtTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public String getRule() {
-        return "Until end of turn, whenever a creature an opponent controls blocks, draw a card.";
+        return "Until end of turn, whenever a creature an opponent controls blocks, draw a card";
     }
 }

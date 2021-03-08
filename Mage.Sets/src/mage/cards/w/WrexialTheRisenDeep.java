@@ -1,8 +1,8 @@
 package mage.cards.w;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.OneShotEffect;
@@ -15,11 +15,10 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.stack.StackObject;
 import mage.players.Player;
@@ -52,7 +51,7 @@ public final class WrexialTheRisenDeep extends CardImpl {
         this.addAbility(new WrexialTheRisenDeepTriggeredAbility());
     }
 
-    public WrexialTheRisenDeep(final WrexialTheRisenDeep card) {
+    private WrexialTheRisenDeep(final WrexialTheRisenDeep card) {
         super(card);
     }
 
@@ -109,7 +108,7 @@ class WrexialTheRisenDeepTriggeredAbility extends TriggeredAbilityImpl {
         return "Whenever {this} deals combat damage to a player, "
                 + "you may cast target instant or sorcery card "
                 + "from that player's graveyard without paying its mana cost. "
-                + "If that card would be put into a graveyard this turn, exile it instead";
+                + "If that spell would be put into a graveyard this turn, exile it instead";
     }
 }
 
@@ -119,7 +118,7 @@ class WrexialTheRisenDeepEffect extends OneShotEffect {
         super(Outcome.PlayForFree);
         staticText = "you may cast target instant or sorcery card from "
                 + "that player's graveyard without paying its mana cost. "
-                + "If that card would be put into a graveyard this turn, exile it instead";
+                + "If that spell would be put into a graveyard this turn, exile it instead";
     }
 
     public WrexialTheRisenDeepEffect(final WrexialTheRisenDeepEffect effect) {
@@ -141,7 +140,7 @@ class WrexialTheRisenDeepEffect extends OneShotEffect {
         }
         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
         controller.cast(controller.chooseAbilityForCast(card, game, true),
-                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                game, true, new ApprovingObject(source, game));
         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
         game.addEffect(new WrexialReplacementEffect(card.getId()), source);
         return true;
@@ -169,7 +168,7 @@ class WrexialReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

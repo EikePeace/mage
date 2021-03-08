@@ -5,7 +5,7 @@ import mage.MageObject;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.mana.BasicManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
@@ -61,7 +61,7 @@ public final class WookieeMystic extends CardImpl {
         this.addAbility(ability, new WookieeMysticWatcher().withParams(ability));
     }
 
-    public WookieeMystic(final WookieeMystic card) {
+    private WookieeMystic(final WookieeMystic card) {
         super(card);
     }
 
@@ -115,7 +115,7 @@ class WookieeMysticWatcher extends Watcher {
         if (event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD) {
             if (creatures.contains(event.getSourceId())) {
                 Permanent creature = game.getPermanent(event.getSourceId());
-                creature.addCounters(CounterType.P1P1.createInstance(), source, game);
+                creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 creatures.remove(event.getSourceId());
             }
         }

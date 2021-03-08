@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 /**
@@ -42,7 +42,7 @@ public final class SanguineGlorifier extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SanguineGlorifier(final SanguineGlorifier card) {
+    private SanguineGlorifier(final SanguineGlorifier card) {
         super(card);
     }
 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common;
 
 import mage.abilities.Ability;
@@ -45,7 +40,7 @@ public class PermanentsEnterBattlefieldTappedEffect extends ReplacementEffectImp
         Permanent target = ((EntersTheBattlefieldEvent) event).getTarget();
         
         if (target != null) {
-            target.tap(game);
+            target.tap(source, game);
         }
         
         return false;

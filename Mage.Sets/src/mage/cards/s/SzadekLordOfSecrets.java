@@ -40,7 +40,7 @@ public final class SzadekLordOfSecrets extends CardImpl {
 
     }
 
-    public SzadekLordOfSecrets(final SzadekLordOfSecrets card) {
+    private SzadekLordOfSecrets(final SzadekLordOfSecrets card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class SzadekLordOfSecretsEffect extends ReplacementEffectImpl {
 
     SzadekLordOfSecretsEffect() {
         super(Duration.WhileOnBattlefield, Outcome.Benefit);
-        staticText = "If {this} would deal combat damage to a player, instead put that many +1/+1 counters on {this} and that player puts that many cards from the top of their library into their graveyard";
+        staticText = "If {this} would deal combat damage to a player, instead put that many +1/+1 counters on {this} and that player mills that many cards";
     }
 
     SzadekLordOfSecretsEffect(final SzadekLordOfSecretsEffect effect) {
@@ -69,9 +69,9 @@ class SzadekLordOfSecretsEffect extends ReplacementEffectImpl {
         if (damageEvent.isCombatDamage()) {
             Permanent permanent = game.getPermanent(source.getSourceId());
             if (permanent != null) {
-                permanent.addCounters(CounterType.P1P1.createInstance(damageEvent.getAmount()), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(damageEvent.getAmount()), source.getControllerId(), source, game);
                 if (damagedPlayer != null) {
-                    damagedPlayer.moveCards(damagedPlayer.getLibrary().getTopCards(game, damageEvent.getAmount()), Zone.GRAVEYARD, source, game);
+                    damagedPlayer.millCards(damageEvent.getAmount(), source, game);
                 }
             }
         }

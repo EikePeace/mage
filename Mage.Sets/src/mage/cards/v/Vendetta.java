@@ -40,7 +40,7 @@ public final class Vendetta extends CardImpl {
         this.getSpellAbility().addEffect(new VendettaEffect());
     }
 
-    public Vendetta(final Vendetta card) {
+    private Vendetta(final Vendetta card) {
         super(card);
     }
 
@@ -69,9 +69,9 @@ class VendettaEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
-        Permanent target = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent target = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (player != null && target != null) {
-            player.loseLife(target.getToughness().getValue(), game, false);
+            player.loseLife(target.getToughness().getValue(), game, source, false);
             return true;
         }
         return false;

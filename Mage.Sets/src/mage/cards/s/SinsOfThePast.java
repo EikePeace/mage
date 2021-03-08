@@ -2,7 +2,6 @@
 package mage.cards.s;
 
 import mage.abilities.Ability;
-import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.ReplacementEffectImpl;
@@ -20,6 +19,7 @@ import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
+import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
 
 /**
  * @author emerald000
@@ -35,7 +35,7 @@ public final class SinsOfThePast extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(new FilterInstantOrSorceryCard()));
     }
 
-    public SinsOfThePast(final SinsOfThePast card) {
+    private SinsOfThePast(final SinsOfThePast card) {
         super(card);
     }
 
@@ -65,45 +65,12 @@ class SinsOfThePastEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
         if (card != null) {
-            ContinuousEffect effect = new SinsOfThePastCastFromGraveyardEffect();
-            effect.setTargetPointer(new FixedTarget(card.getId()));
+            ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.GRAVEYARD, TargetController.YOU, Duration.EndOfTurn, true);;
+            effect.setTargetPointer(new FixedTarget(card, game));
             game.addEffect(effect, source);
             effect = new SinsOfThePastReplacementEffect(card.getId());
             game.addEffect(effect, source);
             return true;
-        }
-        return false;
-    }
-}
-
-class SinsOfThePastCastFromGraveyardEffect extends AsThoughEffectImpl {
-
-    SinsOfThePastCastFromGraveyardEffect() {
-        super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.EndOfTurn, Outcome.PlayForFree);
-    }
-
-    SinsOfThePastCastFromGraveyardEffect(final SinsOfThePastCastFromGraveyardEffect effect) {
-        super(effect);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        return true;
-    }
-
-    @Override
-    public SinsOfThePastCastFromGraveyardEffect copy() {
-        return new SinsOfThePastCastFromGraveyardEffect(this);
-    }
-
-    @Override
-    public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        if (sourceId.equals(this.getTargetPointer().getFirst(game, source)) && affectedControllerId.equals(source.getControllerId())) {
-            Player player = game.getPlayer(affectedControllerId);
-            if(player != null) {
-                player.setCastSourceIdWithAlternateMana(sourceId, null, null);
-                return true;
-            }
         }
         return false;
     }
@@ -130,12 +97,7 @@ class SinsOfThePastReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        Card card = game.getCard(this.cardId);
-        if (controller != null && card != null) {
-            controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.STACK, true);
-            return true;
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 

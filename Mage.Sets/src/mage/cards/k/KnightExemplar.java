@@ -14,7 +14,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -50,7 +50,7 @@ public final class KnightExemplar extends CardImpl {
 
     }
 
-    public KnightExemplar(final KnightExemplar card) {
+    private KnightExemplar(final KnightExemplar card) {
         super(card);
     }
 

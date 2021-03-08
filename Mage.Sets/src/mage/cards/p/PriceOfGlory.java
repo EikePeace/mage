@@ -1,5 +1,6 @@
 package mage.cards.p;
 
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.OneShotEffect;
@@ -15,8 +16,6 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
 
-import java.util.UUID;
-
 /**
  * @author cbt33, Loki (Heartbeat of Spring)
  */
@@ -29,7 +28,7 @@ public final class PriceOfGlory extends CardImpl {
         this.addAbility(new PriceOfGloryAbility());
     }
 
-    public PriceOfGlory(final PriceOfGlory card) {
+    private PriceOfGlory(final PriceOfGlory card) {
         super(card);
     }
 
@@ -53,7 +52,10 @@ class PriceOfGloryAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        if (game.inCheckPlayableState()) {
+            return false;
+        }
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
@@ -65,7 +67,7 @@ class PriceOfGloryAbility extends TriggeredAbilityImpl {
         if (permanent.isLand()
                 && game.getState().getPlayersInRange(controllerId, game).contains(permanent.getControllerId())
                 && !permanent.isControlledBy(game.getActivePlayerId())) { // intervening if clause
-            getEffects().get(0).setTargetPointer(new FixedTarget(permanent.getId()));
+            getEffects().get(0).setTargetPointer(new FixedTarget(permanent, game));
             return true;
         }
         return false;
@@ -97,9 +99,9 @@ class PriceOfGloryEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent land = game.getPermanentOrLKIBattlefield(this.targetPointer.getFirst(game, source));
+            Permanent land = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (land != null && !land.isControlledBy(game.getActivePlayerId())) { // intervening if clause has to be checked again
-                land.destroy(source.getSourceId(), game, false);
+                land.destroy(source, game, false);
             }
             return true;
         }

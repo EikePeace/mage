@@ -26,7 +26,7 @@ public final class WaveOfReckoning extends CardImpl {
         getSpellAbility().addEffect(new WaveOfReckoningDamageEffect());
     }
 
-    public WaveOfReckoning(final WaveOfReckoning card) {
+    private WaveOfReckoning(final WaveOfReckoning card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class WaveOfReckoningDamageEffect extends OneShotEffect {
 
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 int amount = permanent.getPower().getValue();
-                permanent.damage(amount, permanent.getId(), game, false, true);
+                permanent.damage(amount, permanent.getId(), source, game, false, true);
             }
             return true;
         }

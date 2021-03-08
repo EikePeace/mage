@@ -1,7 +1,5 @@
-
 package mage.cards.r;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -16,21 +14,22 @@ import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class RemorselessPunishment extends CardImpl {
 
     public RemorselessPunishment(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{3}{B}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{B}{B}");
 
         // Target opponent loses 5 life unless that player discards two cards or sacrifices a creature or planeswalker. Repeat this process once.
         getSpellAbility().addEffect(new RemorselessPunishmentEffect());
         getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public RemorselessPunishment(final RemorselessPunishment card) {
+    private RemorselessPunishment(final RemorselessPunishment card) {
         super(card);
     }
 
@@ -76,18 +75,18 @@ class RemorselessPunishmentEffect extends OneShotEffect {
     private void handleBaseEffect(Game game, Ability source, Player opponent, String iteration) {
         if (opponent.getHand().size() > 1) {
             if (opponent.chooseUse(outcome, "Choose your " + iteration + " punishment.", null, "Discard two cards", "Choose another option", source, game)) {
-                opponent.discard(2, false, source, game);
+                opponent.discard(2, false, false, source, game);
                 return;
             }
         }
-        if (game.getBattlefield().contains(filter, opponent.getId(), 1, game)) {
+        if (game.getBattlefield().containsControlled(filter, source.getSourceId(), opponent.getId(), game, 1)) {
             if (opponent.chooseUse(outcome, "Choose your " + iteration + " punishment.", null, "Sacrifice a creature or planeswalker", "Lose 5 life", source, game)) {
                 TargetPermanent target = new TargetPermanent(1, 1, filter, true);
                 if (target.choose(Outcome.Sacrifice, opponent.getId(), source.getId(), game)) {
                     for (UUID targetId : target.getTargets()) {
                         Permanent permanent = game.getPermanent(targetId);
                         if (permanent != null) {
-                            permanent.sacrifice(source.getSourceId(), game);
+                            permanent.sacrifice(source, game);
                         }
                     }
                     return;
@@ -95,6 +94,6 @@ class RemorselessPunishmentEffect extends OneShotEffect {
 
             }
         }
-        opponent.loseLife(5, game, false);
+        opponent.loseLife(5, game, source, false);
     }
 }

@@ -32,7 +32,7 @@ public final class Mindcrank extends CardImpl {
         this.addAbility(new MindcrankTriggeredAbility());
     }
 
-    public Mindcrank(final Mindcrank card) {
+    private Mindcrank(final Mindcrank card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class MindcrankTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST_LIFE;
+        return event.getType() == GameEvent.EventType.LOST_LIFE;
     }
 
     @Override
@@ -104,7 +104,7 @@ class MindcrankEffect extends OneShotEffect {
             if (amount == null) {
                 amount = 0;
             }
-            targetPlayer.moveCards(targetPlayer.getLibrary().getTopCards(game, amount), Zone.GRAVEYARD, source, game);
+            targetPlayer.millCards(amount, source, game);
         }
         return true;
     }

@@ -1,7 +1,7 @@
 package mage.cards.b;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.RemoveVariableCountersSourceCost;
@@ -56,7 +56,7 @@ public final class BrainInAJar extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BrainInAJar(final BrainInAJar card) {
+    private BrainInAJar(final BrainInAJar card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class BrainInAJarCastEffect extends OneShotEffect {
                 if (card != null) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                     controller.cast(controller.chooseAbilityForCast(card, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                 }
             }

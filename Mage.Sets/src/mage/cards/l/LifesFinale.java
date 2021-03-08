@@ -33,7 +33,7 @@ public final class LifesFinale extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public LifesFinale(final LifesFinale card) {
+    private LifesFinale(final LifesFinale card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class LifesFinaleEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURES, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
         }
 
         Player opponent = game.getPlayer(source.getFirstTarget());

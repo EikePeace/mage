@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetAttackingCreature;
 
 /**
@@ -44,7 +44,7 @@ public final class PegasusCourser extends CardImpl {
         addAbility(ability);
     }
 
-    public PegasusCourser(final PegasusCourser card) {
+    private PegasusCourser(final PegasusCourser card) {
         super(card);
     }
 

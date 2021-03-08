@@ -48,16 +48,16 @@ public final class WildHolocron extends CardImpl {
         // {T}, Remove two charge counters from Wild Holocron: Add RG or GW.
         cost = new RemoveCountersSourceCost(CounterType.CHARGE.createInstance(2));
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 0, 0, 0, 0, 0, 0), new TapSourceCost());
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 1, 1, 0, 0, 0), new TapSourceCost());
         ability.addCost(cost);
         this.addAbility(ability);
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 0, 1, 0, 0, 0, 0), new TapSourceCost());
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 0, 0, 1, 0, 0, 0), new TapSourceCost());
         ability.addCost(cost);
         this.addAbility(ability);
     }
 
-    public WildHolocron(final WildHolocron card) {
+    private WildHolocron(final WildHolocron card) {
         super(card);
     }
 

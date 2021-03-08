@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -45,7 +45,7 @@ public final class Fatestitcher extends CardImpl {
         this.addAbility(new UnearthAbility(new ManaCostsImpl("{U}")));
     }
 
-    public Fatestitcher(final Fatestitcher card) {
+    private Fatestitcher(final Fatestitcher card) {
         super(card);
     }
 

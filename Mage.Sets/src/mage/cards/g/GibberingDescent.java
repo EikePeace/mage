@@ -48,7 +48,7 @@ public final class GibberingDescent extends CardImpl {
         this.addAbility(new MadnessAbility(this, new ManaCostsImpl<>("{2}{B}{B}")));
     }
 
-    public GibberingDescent(final GibberingDescent card) {
+    private GibberingDescent(final GibberingDescent card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class GibberingDescentSkipUpkeepEffect extends ContinuousRuleModifyingEffectImpl
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP;
     }
     
     @Override

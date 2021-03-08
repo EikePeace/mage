@@ -18,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -43,7 +42,7 @@ public final class WanderingFumarole extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{2}{U}{R}")));
     }
 
-    public WanderingFumarole(final WanderingFumarole card) {
+    private WanderingFumarole(final WanderingFumarole card) {
         super(card);
     }
 

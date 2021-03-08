@@ -2,6 +2,7 @@ package org.mage.test.cards.asthough;
 
 import mage.constants.PhaseStep;
 import mage.constants.Zone;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mage.test.serverside.base.CardTestPlayerBase;
 
@@ -119,6 +120,10 @@ public class SpendOtherManaTest extends CardTestPlayerBase {
         // You may cast that card as long as it remains exiled, and you may spend mana as though it were mana of any type to cast that spell.
         addCard(Zone.HAND, playerA, "Hostage Taker"); // {2}{U}{B}
 
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {B}.");
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {U}.");
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {R}.");
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {R}.");
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Hostage Taker");
         addTarget(playerA, "Silvercoat Lion");
 
@@ -185,6 +190,7 @@ public class SpendOtherManaTest extends CardTestPlayerBase {
         checkPlayableAbility("must have new ability", 1, PhaseStep.PRECOMBAT_MAIN, playerA, "{R}, {T}:", true);
 
         // renew target
+        activateManaAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "{T}: Add {W}", 2);
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Flicker", "Anaba Shaman");
 
         // use ability
@@ -199,5 +205,61 @@ public class SpendOtherManaTest extends CardTestPlayerBase {
         assertGraveyardCount(playerA, "Flicker", 1);
         assertLife(playerA, 20);
         assertLife(playerB, 20 - 1);
+    }
+
+    /**
+     * Chromatic Orrery allows it's controller to spend mana of any color as
+     * though it were mana of any color. With mana from Food Chain I should be
+     * able to cast creature spells using abritrary color of mana. But the game
+     * still requires to pay appropriate color as though there was no Orrery on
+     * my side of battlefield.
+     */
+    @Test
+    public void testFoodChainWithChromaticOrrery() {
+        setStrictChooseMode(true);
+        addCard(Zone.HAND, playerA, "Adriana, Captain of the Guard", 1); // Creature {3}{R}{W}
+
+        addCard(Zone.BATTLEFIELD, playerA, "Pillarfield Ox", 1); // Creature {3}{W}
+
+        // Exile a creature you control: Add X mana of any one color, where X is the exiled creature's converted mana cost plus one.
+        // Spend this mana only to cast creature spells.
+        addCard(Zone.BATTLEFIELD, playerA, "Food Chain"); // Enchantment {2}{G}
+
+        // You may spend mana as though it were mana of any color.
+        // {T}: Add {C}{C}{C}{C}{C}.
+        // {5}, {T}: Draw a card for each color among permanents you control.
+        addCard(Zone.BATTLEFIELD, playerA, "Chromatic Orrery"); // Artifact {7}
+        activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Exile a creature you control");
+        setChoice(playerA, "Pillarfield Ox");
+        setChoice(playerA, "Red");
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Adriana, Captain of the Guard");
+
+        setStopAt(1, PhaseStep.BEGIN_COMBAT);
+        execute();
+        assertAllCommandsUsed();
+
+        Assert.assertTrue("Mana pool of conditional mana has to be empty", playerA.getManaPool().getConditionalMana().isEmpty());
+        assertExileCount("Pillarfield Ox", 1);
+        assertPermanentCount(playerA, "Adriana, Captain of the Guard", 1);
+    }
+
+    @Test
+    public void testChromaticOrrery() {
+        setStrictChooseMode(true);
+        addCard(Zone.HAND, playerA, "Adriana, Captain of the Guard", 1); // Creature {3}{R}{W}
+
+        // You may spend mana as though it were mana of any color.
+        // {T}: Add {C}{C}{C}{C}{C}.
+        // {5}, {T}: Draw a card for each color among permanents you control.
+        addCard(Zone.BATTLEFIELD, playerA, "Chromatic Orrery"); // Artifact {7}
+
+        castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Adriana, Captain of the Guard");
+
+        setStopAt(1, PhaseStep.BEGIN_COMBAT);
+        execute();
+        assertAllCommandsUsed();
+
+        assertPermanentCount(playerA, "Adriana, Captain of the Guard", 1);
     }
 }

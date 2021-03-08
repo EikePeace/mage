@@ -1,6 +1,6 @@
 package mage.target.common;
 
-import mage.abilities.dynamicvalue.DynamicValue;
+import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
 
 /**
@@ -9,21 +9,13 @@ import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
 public class TargetCreatureOrPlaneswalkerAmount extends TargetPermanentAmount {
 
     private static final FilterCreatureOrPlaneswalkerPermanent defaultFilter
-            = new FilterCreatureOrPlaneswalkerPermanent();
+            = new FilterCreatureOrPlaneswalkerPermanent("target creatures or planeswalkers");
 
     public TargetCreatureOrPlaneswalkerAmount(int amount) {
         super(amount, defaultFilter);
     }
 
-    public TargetCreatureOrPlaneswalkerAmount(DynamicValue amount) {
-        super(amount, defaultFilter);
-    }
-
-    public TargetCreatureOrPlaneswalkerAmount(int amount, FilterCreatureOrPlaneswalkerPermanent filter) {
-        super(amount, filter);
-    }
-
-    public TargetCreatureOrPlaneswalkerAmount(DynamicValue amount, FilterCreatureOrPlaneswalkerPermanent filter) {
+    public TargetCreatureOrPlaneswalkerAmount(int amount, FilterPermanent filter) {
         super(amount, filter);
     }
 

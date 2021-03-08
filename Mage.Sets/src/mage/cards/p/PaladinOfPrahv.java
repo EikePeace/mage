@@ -46,7 +46,7 @@ public final class PaladinOfPrahv extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PaladinOfPrahv(final PaladinOfPrahv card) {
+    private PaladinOfPrahv(final PaladinOfPrahv card) {
         super(card);
     }
 
@@ -75,9 +75,8 @@ class PaladinOfPrahvTriggeredAbility extends DelayedTriggeredAbility {
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
         switch(event.getType()) {
-            case DAMAGED_CREATURE:
+            case DAMAGED_PERMANENT:
             case DAMAGED_PLAYER:
-            case DAMAGED_PLANESWALKER:
                 return true;
         }
         return false;

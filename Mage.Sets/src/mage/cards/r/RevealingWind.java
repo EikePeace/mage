@@ -16,7 +16,7 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.common.FilterAttackingOrBlockingCreature;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.Target;
@@ -36,7 +36,7 @@ public final class RevealingWind extends CardImpl {
         this.getSpellAbility().addEffect(new RevealingWindEffect());
     }
 
-    public RevealingWind(final RevealingWind card) {
+    private RevealingWind(final RevealingWind card) {
         super(card);
     }
 

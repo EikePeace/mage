@@ -62,7 +62,7 @@ class HeliodsPunishmentLoseAllAbilitiesEnchantedEffect extends ContinuousEffectI
 
     public HeliodsPunishmentLoseAllAbilitiesEnchantedEffect() {
         super(Duration.WhileOnBattlefield, Layer.AbilityAddingRemovingEffects_6, SubLayer.NA, Outcome.LoseAbility);
-        staticText = "It loses all abilities and has \"{T}: Remove a task counter from {this}. Then if it has no task counters on it, destroy {this}.\" ";
+        staticText = "It loses all abilities and has \"{T}: Remove a task counter from {this}. Then if it has no task counters on it, destroy {this}.\"";
     }
 
     public HeliodsPunishmentLoseAllAbilitiesEnchantedEffect(final HeliodsPunishmentLoseAllAbilitiesEnchantedEffect effect) {
@@ -117,13 +117,13 @@ class HeliodsPunishmentEffect extends OneShotEffect {
         Permanent sourceEnchantment = game.getPermanent(this.sourceEnchantmentId);
         if (sourceEnchantment != null) {
             if (sourceEnchantment.getCounters(game).getCount(CounterType.TASK) > 0) {
-                sourceEnchantment.removeCounters(CounterType.TASK.createInstance(1), game);
+                sourceEnchantment.removeCounters(CounterType.TASK.createInstance(1), source, game);
                 if (!game.isSimulation()) {
                     game.informPlayers("Removed a task counter from " + sourceEnchantment.getLogName());
                 }
             }
             if (sourceEnchantment.getCounters(game).getCount(CounterType.TASK) == 0) {
-                sourceEnchantment.destroy(source.getSourceId(), game, false);
+                sourceEnchantment.destroy(source, game, false);
             }
             return true;
         }

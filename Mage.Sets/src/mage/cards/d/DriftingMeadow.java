@@ -22,11 +22,11 @@ public final class DriftingMeadow extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.LAND},"");
 
         this.addAbility(new EntersBattlefieldTappedAbility());
-        this.addAbility(new CyclingAbility(new ManaCostsImpl("{2}")));
         this.addAbility(new WhiteManaAbility());
+        this.addAbility(new CyclingAbility(new ManaCostsImpl("{2}")));
     }
 
-    public DriftingMeadow(final DriftingMeadow card) {
+    private DriftingMeadow(final DriftingMeadow card) {
         super(card);
     }
 

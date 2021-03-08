@@ -40,7 +40,7 @@ public final class FesteringWound extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new FesteringWoundEffect(), TargetController.CONTROLLER_ATTACHED_TO, false, true));
     }
 
-    public FesteringWound(final FesteringWound card) {
+    private FesteringWound(final FesteringWound card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class FesteringWoundEffect extends OneShotEffect {
         UUID id = this.getTargetPointer().getFirst(game, source);
         Player player = game.getPlayer(id);
         if (player != null) {
-            player.damage(amount, source.getSourceId(), game);
+            player.damage(amount, source.getSourceId(), source, game);
             return true;
         }
         return false;

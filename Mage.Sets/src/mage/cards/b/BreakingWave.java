@@ -35,7 +35,7 @@ public final class BreakingWave extends CardImpl {
         this.getSpellAbility().addEffect(effect);
     }
 
-    public BreakingWave(final BreakingWave card) {
+    private BreakingWave(final BreakingWave card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class BreakingWaveEffect extends OneShotEffect {
             if (creature.isTapped()) {
                 creature.untap(game);
             } else {
-                creature.tap(game);
+                creature.tap(source, game);
             }
         }
         return true;

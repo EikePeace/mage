@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -35,7 +35,7 @@ public final class Saltskitter extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new ExileReturnBattlefieldOwnerNextEndStepSourceEffect(true), filter));
     }
 
-    public Saltskitter(final Saltskitter card) {
+    private Saltskitter(final Saltskitter card) {
         super(card);
     }
 

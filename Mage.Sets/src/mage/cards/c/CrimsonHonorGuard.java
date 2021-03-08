@@ -14,7 +14,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -40,7 +40,7 @@ public final class CrimsonHonorGuard extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new CrimsonHonorGuardEffect(), TargetController.ANY, false));
     }
 
-    public CrimsonHonorGuard(final CrimsonHonorGuard card) {
+    private CrimsonHonorGuard(final CrimsonHonorGuard card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class CrimsonHonorGuardEffect extends OneShotEffect {
         if (player != null) {
             int numCommanders = game.getBattlefield().getAllActivePermanents(filter, player.getId(), game).size();
             if (numCommanders == 0) {
-                player.damage(4, source.getSourceId(), game);
+                player.damage(4, source.getSourceId(), source, game);
                 return true;
             }
         }

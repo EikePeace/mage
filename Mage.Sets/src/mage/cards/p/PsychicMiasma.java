@@ -28,7 +28,7 @@ public final class PsychicMiasma extends CardImpl {
         this.getSpellAbility().addEffect(new PsychicMiasmaEffect());
     }
 
-    public PsychicMiasma(final PsychicMiasma card) {
+    private PsychicMiasma(final PsychicMiasma card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class PsychicMiasmaEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
-            Card discardedCard = player.discardOne(false, source, game);
+            Card discardedCard = player.discardOne(false, false, source, game);
             if (discardedCard != null && discardedCard.isLand()) {
                 Card spellCard = game.getStack().getSpell(source.getSourceId()).getCard();
                 if (spellCard != null) {

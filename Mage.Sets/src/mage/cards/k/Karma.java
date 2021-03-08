@@ -31,7 +31,7 @@ public final class Karma extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new KarmaDamageTargetEffect(), TargetController.ANY, false));
     }
 
-    public Karma(final Karma card) {
+    private Karma(final Karma card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class KarmaDamageTargetEffect extends OneShotEffect {
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
             int damage = game.getBattlefield().getAllActivePermanents(filter, targetPointer.getFirst(game, source), game).size();
-            player.damage(damage, source.getSourceId(), game);
+            player.damage(damage, source.getSourceId(), source, game);
             return true;
         }
         return false;

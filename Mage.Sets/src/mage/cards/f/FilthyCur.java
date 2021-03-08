@@ -23,7 +23,7 @@ public final class FilthyCur extends CardImpl {
 
     public FilthyCur(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{B}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
@@ -33,7 +33,7 @@ public final class FilthyCur extends CardImpl {
 
     }
 
-    public FilthyCur(final FilthyCur card) {
+    private FilthyCur(final FilthyCur card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class DealtDamageLoseLifeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

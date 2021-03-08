@@ -41,8 +41,8 @@ public class MoveCountersTargetsEffect extends OneShotEffect {
         Permanent removeTargetCreature = game.getPermanent(targetPointer.getTargets(game, source).get(0));
         Permanent addTargetCreature = game.getPermanent(targetPointer.getTargets(game, source).get(1));
         if (removeTargetCreature != null && addTargetCreature != null && removeTargetCreature.getCounters(game).getCount(counterType) >= amount) {
-            removeTargetCreature.removeCounters(counterType.createInstance(amount), game);
-            addTargetCreature.addCounters(counterType.createInstance(amount), source, game);
+            removeTargetCreature.removeCounters(counterType.createInstance(amount), source, game);
+            addTargetCreature.addCounters(counterType.createInstance(amount), source.getControllerId(), source, game);
             if (!game.isSimulation()) {
                 game.informPlayers("Moved " + amount + ' ' + counterType.getName() + " counter" + (amount > 1 ? "s" : "") + " from " + removeTargetCreature.getLogName() + " to " + addTargetCreature.getLogName());
             }

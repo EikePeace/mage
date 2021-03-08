@@ -43,7 +43,7 @@ public final class ProfaneProcession extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ProfaneProcession(final ProfaneProcession card) {
+    private ProfaneProcession(final ProfaneProcession card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class ProfaneProcessionEffect extends OneShotEffect {
         MageObject sourceObject = source.getSourceObject(game);
         if (controller != null && exileId != null && sourceObject != null) {
             new ExileTargetEffect(exileId, sourceObject.getIdName()).setTargetPointer(targetPointer).apply(game, source);
-            game.applyEffects();
+            game.getState().processAction(game);
             ExileZone exileZone = game.getExile().getExileZone(exileId);
             if (exileZone != null && exileZone.size() > 2) {
                 new TransformSourceEffect(true).apply(game, source);

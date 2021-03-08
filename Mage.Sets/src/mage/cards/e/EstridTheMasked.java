@@ -7,7 +7,7 @@ import mage.abilities.common.CanBeYourCommanderAbility;
 import mage.abilities.common.PlaneswalkerEntersWithLoyaltyCountersAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveControllerEffect;
+import mage.abilities.effects.common.MillCardsControllerEffect;
 import mage.abilities.effects.common.UntapAllControllerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -19,7 +19,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterEnchantmentCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.EnchantedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -69,7 +69,7 @@ public final class EstridTheMasked extends CardImpl {
         this.addAbility(CanBeYourCommanderAbility.getInstance());
     }
 
-    public EstridTheMasked(final EstridTheMasked card) {
+    private EstridTheMasked(final EstridTheMasked card) {
         super(card);
     }
 
@@ -108,7 +108,6 @@ class EstridTheMaskedTokenEffect extends OneShotEffect {
             }
             token.getAbilities().get(0).getTargets().get(0).add(source.getFirstTarget(), game);
             token.getAbilities().get(0).getEffects().get(0).apply(game, token.getAbilities().get(0));
-            // token.attachTo(source.getFirstTarget(), game);
         }
         return true;
     }
@@ -123,7 +122,7 @@ class EstridTheMaskedGraveyardEffect extends OneShotEffect {
 
     static {
         filter.add(Predicates.not(SubType.AURA.getPredicate()));
-        filter.add(SubType.AURA.getPredicate());
+        filter2.add(SubType.AURA.getPredicate());
     }
 
     public EstridTheMaskedGraveyardEffect() {
@@ -145,7 +144,7 @@ class EstridTheMaskedGraveyardEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        new PutTopCardOfLibraryIntoGraveControllerEffect(7).apply(game, source);
+        new MillCardsControllerEffect(7).apply(game, source);
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
             return false;

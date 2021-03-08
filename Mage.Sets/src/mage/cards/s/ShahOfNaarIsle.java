@@ -41,7 +41,7 @@ public final class ShahOfNaarIsle extends CardImpl {
         this.addAbility(new ShahOfNaarIsleTriggeredAbility());
     }
 
-    public ShahOfNaarIsle(final ShahOfNaarIsle card) {
+    private ShahOfNaarIsle(final ShahOfNaarIsle card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class ShahOfNaarIsleEffect extends OneShotEffect {
                 Player opponent = game.getPlayer(playerId);
                 if (opponent != null) {
                     int number = opponent.getAmount(0, 3, "Draw how many cards?", game);
-                    opponent.drawCards(number, game);
+                    opponent.drawCards(number, source, game);
                 }
             }
             return true;

@@ -7,7 +7,6 @@ import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.AttacksEachCombatStaticAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.LoseLifeSourceControllerEffect;
 import mage.constants.SubType;
 import mage.abilities.keyword.FlyingAbility;
 import mage.abilities.keyword.TrampleAbility;
@@ -46,7 +45,7 @@ public final class EmberwildeCaliph extends CardImpl {
         this.addAbility(new EmberwildeCaliphTriggeredAbility());
     }
 
-    public EmberwildeCaliph(final EmberwildeCaliph card) {
+    private EmberwildeCaliph(final EmberwildeCaliph card) {
         super(card);
     }
 
@@ -73,9 +72,8 @@ class EmberwildeCaliphTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -116,7 +114,7 @@ class EmberwildeCaliphEffect extends OneShotEffect {
         if (controller != null) {
             int amount = (Integer) getValue("damage");
             if (amount > 0) {
-                controller.loseLife(amount, game, false);
+                controller.loseLife(amount, game, source, false);
             }
             return true;
         }

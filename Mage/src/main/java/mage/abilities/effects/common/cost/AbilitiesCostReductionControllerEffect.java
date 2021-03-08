@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common.cost;
 
 import mage.abilities.Ability;
@@ -18,7 +13,7 @@ import mage.util.CardUtil;
  */
 public class AbilitiesCostReductionControllerEffect extends CostModificationEffectImpl {
 
-    private Class activatedAbility;
+    private final Class activatedAbility;
 
     public AbilitiesCostReductionControllerEffect(Class activatedAbility, String activatedAbilityName) {
         super(Duration.WhileOnBattlefield, Outcome.Benefit, CostModificationType.REDUCE_COST);

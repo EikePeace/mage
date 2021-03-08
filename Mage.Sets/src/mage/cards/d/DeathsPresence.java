@@ -31,7 +31,7 @@ public final class DeathsPresence extends CardImpl {
         this.addAbility(new DeathsPresenceTriggeredAbility());
     }
 
-    public DeathsPresence(final DeathsPresence card) {
+    private DeathsPresence(final DeathsPresence card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class DeathsPresenceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

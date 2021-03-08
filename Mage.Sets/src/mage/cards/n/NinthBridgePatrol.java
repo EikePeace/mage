@@ -13,7 +13,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class NinthBridgePatrol extends CardImpl {
                 "Whenever another creature you control leaves the battlefield, ", false));
     }
 
-    public NinthBridgePatrol(final NinthBridgePatrol card) {
+    private NinthBridgePatrol(final NinthBridgePatrol card) {
         super(card);
     }
 

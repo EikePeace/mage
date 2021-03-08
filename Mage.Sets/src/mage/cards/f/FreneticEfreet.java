@@ -40,7 +40,7 @@ public final class FreneticEfreet extends CardImpl {
         ));
     }
 
-    public FreneticEfreet(final FreneticEfreet card) {
+    private FreneticEfreet(final FreneticEfreet card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class FreneticEfreetEffect extends OneShotEffect {
         if (flip) {
             return permanent.phaseOut(game);
         } else {
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
             return true;
         }
     }

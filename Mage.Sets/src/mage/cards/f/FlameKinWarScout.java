@@ -16,7 +16,7 @@ import mage.constants.Outcome;
 import mage.constants.SetTargetPointer;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -45,7 +45,7 @@ public final class FlameKinWarScout extends CardImpl {
 
     }
 
-    public FlameKinWarScout(final FlameKinWarScout card) {
+    private FlameKinWarScout(final FlameKinWarScout card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class FlameKinWarScourEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = (Permanent) source.getSourceObjectIfItStillExists(game);
         if (permanent != null) {
-            if (permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent.sacrifice(source, game)) {
                 Effect effect = new DamageTargetEffect(4).setText("{this} deals 4 damage to it");
                 effect.setTargetPointer(this.getTargetPointer());
                 return effect.apply(game, source);

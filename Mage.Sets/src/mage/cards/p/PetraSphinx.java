@@ -38,7 +38,7 @@ public final class PetraSphinx extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PetraSphinx(final PetraSphinx card) {
+    private PetraSphinx(final PetraSphinx card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class PetraSphinxEffect extends OneShotEffect {
                 if (card != null) {
                     Cards cards = new CardsImpl(card);
                     player.revealCards(source, cards, game);
-                    if (CardUtil.haveSameNames(card.getName(), cardName)) {
+                    if (CardUtil.haveSameNames(card, cardName, game)) {
                         player.moveCards(cards, Zone.HAND, source, game);
                     } else {
                         player.moveCards(cards, Zone.GRAVEYARD, source, game);

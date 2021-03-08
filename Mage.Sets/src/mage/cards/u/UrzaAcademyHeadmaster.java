@@ -68,7 +68,7 @@ public final class UrzaAcademyHeadmaster extends CardImpl {
 
     }
 
-    public UrzaAcademyHeadmaster(final UrzaAcademyHeadmaster card) {
+    private UrzaAcademyHeadmaster(final UrzaAcademyHeadmaster card) {
         super(card);
     }
 
@@ -186,7 +186,7 @@ class UrzaAcademyHeadmasterRandomEffect extends OneShotEffect {
                                 break;
                             case 11: // KARN LIBERATED 1
                                 sb.append("Target player exiles a card from their hand.");
-                                effects.add(new ExileFromZoneTargetEffect(Zone.HAND, null, "", new FilterCard()));
+                                effects.add(new ExileFromZoneTargetEffect(Zone.HAND, true));
                                 target = new TargetPlayer();
                                 break;
                             case 12: // NISSA SAGE ANIMIST 1
@@ -268,7 +268,7 @@ class UrzaAcademyHeadmasterRandomEffect extends OneShotEffect {
                                 effects.add(new UrzaAcademyHeadmasterBrainstormEffect());
                                 break;
                             case 8: // JACE MEMORY ADEPT 2
-                                sb.append("Target player puts the top ten cards of their library into their graveyard.");
+                                sb.append("Target player mills ten cards.");
                                 effects.add(new PutLibraryIntoGraveTargetEffect(10));
                                 target = new TargetPlayer();
                                 break;
@@ -550,7 +550,7 @@ class UrzaAcademyHeadmasterBrainstormEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(3, game);
+            player.drawCards(3, source, game);
             putOnLibrary(player, source, game);
             return true;
         }
@@ -563,7 +563,7 @@ class UrzaAcademyHeadmasterBrainstormEffect extends OneShotEffect {
             player.chooseTarget(Outcome.ReturnToHand, target, source, game);
             Card card = player.getHand().get(target.getFirstTarget(), game);
             if (card != null) {
-                return player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, false);
+                return player.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, false);
             }
         }
         return false;

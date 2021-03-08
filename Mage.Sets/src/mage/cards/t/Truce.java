@@ -24,7 +24,7 @@ public final class Truce extends CardImpl {
         this.getSpellAbility().addEffect(new TruceEffect());
     }
 
-    public Truce(final Truce card) {
+    private Truce(final Truce card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class TruceEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int cardsToDraw = player.getAmount(0, 2, "Draw how many cards?", game);
-                    player.drawCards(cardsToDraw, game);
+                    player.drawCards(cardsToDraw, source, game);
                     player.gainLife((2 - cardsToDraw) * 2, game, source);
                 }
             }

@@ -12,7 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.token.SpyMasterGoblinToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 
@@ -37,7 +36,7 @@ public final class GoblinSpymaster extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(Zone.BATTLEFIELD, new SpyMasterGoblinCreateTokenEffect(), TargetController.OPPONENT, null, false));
     }
 
-    public GoblinSpymaster(final GoblinSpymaster card) {
+    private GoblinSpymaster(final GoblinSpymaster card) {
         super(card);
     }
 
@@ -69,7 +68,7 @@ class SpyMasterGoblinCreateTokenEffect extends OneShotEffect {
 
         if (player != null) {
             Token token = new SpyMasterGoblinToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), player.getId());
+            token.putOntoBattlefield(1, game, source, player.getId());
         }
 
         return true;

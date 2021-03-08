@@ -8,7 +8,7 @@ import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.decorator.ConditionalActivatedAbility;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
@@ -47,7 +47,7 @@ public final class JeweledAmulet extends CardImpl {
 
     }
 
-    public JeweledAmulet(final JeweledAmulet card) {
+    private JeweledAmulet(final JeweledAmulet card) {
         super(card);
     }
 
@@ -102,7 +102,7 @@ class JeweledAmuletAddManaEffect extends ManaEffect {
 
     JeweledAmuletAddManaEffect(JeweledAmuletAddManaEffect effect) {
         super(effect);
-        storedMana = effect.storedMana;
+        storedMana = effect.storedMana == null ? null : effect.storedMana.copy();
     }
 
     @Override

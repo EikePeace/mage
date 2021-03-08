@@ -43,7 +43,7 @@ public final class HarshJustice extends CardImpl {
         this.getSpellAbility().addEffect(new CreateDelayedTriggeredAbilityEffect(new HarshJusticeTriggeredAbility()));
     }
 
-    public HarshJustice(final HarshJustice card) {
+    private HarshJustice(final HarshJustice card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class HarshJusticeTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -129,7 +129,7 @@ class HarshJusticeEffect extends OneShotEffect {
                 Player controller = game.getPlayer(targetObject.getControllerId());
                 if (controller != null) {
                     game.informPlayers(sourceObject.getLogName() + ": " + targetObject.getLogName() + " deals " + damage + " damage to " + controller.getLogName());
-                    controller.damage(damage, sourceId, game);
+                    controller.damage(damage, sourceId, source, game);
                     return true;
                 }
             }

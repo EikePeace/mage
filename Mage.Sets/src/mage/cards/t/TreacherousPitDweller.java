@@ -37,7 +37,7 @@ public final class TreacherousPitDweller extends CardImpl {
         this.addAbility(new TreacherousPitDwellerTriggeredAbility());
     }
 
-    public TreacherousPitDweller(final TreacherousPitDweller card) {
+    private TreacherousPitDweller(final TreacherousPitDweller card) {
         super(card);
     }
 
@@ -104,7 +104,7 @@ class TreacherousPitDwellerEffect extends ContinuousEffectImpl {
         Player targetOpponent = game.getPlayer(source.getFirstTarget());
         if ((permanent instanceof Permanent)
                 && targetOpponent != null) {
-            return ((Permanent) permanent).changeControllerId(targetOpponent.getId(), game);
+            return ((Permanent) permanent).changeControllerId(targetOpponent.getId(), game, source);
         } else {
             discard();
         }

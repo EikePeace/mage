@@ -3,7 +3,7 @@ package mage.cards.g;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.PayLifeCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -39,11 +39,11 @@ public final class GiantAlbatross extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
 
         // When Giant Albatross dies, you may pay {1}{U}. If you do, for each creature that dealt damage to Giant Albatross this turn, destroy that creature unless its controller pays 2 life. A creature destroyed this way can't be regenerated.
-        Ability ability = new DiesTriggeredAbility(new DoIfCostPaid(new GiantAlbatrossEffect(), new ManaCostsImpl("{1}{U}")));
+        Ability ability = new DiesSourceTriggeredAbility(new DoIfCostPaid(new GiantAlbatrossEffect(), new ManaCostsImpl("{1}{U}")));
         this.addAbility(ability);
     }
 
-    public GiantAlbatross(final GiantAlbatross card) {
+    private GiantAlbatross(final GiantAlbatross card) {
         super(card);
     }
 
@@ -83,11 +83,11 @@ class GiantAlbatrossEffect extends OneShotEffect {
                     for (Permanent creature : creatures) {
                         if (sourcePermanent.getDealtDamageByThisTurn().contains(new MageObjectReference(creature.getId(), game))) {
                             final StringBuilder sb = new StringBuilder("Pay 2 life? (Otherwise ").append(creature.getName()).append(" will be destroyed)");
-                            if (cost.canPay(source, creature.getControllerId(), creature.getControllerId(), game) && player.chooseUse(Outcome.Benefit, sb.toString(), source, game)) {
-                                cost.pay(source, game, creature.getControllerId(), creature.getControllerId(), true, null);
+                            if (cost.canPay(source, source, creature.getControllerId(), game) && player.chooseUse(Outcome.Benefit, sb.toString(), source, game)) {
+                                cost.pay(source, game, source, creature.getControllerId(), true, null);
                             }
                             if (!cost.isPaid()) {
-                                creature.destroy(source.getSourceId(), game, true);
+                                creature.destroy(source, game, true);
                             }
                         }
                     }

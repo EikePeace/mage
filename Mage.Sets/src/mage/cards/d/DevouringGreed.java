@@ -43,7 +43,7 @@ public final class DevouringGreed extends CardImpl {
 
     }
 
-    public DevouringGreed(final DevouringGreed card) {
+    private DevouringGreed(final DevouringGreed card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class DevouringGreedEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
         Player sourcePlayer = game.getPlayer(source.getControllerId());
         if (targetPlayer != null && sourcePlayer != null) {
-            targetPlayer.loseLife(amount, game, false);
+            targetPlayer.loseLife(amount, game, source, false);
             sourcePlayer.gainLife(amount, game, source);
             return true;
         }

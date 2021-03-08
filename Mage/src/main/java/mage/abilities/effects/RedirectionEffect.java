@@ -52,9 +52,8 @@ public abstract class RedirectionEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
                 return true;
         }
         return false;
@@ -88,12 +87,12 @@ public abstract class RedirectionEffect extends ReplacementEffectImpl {
         }
         Permanent permanent = game.getPermanent(redirectTarget.getFirstTarget());
         if (permanent != null) {
-            permanent.damage(damageToRedirect, event.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+            permanent.damage(damageToRedirect, event.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
             game.informPlayers(sourceLogName + "Redirected " + damageToRedirect + " damage" + getRedirectedFromText(event, game) + " to " + permanent.getLogName());
         } else {
             Player player = game.getPlayer(redirectTarget.getFirstTarget());
             if (player != null) {
-                player.damage(damageToRedirect, event.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+                player.damage(damageToRedirect, event.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
                 game.informPlayers(sourceLogName + "Redirected " + damageToRedirect + " damage" + getRedirectedFromText(event, game) + " to " + player.getLogName());
             }
         }

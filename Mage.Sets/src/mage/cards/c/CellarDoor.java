@@ -34,7 +34,7 @@ public final class CellarDoor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CellarDoor(final CellarDoor card) {
+    private CellarDoor(final CellarDoor card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class CellarDoorEffect extends OneShotEffect {
                 player.moveCards(card, Zone.GRAVEYARD, source, game);
                 if (card.isCreature()) {
                     ZombieToken token = new ZombieToken();
-                    token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+                    token.putOntoBattlefield(1, game, source, source.getControllerId());
                 }
             }
             return true;

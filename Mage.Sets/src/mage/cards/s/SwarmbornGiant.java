@@ -51,7 +51,7 @@ public final class SwarmbornGiant extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SwarmbornGiant(final SwarmbornGiant card) {
+    private SwarmbornGiant(final SwarmbornGiant card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class SwarmbornGiantTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

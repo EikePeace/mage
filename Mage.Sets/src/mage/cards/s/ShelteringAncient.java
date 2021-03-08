@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.costs.Cost;
@@ -11,8 +9,8 @@ import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
@@ -22,8 +20,9 @@ import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public final class ShelteringAncient extends CardImpl {
@@ -41,7 +40,7 @@ public final class ShelteringAncient extends CardImpl {
         this.addAbility(new CumulativeUpkeepAbility(new ShelteringAncientCost()));
     }
 
-    public ShelteringAncient(final ShelteringAncient card) {
+    private ShelteringAncient(final ShelteringAncient card) {
         super(card);
     }
 
@@ -64,14 +63,14 @@ class ShelteringAncientCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
             Target target = new TargetCreaturePermanent(1, 1, filter, true);
-            if (target.choose(Outcome.BoostCreature, controllerId, sourceId, game)) {
+            if (target.choose(Outcome.BoostCreature, controllerId, source.getSourceId(), game)) {
                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                 if (permanent != null) {
-                    permanent.addCounters(CounterType.P1P1.createInstance(), ability, game);
+                    permanent.addCounters(CounterType.P1P1.createInstance(), controllerId, ability, game);
                     this.paid = true;
                     return true;
                 }
@@ -81,8 +80,8 @@ class ShelteringAncientCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return game.getBattlefield().contains(filter, sourceId, game, 1);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return game.getBattlefield().contains(filter, source, game, 1);
     }
 
     @Override

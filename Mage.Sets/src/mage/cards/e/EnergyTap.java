@@ -36,7 +36,7 @@ public final class EnergyTap extends CardImpl {
         this.getSpellAbility().addEffect(new EnergyTapEffect());
     }
 
-    public EnergyTap(final EnergyTap card) {
+    private EnergyTap(final EnergyTap card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class EnergyTapEffect extends OneShotEffect {
         boolean applied = false;
         Permanent targetCreature = game.getPermanent(targetPointer.getFirst(game, source));
         if (targetCreature != null) {
-            applied = targetCreature.tap(game);
+            applied = targetCreature.tap(source, game);
             if (applied) {
                 player.getManaPool().addMana(new Mana(0, 0, 0, 0, 0, 0, 0, targetCreature.getConvertedManaCost()), game, source);
             }

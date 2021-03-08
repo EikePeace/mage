@@ -28,7 +28,7 @@ public final class AngelicChorus extends CardImpl {
         this.addAbility(new AngelicChorusTriggeredAbility());
     }
 
-    public AngelicChorus(final AngelicChorus card) {
+    private AngelicChorus(final AngelicChorus card) {
         super(card);
     }
 
@@ -50,7 +50,7 @@ class AngelicChorusTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

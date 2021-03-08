@@ -3,7 +3,6 @@ package mage.cards.c;
 
 import java.util.UUID;
 
-import mage.MageInt;
 import mage.abilities.common.EntersBattlefieldTappedAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -18,8 +17,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 
 /**
@@ -47,7 +44,7 @@ public final class CelestialColonnade extends CardImpl {
                 "land", Duration.EndOfTurn), new ManaCostsImpl("{3}{W}{U}")));
     }
 
-    public CelestialColonnade(final CelestialColonnade card) {
+    private CelestialColonnade(final CelestialColonnade card) {
         super(card);
     }
 

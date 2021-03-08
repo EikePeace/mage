@@ -1,20 +1,21 @@
-
 package mage.abilities.costs.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostImpl;
 import mage.cards.Card;
+import mage.cards.Cards;
+import mage.cards.CardsImpl;
 import mage.constants.Outcome;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInHand;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class DiscardTargetCost extends CostImpl {
@@ -39,7 +40,7 @@ public class DiscardTargetCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         this.cards.clear();
         this.targets.clearChosen();
         Player player = game.getPlayer(controllerId);
@@ -48,15 +49,13 @@ public class DiscardTargetCost extends CostImpl {
         }
         int amount = this.getTargets().get(0).getNumberOfTargets();
         if (randomDiscard) {
-            this.cards.addAll(player.discard(amount, true, ability, game).getCards(game));
-        } else if (targets.choose(Outcome.Discard, controllerId, sourceId, game)) {
-            for (UUID targetId : targets.get(0).getTargets()) {
-                Card card = player.getHand().get(targetId, game);
-                if (card == null) {
-                    return false;
-                }
-                player.discard(card, ability, game);
-                this.cards.add(card);
+            this.cards.addAll(player.discard(amount, true, true, source, game).getCards(game));
+        } else if (targets.choose(Outcome.Discard, controllerId, source.getSourceId(), game)) {
+            Cards toDiscard = new CardsImpl();
+            toDiscard.addAll(targets.get(0).getTargets());
+            Cards discarded = player.discard(toDiscard, true, source, game);
+            if (!discarded.isEmpty()) {
+                cards.addAll(discarded.getCards(game));
             }
         }
         paid = cards.size() >= amount;
@@ -71,8 +70,8 @@ public class DiscardTargetCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return targets.canChoose(sourceId, controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return targets.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override

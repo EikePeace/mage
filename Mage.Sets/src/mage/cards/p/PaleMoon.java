@@ -11,14 +11,12 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
-import mage.constants.SubType;
 import mage.filter.common.FilterLandPermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.events.ManaEvent;
 import mage.game.permanent.Permanent;
-import mage.players.Player;
 
 /**
  *
@@ -33,7 +31,7 @@ public final class PaleMoon extends CardImpl {
         this.getSpellAbility().addEffect(new PaleMoonReplacementEffect());
     }
 
-    public PaleMoon(final PaleMoon card) {
+    private PaleMoon(final PaleMoon card) {
         super(card);
     }
 
@@ -76,15 +74,14 @@ class PaleMoonReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        MageObject mageObject = game.getObject(event.getSourceId());
-        if (mageObject != null && mageObject.isLand()) {
-            Permanent land = game.getPermanent(event.getSourceId());
-            return land != null && filter.match(land, game);
+        Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
+        if (permanent != null && permanent.isLand()) {
+            return filter.match(permanent, game);
         }
         return false;
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common;
 
 import mage.abilities.Ability;
@@ -24,7 +19,6 @@ import mage.target.targetpointer.FixedTarget;
  *
  * @author LevelX2
  */
-
 public class EntersBattlefieldUnderControlOfOpponentOfChoiceEffect extends OneShotEffect {
 
     public EntersBattlefieldUnderControlOfOpponentOfChoiceEffect() {
@@ -58,6 +52,8 @@ public class EntersBattlefieldUnderControlOfOpponentOfChoiceEffect extends OneSh
         }
         Permanent permanent = game.getPermanentEntering(source.getSourceId());
         if (permanent != null) {
+            permanent.setOriginalControllerId(opponent.getId()); // permanent was controlled by this player since the existance of this object so original controller has to be set to the first controller
+            permanent.setControllerId(opponent.getId()); // neccessary to set already here because spell caster never controlled the permanent (important for rule 800.4a)
             game.informPlayers(permanent.getLogName() + " enters the battlefield under the control of " + opponent.getLogName());
         }
         ContinuousEffect continuousEffect = new GainControlTargetEffect(

@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -32,7 +31,7 @@ public final class Mutavault extends CardImpl {
                 new ManaCostsImpl("{1}")));
     }
 
-    public Mutavault(final Mutavault card) {
+    private Mutavault(final Mutavault card) {
         super(card);
     }
 
@@ -47,7 +46,7 @@ class MutavaultToken extends TokenImpl {
     public MutavaultToken() {
         super("", "2/2 creature with all creature types");
         cardType.add(CardType.CREATURE);
-        setIsAllCreatureTypes(true);
+        subtype.setIsAllCreatureTypes(true);
         power = new MageInt(2);
         toughness = new MageInt(2);
     }

@@ -42,7 +42,7 @@ public final class CouncilOfTheAbsolute extends CardImpl {
 
     }
 
-    public CouncilOfTheAbsolute(final CouncilOfTheAbsolute card) {
+    private CouncilOfTheAbsolute(final CouncilOfTheAbsolute card) {
         super(card);
     }
 
@@ -78,22 +78,22 @@ class CouncilOfTheAbsoluteReplacementEffect extends ContinuousRuleModifyingEffec
     public String getInfoMessage(Ability source, GameEvent event, Game game) {
         MageObject mageObject = game.getObject(source.getSourceId());
         if (mageObject != null) {
-            return "You can't cast a spell with that name (" + mageObject.getLogName() + " in play).";
+            return "You can't cast a spell with that name (" + mageObject.getName() + " in play).";
         }
         return null;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL;
+        return event.getType() == GameEvent.EventType.CAST_SPELL;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         if (game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) {
             MageObject object = game.getObject(event.getSourceId());
-            String needName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-            return object != null && CardUtil.haveSameNames(object.getName(), needName);
+            String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+            return object != null && cardName != null && CardUtil.haveSameNames(object, cardName, game);
         }
         return false;
     }
@@ -122,8 +122,8 @@ class CouncilOfTheAbsoluteCostReductionEffect extends CostModificationEffectImpl
                 && abilityToModify.isControlledBy(source.getControllerId())) {
             Card card = game.getCard(abilityToModify.getSourceId());
             if (card != null) {
-                String needName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-                return CardUtil.haveSameNames(card.getName(), needName);
+                String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+                return CardUtil.haveSameNames(card, cardName, game);
             }
         }
         return false;

@@ -41,7 +41,7 @@ public final class WeiAssassins extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WeiAssassins(final WeiAssassins card) {
+    private WeiAssassins(final WeiAssassins card) {
         super(card);
     }
 
@@ -77,12 +77,12 @@ class WeiAssassinsEffect extends OneShotEffect {
         filter.add(new ControllerIdPredicate(player.getId()));
         Target target = new TargetPermanent(1, 1, filter, true);
         if (target.canChoose(source.getSourceId(), player.getId(), game)) {
-            while (!target.isChosen() && target.canChoose(player.getId(), game) && player.canRespond()) {
+            while (!target.isChosen() && target.canChoose(source.getSourceId(), player.getId(), game) && player.canRespond()) {
                 player.chooseTarget(Outcome.DestroyPermanent, target, source, game);
             }
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

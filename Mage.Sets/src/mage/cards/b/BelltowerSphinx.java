@@ -37,7 +37,7 @@ public final class BelltowerSphinx extends CardImpl {
         this.addAbility(new BelltowerSphinxEffect());
     }
 
-    public BelltowerSphinx(final BelltowerSphinx card) {
+    private BelltowerSphinx(final BelltowerSphinx card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class BelltowerSphinxEffect extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
@@ -85,6 +85,6 @@ class BelltowerSphinxEffect extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever a source deals damage to {this}, that source's controller puts that many cards from the top of their library into their graveyard.";
+        return "Whenever a source deals damage to {this}, that source's controller mills that many cards.";
     }
 }

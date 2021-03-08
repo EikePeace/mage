@@ -38,7 +38,7 @@ public final class LeovoldEmissaryOfTrest extends CardImpl {
         this.addAbility(new LeovoldEmissaryOfTrestTriggeredAbility());
     }
 
-    public LeovoldEmissaryOfTrest(final LeovoldEmissaryOfTrest card) {
+    private LeovoldEmissaryOfTrest(final LeovoldEmissaryOfTrest card) {
         super(card);
     }
 
@@ -67,6 +67,11 @@ class LeovoldEmissaryOfTrestEffect extends ContinuousRuleModifyingEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         return event.getType() == GameEvent.EventType.DRAW_CARD;
+    }
+
+    @Override
+    public boolean apply(Game game, Ability source) {
+        return true;
     }
 
     @Override

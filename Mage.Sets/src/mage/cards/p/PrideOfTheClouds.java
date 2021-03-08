@@ -19,9 +19,8 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 /**
  *
  * @author fireshoes
@@ -53,7 +52,7 @@ public final class PrideOfTheClouds extends CardImpl {
         this.addAbility(new ForecastAbility(new CreateTokenEffect(new BirdToken()), new ManaCostsImpl("{2}{W}{U}")));
     }
 
-    public PrideOfTheClouds(final PrideOfTheClouds card) {
+    private PrideOfTheClouds(final PrideOfTheClouds card) {
         super(card);
     }
 

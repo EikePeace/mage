@@ -34,7 +34,7 @@ public final class LeylineOfLifeforce extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new LeylineOfLifeforceEffect()));
     }
 
-    public LeylineOfLifeforce(final LeylineOfLifeforce card) {
+    private LeylineOfLifeforce(final LeylineOfLifeforce card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class LeylineOfLifeforceEffect extends ContinuousRuleModifyingEffectImpl {
     
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER;
+        return event.getType() == GameEvent.EventType.COUNTER;
     }
     
     @Override

@@ -17,7 +17,7 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -37,7 +37,7 @@ public final class VirtussManeuver extends CardImpl {
         this.getSpellAbility().addEffect(new VirtussManeuverEffect());
     }
 
-    public VirtussManeuver(final VirtussManeuver card) {
+    private VirtussManeuver(final VirtussManeuver card) {
         super(card);
     }
 
@@ -107,7 +107,7 @@ class VirtussManeuverEffect extends OneShotEffect {
         for (UUID permID : perms) {
             Permanent permanent = game.getPermanent(permID);
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
         return true;

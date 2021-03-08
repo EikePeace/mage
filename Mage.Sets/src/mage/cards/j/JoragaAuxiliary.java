@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -42,7 +42,7 @@ public final class JoragaAuxiliary extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JoragaAuxiliary(final JoragaAuxiliary card) {
+    private JoragaAuxiliary(final JoragaAuxiliary card) {
         super(card);
     }
 

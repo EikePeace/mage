@@ -1,21 +1,22 @@
 
 package mage.abilities.effects.common.counter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.constants.Outcome;
 import mage.counters.Counter;
+import mage.counters.CounterType;
 import mage.filter.Filter;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 /**
- *
  * @author Gal Lerman
  */
 public class AddRemoveAllTimeSuspentCountersEffect extends OneShotEffect {
@@ -66,9 +67,9 @@ public class AddRemoveAllTimeSuspentCountersEffect extends OneShotEffect {
                     final Counter existingCounterOfSameType = card.getCounters(game).get(counterName);
                     final int countersToRemove = Math.min(existingCounterOfSameType.getCount(), counter.getCount());
                     final Counter modifiedCounter = new Counter(counterName, countersToRemove);
-                    card.removeCounters(modifiedCounter, game);
+                    card.removeCounters(modifiedCounter, source, game);
                 } else {
-                    card.addCounters(counter, source, game);
+                    card.addCounters(counter, source.getControllerId(), source, game);
                 }
                 if (!game.isSimulation()) {
                     game.informPlayers(new StringBuilder(sourceObject.getName()).append(": ")
@@ -87,7 +88,7 @@ public class AddRemoveAllTimeSuspentCountersEffect extends OneShotEffect {
         if (counter.getCount() > 1) {
             sb.append(Integer.toString(counter.getCount())).append(' ').append(counter.getName().toLowerCase(Locale.ENGLISH)).append(" counters on each ");
         } else {
-            sb.append("a ").append(counter.getName().toLowerCase(Locale.ENGLISH)).append(" counter on each ");
+            sb.append(CounterType.findArticle(counter.getName())).append(' ').append(counter.getName().toLowerCase(Locale.ENGLISH)).append(" counter on each ");
         }
         sb.append(filter.getMessage());
         staticText = sb.toString();

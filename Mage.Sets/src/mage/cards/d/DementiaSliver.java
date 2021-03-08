@@ -53,7 +53,7 @@ public final class DementiaSliver extends CardImpl {
         ));
     }
 
-    public DementiaSliver(final DementiaSliver card) {
+    private DementiaSliver(final DementiaSliver card) {
         super(card);
     }
 
@@ -79,15 +79,15 @@ class DementiaSliverEffect extends OneShotEffect {
         Player opponent = game.getPlayer(targetPointer.getFirst(game, source));
         MageObject sourceObject = game.getObject(source.getSourceId());
         String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-        if (opponent != null && sourceObject != null && !cardName.isEmpty()) {
+        if (opponent != null && sourceObject != null && cardName != null && !cardName.isEmpty()) {
             if (!opponent.getHand().isEmpty()) {
                 Cards revealed = new CardsImpl();
                 Card card = opponent.getHand().getRandom(game);
                 if (card != null) {
                     revealed.add(card);
                     opponent.revealCards(sourceObject.getName(), revealed, game);
-                    if (CardUtil.haveSameNames(card.getName(), cardName)) {
-                        opponent.discard(card, source, game);
+                    if (CardUtil.haveSameNames(card, cardName, game)) {
+                        opponent.discard(card, false, source, game);
                     }
                 }
             }

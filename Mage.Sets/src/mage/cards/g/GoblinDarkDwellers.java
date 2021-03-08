@@ -1,8 +1,8 @@
 package mage.cards.g;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.ContinuousEffect;
@@ -56,7 +56,7 @@ public final class GoblinDarkDwellers extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoblinDarkDwellers(final GoblinDarkDwellers card) {
+    private GoblinDarkDwellers(final GoblinDarkDwellers card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class GoblinDarkDwellersEffect extends OneShotEffect {
                 if (controller.chooseUse(Outcome.PlayForFree, "Cast " + card.getLogName() + '?', source, game)) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                     Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     if (cardWasCast) {
                         ContinuousEffect effect = new GoblinDarkDwellersReplacementEffect(card.getId());
@@ -130,12 +130,7 @@ class GoblinDarkDwellersReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        Card card = game.getCard(this.cardId);
-        if (controller != null && card != null) {
-            controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.STACK, true);
-            return true;
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 

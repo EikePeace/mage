@@ -30,7 +30,7 @@ public final class Rowen extends CardImpl {
         this.addAbility(new RowenAbility());
     }
 
-    public Rowen(final Rowen card) {
+    private Rowen(final Rowen card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class RowenAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DREW_CARD;
+        return event.getType() == GameEvent.EventType.DREW_CARD;
     }
 
     @Override

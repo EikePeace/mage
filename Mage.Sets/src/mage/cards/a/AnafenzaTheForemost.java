@@ -1,7 +1,6 @@
 
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
@@ -14,17 +13,19 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
+import mage.game.permanent.PermanentToken;
 import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class AnafenzaTheForemost extends CardImpl {
@@ -37,7 +38,7 @@ public final class AnafenzaTheForemost extends CardImpl {
     }
 
     public AnafenzaTheForemost(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{W}{B}{G}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{W}{B}{G}");
         addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.HUMAN);
         this.subtype.add(SubType.SOLDIER);
@@ -54,7 +55,7 @@ public final class AnafenzaTheForemost extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AnafenzaTheForemostEffect()));
     }
 
-    public AnafenzaTheForemost(final AnafenzaTheForemost card) {
+    private AnafenzaTheForemost(final AnafenzaTheForemost card) {
         super(card);
     }
 
@@ -91,13 +92,13 @@ class AnafenzaTheForemostEffect extends ReplacementEffectImpl {
         if (controller != null) {
             if (((ZoneChangeEvent) event).getFromZone() == Zone.BATTLEFIELD) {
                 Permanent permanent = ((ZoneChangeEvent) event).getTarget();
-                if (permanent != null) {
-                    return controller.moveCardToExileWithInfo(permanent, null, null, source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                if (permanent != null && !(permanent instanceof PermanentToken)) {
+                    return controller.moveCards(permanent, Zone.EXILED, source, game);
                 }
             } else {
                 Card card = game.getCard(event.getTargetId());
                 if (card != null) {
-                    return controller.moveCardToExileWithInfo(card, null, null, source.getSourceId(), game, ((ZoneChangeEvent) event).getFromZone(), true);
+                    return controller.moveCards(card, Zone.EXILED, source, game);
                 }
             }
         }

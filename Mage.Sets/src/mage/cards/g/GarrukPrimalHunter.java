@@ -48,7 +48,7 @@ public final class GarrukPrimalHunter extends CardImpl {
         this.addAbility(new LoyaltyAbility(new CreateTokenEffect(new WurmToken(), new PermanentsOnBattlefieldCount(filter)), -6));
     }
 
-    public GarrukPrimalHunter(final GarrukPrimalHunter card) {
+    private GarrukPrimalHunter(final GarrukPrimalHunter card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class GarrukPrimalHunterEffect extends OneShotEffect {
                     amount = p.getPower().getValue();
                 }
             }
-            player.drawCards(amount, game);
+            player.drawCards(amount, source, game);
             return true;
         }
         return false;

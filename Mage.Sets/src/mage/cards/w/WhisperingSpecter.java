@@ -38,7 +38,7 @@ public final class WhisperingSpecter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WhisperingSpecter(final WhisperingSpecter card) {
+    private WhisperingSpecter(final WhisperingSpecter card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class WhisperingSpecterEffect extends OneShotEffect {
         if (player != null) {
             int value = player.getCounters().getCount(CounterType.POISON);
             if (value > 0) {
-                player.discard(value, false, source, game);
+                player.discard(value, false, false, source, game);
                 return true;
             }
         }

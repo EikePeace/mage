@@ -12,9 +12,8 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.Game;
-import mage.game.events.DamagedPlaneswalkerEvent;
+import mage.game.events.DamagedEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.AssassinToken;
 import mage.target.common.TargetNonlandPermanent;
@@ -52,7 +51,7 @@ public final class VraskaTheUnseen extends CardImpl {
         this.addAbility(new LoyaltyAbility(new CreateTokenEffect(new AssassinToken(), 3), -7));
     }
 
-    public VraskaTheUnseen(final VraskaTheUnseen card) {
+    private VraskaTheUnseen(final VraskaTheUnseen card) {
         super(card);
     }
 
@@ -86,7 +85,7 @@ class VraskaTheUnseenGainAbilityEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.addAbility(ability, game);
+            permanent.addAbility(ability, source.getSourceId(), game);
             return true;
         }
         return false;
@@ -115,12 +114,12 @@ class VraskaTheUnseenTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (((DamagedPlaneswalkerEvent) event).isCombatDamage() && getSourceId().equals(event.getTargetId())) {
+        if (((DamagedEvent) event).isCombatDamage() && getSourceId().equals(event.getTargetId())) {
             Permanent sourceOfDamage = game.getPermanent(event.getSourceId());
             if (sourceOfDamage != null && sourceOfDamage.isCreature()) {
                 Effect effect = this.getEffects().get(0);

@@ -34,7 +34,7 @@ public final class GreenbeltRampager extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new GreenbeltRampagerEffect(), false));
     }
 
-    public GreenbeltRampager(final GreenbeltRampager card) {
+    private GreenbeltRampager(final GreenbeltRampager card) {
         super(card);
     }
 
@@ -61,11 +61,11 @@ public final class GreenbeltRampager extends CardImpl {
                 return false;
             }
 
-            if (!new PayEnergyCost(2).pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
+            if (!new PayEnergyCost(2).pay(source, game, source, source.getControllerId(), true)) {
                 Permanent sourceObject = source.getSourcePermanentIfItStillExists(game);
                 if (sourceObject != null) {
                     controller.moveCards(sourceObject, Zone.HAND, source, game);
-                    controller.addCounters(CounterType.ENERGY.createInstance(), game);
+                    controller.addCounters(CounterType.ENERGY.createInstance(), source.getControllerId(), source, game);
                 }
             }
             return true;

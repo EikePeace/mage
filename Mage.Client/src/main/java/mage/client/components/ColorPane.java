@@ -6,9 +6,11 @@ import mage.client.MageFrame;
 import mage.client.dialog.PreferencesDialog;
 import mage.client.util.gui.GuiDisplayUtil;
 import mage.components.CardInfoPane;
+import mage.game.command.Plane;
 import mage.util.CardUtil;
 import mage.utils.ThreadUtils;
 import mage.view.CardView;
+import mage.view.PlaneView;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent.EventType;
@@ -75,17 +77,24 @@ public class ColorPane extends JEditorPane {
             if (!alternativeName.isEmpty()) {
                 cardName = alternativeName;
             }
-
-            CardInfo card = CardRepository.instance.findCard(cardName);
             try {
                 final Component container = MageFrame.getUI().getComponent(MageComponents.POPUP_CONTAINER);
                 if (e.getEventType() == EventType.EXITED) {
                     setPopupVisibility(container, false);
                 }
-                if (e.getEventType() == EventType.ENTERED && card != null) {
+                if (e.getEventType() == EventType.ENTERED) {
                     CardInfoPane cardInfoPane = (CardInfoPane) MageFrame.getUI().getComponent(MageComponents.CARD_INFO_PANE);
-                    cardInfoPane.setCard(new CardView(card.getMockCard()), container);
-                    setPopupVisibility(container, true);
+
+                    // card
+                    CardInfo card = CardRepository.instance.findCard(cardName);
+                    Plane plane = Plane.createPlaneByFullName(cardName);
+                    if (card != null) {
+                        cardInfoPane.setCard(new CardView(card.getMockCard()), container);
+                        setPopupVisibility(container, true);
+                    } else if (plane != null) {
+                        cardInfoPane.setCard(new CardView(new PlaneView(plane)), container);
+                        setPopupVisibility(container, true);
+                    }
                 }
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
@@ -114,7 +123,7 @@ public class ColorPane extends JEditorPane {
                 tooltipCounter = 0;
             }
             if (tooltipCounter > 0) {
-                Point location = new Point(getLocationOnScreen().x - container.getWidth(), MouseInfo.getPointerInfo().getLocation().y);
+                Point location = new Point(this.getLocationOnScreen().x - container.getWidth(), MouseInfo.getPointerInfo().getLocation().y);
                 Component parentComponent = MageFrame.getInstance();
                 location = GuiDisplayUtil.keepComponentInsideParent(location, parentComponent.getLocationOnScreen(), container, parentComponent);
                 container.setLocation(location);

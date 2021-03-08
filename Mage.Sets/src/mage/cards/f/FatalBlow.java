@@ -19,7 +19,7 @@ public final class FatalBlow extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
     
     public FatalBlow(UUID ownerId, CardSetInfo setInfo) {
@@ -31,7 +31,7 @@ public final class FatalBlow extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public FatalBlow(final FatalBlow card) {
+    private FatalBlow(final FatalBlow card) {
         super(card);
     }
 

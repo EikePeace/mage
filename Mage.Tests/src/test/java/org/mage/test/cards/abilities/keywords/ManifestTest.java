@@ -123,6 +123,8 @@ public class ManifestTest extends CardTestPlayerBase {
      */
     @Test
     public void testNylea() {
+        setStrictChooseMode(true);
+
         addCard(Zone.BATTLEFIELD, playerB, "Island", 2);
         // Exile target creature. Its controller manifests the top card of their library {1}{U}
         addCard(Zone.HAND, playerB, "Reality Shift");
@@ -274,9 +276,12 @@ public class ManifestTest extends CardTestPlayerBase {
 
     // Check if a Megamorph card is manifested and turned face up by their megamorph ability
     // it gets the +1/+1 counter.
+    // 701.33c
+    // If a card with morph is manifested, its controller may turn that card face up using
+    // either the procedure described in rule 702.36e to turn a face-down permanent with morph face up
+    // or the procedure described above to turn a manifested permanent face up.
     @Test
-    public void testManifestMegamorph() {
-
+    public void testManifestMegamorph_TurnUpByMegamorphCost() {
         addCard(Zone.BATTLEFIELD, playerB, "Swamp", 2);
         addCard(Zone.BATTLEFIELD, playerB, "Forest", 6);
         // {1}{B}, {T}, Sacrifice another creature: Manifest the top card of your library.
@@ -295,6 +300,7 @@ public class ManifestTest extends CardTestPlayerBase {
 
         activateAbility(2, PhaseStep.POSTCOMBAT_MAIN, playerB, "{5}{G}: Turn");
 
+        setStrictChooseMode(true);
         setStopAt(2, PhaseStep.END_TURN);
         execute();
         assertAllCommandsUsed();
@@ -310,7 +316,45 @@ public class ManifestTest extends CardTestPlayerBase {
         assertPowerToughness(playerB, "Aerie Bowmasters", 4, 5); // 3/4  and the +1/+1 counter from Megamorph
         Permanent aerie = getPermanent("Aerie Bowmasters", playerB);
         Assert.assertTrue("Aerie Bowmasters has to be green", aerie != null && aerie.getColor(currentGame).isGreen());
+    }
 
+    @Test
+    public void testManifestMegamorph_TurnUpBySimpleCost() {
+        addCard(Zone.BATTLEFIELD, playerB, "Swamp", 2);
+        addCard(Zone.BATTLEFIELD, playerB, "Forest", 4);
+        // {1}{B}, {T}, Sacrifice another creature: Manifest the top card of your library.
+        addCard(Zone.BATTLEFIELD, playerB, "Qarsi High Priest", 1);
+        addCard(Zone.BATTLEFIELD, playerB, "Silvercoat Lion", 1);
+
+        // {2}{G}{G}
+        // Reach (This creature can block creatures with flying.)
+        // Megamorph {5}{G}
+        addCard(Zone.LIBRARY, playerB, "Aerie Bowmasters", 1);
+        addCard(Zone.LIBRARY, playerB, "Mountain", 1);
+
+        skipInitShuffling();
+
+        activateAbility(2, PhaseStep.PRECOMBAT_MAIN, playerB, "{1}{B}, {T}, Sacrifice another creature");
+        setChoice(playerB, "Silvercoat Lion");
+
+        activateAbility(2, PhaseStep.POSTCOMBAT_MAIN, playerB, "{2}{G}{G}: Turn");
+
+        setStrictChooseMode(true);
+        setStopAt(2, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        // no life gain
+        assertLife(playerA, 20);
+        assertLife(playerB, 20);
+
+        assertGraveyardCount(playerB, "Silvercoat Lion", 1);
+
+        assertPermanentCount(playerB, EmptyNames.FACE_DOWN_CREATURE.toString(), 0);
+        assertPermanentCount(playerB, "Aerie Bowmasters", 1);
+        assertPowerToughness(playerB, "Aerie Bowmasters", 3, 4); // 3/4 without counter (megamorph not used)
+        Permanent aerie = getPermanent("Aerie Bowmasters", playerB);
+        Assert.assertTrue("Aerie Bowmasters has to be green", aerie != null && aerie.getColor(currentGame).isGreen());
     }
 
     /**
@@ -356,6 +400,8 @@ public class ManifestTest extends CardTestPlayerBase {
      */
     @Test
     public void testWhisperwoodElemental() {
+        setStrictChooseMode(true);
+        
         addCard(Zone.BATTLEFIELD, playerA, "Mountain", 3);
         // Seismic Rupture deals 2 damage to each creature without flying.
         addCard(Zone.HAND, playerA, "Seismic Rupture", 1);
@@ -369,6 +415,7 @@ public class ManifestTest extends CardTestPlayerBase {
         activateAbility(1, PhaseStep.PRECOMBAT_MAIN, playerB, "Sacrifice");
 
         castSpell(1, PhaseStep.POSTCOMBAT_MAIN, playerA, "Seismic Rupture");
+        setChoice(playerB, "When {this} dies"); // Order of triggers
 
         setStopAt(1, PhaseStep.END_TURN);
         execute();
@@ -438,4 +485,56 @@ public class ManifestTest extends CardTestPlayerBase {
         assertHandCount(playerB, "Mountain", 1);
 
     }
+
+  @Test
+    public void test_ManifestSorceryAndBlinkIt() {
+
+        addCard(Zone.BATTLEFIELD, playerB, "Swamp", 1);
+        addCard(Zone.BATTLEFIELD, playerB, "Plains", 2);
+
+        // {1}{B}, {T}, Sacrifice another creature: Manifest the top card of your library.
+        addCard(Zone.BATTLEFIELD, playerB, "Qarsi High Priest", 1);
+        addCard(Zone.BATTLEFIELD, playerB, "Silvercoat Lion", 1);
+        
+        // Exile target creature you control, then return that card to the battlefield under your control.
+        addCard(Zone.HAND, playerB, "Cloudshift", 1); //Instant {W}
+
+        
+        // Devoid
+        // Flying
+        // At the beginning of your upkeep, sacrifice a creature
+        // Whenever you sacrifice a creature, draw a card.
+        addCard(Zone.LIBRARY, playerB, "Mountain", 1);
+        addCard(Zone.LIBRARY, playerB, "Lightning Bolt", 1);
+        addCard(Zone.LIBRARY, playerB, "Mountain", 1);
+
+        skipInitShuffling();
+
+        activateAbility(2, PhaseStep.PRECOMBAT_MAIN, playerB, "{1}{B}, {T}, Sacrifice another creature");
+        setChoice(playerB, "Silvercoat Lion");
+
+        waitStackResolved(2, PhaseStep.PRECOMBAT_MAIN, playerB);
+        
+        castSpell(2, PhaseStep.PRECOMBAT_MAIN, playerB, "Cloudshift", EmptyNames.FACE_DOWN_CREATURE.toString());
+
+        setStrictChooseMode(true);
+        setStopAt(2, PhaseStep.END_TURN);
+        execute();
+        assertAllCommandsUsed();
+
+        // no life gain
+        assertLife(playerA, 20);
+        assertLife(playerB, 20);
+
+        assertPermanentCount(playerB, "Qarsi High Priest", 1);
+
+        assertGraveyardCount(playerB, "Silvercoat Lion", 1);
+        assertGraveyardCount(playerB, "Cloudshift", 1);
+        
+        assertPermanentCount(playerB, "Lightning Bolt", 0);        
+        assertExileCount(playerB, "Lightning Bolt", 1);        
+
+        assertHandCount(playerB, "Mountain", 1);
+
+    }    
 }

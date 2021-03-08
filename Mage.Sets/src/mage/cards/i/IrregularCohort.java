@@ -24,7 +24,7 @@ public final class IrregularCohort extends CardImpl {
         this.toughness = new MageInt(2);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         // When Irregular Cohort enters the battlefield, create a 2/2 colorless Shapeshifter creature token with changeling.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CreateTokenEffect(new ShapeshifterToken())));

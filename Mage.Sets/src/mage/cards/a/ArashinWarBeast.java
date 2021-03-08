@@ -14,9 +14,8 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.BlockingPredicate;
 import mage.game.Game;
-import mage.game.events.DamagedCreatureEvent;
+import mage.game.events.DamagedEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 
 /**
@@ -36,7 +35,7 @@ public final class ArashinWarBeast extends CardImpl {
 
     }
 
-    public ArashinWarBeast(final ArashinWarBeast card) {
+    private ArashinWarBeast(final ArashinWarBeast card) {
         super(card);
     }
 
@@ -73,14 +72,14 @@ class ArashinWarBeastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE || event.getType() == GameEvent.EventType.COMBAT_DAMAGE_STEP_POST ;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT || event.getType() == GameEvent.EventType.COMBAT_DAMAGE_STEP_POST ;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getType() == EventType.DAMAGED_CREATURE && 
+        if (event.getType() == GameEvent.EventType.DAMAGED_PERMANENT &&
                 event.getSourceId().equals(this.sourceId) && 
-                ((DamagedCreatureEvent) event).isCombatDamage() &&
+                ((DamagedEvent) event).isCombatDamage() &&
                 !usedForCombatDamageStep) {
             Permanent creature = game.getPermanentOrLKIBattlefield(event.getTargetId());
             if (creature == null || !filter.match(creature, getSourceId(), getControllerId(), game)) {
@@ -91,7 +90,7 @@ class ArashinWarBeastTriggeredAbility extends TriggeredAbilityImpl {
             return true;
                     
         } 
-        if (event.getType() == EventType.COMBAT_DAMAGE_STEP_POST) {
+        if (event.getType() == GameEvent.EventType.COMBAT_DAMAGE_STEP_POST) {
             usedForCombatDamageStep = false;
         }        
         return false;

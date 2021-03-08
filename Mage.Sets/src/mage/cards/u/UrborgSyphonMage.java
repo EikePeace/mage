@@ -1,7 +1,6 @@
 
 package mage.cards.u;
 
-import java.util.Objects;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
@@ -70,7 +69,7 @@ class UrborgSyphonMageEffect extends OneShotEffect {
                 if (!source.isControlledBy(playerId)) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        damage += player.loseLife(2, game, false);
+                        damage += player.loseLife(2, game, source, false);
                     }
                 }
             }

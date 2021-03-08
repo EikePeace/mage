@@ -39,7 +39,7 @@ public final class OppressiveRays extends CardImpl {
         // Enchant creature
         TargetPermanent auraTarget = new TargetCreaturePermanent();
         this.getSpellAbility().addTarget(auraTarget);
-        this.getSpellAbility().addEffect(new AttachEffect(Outcome.BoostCreature));
+        this.getSpellAbility().addEffect(new AttachEffect(Outcome.Detriment));
         Ability ability = new EnchantAbility(auraTarget.getTargetName());
         this.addAbility(ability);
 
@@ -50,7 +50,7 @@ public final class OppressiveRays extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new OppressiveRaysCostModificationEffect()));
     }
 
-    public OppressiveRays(final OppressiveRays card) {
+    private OppressiveRays(final OppressiveRays card) {
         super(card);
     }
 

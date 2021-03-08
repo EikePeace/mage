@@ -48,7 +48,7 @@ public final class HotheadedGiant extends CardImpl {
 
     }
 
-    public HotheadedGiant(final HotheadedGiant card) {
+    private HotheadedGiant(final HotheadedGiant card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class HotHeadedGiantWatcher extends Watcher {
         if (condition == true) { //no need to check - condition has already occured
             return;
         }
-        if (event.getType() == EventType.SPELL_CAST
+        if (event.getType() == GameEvent.EventType.SPELL_CAST
                 && controllerId.equals(event.getPlayerId())) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (!spell.getSourceId().equals(cardId) && filter.match(spell, game)) {

@@ -1,4 +1,3 @@
-
 package mage.players;
 
 import java.io.Serializable;
@@ -6,6 +5,7 @@ import java.util.UUID;
 import mage.ConditionalMana;
 import mage.MageObject;
 import mage.Mana;
+import mage.Emptiable;
 import mage.constants.Duration;
 import mage.constants.ManaType;
 
@@ -13,7 +13,7 @@ import mage.constants.ManaType;
  *
  * @author BetaSteward_at_googlemail.com
  */
-public class ManaPoolItem implements Serializable {
+public class ManaPoolItem implements Serializable, Emptiable {
 
     private int red = 0;
     private int green = 0;
@@ -163,7 +163,7 @@ public class ManaPoolItem implements Serializable {
     }
 
     public Mana getMana() {
-        return new Mana(red, green, blue, white, black, 0, 0, colorless);
+        return new Mana(white, blue, black, red, green, 0, 0, colorless);
     }
 
     public int count() {
@@ -204,6 +204,21 @@ public class ManaPoolItem implements Serializable {
             return ManaType.WHITE;
         } else if (colorless > 0) {
             return ManaType.COLORLESS;
+        }
+        if (conditionalMana != null) {
+            if (conditionalMana.getBlack() > 0) {
+                return ManaType.BLACK;
+            } else if (conditionalMana.getBlue() > 0) {
+                return ManaType.BLUE;
+            } else if (conditionalMana.getGreen() > 0) {
+                return ManaType.GREEN;
+            } else if (conditionalMana.getRed() > 0) {
+                return ManaType.RED;
+            } else if (conditionalMana.getWhite() > 0) {
+                return ManaType.WHITE;
+            } else if (conditionalMana.getColorless() > 0) {
+                return ManaType.COLORLESS;
+            }
         }
         return null;
     }

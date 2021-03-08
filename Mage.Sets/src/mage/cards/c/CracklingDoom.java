@@ -38,7 +38,7 @@ public final class CracklingDoom extends CardImpl {
 
     }
 
-    public CracklingDoom(final CracklingDoom card) {
+    private CracklingDoom(final CracklingDoom card) {
         super(card);
     }
 
@@ -104,7 +104,7 @@ class CracklingDoomEffect extends OneShotEffect {
                 }
             }
             for (Permanent permanent : toSacrifice) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
             return true;
         }

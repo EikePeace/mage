@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.dynamicvalue.common;
 
 import java.io.ObjectStreamException;
@@ -32,11 +27,11 @@ public class ColorsOfManaSpentToCastCount implements DynamicValue {
     }
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
         int count = 0;
-        Spell spell = game.getStack().getSpell(source.getSourceId());
+        Spell spell = game.getStack().getSpell(sourceAbility.getSourceId());
         if (spell == null) {
-            MageObject mageObject = game.getLastKnownInformation(source.getSourceId(), Zone.STACK);
+            MageObject mageObject = game.getLastKnownInformation(sourceAbility.getSourceId(), Zone.STACK);
             if (mageObject instanceof Spell) {
                 spell = (Spell) mageObject;
             }

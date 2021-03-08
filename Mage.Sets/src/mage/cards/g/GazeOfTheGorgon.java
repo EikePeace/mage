@@ -37,7 +37,7 @@ public final class GazeOfTheGorgon extends CardImpl {
         this.getSpellAbility().addWatcher(new BlockedAttackerWatcher());
     }
 
-    public GazeOfTheGorgon(final GazeOfTheGorgon card) {
+    private GazeOfTheGorgon(final GazeOfTheGorgon card) {
         super(card);
     }
 
@@ -109,7 +109,7 @@ class GazeOfTheGorgonEffect extends OneShotEffect {
                     }
                 }
                 for (Permanent creature : toDestroy) {
-                    creature.destroy(source.getSourceId(), game, false);
+                    creature.destroy(source, game, false);
                 }
                 return true;
             }

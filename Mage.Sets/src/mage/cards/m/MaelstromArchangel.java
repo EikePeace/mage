@@ -1,8 +1,8 @@
 package mage.cards.m;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -41,7 +41,7 @@ public final class MaelstromArchangel extends CardImpl {
 
     }
 
-    public MaelstromArchangel(final MaelstromArchangel card) {
+    private MaelstromArchangel(final MaelstromArchangel card) {
         super(card);
     }
 
@@ -53,11 +53,11 @@ public final class MaelstromArchangel extends CardImpl {
 
 class MaelstromArchangelCastEffect extends OneShotEffect {
 
-    private static final FilterCard filter = new FilterNonlandCard("nonland card from your hand");
+    private static final FilterCard filter = new FilterNonlandCard("spell from your hand");
 
     public MaelstromArchangelCastEffect() {
         super(Outcome.PlayForFree);
-        this.staticText = "you may cast a nonland card from your hand without paying its mana cost";
+        this.staticText = "you may cast a spell from your hand without paying its mana cost";
     }
 
     public MaelstromArchangelCastEffect(final MaelstromArchangelCastEffect effect) {
@@ -75,13 +75,13 @@ class MaelstromArchangelCastEffect extends OneShotEffect {
         if (controller != null) {
             Target target = new TargetCardInHand(filter);
             if (target.canChoose(source.getSourceId(), controller.getId(), game)
-                    && controller.chooseUse(outcome, "Cast a nonland card from your hand without paying its mana cost?", source, game)) {
+                    && controller.chooseUse(outcome, "Cast a spell from your hand without paying its mana cost?", source, game)) {
                 Card cardToCast = null;
                 boolean cancel = false;
                 while (controller.canRespond() && !cancel) {
                     if (controller.chooseTarget(outcome, target, source, game)) {
                         cardToCast = game.getCard(target.getFirstTarget());
-                        if (cardToCast != null && cardToCast.getSpellAbility().canChooseTarget(game)) {
+                        if (cardToCast != null && cardToCast.getSpellAbility().canChooseTarget(game, controller.getId())) {
                             cancel = true;
                         }
                     } else {
@@ -91,7 +91,7 @@ class MaelstromArchangelCastEffect extends OneShotEffect {
                 if (cardToCast != null) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), Boolean.TRUE);
                     controller.cast(controller.chooseAbilityForCast(cardToCast, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), null);
                 }
             }

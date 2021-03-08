@@ -5,7 +5,7 @@ package mage.cards.k;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
@@ -30,10 +30,10 @@ public final class KokushoTheEveningStar extends CardImpl {
         this.power = new MageInt(5);
         this.toughness = new MageInt(5);
         this.addAbility(FlyingAbility.getInstance());
-        this.addAbility(new DiesTriggeredAbility(new KokushoTheEveningStarEffect(), false));
+        this.addAbility(new DiesSourceTriggeredAbility(new KokushoTheEveningStarEffect(), false));
     }
 
-    public KokushoTheEveningStar(final KokushoTheEveningStar card) {
+    private KokushoTheEveningStar(final KokushoTheEveningStar card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class KokushoTheEveningStarEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int loseLife = 0;
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
-            loseLife += game.getPlayer(opponentId).loseLife(5, game, false);
+            loseLife += game.getPlayer(opponentId).loseLife(5, game, source, false);
         }
         if (loseLife > 0)
             game.getPlayer(source.getControllerId()).gainLife(loseLife, game, source);

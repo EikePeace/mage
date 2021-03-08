@@ -10,7 +10,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.game.Game;
 import mage.game.permanent.token.TemptWithVengeanceElementalToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 
@@ -27,7 +26,7 @@ public final class TemptWithVengeance extends CardImpl {
         this.getSpellAbility().addEffect(new TemptWithVengeanceEffect());
     }
 
-    public TemptWithVengeance(final TemptWithVengeance card) {
+    private TemptWithVengeance(final TemptWithVengeance card) {
         super(card);
     }
 
@@ -60,7 +59,7 @@ class TemptWithVengeanceEffect extends OneShotEffect {
         if (controller != null && xValue > 0) {
 
             Token tokenCopy = new TemptWithVengeanceElementalToken();
-            tokenCopy.putOntoBattlefield(xValue, game, source.getSourceId(), source.getControllerId(), false, false);
+            tokenCopy.putOntoBattlefield(xValue, game, source, source.getControllerId(), false, false);
 
             int opponentsAddedTokens = 0;
             for (UUID playerId : game.getOpponents(controller.getId())) {
@@ -68,12 +67,12 @@ class TemptWithVengeanceEffect extends OneShotEffect {
                 if (opponent != null) {
                     if (opponent.chooseUse(outcome, "Create " + xValue + " Elemental tokens?", source, game)) {
                         opponentsAddedTokens += xValue;
-                        tokenCopy.putOntoBattlefield(xValue, game, source.getSourceId(), playerId, false, false);
+                        tokenCopy.putOntoBattlefield(xValue, game, source, playerId, false, false);
                     }
                 }
             }
             if (opponentsAddedTokens > 0) {
-                tokenCopy.putOntoBattlefield(opponentsAddedTokens, game, source.getSourceId(), source.getControllerId(), false, false);
+                tokenCopy.putOntoBattlefield(opponentsAddedTokens, game, source, source.getControllerId(), false, false);
             }
             return true;
         }

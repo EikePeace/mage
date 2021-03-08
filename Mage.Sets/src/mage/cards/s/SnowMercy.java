@@ -17,7 +17,6 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -33,7 +32,7 @@ public final class SnowMercy extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creatures with globe counters on them");
 
     static {
-        filter.add(new CounterPredicate(CounterType.GLOBE));
+        filter.add(CounterType.GLOBE.getPredicate());
     }
 
     public SnowMercy(UUID ownerId, CardSetInfo setInfo) {
@@ -49,7 +48,7 @@ public final class SnowMercy extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SnowMercy(final SnowMercy card) {
+    private SnowMercy(final SnowMercy card) {
         super(card);
     }
 
@@ -111,16 +110,16 @@ class SnowMercyCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
-        Permanent permanent = game.getPermanent(sourceId);
+        Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
             // Tap, Untap, Tap, Untap, Tap:
-            if (!permanent.isTapped() && permanent.tap(game)) {
+            if (!permanent.isTapped() && permanent.tap(source, game)) {
                 if (permanent.isTapped() && permanent.untap(game)) {
-                    if (!permanent.isTapped() && permanent.tap(game)) {
+                    if (!permanent.isTapped() && permanent.tap(source, game)) {
                         if (permanent.isTapped() && permanent.untap(game)) {
-                            if (!permanent.isTapped() && permanent.tap(game)) {
+                            if (!permanent.isTapped() && permanent.tap(source, game)) {
                                 paid = true;
                             }
                         }
@@ -132,8 +131,8 @@ class SnowMercyCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        Permanent permanent = game.getPermanent(sourceId);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
             return !permanent.isTapped();
         }

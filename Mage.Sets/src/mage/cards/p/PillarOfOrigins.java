@@ -37,7 +37,7 @@ public final class PillarOfOrigins extends CardImpl {
         this.addAbility(new ConditionalAnyColorManaAbility(new TapSourceCost(), 1, new PillarOfOriginsManaBuilder(), true));
     }
 
-    public PillarOfOrigins(final PillarOfOrigins card) {
+    private PillarOfOrigins(final PillarOfOrigins card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class PillarOfOriginsManaBuilder extends ConditionalManaBuilder {
         creatureType = ChooseCreatureTypeEffect.getChosenCreatureType(source.getSourceId(), game);
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = game.getObject(source.getSourceId());
-        if (controller != null && sourceObject != null) {
+        if (controller != null && sourceObject != null && mana.getAny() == 0) {
             game.informPlayers(controller.getLogName() + " produces " + mana.toString() + " with " + sourceObject.getLogName()
                     + " (can only be spent to cast creatures of type " + creatureType + ")");
         }

@@ -40,6 +40,7 @@ public class TurnFaceUpAbility extends SpecialAction {
         this.usesStack = false;
         this.abilityType = AbilityType.SPECIAL_ACTION;
         this.setRuleVisible(false); // will be made visible only to controller in CardView
+        this.setWorksFaceDown(true);
     }
 
     public TurnFaceUpAbility(final TurnFaceUpAbility ability) {
@@ -79,9 +80,9 @@ class TurnFaceUpEffect extends OneShotEffect {
         if (controller != null && card != null) {
             Permanent sourcePermanent = game.getPermanent(source.getSourceId());
             if (sourcePermanent != null) {
-                if (sourcePermanent.turnFaceUp(game, source.getControllerId())) {
+                if (sourcePermanent.turnFaceUp(source, game, source.getControllerId())) {
                     if (megamorph) {
-                        sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                        sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                     }
                     game.getState().setValue(source.getSourceId().toString() + "TurnFaceUpX", source.getManaCostsToPay().getX());
                     return true;

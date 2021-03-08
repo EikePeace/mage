@@ -53,7 +53,7 @@ public final class SithMagic extends CardImpl {
         this.addAbility(ability, new LifeLossOtherFromCombatWatcher());
     }
 
-    public SithMagic(final SithMagic card) {
+    private SithMagic(final SithMagic card) {
         super(card);
     }
 
@@ -126,12 +126,8 @@ class SithMagicReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Permanent permanent = game.getPermanent(source.getFirstTarget());
-        Player controller = game.getPlayer(source.getControllerId());
-        if (permanent != null && controller != null) {
-            controller.moveCardToExileWithInfo(permanent, null, null, source.getSourceId(), game, Zone.BATTLEFIELD, true);
-        }
-        return true;
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
+        return false;
     }
 
     @Override

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.m;
 
 import java.util.UUID;
@@ -33,7 +28,7 @@ public final class ManaSeverance extends CardImpl {
         this.getSpellAbility().addEffect(new ManaSeveranceEffect());
     }
     
-    public ManaSeverance(final ManaSeverance card) {
+    private ManaSeverance(final ManaSeverance card) {
         super(card);
     }
     
@@ -69,7 +64,7 @@ class ManaSeveranceEffect extends SearchEffect {
                     for (UUID cardId : target.getTargets()) {
                         Card card = controller.getLibrary().getCard(cardId, game);
                         if (card != null) {
-                            controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.LIBRARY, true);
+                            controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.LIBRARY, true);
                         }
                     }
                 }

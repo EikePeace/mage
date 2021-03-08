@@ -35,7 +35,7 @@ public final class MayaelsAria extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new MayaelsAriaEffect(), TargetController.YOU, false));
     }
 
-    public MayaelsAria(final MayaelsAria card) {
+    private MayaelsAria(final MayaelsAria card) {
         super(card);
     }
 
@@ -72,10 +72,10 @@ class MayaelsAriaEffect extends OneShotEffect {
         filter.add(new PowerPredicate(ComparisonType.MORE_THAN, 4));
         if (game.getState().getBattlefield().countAll(filter, controller.getId(), game) > 0) {
             for (Permanent creature : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
-                creature.addCounters(CounterType.P1P1.createInstance(), source, game);
+                creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
             }
         }
-        game.applyEffects(); // needed because otehrwise the +1/+1 counters wouldn't be taken into account
+        game.getState().processAction(game); // needed because otehrwise the +1/+1 counters wouldn't be taken into account
 
         // Then you gain 10 life if you control a creature with power 10 or greater.
         filter = new FilterCreaturePermanent();

@@ -36,7 +36,7 @@ public final class ValeronWardens extends CardImpl {
         this.addAbility(new ValeronWardensTriggeredAbility());
     }
 
-    public ValeronWardens(final ValeronWardens card) {
+    private ValeronWardens(final ValeronWardens card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class ValeronWardensTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BECOMES_RENOWNED;
+        return event.getType() == GameEvent.EventType.BECOMES_RENOWNED;
     }
 
     @Override

@@ -43,7 +43,7 @@ public final class DiviningWitch extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DiviningWitch(final DiviningWitch card) {
+    private DiviningWitch(final DiviningWitch card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ public final class DiviningWitch extends CardImpl {
                     if (card != null) {
                         cardsToReaveal.add(card);
                         // Put that card into your hand
-                        if (CardUtil.haveSameNames(card.getName(), name)) {
+                        if (CardUtil.haveSameNames(card, name, game)) {
                             cardToHand = card;
                             break;
                         }

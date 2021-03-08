@@ -18,7 +18,7 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 /**
@@ -58,7 +58,7 @@ public final class UndercityNecrolisk extends CardImpl {
         this.addAbility(ability);
     }
 
-    public UndercityNecrolisk(final UndercityNecrolisk card) {
+    private UndercityNecrolisk(final UndercityNecrolisk card) {
         super(card);
     }
 

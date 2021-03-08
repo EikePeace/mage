@@ -51,7 +51,7 @@ public final class YawgmothsVileOffering extends CardImpl {
         this.getSpellAbility().addEffect(ExileSpellEffect.getInstance());
     }
 
-    public YawgmothsVileOffering(final YawgmothsVileOffering card) {
+    private YawgmothsVileOffering(final YawgmothsVileOffering card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class YawgmothsVileOfferingEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(source.getTargets().get(1).getFirstTarget());
 
         if (permanent != null) {
-            permanent.destroy(source.getId(), game, false);
+            permanent.destroy(source, game, false);
         }
 
         return false;

@@ -34,11 +34,11 @@ public final class HeroesBane extends CardImpl {
                 "with four +1/+1 counters on it"));
         // {2}{G}{G}: Put X +1/+1 counters on Heroe's Bane, where X is its power.
         Effect effect = new AddCountersSourceEffect(CounterType.P1P1.createInstance(0), new SourcePermanentPowerCount(), true);
-        effect.setText("Put X +1/+1 counters on Heroe's Bane, where X is its power");
+        effect.setText("Put X +1/+1 counters on {this}, where X is its power");
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{2}{G}{G}")));
     }
 
-    public HeroesBane(final HeroesBane card) {
+    private HeroesBane(final HeroesBane card) {
         super(card);
     }
 

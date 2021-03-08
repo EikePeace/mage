@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class Bloodbriar extends CardImpl {
         this.addAbility(new SacrificeAllTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), filter, TargetController.YOU, false));
     }
 
-    public Bloodbriar(final Bloodbriar card) {
+    private Bloodbriar(final Bloodbriar card) {
         super(card);
     }
 

@@ -1,6 +1,7 @@
 package mage.client.cards;
 
 import mage.cards.Card;
+import mage.abilities.icon.CardIconRenderSettings;
 import mage.cards.MageCard;
 import mage.cards.decks.DeckCardInfo;
 import mage.cards.decks.DeckCardLayout;
@@ -11,21 +12,23 @@ import mage.client.constants.Constants;
 import mage.client.dialog.PreferencesDialog;
 import mage.client.plugins.impl.Plugins;
 import mage.client.util.*;
+import mage.client.util.Event;
+import mage.client.util.comparators.*;
 import mage.constants.CardType;
+import mage.constants.Rarity;
 import mage.constants.SubType;
 import mage.constants.SuperType;
+import mage.util.DebugUtil;
 import mage.util.RandomUtil;
 import mage.view.CardView;
 import mage.view.CardsView;
 import org.apache.log4j.Logger;
 import org.mage.card.arcane.CardRenderer;
+import org.mage.card.arcane.ManaSymbols;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.List;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -33,12 +36,16 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * Created by StravantUser on 2016-09-20.
+ * @author StravantUser, JayDi85
  */
-public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarget {
+public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarget, CardEventProducer {
 
-    private static final Logger LOGGER = Logger.getLogger(DragCardGrid.class);
+    private static final Logger logger = Logger.getLogger(DragCardGrid.class);
+    private static final String DOUBLE_CLICK_MODE_INFO = "<html>Double click mode: <b>%s</b>";
+
     private Constants.DeckEditorMode mode;
+    Listener<Event> cardListener;
+    MouseListener countLabelListener; // clicks on the count label
 
     @Override
     public Collection<CardView> dragCardList() {
@@ -65,15 +72,14 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                         if (card.isSelected()) {
                             stack.set(i, null);
                             removeCardView(card);
-                            eventSource.fireEvent(card, ClientEventType.REMOVE_SPECIFIC_CARD);
+                            eventSource.fireEvent(card, ClientEventType.DECK_REMOVE_SPECIFIC_CARD);
                         }
                     }
                 }
             }
             trimGrid();
             layoutGrid();
-            cardScroll.revalidate();
-            cardScroll.repaint();
+            repaintGrid();
         }
     }
 
@@ -86,6 +92,11 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
     public void dragCardMove(MouseEvent e) {
         e = SwingUtilities.convertMouseEvent(this, e, cardContent);
         showDropPosition(e.getX(), e.getY());
+    }
+
+    @Override
+    public CardEventSource getCardEventSource() {
+        return this.eventSource;
     }
 
     private void showDropPosition(int x, int y) {
@@ -314,24 +325,23 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             // Remove empty rows / cols / spaces in stacks
             trimGrid();
             layoutGrid();
-            cardScroll.revalidate();
-            cardScroll.repaint();
+            repaintGrid();
         } else {
             // Add new cards to grid
             for (CardView card : cards) {
                 card.setSelected(true);
                 addCardView(card, false);
-                eventSource.fireEvent(card, ClientEventType.ADD_SPECIFIC_CARD);
+                eventSource.fireEvent(card, ClientEventType.DECK_ADD_SPECIFIC_CARD);
             }
             layoutGrid();
-            cardContent.repaint();
+            repaintGrid();
         }
     }
 
     public void changeGUISize() {
         layoutGrid();
         cardScroll.getVerticalScrollBar().setUnitIncrement(CardRenderer.getCardTopHeight(getCardWidth()));
-        cardContent.repaint();
+        repaintGrid();
     }
 
     public void cleanUp() {
@@ -362,12 +372,24 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             creatureCountLabel.setVisible(false);
             landCountLabel.setVisible(false);
             cardSizeSliderLabel.setVisible(false);
+            mouseDoubleClickMode.setVisible(false);
         } else {
             creatureCountLabel.setVisible(true);
             landCountLabel.setVisible(true);
             cardSizeSliderLabel.setVisible(true);
+            mouseDoubleClickMode.setVisible(true);
         }
         updateCounts();
+    }
+
+    private void updateMouseDoubleClicksInfo(boolean isHotKeyPressed) {
+        boolean gameMode = isHotKeyPressed
+                || mode != Constants.DeckEditorMode.FREE_BUILDING;
+        String oldText = mouseDoubleClickMode.getText();
+        String newText = String.format(DOUBLE_CLICK_MODE_INFO, gameMode ? "MOVE" : "DELETE");
+        if (!oldText.equals(newText)) {
+            mouseDoubleClickMode.setText(newText);
+        }
     }
 
     public void removeSelection() {
@@ -376,7 +398,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                 for (int i = 0; i < stack.size(); ++i) {
                     CardView card = stack.get(i);
                     if (card.isSelected()) {
-                        eventSource.fireEvent(card, ClientEventType.REMOVE_SPECIFIC_CARD);
+                        eventSource.fireEvent(card, ClientEventType.DECK_REMOVE_SPECIFIC_CARD);
                         stack.set(i, null);
                         removeCardView(card);
                     }
@@ -385,7 +407,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         }
         trimGrid();
         layoutGrid();
-        cardContent.repaint();
+        repaintGrid();
     }
 
     public DeckCardLayout getCardLayout() {
@@ -407,13 +429,11 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
     public void setDeckEditorMode(Constants.DeckEditorMode mode) {
         this.mode = mode;
+        updateMouseDoubleClicksInfo(false);
     }
 
     public enum Sort {
-        NONE("No Sort", (o1, o2) -> {
-            // Always equal, sort into the first row
-            return 0;
-        }),
+        NONE("No Sort", new CardViewNoneComparator()),
         CARD_TYPE("Card Type", new CardViewCardTypeComparator()),
         CMC("Converted Mana Cost", new CardViewCostComparator()),
         COLOR("Color", new CardViewColorComparator()),
@@ -421,12 +441,12 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         RARITY("Rarity", new CardViewRarityComparator()),
         EDH_POWER_LEVEL("EDH Power Level", new CardViewEDHPowerLevelComparator());
 
-        Sort(String text, Comparator<CardView> comparator) {
+        Sort(String text, CardViewComparator comparator) {
             this.comparator = comparator;
             this.text = text;
         }
 
-        public Comparator<CardView> getComparator() {
+        public CardViewComparator getComparator() {
             return comparator;
         }
 
@@ -434,7 +454,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             return text;
         }
 
-        private final Comparator<CardView> comparator;
+        private final CardViewComparator comparator;
         private final String text;
     }
 
@@ -538,7 +558,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
     }
 
     // Constants
-    public static final int COUNT_LABEL_HEIGHT = 20;
+    public static final int COUNT_LABEL_HEIGHT = 40; // can contains 1 or 2 lines
     public static final int GRID_PADDING = 10;
 
     private static final ImageIcon INSERT_ROW_ICON = new ImageIcon(DragCardGrid.class.getClassLoader().getResource("editor_insert_row.png"));
@@ -548,7 +568,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
     private final Map<UUID, MageCard> cardViews = new LinkedHashMap<>();
     private final List<CardView> allCards = new ArrayList<>();
 
-    // Card listeners
+    // card listeners
     private final CardEventSource eventSource = new CardEventSource();
 
     // Last big card
@@ -561,6 +581,8 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
     JButton selectByButton;
     JButton analyseButton;
     JButton blingButton;
+    JButton oldVersionButton;
+    JLabel mouseDoubleClickMode;
 
     // Popup for toolbar
     final JPopupMenu filterPopup;
@@ -696,7 +718,6 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         cardSizeSlider.setValue(size);
     }
 
-    // Constructor
     public DragCardGrid() {
         // Make sure that the card grid is populated with at least one (empty) stack to begin with
         cardGrid = new ArrayList<>();
@@ -705,67 +726,55 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         setLayout(new BorderLayout());
         setOpaque(false);
 
-        // Editting mode
+        // default game mode (real game mode will be set after all components init)
         this.mode = Constants.DeckEditorMode.LIMITED_BUILDING;
-
-        // Toolbar
-        sortButton = new JButton("Sort");
-        filterButton = new JButton("Filter");
-        visibilityButton = new JButton("V"); // "Visibility" button
-        selectByButton = new JButton("Select By");
-        analyseButton = new JButton("M"); // "Mana" button
-        blingButton = new JButton("B"); // "Bling" button
-
-        // Name and count label
-        deckNameAndCountLabel = new JLabel();
-
-        // Count labels
-        landCountLabel = new JLabel("", new ImageIcon(getClass().getResource("/buttons/type_land.png")), SwingConstants.LEFT);
-        landCountLabel.setToolTipText("Number of lands in deck");
-        creatureCountLabel = new JLabel("", new ImageIcon(getClass().getResource("/buttons/type_creatures.png")), SwingConstants.LEFT);
-        creatureCountLabel.setToolTipText("Number of creatures in deck");
-
-        JPanel toolbar = new JPanel(new BorderLayout());
-        JPanel toolbarInner = new JPanel();
-        toolbar.setBackground(new Color(250, 250, 250, 150));
-        toolbar.setOpaque(true);
-        toolbarInner.setOpaque(false);
-        toolbarInner.add(deckNameAndCountLabel);
-        toolbarInner.add(landCountLabel);
-        toolbarInner.add(creatureCountLabel);
-        toolbarInner.add(sortButton);
-        toolbarInner.add(filterButton);
-        toolbarInner.add(selectByButton);
-        toolbarInner.add(visibilityButton);
-        toolbarInner.add(analyseButton);
-        toolbarInner.add(blingButton);
-        toolbar.add(toolbarInner, BorderLayout.WEST);
-        JPanel sliderPanel = new JPanel(new GridBagLayout());
-        sliderPanel.setOpaque(false);
-        cardSizeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 50);
-        cardSizeSlider.setOpaque(false);
-        cardSizeSlider.setPreferredSize(new Dimension(100, (int) cardSizeSlider.getPreferredSize().getHeight()));
-        cardSizeSlider.addChangeListener(e -> {
-            if (!cardSizeSlider.getValueIsAdjusting()) {
-                // Fraction in [-1, 1]
-                float sliderFrac = ((float) (cardSizeSlider.getValue() - 50)) / 50;
-                // Convert to frac in [0.5, 2.0] exponentially
-                cardSizeMod = (float) Math.pow(2, sliderFrac);
-                // Update grid
-                layoutGrid();
-                cardContent.repaint();
-            }
-        });
-        cardSizeSliderLabel = new JLabel("Card Size:");
-        sliderPanel.add(cardSizeSliderLabel);
-        sliderPanel.add(cardSizeSlider);
-        toolbar.add(sliderPanel, BorderLayout.EAST);
-        this.add(toolbar, BorderLayout.NORTH);
 
         // Content
         cardContent = new JLayeredPane();
         cardContent.setLayout(null);
         cardContent.setOpaque(false);
+
+        // ENABLE MOUSE CLICKS (cards, menu)
+        this.cardListener = event -> {
+            switch(event.getEventType()) {
+                case CARD_POPUP_MENU:
+                    if (event.getSource() != null) {
+                        // menu for card
+                        CardView card = (CardView) event.getSource();
+                        MouseEvent me = event.getMouseEvent();
+                        if (!card.isSelected()) {
+                            selectCard(card);
+                        }
+                        showCardRightClickMenu(card, me);
+                    }
+                    break;
+
+                case CARD_CLICK:
+                    if (event.getSource() != null) {
+                        CardView card = (CardView) event.getSource();
+                        MouseEvent me = event.getMouseEvent();
+                        cardClicked(card, me);
+                    }
+                    break;
+            }
+        };
+        eventSource.addListener(this.cardListener);
+
+        // keyboard listener for ALT status update
+        // it requires GLOBAL listener
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .addKeyEventDispatcher(new KeyEventDispatcher() {
+                    @Override
+                    public boolean dispatchKeyEvent(KeyEvent e) {
+                        if (e.getKeyCode() == KeyEvent.VK_ALT) {
+                            updateMouseDoubleClicksInfo(e.isAltDown());
+                        }
+                        return false;
+                    }
+                });
+
+
+        // ENABLE MULTI-CARDS SELECTION
         cardContent.addMouseListener(new MouseAdapter() {
             private boolean isDragging = false;
 
@@ -793,6 +802,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                 updateSelectionDrag(e.getX(), e.getY());
             }
         });
+
         cardScroll = new JScrollPane(cardContent,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -803,16 +813,80 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         cardScroll.getVerticalScrollBar().setUnitIncrement(CardRenderer.getCardTopHeight(getCardWidth()));
         this.add(cardScroll, BorderLayout.CENTER);
 
+        // Toolbar
+        sortButton = new JButton("Sort");
+        filterButton = new JButton("Filter");
+        visibilityButton = new JButton("V"); // "Visibility" button
+        selectByButton = new JButton("Select By");
+        analyseButton = new JButton("M"); // "Mana" button
+        blingButton = new JButton("B"); // "Bling" button
+        oldVersionButton = new JButton("O"); // "Old version" button
+        mouseDoubleClickMode = new JLabel(DOUBLE_CLICK_MODE_INFO);
+        mouseDoubleClickMode.setToolTipText("<html>Mouse modes for double clicks:"
+                + "<br> * &lt;Double Click&gt;: <b>DELETE</b> card from mainboard/sideboard (it works as <b>MOVE</b> in games);"
+                + "<br> * &lt;ALT + Double Click&gt;: <b>MOVE</b> card between mainboard/sideboard (default for games);"
+                + "<br> * Deck editor: use &lt;ALT + Double Click&gt; on cards list to add card to the sideboard instead mainboard."
+        );
+        updateMouseDoubleClicksInfo(false);
+
+        // Name and count label
+        deckNameAndCountLabel = new JLabel();
+
+        // Count labels
+        landCountLabel = new JLabel("", new ImageIcon(getClass().getResource("/buttons/type_land.png")), SwingConstants.LEFT);
+        landCountLabel.setToolTipText("Number of lands in deck");
+        creatureCountLabel = new JLabel("", new ImageIcon(getClass().getResource("/buttons/type_creatures.png")), SwingConstants.LEFT);
+        creatureCountLabel.setToolTipText("Number of creatures in deck");
+
+        JPanel toolbar = new JPanel(new BorderLayout());
+        JPanel toolbarInner = new JPanel();
+        toolbar.setBackground(new Color(250, 250, 250, 150));
+        toolbar.setOpaque(true);
+        toolbarInner.setOpaque(false);
+        toolbarInner.add(deckNameAndCountLabel);
+        toolbarInner.add(landCountLabel);
+        toolbarInner.add(creatureCountLabel);
+        toolbarInner.add(sortButton);
+        toolbarInner.add(filterButton);
+        toolbarInner.add(selectByButton);
+        toolbarInner.add(visibilityButton);
+        toolbarInner.add(analyseButton);
+        toolbarInner.add(blingButton);
+        toolbarInner.add(oldVersionButton);
+        toolbarInner.add(mouseDoubleClickMode);
+        toolbar.add(toolbarInner, BorderLayout.WEST);
+        JPanel sliderPanel = new JPanel(new GridBagLayout());
+        sliderPanel.setOpaque(false);
+        cardSizeSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 100, 50);
+        cardSizeSlider.setOpaque(false);
+        cardSizeSlider.setPreferredSize(new Dimension(100, (int) cardSizeSlider.getPreferredSize().getHeight()));
+        cardSizeSlider.addChangeListener(e -> {
+            if (!cardSizeSlider.getValueIsAdjusting()) {
+                // Fraction in [-1, 1]
+                float sliderFrac = ((float) (cardSizeSlider.getValue() - 50)) / 50;
+                // Convert to frac in [0.5, 2.0] exponentially
+                cardSizeMod = (float) Math.pow(2, sliderFrac);
+                // Update grid
+                layoutGrid();
+                repaintGrid();
+            }
+        });
+        cardSizeSliderLabel = new JLabel("Card size:");
+        sliderPanel.add(cardSizeSliderLabel);
+        sliderPanel.add(cardSizeSlider);
+        toolbar.add(sliderPanel, BorderLayout.EAST);
+        this.add(toolbar, BorderLayout.NORTH);
+
         // Insert arrow
         insertArrow = new JLabel();
         insertArrow.setSize(20, 20);
         insertArrow.setVisible(false);
-        cardContent.add(insertArrow, 1000);
+        cardContent.add(insertArrow, (Integer) 1000);
 
         // Selection panel
         selectionPanel = new SelectionBox();
         selectionPanel.setVisible(false);
-        cardContent.add(selectionPanel, new Integer(1001));
+        cardContent.add(selectionPanel, (Integer) 1001);
 
         // Load separate creatures setting
         separateCreatures = PreferencesDialog.getCachedValue(PreferencesDialog.KEY_DECK_EDITOR_LAST_SEPARATE_CREATURES, "false").equals("true");
@@ -963,6 +1037,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
                 @Override
                 public void keyPressed(KeyEvent e) {
+
                 }
             });
 
@@ -973,13 +1048,15 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
         // Analyse Mana (aka #blue pips, #islands, #white pips, #plains etc.)
         analyseButton.setToolTipText("Mana Analyser! Counts coloured/colourless mana costs. Counts land types.");
-
         analyseButton.addActionListener(evt -> analyseDeck());
 
         // Bling button - aka Add in a premium 'JR', 'MBP', 'CS' etc card
         blingButton.setToolTipText("Bling your deck! Select the original and added cards by selecting 'Multiples' in the selection options");
-
         blingButton.addActionListener(evt -> blingDeck());
+
+        // Old version button - Switch cards to the oldest non-promo printing. In case of multiples in a set, take the lowest card number.
+        oldVersionButton.setToolTipText("Switch cards to the oldest non-promo printing");
+        oldVersionButton.addActionListener(evt -> oldVersionDeck());
 
         // Filter popup
         filterPopup = new JPopupMenu();
@@ -1025,11 +1102,11 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         sortMenu.add(separateButton);
         menu.add(sortMenu);
 
-        // Hook up to card content
+        // ENABLE popup menu on non card (e.g. show all or sorting)
         cardContent.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
+                if (e.isPopupTrigger() || SwingUtilities.isRightMouseButton(e)) {
                     for (Sort s : sortMenuItems.keySet()) {
                         sortMenuItems.get(s).setSelected(cardSort == s);
                     }
@@ -1050,6 +1127,19 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                 for (CardView card : stack) {
                     if (card.isSelected()) {
                         card.setSelected(false);
+                        cardViews.get(card.getId()).update(card);
+                    }
+                }
+            }
+        }
+    }
+
+    public void selectByName(List<String> cardNames) {
+        for (List<List<CardView>> gridRow : cardGrid) {
+            for (List<CardView> stack : gridRow) {
+                for (CardView card : stack) {
+                    if (cardNames.contains(card.getName())) {
+                        card.setSelected(true);
                         cardViews.get(card.getId()).update(card);
                     }
                 }
@@ -1150,8 +1240,6 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             --col2;
         }
 
-        // avoids a null ref issue but only deals with symptom of problem. not sure how it gets to this state ever. see issue #3197
-        // if (selectionDragStartCards == null) return;
         int curY = COUNT_LABEL_HEIGHT;
         for (int rowIndex = 0; rowIndex < cardGrid.size(); ++rowIndex) {
             int stackStartIndex;
@@ -1221,7 +1309,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
         // And finally rerender
         layoutGrid();
-        repaint();
+        repaintGrid();
     }
 
     public void reselectBy() {
@@ -1295,7 +1383,10 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                         }
                         // Rarity
                         if (!s) {
-                            s |= card.getRarity().toString().toLowerCase(Locale.ENGLISH).contains(searchStr);
+                            Rarity r = card.getRarity();
+                            if (r != null) {
+                                s |= r.toString().toLowerCase(Locale.ENGLISH).contains(searchStr);
+                            }
                         }
                         // Type line
                         if (!s) {
@@ -1307,11 +1398,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                         }
                         // Casting cost
                         if (!s) {
-                            String mc = "";
-                            for (String m : card.getManaCost()) {
-                                mc += m;
-                            }
-                            s |= mc.toLowerCase(Locale.ENGLISH).contains(searchStr);
+                            s |= card.getManaCostStr().toLowerCase(Locale.ENGLISH).contains(searchStr);
                         }
                         // Rules
                         if (!s) {
@@ -1328,7 +1415,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
         // And finally rerender
         layoutGrid();
-        repaint();
+        repaintGrid();
     }
 
     private static final Pattern pattern = Pattern.compile(".*Add(.*)(\\{[WUBRGXC]\\})");
@@ -1382,10 +1469,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                     }
 
                     // Mana Cost
-                    String mc = "";
-                    for (String m : card.getManaCost()) {
-                        mc += m;
-                    }
+                    String mc = card.getManaCostStr();
                     mc = mc.replaceAll("\\{([WUBRG]).([WUBRG])\\}", "{$1}{$2}");
                     mc = mc.replaceAll("\\{", "#");
                     mc = mc.replaceAll("#2\\/", "#");
@@ -1494,29 +1578,103 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                 JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
             return;
         }
-
+        // TODO: Why are these a HashMap? It can be a HashSet<String> instead, as the value is never used in the code.
         Map<String, Integer> pimpedSets = new HashMap<>();
         Map<CardView, Integer> pimpedCards = new HashMap<>();
-        pimpedSets.put("CP", 1);
-        pimpedSets.put("JR", 1);
+        pimpedSets.put("PCMP", 1);
         pimpedSets.put("MPS", 1);
-        pimpedSets.put("CLASH", 1);
-        pimpedSets.put("ARENA", 1);
-        pimpedSets.put("UGIN", 1);
-        pimpedSets.put("WMCQ", 1);
-        pimpedSets.put("APAC", 1);
-        pimpedSets.put("EURO", 1);
-        pimpedSets.put("FNMP", 1);
-        pimpedSets.put("MGDC", 1);
-        pimpedSets.put("MPRP", 1);
+        pimpedSets.put("MP2", 1);
         pimpedSets.put("EXP", 1);
-        pimpedSets.put("GPX", 1);
-        pimpedSets.put("GRC", 1);
-        pimpedSets.put("MBP", 1);
-        pimpedSets.put("MLP", 1);
+        pimpedSets.put("CP1", 1);
+        pimpedSets.put("CP2", 1);
+        pimpedSets.put("CP3", 1);
+
+        // Judge Reward Gifts
+        pimpedSets.put("JGP", 1);
+        pimpedSets.put("G99", 1);
+        pimpedSets.put("G00", 1);
+        pimpedSets.put("G01", 1);
+        pimpedSets.put("G02", 1);
+        pimpedSets.put("G03", 1);
+        pimpedSets.put("G04", 1);
+        pimpedSets.put("G05", 1);
+        pimpedSets.put("G06", 1);
+        pimpedSets.put("G07", 1);
+        pimpedSets.put("G08", 1);
+        pimpedSets.put("G09", 1);
+        pimpedSets.put("G10", 1);
+        pimpedSets.put("G11", 1);
+        pimpedSets.put("J12", 1);
+        pimpedSets.put("J13", 1);
+        pimpedSets.put("J14", 1);
+        pimpedSets.put("J15", 1);
+        pimpedSets.put("J16", 1);
+        pimpedSets.put("J17", 1);
+        pimpedSets.put("J18", 1);
+        pimpedSets.put("J19", 1);
+        pimpedSets.put("J20", 1);
+
+        // Arena League
+        pimpedSets.put("PARL", 1);
+        pimpedSets.put("PAL99", 1);
+        pimpedSets.put("PAL00", 1);
+        pimpedSets.put("PAL01", 1);
+        pimpedSets.put("PAL02", 1);
+        pimpedSets.put("PAL03", 1);
+        pimpedSets.put("PAL04", 1);
+        pimpedSets.put("PAL05", 1);
+        pimpedSets.put("PAL06", 1);
+
+        pimpedSets.put("UGIN", 1);
+        pimpedSets.put("PALP", 1);
+        pimpedSets.put("PELP", 1);
+
+        //Friday Night Magic
+        pimpedSets.put("FNM", 1);
+        pimpedSets.put("F01", 1);
+        pimpedSets.put("F02", 1);
+        pimpedSets.put("F03", 1);
+        pimpedSets.put("F04", 1);
+        pimpedSets.put("F05", 1);
+        pimpedSets.put("F06", 1);
+        pimpedSets.put("F07", 1);
+        pimpedSets.put("F08", 1);
+        pimpedSets.put("F09", 1);
+        pimpedSets.put("F10", 1);
+        pimpedSets.put("F11", 1);
+        pimpedSets.put("F12", 1);
+        pimpedSets.put("F13", 1);
+        pimpedSets.put("F14", 1);
+        pimpedSets.put("F15", 1);
+        pimpedSets.put("F16", 1);
+        pimpedSets.put("F17", 1);
+        pimpedSets.put("F18", 1);
+
+        // Magic Player Rewards 2001-2011, except for 2002 (P02), which only contains tokens
+        pimpedSets.put("MPR", 1);
+        pimpedSets.put("P03", 1);
+        pimpedSets.put("P04", 1);
+        pimpedSets.put("P05", 1);
+        pimpedSets.put("P06", 1);
+        pimpedSets.put("P07", 1);
+        pimpedSets.put("P08", 1);
+        pimpedSets.put("P09", 1);
+        pimpedSets.put("P10", 1);
+        pimpedSets.put("P11", 1);
+
+        pimpedSets.put("OVNT", 1); // Vintage Championship
+        pimpedSets.put("PREL", 1); // Release Events
+        pimpedSets.put("PJSE", 1); // Junior Series Europe
+        pimpedSets.put("P2HG", 1); // Two-Headed Giant Tournament
+        pimpedSets.put("PGTW", 1); // Gateway 2006
+        pimpedSets.put("PJAS", 1); // Junior APAC Series
+
+        pimpedSets.put("EXP", 1);
+        pimpedSets.put("PGPX", 1);
+        pimpedSets.put("PMEI", 1);
+        pimpedSets.put("PREL", 1);
         pimpedSets.put("PLS", 1);
-        pimpedSets.put("PTC", 1);
-        pimpedSets.put("SUS", 1);
+        pimpedSets.put("PPRE", 1);
 
         String[] sets = pimpedSets.keySet().toArray(new String[pimpedSets.keySet().size()]);
         Boolean didModify = false;
@@ -1541,7 +1699,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                             if (acard.getName().equals(card.getName())) {
                                 CardView pimpedCard = new CardView(acard);
                                 addCardView(pimpedCard, false);
-                                eventSource.fireEvent(pimpedCard, ClientEventType.ADD_SPECIFIC_CARD);
+                                eventSource.fireEvent(pimpedCard, ClientEventType.DECK_ADD_SPECIFIC_CARD);
                                 pimpedCards.put(pimpedCard, 1);
                                 didModify = true;
                             }
@@ -1556,11 +1714,47 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                 }
 
                 layoutGrid();
-                cardScroll.revalidate();
-                repaint();
+                repaintGrid();
                 JOptionPane.showMessageDialog(null, "Added " + pimpedCards.size() + " cards.  You can select them and the originals by choosing 'Multiples'");
             }
         }
+    }
+
+    private void oldVersionDeck() {
+        if (this.mode != Constants.DeckEditorMode.FREE_BUILDING) {
+            return;
+        }
+
+        if (JOptionPane.showConfirmDialog(null, "Are you sure you want to switch your card versions to the oldest ones?", "WARNING",
+                JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        List<List<List<CardView>>> newCardGrid = new ArrayList<>();
+        for (List<List<CardView>> gridRow : cardGrid) {
+            List<List<CardView>> newGridRow = new ArrayList<>();
+            for (List<CardView> stack : gridRow) {
+                List<CardView> newStack = new ArrayList<>();
+                for (CardView card : stack) {
+                    CardInfo oldestCardInfo = CardRepository.instance.findOldestNonPromoVersionCard(card.getName());
+                    if (oldestCardInfo != null) {
+                        CardView oldestCardView = new CardView(oldestCardInfo.getMockCard());
+                        this.removeCardView(card);
+                        eventSource.fireEvent(card, ClientEventType.DECK_REMOVE_SPECIFIC_CARD);
+                        this.addCardView(oldestCardView, false);
+                        eventSource.fireEvent(oldestCardView, ClientEventType.DECK_ADD_SPECIFIC_CARD);
+                        newStack.add(oldestCardView);
+                    } else {
+                        newStack.add(card);
+                    }
+                }
+                newGridRow.add(newStack);
+            }
+            newCardGrid.add(newGridRow);
+        }
+        cardGrid = newCardGrid;
+        layoutGrid();
+        repaintGrid();
     }
 
     // Update the contents of the card grid
@@ -1673,7 +1867,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             for (Map<String, List<CardView>> tracked : trackedCards.values()) {
                 for (List<CardView> orphans : tracked.values()) {
                     for (CardView orphan : orphans) {
-                        LOGGER.info("Orphan when setting with layout: ");
+                        logger.info("Orphan when setting with layout: ");
                         sortIntoGrid(orphan);
                     }
                 }
@@ -1684,10 +1878,7 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         if (didModify) {
             // Update layout
             layoutGrid();
-
-            // Update draw
-            cardScroll.revalidate();
-            repaint();
+            repaintGrid();
         }
     }
 
@@ -1772,48 +1963,23 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         updateCounts();
 
         // Create the card view
-        final MageCard cardPanel = Plugins.instance.getMageCard(card, lastBigCard, new Dimension(getCardWidth(), getCardHeight()), null, true, true, PreferencesDialog.getRenderMode(), true);
+        final MageCard cardPanel = Plugins.instance.getMageCard(card, lastBigCard, new CardIconRenderSettings(), new Dimension(getCardWidth(), getCardHeight()), null, true, true, PreferencesDialog.getRenderMode(), true);
+        cardPanel.setCardContainerRef(this);
         cardPanel.update(card);
+        // cards bounds set in layoutGrid()
         cardPanel.setCardCaptionTopOffset(0);
 
-        // Remove mouse wheel listeners so that scrolling works
-        // Scrolling works on all areas without cards or by using the scroll bar, that's enough
-//        for (MouseWheelListener l : cardPanel.getMouseWheelListeners()) {
-//            cardPanel.removeMouseWheelListener(l);
-//        }
-        // Add a click listener for selection / drag start
-        cardPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    // Select if not selected
-                    if (!card.isSelected()) {
-                        selectCard(card);
-                    }
-                    // Show menu
-                    showCardRightClickMenu(card, e);
-                } else if (SwingUtilities.isLeftMouseButton(e)) {
-                    if (e.getClickCount() == 1) {
-                        cardClicked(card, e);
-                    } else if (e.isAltDown()) {
-                        eventSource.fireEvent(card, ClientEventType.ALT_DOUBLE_CLICK);
-                    } else {
-                        eventSource.fireEvent(card, ClientEventType.DOUBLE_CLICK);
-                    }
-                }
-            }
-        });
-
-        // Add a motion listener to process drags
+        // ENABLE DRAG SUPPORT FOR CARDS
+        // TODO: rewrite mouseDragged in MageActionCallback, so it can support any drags, not hands only
         cardPanel.addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (!dragger.isDragging()) {
                     // If the card isn't already selected, make sure it is
                     if (!card.isSelected()) {
-                        cardClicked(card, e);
+                        selectCard(card);
                     }
-                    dragger.beginDrag(cardPanel, e);
+                    dragger.handleDragStart(cardPanel, e);
                 }
             }
         });
@@ -1824,12 +1990,10 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
 
         if (duplicated) {
             sortIntoGrid(card);
-            eventSource.fireEvent(card, ClientEventType.ADD_SPECIFIC_CARD);
+            eventSource.fireEvent(card, ClientEventType.DECK_ADD_SPECIFIC_CARD);
             // Update layout
             layoutGrid();
-            // Update draw
-            cardScroll.revalidate();
-            repaint();
+            repaintGrid();
         }
     }
 
@@ -1931,9 +2095,10 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             // No card in this column?
             if (cardInColumn == null) {
                 // Error, should not have an empty column
-                LOGGER.error("Empty column! " + currentColumn);
+                logger.error("Empty column! " + currentColumn);
             } else {
-                int res = cardSort.getComparator().compare(newCard, cardInColumn);
+                CardViewComparator cardComparator = cardSort.getComparator();
+                int res = cardComparator.compare(newCard, cardInColumn);
                 if (res <= 0) {
                     // Insert into this col, but if less, then we need to create a new col here first
                     if (res < 0) {
@@ -1957,6 +2122,9 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
             }
             targetRow.get(targetRow.size() - 1).add(newCard);
         }
+
+        // if it's a new deck then non creature cards can be added to second row, so fix empty rows here
+        trimGrid();
     }
 
     /**
@@ -2033,6 +2201,12 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         return (int) (1.4 * getCardWidth());
     }
 
+    private void repaintGrid() {
+        cardScroll.revalidate();
+        cardScroll.repaint();
+        repaint();
+    }
+
     /**
      * Position all of the card views correctly
      */
@@ -2057,16 +2231,35 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
                     stackCountLabels.add(new ArrayList<>());
                 }
                 if (stackCountLabels.get(rowIndex).size() <= colIndex) {
-                    JLabel countLabel = new JLabel("", SwingConstants.CENTER);
-                    countLabel.setForeground(Color.WHITE);
-                    cardContent.add(countLabel, new Integer(0));
+                    // add new count label for the column
+
+                    // ENABLE cards auto-selection in the stack
+                    if (this.countLabelListener == null) {
+                        this.countLabelListener = new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                JLabel countLabel = (JLabel) e.getComponent();
+                                List<CardView> cards = findCardStackByCountLabel(countLabel);
+                                boolean selected = !cards.isEmpty() && cards.get(0).isSelected();
+                                cards.forEach(card -> {
+                                    card.setSelected(!selected);
+                                    cardViews.get(card.getId()).update(card);
+                                });
+                            }
+                        };
+                    }
+
+                    JLabel countLabel = DragCardGrid.createCountLabel(this.countLabelListener);
+                    cardContent.add(countLabel, (Integer) 0);
                     stackCountLabels.get(rowIndex).add(countLabel);
                 }
+
                 JLabel countLabel = stackCountLabels.get(rowIndex).get(colIndex);
                 if (stack.isEmpty()) {
                     countLabel.setVisible(false);
                 } else {
-                    countLabel.setText(String.valueOf(stack.size()));
+                    String description = cardSort.getComparator().getCategoryName(stack.get(0));
+                    DragCardGrid.updateCountLabel(countLabel, stack.size(), description);
                     countLabel.setLocation(GRID_PADDING + (cardWidth + GRID_PADDING) * colIndex, currentY - COUNT_LABEL_HEIGHT);
                     countLabel.setSize(cardWidth, COUNT_LABEL_HEIGHT);
                     countLabel.setVisible(true);
@@ -2095,6 +2288,57 @@ public class DragCardGrid extends JPanel implements DragCardSource, DragCardTarg
         // Resize card container
         cardContent.setPreferredSize(new Dimension(maxWidth, currentY - COUNT_LABEL_HEIGHT + GRID_PADDING));
         //cardContent.setSize(maxWidth, currentY - COUNT_LABEL_HEIGHT + GRID_PADDING);
+    }
+
+    public static JLabel createCountLabel(MouseListener mouseListener) {
+        JLabel countLabel = new JLabel("", JLabel.CENTER);
+        countLabel.setForeground(Color.WHITE); // TODO: add theme support
+        if (mouseListener != null) {
+            countLabel.addMouseListener(mouseListener);
+        }
+        return countLabel;
+    }
+
+    public static void updateCountLabel(JLabel countLabel, int amount, String description) {
+        // two modes:
+        // * small: one line with count
+        // * big: two lines with count and description
+        String descHtml = ManaSymbols.replaceSymbolsWithHTML(description, ManaSymbols.Type.TABLE);
+        boolean smallMode = description.isEmpty();
+        boolean supportCustomClicks = countLabel.getMouseListeners().length > 0
+                && !(countLabel.getMouseListeners()[0] instanceof ToolTipManager); // ignore auto-added ToolTipManager for mouse over hints
+
+        // border: 1px solid black
+        // white-space: nowrap;
+        countLabel.setText("<html>"
+                + "<div style='text-align: center;'>"
+                + "  <div>" + amount + "</div>"
+                + (smallMode ? "" : "  <div style=''>" + descHtml + "</div>")
+                + "</div>"
+                + "");
+        countLabel.setToolTipText("<html>"
+                + amount + (smallMode ? "" : " - " + description)
+                + (supportCustomClicks ? "<br>Click on the count label to select/unselect cards stack." : "")
+        );
+        countLabel.setVerticalAlignment(smallMode ? JLabel.CENTER : JLabel.TOP);
+        if (DebugUtil.GUI_DECK_EDITOR_DRAW_COUNT_LABEL_BORDER) {
+            countLabel.setBorder(BorderFactory.createLineBorder(Color.green));
+        }
+    }
+
+    private List<CardView> findCardStackByCountLabel(JLabel countLabel) {
+        for (int rowIndex = 0; rowIndex < cardGrid.size(); ++rowIndex) {
+            List<List<CardView>> gridRow = cardGrid.get(rowIndex);
+            for (int colIndex = 0; colIndex < gridRow.size(); ++colIndex) {
+                if (stackCountLabels.size() < rowIndex
+                        || stackCountLabels.get(rowIndex).size() < colIndex
+                        || !countLabel.equals(stackCountLabels.get(rowIndex).get(colIndex))) {
+                    continue;
+                }
+                return gridRow.get(colIndex);
+            }
+        }
+        return new ArrayList<>();
     }
 
     private static void makeButtonPopup(final AbstractButton button, final JPopupMenu popup) {

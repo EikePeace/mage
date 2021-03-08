@@ -9,6 +9,7 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
+import mage.game.events.TargetEvent;
 import mage.players.Player;
 import mage.util.RandomUtil;
 
@@ -105,16 +106,23 @@ public abstract class TargetImpl implements Target {
             StringBuilder sb = new StringBuilder();
             sb.append("Select ").append(targetName);
             if (getMaxNumberOfTargets() > 0 && getMaxNumberOfTargets() != Integer.MAX_VALUE) {
-                sb.append(" (").append(targets.size()).append('/').append(getMaxNumberOfTargets()).append(')');
+                sb.append(" (selected ").append(targets.size()).append(" of ").append(getMaxNumberOfTargets()).append(')');
             } else {
-                sb.append(" (").append(targets.size()).append(')');
+                sb.append(" (selected ").append(targets.size()).append(')');
             }
             sb.append(suffix);
             return sb.toString();
         }
-        if (targetName.startsWith("another") || targetName.startsWith("a ") || targetName.startsWith("an ")) {
+        if (targetName.startsWith("another")
+                || targetName.startsWith("a ")
+                || targetName.startsWith("an ")
+                || targetName.startsWith("any ")) {
             return "Select " + targetName + suffix;
-        } else if (targetName.startsWith("a") || targetName.startsWith("e") || targetName.startsWith("i") || targetName.startsWith("o") || targetName.startsWith("u")) {
+        }
+        if (getMinNumberOfTargets() == 0 && getMaxNumberOfTargets() == 1) {
+            return "Select up to one " + targetName + suffix;
+        }
+        if (targetName.startsWith("a") || targetName.startsWith("e") || targetName.startsWith("i") || targetName.startsWith("o") || targetName.startsWith("u")) {
             return "Select an " + targetName + suffix;
         }
         return "Select a " + targetName + suffix;
@@ -216,12 +224,12 @@ public abstract class TargetImpl implements Target {
         if (getMaxNumberOfTargets() == 0 || targets.size() < getMaxNumberOfTargets()) {
             if (!targets.containsKey(id)) {
                 if (source != null && !skipEvent && shouldReportEvents) {
-                    if (!game.replaceEvent(GameEvent.getEvent(EventType.TARGET, id, source.getSourceId(), source.getControllerId()))) {
+                    if (!game.replaceEvent(new TargetEvent(id, source))) {
                         targets.put(id, 0);
                         rememberZoneChangeCounter(id, game);
                         chosen = targets.size() >= getNumberOfTargets();
                         if (!skipEvent && shouldReportEvents) {
-                            game.addSimultaneousEvent(GameEvent.getEvent(EventType.TARGETED, id, source.getSourceId(), source.getControllerId()));
+                            game.addSimultaneousEvent(GameEvent.getEvent(GameEvent.EventType.TARGETED, id, source, source.getControllerId()));
                         }
                     }
                 } else {
@@ -254,12 +262,12 @@ public abstract class TargetImpl implements Target {
             amount += targets.get(id);
         }
         if (source != null && !skipEvent && shouldReportEvents) {
-            if (!game.replaceEvent(GameEvent.getEvent(EventType.TARGET, id, source.getSourceId(), source.getControllerId()))) {
+            if (!game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.TARGET, id, source, source.getControllerId()))) {
                 targets.put(id, amount);
                 rememberZoneChangeCounter(id, game);
                 chosen = targets.size() >= getNumberOfTargets();
                 if (!skipEvent && shouldReportEvents) {
-                    game.fireEvent(GameEvent.getEvent(EventType.TARGETED, id, source.getSourceId(), source.getControllerId()));
+                    game.fireEvent(GameEvent.getEvent(GameEvent.EventType.TARGETED, id, source, source.getControllerId()));
                 }
             }
         } else {
@@ -329,12 +337,12 @@ public abstract class TargetImpl implements Target {
                     continue; // it's not legal so continue to have a look at other targeted objects
                 }
             }
-            if (!notTarget && game.replaceEvent(GameEvent.getEvent(EventType.TARGET, targetId, source.getSourceId(), source.getControllerId()))) {
+            if (!notTarget && game.replaceEvent(new TargetEvent(targetId, source))) {
 //                replacedTargets++;
                 illegalTargets.add(targetId);
                 continue;
             }
-            if (!canTarget(targetId, source, game)) {
+            if (!stillLegalTarget(targetId, source, game)) {
                 illegalTargets.add(targetId);
             }
         }
@@ -471,6 +479,11 @@ public abstract class TargetImpl implements Target {
     }
 
     @Override
+    public boolean stillLegalTarget(UUID id, Ability source, Game game) {
+        return canTarget(id, source, game);
+    }
+
+    @Override
     public void setNotTarget(boolean notTarget) {
         this.notTarget = notTarget;
     }
@@ -550,6 +563,11 @@ public abstract class TargetImpl implements Target {
     public Target withChooseHint(String chooseHint) {
         this.chooseHint = chooseHint;
         return this;
+    }
+
+    @Override
+    public String getChooseHint() {
+        return chooseHint;
     }
 
     @Override

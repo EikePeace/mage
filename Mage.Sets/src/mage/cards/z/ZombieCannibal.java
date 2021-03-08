@@ -10,7 +10,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
@@ -34,7 +34,7 @@ public final class ZombieCannibal extends CardImpl {
         this.addAbility(new ZombieCannibalTriggeredAbility());
     }
 
-    public ZombieCannibal(final ZombieCannibal card) {
+    private ZombieCannibal(final ZombieCannibal card) {
         super(card);
     }
 
@@ -84,6 +84,6 @@ class ZombieCannibalTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public String getRule() {
         return "Whenever {this} deals combat damage to a player, "
-                + "you may exile target card from that player's graveyard";
+                + "you may exile target card from that player's graveyard.";
     }
 }

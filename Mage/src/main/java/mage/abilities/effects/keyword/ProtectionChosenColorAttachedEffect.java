@@ -15,19 +15,19 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author LevelX2
  */
 public class ProtectionChosenColorAttachedEffect extends ContinuousEffectImpl {
 
     protected ObjectColor chosenColor;
     protected ProtectionAbility protectionAbility;
-    protected boolean notRemoveItself;
+    protected final boolean notRemoveItself;
+    protected boolean notRemoveControlled;
 
     public ProtectionChosenColorAttachedEffect(boolean notRemoveItself) {
         super(Duration.WhileOnBattlefield, Layer.AbilityAddingRemovingEffects_6, SubLayer.NA, Outcome.AddAbility);
         this.notRemoveItself = notRemoveItself;
-        staticText = "{source} has protection from the chosen color" + (notRemoveItself ? ". This effect doesn't remove {this}" : "");
+        staticText = "{this} has protection from the chosen color" + (notRemoveItself ? ". This effect doesn't remove {this}" : "");
     }
 
     public ProtectionChosenColorAttachedEffect(final ProtectionChosenColorAttachedEffect effect) {
@@ -59,6 +59,11 @@ public class ProtectionChosenColorAttachedEffect extends ContinuousEffectImpl {
                 if (notRemoveItself) {
                     protectionAbility.setAuraIdNotToBeRemoved(source.getSourceId());
                 }
+                if (notRemoveControlled) {
+                    protectionAbility.setDoesntRemoveControlled(true);
+                    protectionAbility.setRemoveEquipment(false);
+                    protectionAbility.setRemovesAuras(false);
+                }
             }
             if (protectionAbility != null) {
                 Permanent attachedTo = game.getPermanent(attachement.getAttachedTo());
@@ -69,5 +74,10 @@ public class ProtectionChosenColorAttachedEffect extends ContinuousEffectImpl {
             }
         }
         return false;
+    }
+
+    public ProtectionChosenColorAttachedEffect setNotRemoveControlled(boolean notRemoveControlled) {
+        this.notRemoveControlled = notRemoveControlled;
+        return this;
     }
 }

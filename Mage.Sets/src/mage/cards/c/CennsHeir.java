@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -39,7 +39,7 @@ public final class CennsHeir extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(count, count, Duration.EndOfTurn, true), false));
     }
 
-    public CennsHeir(final CennsHeir card) {
+    private CennsHeir(final CennsHeir card) {
         super(card);
     }
 

@@ -3,7 +3,7 @@ package mage.cards.m;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.costs.common.PutTopCardOfYourLibraryToGraveyardCost;
+import mage.abilities.costs.common.MillCardsCost;
 import mage.abilities.mana.ColorlessManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -24,12 +24,12 @@ public final class Millikin extends CardImpl {
 
         // {tap}, Put the top card of your library into your graveyard: Add {C}.
         ColorlessManaAbility ability = new ColorlessManaAbility();
-        ability.addCost(new PutTopCardOfYourLibraryToGraveyardCost());
+        ability.addCost(new MillCardsCost());
         ability.setUndoPossible(false);
         this.addAbility(ability);
     }
 
-    public Millikin(final Millikin card) {
+    private Millikin(final Millikin card) {
         super(card);
     }
 

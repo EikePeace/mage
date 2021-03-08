@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -40,7 +40,7 @@ public final class KiorasFollower extends CardImpl {
         this.addAbility(ability);
     }
 
-    public KiorasFollower(final KiorasFollower card) {
+    private KiorasFollower(final KiorasFollower card) {
         super(card);
     }
 

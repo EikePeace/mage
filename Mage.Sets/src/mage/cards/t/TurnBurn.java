@@ -13,7 +13,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.SpellAbilityType;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetAnyTarget;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -42,7 +41,7 @@ public final class TurnBurn extends SplitCard {
 
     }
 
-    public TurnBurn(final TurnBurn card) {
+    private TurnBurn(final TurnBurn card) {
         super(card);
     }
 

@@ -50,7 +50,7 @@ public final class ZedruuTheGreathearted extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ZedruuTheGreathearted(final ZedruuTheGreathearted card) {
+    private ZedruuTheGreathearted(final ZedruuTheGreathearted card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ public final class ZedruuTheGreathearted extends CardImpl {
         public boolean apply(Game game, Ability source) {
             Permanent permanent = targetPermanentReference.getPermanent(game);
             if (permanent != null) {
-                return permanent.changeControllerId(source.getFirstTarget(), game);
+                return permanent.changeControllerId(source.getFirstTarget(), game, source);
             } else {
                 discard();
             }

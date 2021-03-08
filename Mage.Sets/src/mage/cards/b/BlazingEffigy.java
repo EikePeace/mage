@@ -7,7 +7,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DamageTargetEffect;
@@ -35,12 +35,12 @@ public final class BlazingEffigy extends CardImpl {
         this.toughness = new MageInt(3);
 
         // When Blazing Effigy dies, it deals X damage to target creature, where X is 3 plus the amount of damage dealt to Blazing Effigy this turn by other sources named Blazing Effigy.
-        Ability ability = new DiesTriggeredAbility(new DamageTargetEffect(BlazingEffigyCount.instance), false);
+        Ability ability = new DiesSourceTriggeredAbility(new DamageTargetEffect(BlazingEffigyCount.instance), false);
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability, new BlazingEffigyWatcher());
     }
 
-    public BlazingEffigy(final BlazingEffigy card) {
+    private BlazingEffigy(final BlazingEffigy card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ enum BlazingEffigyCount implements DynamicValue {
             return 3;
         }
         int effigyDamage = watcher.damageDoneTo(sourceAbility.getSourceId(), sourceAbility.getSourceObjectZoneChangeCounter() - 1, game);
-        return CardUtil.addWithOverflowCheck(3, effigyDamage);
+        return CardUtil.overflowInc(3, effigyDamage);
     }
 
     @Override
@@ -89,7 +89,7 @@ class BlazingEffigyWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGED_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGED_PERMANENT) {
             if (!event.getSourceId().equals(event.getTargetId())) {
                 MageObjectReference damageSourceRef = new MageObjectReference(event.getSourceId(), game);
                 MageObjectReference damageTargetRef = new MageObjectReference(event.getTargetId(), game);

@@ -9,7 +9,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -41,7 +41,7 @@ public final class AvacynThePurifier extends CardImpl {
         this.addAbility(new AvacynThePurifierAbility());
     }
 
-    public AvacynThePurifier(final AvacynThePurifier card) {
+    private AvacynThePurifier(final AvacynThePurifier card) {
         super(card);
     }
 
@@ -107,12 +107,12 @@ class AvacynThePurifierEffect extends OneShotEffect {
         filter.add(AnotherPredicate.instance);
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game);
         for (Permanent permanent : permanents) {
-            permanent.damage(3, source.getSourceId(), game, false, true);
+            permanent.damage(3, source.getSourceId(), source, game, false, true);
         }
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
             if (opponent != null) {
-                opponent.damage(3, source.getSourceId(), game);
+                opponent.damage(3, source.getSourceId(), source, game);
             }
         }
         return true;

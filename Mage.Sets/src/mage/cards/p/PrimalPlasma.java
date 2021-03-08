@@ -43,7 +43,7 @@ public final class PrimalPlasma extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new PrimalPlasmaReplacementEffect()));
     }
 
-    public PrimalPlasma(final PrimalPlasma card) {
+    private PrimalPlasma(final PrimalPlasma card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ public final class PrimalPlasma extends CardImpl {
 
         @Override
         public boolean checksEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+            return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
         }
 
         @Override

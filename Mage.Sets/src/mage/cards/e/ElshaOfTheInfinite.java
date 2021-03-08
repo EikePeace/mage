@@ -16,6 +16,7 @@ import mage.constants.SuperType;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterNonlandCard;
 import mage.filter.predicate.Predicates;
+import mage.filter.predicate.card.CardOnTopOfLibraryPredicate;
 
 import java.util.UUID;
 
@@ -24,10 +25,11 @@ import java.util.UUID;
  */
 public final class ElshaOfTheInfinite extends CardImpl {
 
-    private static final FilterCard filter = new FilterNonlandCard();
+    private static final FilterCard filter = new FilterNonlandCard("cast noncreature spells");
 
     static {
         filter.add(Predicates.not(CardType.CREATURE.getPredicate()));
+        filter.add(CardOnTopOfLibraryPredicate.instance);
     }
 
     public ElshaOfTheInfinite(UUID ownerId, CardSetInfo setInfo) {
@@ -45,15 +47,11 @@ public final class ElshaOfTheInfinite extends CardImpl {
         // You may look at the top card of your library any time.
         this.addAbility(new SimpleStaticAbility(new LookAtTopCardOfLibraryAnyTimeEffect()));
 
-        // You may cast the top card of your library if it's a noncreature, nonland card, and you may cast it as though it had flash.
-        Ability ability = new SimpleStaticAbility(
-                new PlayTheTopCardEffect(filter).setText(
-                        "you may cast the top card of your library if it's a noncreature, nonland card,"
-                )
-        );
+        // You may cast noncreature spells from the top of your library. If you cast a spell this way, you may cast it as though it had flash.
+        Ability ability = new SimpleStaticAbility(new PlayTheTopCardEffect(filter, false));
         ability.addEffect(new CastAsThoughItHadFlashAllEffect(
                 Duration.WhileOnBattlefield, filter
-        ).setText("and you may cast it as though it had flash"));
+        ).setText("If you cast a spell this way, you may cast it as though it had flash."));
         this.addAbility(ability);
     }
 
@@ -66,3 +64,4 @@ public final class ElshaOfTheInfinite extends CardImpl {
         return new ElshaOfTheInfinite(this);
     }
 }
+

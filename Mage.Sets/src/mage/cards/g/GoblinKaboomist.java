@@ -40,7 +40,7 @@ public final class GoblinKaboomist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoblinKaboomist(final GoblinKaboomist card) {
+    private GoblinKaboomist(final GoblinKaboomist card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class GoblinKaboomistFlipCoinEffect extends OneShotEffect {
             if (!player.flipCoin(source, game, true)) {
                 String message = permanent.getLogName() + " deals 2 damage to itself";
                 game.informPlayers(message);
-                permanent.damage(2, source.getSourceId(), game, false, true);
+                permanent.damage(2, source.getSourceId(), source, game, false, true);
             }
             return true;
         }

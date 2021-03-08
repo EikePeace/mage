@@ -12,7 +12,6 @@ import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.BecomesChosenCreatureTypeSourceEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureTypeTargetEffect;
-import mage.constants.SubType;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -53,7 +52,7 @@ public final class MistformWakecaster extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MistformWakecaster(final MistformWakecaster card) {
+    private MistformWakecaster(final MistformWakecaster card) {
         super(card);
     }
 
@@ -93,7 +92,7 @@ class BecomesChosenCreatureTypeControlledEffect extends OneShotEffect {
             if (chosenType != null && !chosenType.isEmpty()) {
                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(new FilterCreaturePermanent(), player.getId(), game)) {
                     ContinuousEffect effect = new BecomesCreatureTypeTargetEffect(Duration.EndOfTurn, SubType.byDescription(chosenType));
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(effect, source);
                 }
                 return true;

@@ -39,7 +39,7 @@ public final class ChandrasDefeat extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPermanent(filter));
     }
 
-    public ChandrasDefeat(final ChandrasDefeat card) {
+    private ChandrasDefeat(final ChandrasDefeat card) {
         super(card);
     }
 
@@ -78,13 +78,13 @@ class ChandrasDefeatEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
 
         if (permanent != null) {
-            permanent.damage(5, source.getSourceId(), game, false, true);
+            permanent.damage(5, source.getSourceId(), source, game, false, true);
 
             // If it was a Chandra planeswalker, you may discard a card. If you do, draw a card
             if (filter.match(permanent, game) && controller != null
                     && controller.chooseUse(outcome, "Discard a card and draw a card?", source, game)) {
-                controller.discard(1, false, source, game);
-                controller.drawCards(1, game);
+                controller.discard(1, false, false, source, game);
+                controller.drawCards(1, source, game);
             }
             return true;
         }

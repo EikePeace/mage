@@ -1,6 +1,5 @@
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.MageObject;
 import mage.abilities.Ability;
@@ -10,10 +9,9 @@ import mage.abilities.keyword.FlyingAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.SplitCard;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterNonlandCard;
@@ -22,11 +20,12 @@ import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
-import mage.target.common.TargetCardInHand;
 import mage.target.common.TargetCardInLibrary;
+import mage.util.CardUtil;
+
+import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class ShimianSpecter extends CardImpl {
@@ -48,7 +47,7 @@ public final class ShimianSpecter extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new ShimianSpecterEffect(), false, true));
     }
 
-    public ShimianSpecter(final ShimianSpecter card) {
+    private ShimianSpecter(final ShimianSpecter card) {
         super(card);
     }
 
@@ -94,7 +93,7 @@ class ShimianSpecterEffect extends OneShotEffect {
             TargetCard target = new TargetCard(Zone.HAND, new FilterNonlandCard());
             target.setNotTarget(true);
             Card chosenCard = null;
-            if (target.canChoose(controller.getId(), game)
+            if (target.canChoose(source.getSourceId(), controller.getId(), game)
                     && controller.chooseTarget(Outcome.Benefit, targetPlayer.getHand(), target, source, game)) {
                 chosenCard = game.getCard(target.getFirstTarget());
             }
@@ -104,9 +103,7 @@ class ShimianSpecterEffect extends OneShotEffect {
             FilterCard filterNamedCards = new FilterCard();
             String nameToSearch = "---";// so no card matches
             if (chosenCard != null) {
-                nameToSearch = chosenCard.isSplitCard()
-                        ? ((SplitCard) chosenCard).getLeftHalfCard().getName()
-                        : chosenCard.getName();
+                nameToSearch = CardUtil.getCardNameForSameNameSearch(chosenCard);
             }
             filterNamedCards.add(new NamePredicate(nameToSearch));
 
@@ -119,7 +116,7 @@ class ShimianSpecterEffect extends OneShotEffect {
                 for (Card checkCard : targetPlayer.getGraveyard().getCards(game)) {
                     if (checkCard.getName().equals(chosenCard.getName())) {
                         controller.moveCardToExileWithInfo(checkCard, null, "",
-                                source.getSourceId(), game, Zone.GRAVEYARD, true);
+                                source, game, Zone.GRAVEYARD, true);
                     }
                 }
 
@@ -130,7 +127,7 @@ class ShimianSpecterEffect extends OneShotEffect {
                     Card card = game.getCard(cardId);
                     if (card != null) {
                         controller.moveCardToExileWithInfo(card, null, "",
-                                source.getSourceId(), game, Zone.HAND, true);
+                                source, game, Zone.HAND, true);
                     }
                 }
             }
@@ -145,7 +142,7 @@ class ShimianSpecterEffect extends OneShotEffect {
                 for (UUID cardId : targetCardsLibrary.getTargets()) {
                     Card card = game.getCard(cardId);
                     if (card != null) {
-                        controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.LIBRARY, true);
+                        controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.LIBRARY, true);
                     }
                 }
                 targetPlayer.shuffleLibrary(source, game);

@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class MorkrutNecropod extends CardImpl {
         this.addAbility(new AttacksOrBlocksTriggeredAbility(new SacrificeControllerEffect(filter, 1, ""), false));
     }
 
-    public MorkrutNecropod(final MorkrutNecropod card) {
+    private MorkrutNecropod(final MorkrutNecropod card) {
         super(card);
     }
 

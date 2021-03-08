@@ -17,6 +17,7 @@ public class Legacy extends Constructed {
             }
         }
         banned.add("Advantageous Proclamation");
+        banned.add("Arcum's Astrolabe");
         banned.add("Amulet of Quoz");
         banned.add("Ancestral Recall");
         banned.add("Backup Plan");
@@ -35,6 +36,7 @@ public class Legacy extends Constructed {
         banned.add("Demonic Tutor");
         banned.add("Dig Through Time");
         banned.add("Double Stroke");
+        banned.add("Dreadhorde Arcanist");
         banned.add("Earthcraft");
         banned.add("Falling Star");
         banned.add("Fastbond");
@@ -49,6 +51,7 @@ public class Legacy extends Constructed {
         banned.add("Iterative Analysis");
         banned.add("Jeweled Bird");
         banned.add("Library of Alexandria");
+        banned.add("Lurrus of the Dream-Den");
         banned.add("Mana Crypt");
         banned.add("Mana Drain");
         banned.add("Mana Vault");
@@ -66,6 +69,7 @@ public class Legacy extends Constructed {
         banned.add("Mystical Tutor");
         banned.add("Necropotence");
         banned.add("Oath of Druids");
+        banned.add("Oko, Thief of Crowns");
         banned.add("Power Play");
         banned.add("Rebirth");
         banned.add("Secret Summoning");
@@ -85,6 +89,7 @@ public class Legacy extends Constructed {
         banned.add("Tinker");
         banned.add("Tolarian Academy");
         banned.add("Treasure Cruise");
+        banned.add("Underworld Breach");
         banned.add("Unexpected Potential");
         banned.add("Vampiric Tutor");
         banned.add("Wheel of Fortune");
@@ -93,6 +98,6 @@ public class Legacy extends Constructed {
         banned.add("Wrenn and Six");
         banned.add("Yawgmoth's Bargain");
         banned.add("Yawgmoth's Will");
-
+        banned.add("Zirda, the Dawnwaker");
     }
 }

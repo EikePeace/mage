@@ -1,14 +1,11 @@
-
 package mage.cards.f;
 
-import java.util.Set;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.keyword.EnchantAbility;
-import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -37,7 +34,7 @@ public final class FrayingSanity extends CardImpl {
         // Enchant player
         TargetPlayer auraTarget = new TargetPlayer();
         this.getSpellAbility().addTarget(auraTarget);
-        this.getSpellAbility().addEffect(new AttachEffect(Outcome.BoostCreature));
+        this.getSpellAbility().addEffect(new AttachEffect(Outcome.Detriment));
         Ability ability = new EnchantAbility(auraTarget.getTargetName());
         this.addAbility(ability);
 
@@ -46,7 +43,7 @@ public final class FrayingSanity extends CardImpl {
 
     }
 
-    public FrayingSanity(final FrayingSanity card) {
+    private FrayingSanity(final FrayingSanity card) {
         super(card);
     }
 
@@ -73,7 +70,7 @@ class FrayingSanityTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override
@@ -83,7 +80,7 @@ class FrayingSanityTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "At the beginning of each end step, enchanted player puts the top X cards of their library into their graveyard, where X is the total number of cards put into their graveyard from anywhere this turn.";
+        return "At the beginning of each end step, enchanted player mills X cards, where X is the total number of cards put into their graveyard from anywhere this turn.";
     }
 }
 
@@ -107,8 +104,13 @@ class FrayingSanityEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
-        if (enchantment == null || enchantment.getAttachedTo() == null) {
+        // In the case that the enchantment is blinked
+        Permanent enchantment = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+        if (enchantment == null) {
+            // It was not blinked, use the standard method
+            enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        }
+        if (enchantment == null) {
             return false;
         }
         Player enchantedPlayer = game.getPlayer(enchantment.getAttachedTo());
@@ -117,8 +119,8 @@ class FrayingSanityEffect extends OneShotEffect {
             if (watcher != null) {
                 xAmount = watcher.getAmountCardsPutToGraveyard(enchantedPlayer.getId());
             }
-            Set<Card> topXCardsFromLibrary = enchantedPlayer.getLibrary().getTopCards(game, xAmount);
-            return enchantedPlayer.moveCards(topXCardsFromLibrary, Zone.GRAVEYARD, source, game, false, false, true, null);
+            enchantedPlayer.millCards(xAmount, source, game);
+            return true;
         }
         return false;
     }

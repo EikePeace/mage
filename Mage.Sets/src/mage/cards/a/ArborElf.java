@@ -31,13 +31,15 @@ public final class ArborElf extends CardImpl {
 
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
+        
+        // (T): Untap target Forest.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new UntapTargetEffect(), new TapSourceCost());
         TargetLandPermanent target = new TargetLandPermanent(filter);
         ability.addTarget(target);
         this.addAbility(ability);
     }
 
-    public ArborElf(final ArborElf card) {
+    private ArborElf(final ArborElf card) {
         super(card);
     }
 

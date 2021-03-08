@@ -2,8 +2,6 @@
 package mage.cards.e;
 
 import java.util.UUID;
-import mage.abilities.Ability;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.PreventDamageByTargetEffect;
 import mage.abilities.effects.common.PreventDamageToTargetEffect;
 import mage.abilities.effects.common.UntapTargetEffect;
@@ -11,7 +9,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
-import mage.constants.Zone;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -30,7 +27,7 @@ public final class EnergyArc extends CardImpl {
         this.getSpellAbility().addEffect(new PreventDamageToTargetEffect(Duration.EndOfTurn, true).setText("and dealt by those creatures this turn."));
     }
 
-    public EnergyArc(final EnergyArc card) {
+    private EnergyArc(final EnergyArc card) {
         super(card);
     }
 

@@ -110,7 +110,7 @@ public class RevealCardsFromLibraryUntilEffect extends OneShotEffect {
 
         switch (zoneToPutCard) {
             case HAND: {
-                sb.append("into your hand ");
+                sb.append("into your hand");
                 break;
             }
             case BATTLEFIELD: {
@@ -135,7 +135,7 @@ public class RevealCardsFromLibraryUntilEffect extends OneShotEffect {
                         sb.append("a random");
 
                     }
-                    sb.append(" order.");
+                    sb.append(" order");
                 }
                 break;
             }

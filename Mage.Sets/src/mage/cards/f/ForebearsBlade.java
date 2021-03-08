@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.f;
 
 import java.util.UUID;
@@ -60,7 +55,7 @@ public final class ForebearsBlade extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(3)));
     }
 
-    public ForebearsBlade(final ForebearsBlade card) {
+    private ForebearsBlade(final ForebearsBlade card) {
         super(card);
     }
 

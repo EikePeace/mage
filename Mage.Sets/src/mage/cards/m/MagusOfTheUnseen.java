@@ -61,7 +61,7 @@ public final class MagusOfTheUnseen extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagusOfTheUnseen(final MagusOfTheUnseen card) {
+    private MagusOfTheUnseen(final MagusOfTheUnseen card) {
         super(card);
     }
 
@@ -83,13 +83,13 @@ class MagusOfTheUnseenDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST_CONTROL;
+        return event.getType() == GameEvent.EventType.LOST_CONTROL;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         return event.getPlayerId().equals(controllerId) 
-                && event.getSourceId().equals(this.getEffects().get(0).getTargetPointer().getFirst(game, this));
+                && event.getTargetId().equals(this.getEffects().get(0).getTargetPointer().getFirst(game, this));
     }
     
     @Override

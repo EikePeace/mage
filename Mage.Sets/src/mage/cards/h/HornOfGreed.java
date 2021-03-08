@@ -26,7 +26,7 @@ public final class HornOfGreed extends CardImpl {
         this.addAbility(new HornOfGreedAbility());
     }
 
-    public HornOfGreed(final HornOfGreed card) {
+    private HornOfGreed(final HornOfGreed card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class HornOfGreedAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LAND_PLAYED;
+        return event.getType() == GameEvent.EventType.LAND_PLAYED;
     }
 
     @Override

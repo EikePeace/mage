@@ -57,7 +57,7 @@ public final class DragonBreath extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.GRAVEYARD, new DragonBreathEffect(), filter, true, SetTargetPointer.PERMANENT, null));
     }
 
-    public DragonBreath(final DragonBreath card) {
+    private DragonBreath(final DragonBreath card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class DragonBreathEffect extends OneShotEffect {
         if (sourceCard != null && permanent != null && controller != null) {
             game.getState().setValue("attachTo:" + sourceCard.getId(), permanent);
             if (controller.moveCards(sourceCard, Zone.BATTLEFIELD, source, game)) {
-                permanent.addAttachment(sourceCard.getId(), game);
+                permanent.addAttachment(sourceCard.getId(), source, game);
             }
             return true;
         }

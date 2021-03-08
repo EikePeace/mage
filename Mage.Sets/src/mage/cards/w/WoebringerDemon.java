@@ -35,11 +35,13 @@ public final class WoebringerDemon extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
 
-        // At the beginning of each player's upkeep, that player sacrifices a creature. If the player can't, sacrifice Woebringer Demon.
-        this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new WoebringerDemonEffect(), TargetController.ANY, false, true));
+        // At the beginning of each player's upkeep, that player sacrifices a creature. 
+        // If the player can't, sacrifice Woebringer Demon.
+        this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, 
+                new WoebringerDemonEffect(), TargetController.ANY, false, true));
     }
 
-    public WoebringerDemon(final WoebringerDemon card) {
+    private WoebringerDemon(final WoebringerDemon card) {
         super(card);
     }
 
@@ -73,18 +75,18 @@ class WoebringerDemonEffect extends OneShotEffect {
             if (currentPlayer != null) {
                 TargetControlledCreaturePermanent target = new TargetControlledCreaturePermanent();
                 target.setNotTarget(true);
-                if (target.canChoose(currentPlayer.getId(), game)) {
+                if (target.canChoose(source.getSourceId(), currentPlayer.getId(), game)) {
                     currentPlayer.chooseTarget(Outcome.Sacrifice, target, source, game);
                     Permanent permanent = game.getPermanent(target.getFirstTarget());
                     if (permanent != null) {
-                        permanent.sacrifice(source.getSourceId(), game);
+                        permanent.sacrifice(source, game);
                         return true;
                     }
                 }
             }
             Permanent sourceObject = game.getPermanent(source.getSourceId());
             if (sourceObject != null && sourceObject.getZoneChangeCounter(game) == source.getSourceObjectZoneChangeCounter()) {
-                sourceObject.sacrifice(source.getSourceId(), game);
+                sourceObject.sacrifice(source, game);
             }
             return true;
         }

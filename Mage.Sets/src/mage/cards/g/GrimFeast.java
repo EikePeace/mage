@@ -14,7 +14,6 @@ import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
@@ -36,7 +35,7 @@ public final class GrimFeast extends CardImpl {
         this.addAbility(new GrimFeastTriggeredAbility());
     }
 
-    public GrimFeast(final GrimFeast card) {
+    private GrimFeast(final GrimFeast card) {
         super(card);
     }
 
@@ -91,7 +90,7 @@ class GrimFeastEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent creature = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent creature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (creature == null) {
             return false;
         }

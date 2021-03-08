@@ -4,7 +4,6 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.LeavesBattlefieldTriggeredAbility;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.ExileTargetForSourceEffect;
 import mage.abilities.effects.common.ReturnFromExileForSourceEffect;
 import mage.abilities.keyword.ShadowAbility;
@@ -15,8 +14,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.target.Target;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -44,10 +42,8 @@ public final class FacelessDevourer extends CardImpl {
         this.addAbility(ShadowAbility.getInstance());
 
         // When Faceless Devourer enters the battlefield, exile another target creature with shadow.
-        Effect effect = new ExileTargetForSourceEffect();
-        Ability ability = new EntersBattlefieldTriggeredAbility(effect, false);
-        Target target = new TargetPermanent(filter);
-        ability.addTarget(target);
+        Ability ability = new EntersBattlefieldTriggeredAbility(new ExileTargetForSourceEffect(), false);
+        ability.addTarget(new TargetPermanent(filter));
         this.addAbility(ability);
 
         // When Faceless Devourer leaves the battlefield, return the exiled card to the battlefield under its owner's control.
@@ -56,7 +52,7 @@ public final class FacelessDevourer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FacelessDevourer(final FacelessDevourer card) {
+    private FacelessDevourer(final FacelessDevourer card) {
         super(card);
     }
 

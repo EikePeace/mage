@@ -12,7 +12,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -47,7 +47,7 @@ public final class ReaperKing extends CardImpl {
 
     }
 
-    public ReaperKing(final ReaperKing card) {
+    private ReaperKing(final ReaperKing card) {
         super(card);
     }
 

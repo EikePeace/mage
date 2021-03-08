@@ -39,7 +39,7 @@ public final class DroolingOgre extends CardImpl {
         this.addAbility(new DroolingOgreTriggeredAbility());
     }
 
-    public DroolingOgre(final DroolingOgre card) {
+    private DroolingOgre(final DroolingOgre card) {
         super(card);
     }
 
@@ -96,7 +96,7 @@ public final class DroolingOgre extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.SPELL_CAST;
+            return event.getType() == GameEvent.EventType.SPELL_CAST;
         }
 
         @Override

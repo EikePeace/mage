@@ -31,7 +31,7 @@ public final class HasranOgress extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new HasranOgressEffect(), false));
     }
 
-    public HasranOgress(final HasranOgress card) {
+    private HasranOgress(final HasranOgress card) {
         super(card);
     }
 
@@ -64,8 +64,8 @@ class HasranOgressEffect extends OneShotEffect {
             Cost cost = new ManaCostsImpl("{2}");
             String message = "Would you like to pay {2} to prevent taking 3 damage from Hasran Ogress?";
             if (!(controller.chooseUse(Outcome.Benefit, message, source, game)
-                    && cost.pay(source, game, source.getSourceId(), controller.getId(), false, null))) {
-                controller.damage(3, source.getSourceId(), game);
+                    && cost.pay(source, game, source, controller.getId(), false, null))) {
+                controller.damage(3, source.getSourceId(), source, game);
             }
             return true;
         }

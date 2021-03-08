@@ -51,7 +51,7 @@ public final class Flickerform extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new FlickerformEffect(), new ManaCostsImpl("{2}{W}{W}")));
     }
 
-    public Flickerform(final Flickerform card) {
+    private Flickerform(final Flickerform card) {
         super(card);
     }
 
@@ -94,11 +94,11 @@ class FlickerformEffect extends OneShotEffect {
             Permanent enchantedCreature = game.getPermanent(enchantment.getAttachedTo());
             if (enchantedCreature != null) {
                 UUID exileZoneId = UUID.randomUUID();
-                enchantedCreature.moveToExile(exileZoneId, enchantment.getName(), source.getSourceId(), game);
+                enchantedCreature.moveToExile(exileZoneId, enchantment.getName(), source, game);
                 for (UUID attachementId : enchantedCreature.getAttachments()) {
                     Permanent attachment = game.getPermanent(attachementId);
                     if (attachment != null && filter.match(attachment, game)) {
-                        attachment.moveToExile(exileZoneId, enchantment.getName(), source.getSourceId(), game);
+                        attachment.moveToExile(exileZoneId, enchantment.getName(), source, game);
                     }
                 }
                 if (!(enchantedCreature instanceof Token)) {
@@ -185,7 +185,7 @@ class FlickerformReturnEffect extends OneShotEffect {
                         controller.moveCards(toBattlefieldAttached, Zone.BATTLEFIELD, source, game);
                         for (Card card : toBattlefieldAttached) {
                             if (game.getState().getZone(card.getId()) == Zone.BATTLEFIELD) {
-                                newPermanent.addAttachment(card.getId(), game);
+                                newPermanent.addAttachment(card.getId(), source, game);
                             }
                         }
                     }

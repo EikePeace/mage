@@ -19,7 +19,6 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreatureCard;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -38,7 +37,7 @@ public final class SvogthosTheRestlessTomb extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SvogthosTheRestlessTomb(final SvogthosTheRestlessTomb card) {
+    private SvogthosTheRestlessTomb(final SvogthosTheRestlessTomb card) {
         super(card);
     }
 

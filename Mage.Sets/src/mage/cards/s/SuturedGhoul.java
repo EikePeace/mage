@@ -53,7 +53,7 @@ public final class SuturedGhoul extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public SuturedGhoul(final SuturedGhoul card) {
+    private SuturedGhoul(final SuturedGhoul card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class SuturedGhoulEffect extends OneShotEffect {
                 for (UUID uuid : target.getTargets()) {
                     Card card = controller.getGraveyard().get(uuid, game);
                     if (card != null) {
-                        card.moveToExile(getId(), permanent.getIdName(), source.getSourceId(), game);
+                        card.moveToExile(getId(), permanent.getIdName(), source, game);
                         permanent.imprint(card.getId(), game);
                         count++;
                     }

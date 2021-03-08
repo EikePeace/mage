@@ -14,9 +14,6 @@ import mage.game.permanent.Permanent;
  */
 public class TransformAbility extends SimpleStaticAbility {
 
-    public static final String NO_SPELLS_TRANSFORM_RULE = "At the beginning of each upkeep, if no spells were cast last turn, transform {this}.";
-    public static final String TWO_OR_MORE_SPELLS_TRANSFORM_RULE = "At the beginning of each upkeep, if a player cast two or more spells last turn, transform {this}.";
-
     // this state value controls if a permanent enters the battlefield already transformed
     public static final String VALUE_KEY_ENTER_TRANSFORMED = "EnterTransformed";
 
@@ -24,7 +21,7 @@ public class TransformAbility extends SimpleStaticAbility {
         super(Zone.BATTLEFIELD, new TransformEffect());
     }
 
-    public TransformAbility(final TransformAbility ability) {
+    private TransformAbility(final TransformAbility ability) {
         super(ability);
     }
 
@@ -38,7 +35,7 @@ public class TransformAbility extends SimpleStaticAbility {
         return "";
     }
 
-    public static void transform(Permanent permanent, Card sourceCard, Game game) {
+    public static void transform(Permanent permanent, Card sourceCard, Game game, Ability source) {
 
         if (sourceCard == null) {
             return;
@@ -52,10 +49,8 @@ public class TransformAbility extends SimpleStaticAbility {
         for (CardType type : sourceCard.getCardType()) {
             permanent.addCardType(type);
         }
-        permanent.getSubtype(game).clear();
-        for (SubType type : sourceCard.getSubtype(game)) {
-            permanent.getSubtype(game).add(type);
-        }
+        permanent.removeAllSubTypes(game);
+        permanent.copySubTypesFrom(game, sourceCard);
         permanent.getSuperType().clear();
         for (SuperType type : sourceCard.getSuperType()) {
             permanent.addSuperType(type);
@@ -63,7 +58,9 @@ public class TransformAbility extends SimpleStaticAbility {
         permanent.setExpansionSetCode(sourceCard.getExpansionSetCode());
         permanent.getAbilities().clear();
         for (Ability ability : sourceCard.getAbilities()) {
-            permanent.addAbility(ability, game);
+            // source == null -- call from init card (e.g. own abilities)
+            // source != null -- from apply effect
+            permanent.addAbility(ability, source == null ? permanent.getId() : source.getSourceId(), game);
         }
         permanent.getPower().modifyBaseValue(sourceCard.getPower().getValue());
         permanent.getToughness().modifyBaseValue(sourceCard.getToughness().getValue());
@@ -73,12 +70,12 @@ public class TransformAbility extends SimpleStaticAbility {
 
 class TransformEffect extends ContinuousEffectImpl {
 
-    public TransformEffect() {
+    TransformEffect() {
         super(Duration.WhileOnBattlefield, Layer.CopyEffects_1, SubLayer.NA, Outcome.BecomeCreature);
         staticText = "";
     }
 
-    public TransformEffect(final TransformEffect effect) {
+    private TransformEffect(final TransformEffect effect) {
         super(effect);
     }
 
@@ -105,7 +102,7 @@ class TransformEffect extends ContinuousEffectImpl {
             return false;
         }
 
-        TransformAbility.transform(permanent, card, game);
+        TransformAbility.transform(permanent, card, game, source);
 
         return true;
 
@@ -120,5 +117,4 @@ class TransformEffect extends ContinuousEffectImpl {
     public String getText(Mode mode) {
         return "";
     }
-
 }

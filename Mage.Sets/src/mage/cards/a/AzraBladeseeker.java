@@ -37,7 +37,7 @@ public final class AzraBladeseeker extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new AzraBladeseekerEffect(), false));
     }
 
-    public AzraBladeseeker(final AzraBladeseeker card) {
+    private AzraBladeseeker(final AzraBladeseeker card) {
         super(card);
     }
 
@@ -83,8 +83,8 @@ class AzraBladeseekerEffect extends OneShotEffect {
             }
         }
         for (PlayerCard playerCard : playerCardList) {
-            if (playerCard.getPlayer().discard(playerCard.getCard(), source, game)) {
-                playerCard.getPlayer().drawCards(1, game);
+            if (playerCard.getPlayer().discard(playerCard.getCard(), false, source, game)) {
+                playerCard.getPlayer().drawCards(1, source, game);
             }
         }
         return true;

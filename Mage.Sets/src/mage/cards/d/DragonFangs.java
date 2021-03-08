@@ -53,7 +53,7 @@ public final class DragonFangs extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.GRAVEYARD, new DragonFangsEffect(), filter, true, SetTargetPointer.PERMANENT, null));
     }
 
-    public DragonFangs(final DragonFangs card) {
+    private DragonFangs(final DragonFangs card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class DragonFangsEffect extends OneShotEffect {
         if (sourceCard != null && permanent != null && controller != null) {
             game.getState().setValue("attachTo:" + sourceCard.getId(), permanent);
             if (controller.moveCards(sourceCard, Zone.BATTLEFIELD, source, game)) {
-                permanent.addAttachment(sourceCard.getId(), game);
+                permanent.addAttachment(sourceCard.getId(), source, game);
             }
             return true;
         }

@@ -19,7 +19,7 @@ import mage.constants.SubLayer;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -40,7 +40,7 @@ public final class HomewardPath extends CardImpl {
 
     }
 
-    public HomewardPath(final HomewardPath card) {
+    private HomewardPath(final HomewardPath card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class HomewardPathControlEffect extends ContinuousEffectImpl {
             Permanent creature = it.next().getPermanent(game);
             if (creature != null) {
                 if (!creature.isControlledBy(creature.getOwnerId())) {
-                    creature.changeControllerId(creature.getOwnerId(), game);
+                    creature.changeControllerId(creature.getOwnerId(), game, source);
                 }
             } else {
                 it.remove();

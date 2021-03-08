@@ -19,7 +19,9 @@ import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.events.PreventDamageEvent;
+import mage.game.events.PreventedDamageEvent;
 import mage.game.permanent.Permanent;
+import mage.util.CardUtil;
 
 import java.util.UUID;
 
@@ -43,7 +45,7 @@ public final class GideonsIntervention extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GideonsInterventionPreventAllDamageEffect()));
     }
 
-    public GideonsIntervention(final GideonsIntervention card) {
+    private GideonsIntervention(final GideonsIntervention card) {
         super(card);
     }
 
@@ -72,16 +74,16 @@ class GideonsInterventionCantCastEffect extends ContinuousRuleModifyingEffectImp
     @Override
     public String getInfoMessage(Ability source, GameEvent event, Game game) {
         MageObject mageObject = game.getObject(source.getSourceId());
-        if (mageObject != null) {
-            String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-            return "You may not cast a card named " + cardName + " (" + mageObject.getIdName() + ").";
+        String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+        if (mageObject != null && cardName != null) {
+            return "You can't cast a card named " + cardName + " (" + mageObject.getIdName() + ").";
         }
         return null;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return (event.getType() == EventType.CAST_SPELL_LATE || event.getType() == EventType.CAST_SPELL);
+        return (event.getType() == GameEvent.EventType.CAST_SPELL_LATE || event.getType() == GameEvent.EventType.CAST_SPELL);
     }
 
     @Override
@@ -118,12 +120,12 @@ class GideonsInterventionPreventAllDamageEffect extends PreventionEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        GameEvent preventEvent = new PreventDamageEvent(source.getFirstTarget(), source.getSourceId(), source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
+        GameEvent preventEvent = new PreventDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
         if (!game.replaceEvent(preventEvent)) {
             int damage = event.getAmount();
             event.setAmount(0);
             game.informPlayers("Damage has been prevented: " + damage);
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), damage));
+            game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), damage));
         }
         return false;
     }
@@ -132,11 +134,10 @@ class GideonsInterventionPreventAllDamageEffect extends PreventionEffectImpl {
     public boolean applies(GameEvent event, Ability source, Game game) {
         MageObject object = game.getObject(event.getSourceId());
         Permanent targetPerm = game.getPermanent(event.getTargetId());
-
-        if (object != null && (event.getType() == GameEvent.EventType.DAMAGE_PLAYER
-                || targetPerm != null && (event.getType() == GameEvent.EventType.DAMAGE_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER))) {
-            if (object.getName().equals(game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY))
+        String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+        if (object != null && (event.getType() == EventType.DAMAGE_PLAYER
+                || targetPerm != null && event.getType() == EventType.DAMAGE_PERMANENT)) {
+            if (CardUtil.haveSameNames(object, cardName, game)
                     && (event.getTargetId().equals(source.getControllerId())
                     || targetPerm != null && targetPerm.isControlledBy(source.getControllerId()))) {
                 return super.applies(event, source, game);

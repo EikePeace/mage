@@ -33,7 +33,7 @@ public final class GraviticPunch extends CardImpl {
 
     }
 
-    public GraviticPunch(final GraviticPunch card) {
+    private GraviticPunch(final GraviticPunch card) {
         super(card);
     }
 
@@ -62,12 +62,12 @@ class GraviticPunchEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent controlledCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent controlledCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         Player player = game.getPlayer(source.getTargets().get(1).getFirstTarget());
         if (player == null || controlledCreature == null) {
             return false;
         }
-        player.damage(controlledCreature.getPower().getValue(), controlledCreature.getId(), game);
+        player.damage(controlledCreature.getPower().getValue(), controlledCreature.getId(), source, game);
         return true;
     }
 }

@@ -44,7 +44,7 @@ public final class GlyphOfDoom extends CardImpl {
         this.getSpellAbility().addWatcher(new BlockedAttackerWatcher());
     }
 
-    public GlyphOfDoom(final GlyphOfDoom card) {
+    private GlyphOfDoom(final GlyphOfDoom card) {
         super(card);
     }
 
@@ -116,7 +116,7 @@ class GlyphOfDoomEffect extends OneShotEffect {
                     }
                 }
                 for (Permanent creature : toDestroy) {
-                    creature.destroy(source.getSourceId(), game, false);
+                    creature.destroy(source, game, false);
                 }
                 return true;
             }

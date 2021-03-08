@@ -47,7 +47,7 @@ public final class DreamCoat extends CardImpl {
         this.addAbility(new LimitedTimesPerTurnActivatedAbility(Zone.BATTLEFIELD, new BecomesColorOrColorsEnchantedEffect(), new GenericManaCost(0), 1));
     }
 
-    public DreamCoat(final DreamCoat card) {
+    private DreamCoat(final DreamCoat card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class BecomesColorOrColorsEnchantedEffect extends OneShotEffect {
         }
         for (int i = 0; i < 5; i++) {
             if (i > 0) {
-                if (!controller.chooseUse(Outcome.Neutral, "Do you wish to choose another color?", source, game)) {
+                if (!controller.chooseUse(Outcome.Neutral, "Choose another color?", source, game)) {
                     break;
                 }
             }
@@ -109,7 +109,7 @@ class BecomesColorOrColorsEnchantedEffect extends OneShotEffect {
         String colors = new String(sb);
         ObjectColor chosenColors = new ObjectColor(colors);
         ContinuousEffect effect = new BecomesColorTargetEffect(chosenColors, Duration.Custom);
-        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+        effect.setTargetPointer(new FixedTarget(permanent, game));
         game.addEffect(effect, source);
 
         return true;

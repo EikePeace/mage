@@ -42,7 +42,7 @@ public final class MagusOfTheArena extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagusOfTheArena(final MagusOfTheArena card) {
+    private MagusOfTheArena(final MagusOfTheArena card) {
         super(card);
     }
 
@@ -72,11 +72,11 @@ class MagusOfTheArenaEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent creature = game.getPermanent(source.getFirstTarget());
         if (creature != null) {
-            creature.tap(game);
+            creature.tap(source, game);
         }
         creature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (creature != null) {
-            creature.tap(game);
+            creature.tap(source, game);
         }
         return new FightTargetsEffect().apply(game, source);
     }

@@ -28,7 +28,7 @@ public final class NoblePurpose extends CardImpl {
         this.addAbility(new NoblePurposeTriggeredAbility());
     }
 
-    public NoblePurpose(final NoblePurpose card) {
+    private NoblePurpose(final NoblePurpose card) {
         super(card);
     }
 
@@ -55,9 +55,8 @@ class NoblePurposeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE 
-                || event.getType() == EventType.DAMAGED_PLAYER 
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
     
     @Override

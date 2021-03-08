@@ -33,7 +33,7 @@ public final class TempleAltisaur extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new TempleAltisaurPreventEffect()));
     }
 
-    public TempleAltisaur(final TempleAltisaur card) {
+    private TempleAltisaur(final TempleAltisaur card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class TempleAltisaurPreventEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGE_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent permanent = game.getPermanent(event.getTargetId());
             if (permanent != null
                     && !permanent.getId().equals(source.getSourceId())

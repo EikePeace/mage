@@ -30,7 +30,7 @@ public final class TwistedJustice extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public TwistedJustice(final TwistedJustice card) {
+    private TwistedJustice(final TwistedJustice card) {
         super(card);
     }
 
@@ -63,13 +63,13 @@ class TwistedJusticeEffect extends OneShotEffect {
 
         //A spell or ability could have removed the only legal target this player
         //had, if thats the case this ability should fizzle.
-        if (target.canChoose(player.getId(), game)) {
+        if (target.canChoose(source.getSourceId(), player.getId(), game)) {
             player.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
 
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
-                controller.drawCards(permanent.getPower().getValue(), game);
+                permanent.sacrifice(source, game);
+                controller.drawCards(permanent.getPower().getValue(), source, game);
             }
             return true;
         }

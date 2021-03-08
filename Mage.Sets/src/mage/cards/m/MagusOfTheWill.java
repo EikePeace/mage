@@ -50,7 +50,7 @@ public final class MagusOfTheWill extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagusOfTheWill(final MagusOfTheWill card) {
+    private MagusOfTheWill(final MagusOfTheWill card) {
         super(card);
     }
 
@@ -110,22 +110,8 @@ class MagusOfTheWillReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            if (((ZoneChangeEvent) event).getFromZone() == Zone.BATTLEFIELD) {
-                Permanent permanent = ((ZoneChangeEvent) event).getTarget();
-                if (permanent != null) {
-                    return controller.moveCardToExileWithInfo(permanent, null, "", source.getSourceId(), game, ((ZoneChangeEvent) event).getFromZone(), true);
-                }
-            } else {
-                Card card = game.getCard(event.getTargetId());
-                if (card != null) {
-                    return controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, ((ZoneChangeEvent) event).getFromZone(), true);
-                }
-            }
-            return false;
-        }
-        return true;
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
+        return false;
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class SickeningDreams extends CardImpl {
         this.getSpellAbility().addEffect(new DamageEverythingEffect(GetXValue.instance, new FilterCreaturePermanent()));
     }
 
-    public SickeningDreams(final SickeningDreams card) {
+    private SickeningDreams(final SickeningDreams card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class SickeningDreamsAdditionalCost extends VariableCostImpl {
 
     SickeningDreamsAdditionalCost() {
         super("cards to discard");
-        this.text = "as an additional cost to cast this spell, discard X cards";
+        this.text = "discard X cards";
     }
 
     SickeningDreamsAdditionalCost(final SickeningDreamsAdditionalCost cost) {

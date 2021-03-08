@@ -70,7 +70,7 @@ public final class SavageAlliance extends CardImpl {
         this.getSpellAbility().addMode(mode);
     }
 
-    public SavageAlliance(final SavageAlliance card) {
+    private SavageAlliance(final SavageAlliance card) {
         super(card);
     }
 
@@ -134,7 +134,7 @@ class SavageAllianceDamageEffect extends OneShotEffect {
             filter.add(new ControllerIdPredicate(player.getId()));
             List<Permanent> creatures = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game);
             for (Permanent creature : creatures) {
-                creature.damage(1, source.getSourceId(), game, false, true);
+                creature.damage(1, source.getSourceId(), source, game, false, true);
             }
             return true;
         }

@@ -47,7 +47,7 @@ public final class Necropotence extends CardImpl {
 
     }
 
-    public Necropotence(final Necropotence card) {
+    private Necropotence(final Necropotence card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class NecropotenceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override
@@ -119,7 +119,7 @@ class NecropotenceEffect extends OneShotEffect {
                 card.setFaceDown(true, game);
                 Effect returnToHandEffect = new ReturnToHandTargetEffect();
                 returnToHandEffect.setText("put that face down card into your hand");
-                returnToHandEffect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+                returnToHandEffect.setTargetPointer(new FixedTarget(card, game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(returnToHandEffect, TargetController.YOU), source);
                 return true;
             }

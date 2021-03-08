@@ -29,7 +29,7 @@ public final class RageExtractor extends CardImpl {
         this.addAbility(new RageExtractorTriggeredAbility());
     }
 
-    public RageExtractor(final RageExtractor card) {
+    private RageExtractor(final RageExtractor card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class RageExtractorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

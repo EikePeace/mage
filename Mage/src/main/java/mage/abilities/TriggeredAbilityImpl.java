@@ -2,17 +2,19 @@ package mage.abilities;
 
 import mage.MageObject;
 import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.DoIfCostPaid;
 import mage.constants.AbilityType;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.players.Player;
 import mage.util.CardUtil;
 
 import java.util.Locale;
 import java.util.UUID;
+import mage.game.permanent.Permanent;
+import mage.game.permanent.PermanentToken;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -33,6 +35,13 @@ public abstract class TriggeredAbilityImpl extends AbilityImpl implements Trigge
             addEffect(effect);
         }
         this.optional = optional;
+
+        // verify check: DoIfCostPaid effect already asks about action (optional), so no needs to ask it again in triggered ability
+        if (effect instanceof DoIfCostPaid) {
+            if (this.optional && ((DoIfCostPaid) effect).isOptional()) {
+                throw new IllegalArgumentException("DoIfCostPaid effect must have only one optional settings, but it have two (trigger + DoIfCostPaid): " + this.getClass().getSimpleName());
+            }
+        }
     }
 
     public TriggeredAbilityImpl(final TriggeredAbilityImpl ability) {
@@ -112,6 +121,7 @@ public abstract class TriggeredAbilityImpl extends AbilityImpl implements Trigge
                         || ruleLow.startsWith("put")
                         || ruleLow.startsWith("remove")
                         || ruleLow.startsWith("counter")
+                        || ruleLow.startsWith("exchange")
                         || ruleLow.startsWith("goad")) {
                     sb.append("you may ");
                 } else if (!ruleLow.startsWith("its controller may")) {
@@ -171,27 +181,32 @@ public abstract class TriggeredAbilityImpl extends AbilityImpl implements Trigge
                         }
                     }
                 }
+                if (isLeavesTheBattlefieldTrigger()) {
+                    source = zce.getTarget();
+                }
+                break;
             case DESTROYED_PERMANENT:
                 if (isLeavesTheBattlefieldTrigger()) {
-                    if (event.getType() == EventType.DESTROYED_PERMANENT) {
-                        source = game.getLastKnownInformation(getSourceId(), Zone.BATTLEFIELD);
-                    } else if (((ZoneChangeEvent) event).getTarget() != null) {
-                        source = ((ZoneChangeEvent) event).getTarget();
-                    } else {
-                        source = game.getLastKnownInformation(getSourceId(), event.getZone());
-                    }
+                    source = game.getLastKnownInformation(getSourceId(), Zone.BATTLEFIELD);
                 }
+                break;
             case PHASED_OUT:
             case PHASED_IN:
+                if (isLeavesTheBattlefieldTrigger()) {
+                    source = game.getLastKnownInformation(getSourceId(), event.getZone());
+                }
                 if (this.zone == Zone.ALL || game.getLastKnownInformation(getSourceId(), zone) != null) {
                     return this.hasSourceObjectAbility(game, source, event);
                 }
+                break;
         }
         return super.isInUseableZone(game, source, event);
     }
 
     /*
-     603.6c,603.6d
+     603.6c Leaves-the-battlefield abilities, 603.6d
+        if true the game “looks back in time” to determine if those abilities trigger,
+        using the existence of those abilities and the appearance of objects immediately prior to the event (603.10)
      */
     @Override
     public boolean isLeavesTheBattlefieldTrigger() {
@@ -212,4 +227,37 @@ public abstract class TriggeredAbilityImpl extends AbilityImpl implements Trigge
         return optional;
     }
 
+    public static boolean isInUseableZoneDiesTrigger(TriggeredAbility source, GameEvent event, Game game) {
+        // Get the source permanent of the ability 
+        MageObject sourceObject = null;
+        if (game.getState().getZone(source.getSourceId()) == Zone.BATTLEFIELD) {
+            sourceObject = game.getPermanent(source.getSourceId());
+        } else {
+            if (game.getShortLivingLKI(source.getSourceId(), Zone.BATTLEFIELD)) {
+                sourceObject = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+            }
+        }
+        if (sourceObject == null) { // source is no permanent
+            sourceObject = game.getObject(source.getSourceId());
+            if (sourceObject == null || sourceObject.isPermanent()) {
+                return false; // No source object found => ability is not valid
+            }
+        }
+
+        if (!source.hasSourceObjectAbility(game, sourceObject, event)) {
+            return false; // the permanent does currently not have or before it dies the ability so no trigger
+        }
+        
+        // check now it is in graveyard (only if it is no token and was the target itself)
+        if (source.getSourceId().equals(event.getTargetId()) // source is also the target
+                && !(sourceObject instanceof PermanentToken) // it's no token
+                && sourceObject.getZoneChangeCounter(game) + 1 == game.getState().getZoneChangeCounter(source.getSourceId())) { // It's in the next zone
+            Zone after = game.getState().getZone(source.getSourceId());
+            if (after == null || !Zone.GRAVEYARD.match(after)) { // Zone is not the graveyard
+                return false; // Moving to graveyard was replaced so no trigger
+            }
+        }
+
+        return true;
+    }
 }

@@ -19,7 +19,7 @@ import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterPermanentCard;
 import mage.filter.common.FilterPlaneswalkerPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -57,7 +57,7 @@ public final class AjaniUnyielding extends CardImpl {
         this.addAbility(ajaniAbility3);
     }
 
-    public AjaniUnyielding(final AjaniUnyielding card) {
+    private AjaniUnyielding(final AjaniUnyielding card) {
         super(card);
     }
 

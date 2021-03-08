@@ -50,7 +50,7 @@ public final class MasterOfCruelties extends CardImpl {
 
     }
 
-    public MasterOfCruelties(final MasterOfCruelties card) {
+    private MasterOfCruelties(final MasterOfCruelties card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class MasterOfCrueltiesTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_BLOCKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_BLOCKERS;
     }
 
     @Override
@@ -150,9 +150,8 @@ class MasterOfCrueltiesNoDamageEffect extends ContinuousRuleModifyingEffectImpl 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
                 return true;
             default:
                 return false;

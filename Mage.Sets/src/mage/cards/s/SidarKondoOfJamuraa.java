@@ -49,7 +49,7 @@ public final class SidarKondoOfJamuraa extends CardImpl {
         this.addAbility(PartnerAbility.getInstance());
     }
 
-    public SidarKondoOfJamuraa(final SidarKondoOfJamuraa card) {
+    private SidarKondoOfJamuraa(final SidarKondoOfJamuraa card) {
         super(card);
     }
 
@@ -80,8 +80,8 @@ class SidarKondoOfJamuraaCantBlockCreaturesSourceEffect extends RestrictionEffec
 
     @Override
     public boolean applies(Permanent permanent, Ability source, Game game) {
-        if (permanent.hasAbility(FlyingAbility.getInstance().getId(), game)
-                || permanent.hasAbility(ReachAbility.getInstance().getId(), game)) {
+        if (permanent.hasAbility(FlyingAbility.getInstance(), game)
+                || permanent.hasAbility(ReachAbility.getInstance(), game)) {
             return false;
         }
         return game.getOpponents(source.getControllerId()).contains(permanent.getControllerId());

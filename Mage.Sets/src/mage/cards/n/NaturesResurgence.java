@@ -27,7 +27,7 @@ public final class NaturesResurgence extends CardImpl {
         this.getSpellAbility().addEffect(new NaturesResurgenceEffect());
     }
 
-    public NaturesResurgence(final NaturesResurgence card) {
+    private NaturesResurgence(final NaturesResurgence card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class NaturesResurgenceEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int amount = player.getGraveyard().count(filter, game);
-                    player.drawCards(amount, game);
+                    player.drawCards(amount, source, game);
                 }
             }
         }

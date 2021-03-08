@@ -38,7 +38,7 @@ public final class EmberGale extends CardImpl {
 
     }
 
-    public EmberGale(final EmberGale card) {
+    private EmberGale(final EmberGale card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class EmberGaleEffect extends OneShotEffect {
                     new ColorPredicate(ObjectColor.BLUE)));
             filter2.add(CardType.CREATURE.getPredicate());
             for (Permanent creature : game.getBattlefield().getAllActivePermanents(filter2, targetPlayer.getId(), game)) {
-                creature.damage(1, source.getSourceId(), game, false, true);
+                creature.damage(1, source.getSourceId(), source, game, false, true);
             }
             return true;
         }

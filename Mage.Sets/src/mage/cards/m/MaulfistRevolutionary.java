@@ -45,7 +45,7 @@ public final class MaulfistRevolutionary extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MaulfistRevolutionary(final MaulfistRevolutionary card) {
+    private MaulfistRevolutionary(final MaulfistRevolutionary card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class MaulfistRevolutionaryEffect extends OneShotEffect {
                     } else {
                         counterToAdd = new Counter(counter.getName());
                     }
-                    player.addCounters(counterToAdd, game);
+                    player.addCounters(counterToAdd, source.getControllerId(), source, game);
                 }
                 return true;
             }
@@ -96,7 +96,7 @@ class MaulfistRevolutionaryEffect extends OneShotEffect {
                     } else {
                         counterToAdd = new Counter(counter.getName());
                     }
-                    permanent.addCounters(counterToAdd, source, game);
+                    permanent.addCounters(counterToAdd, source.getControllerId(), source, game);
                 }
             }
             return true;

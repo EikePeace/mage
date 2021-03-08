@@ -31,7 +31,7 @@ public final class ThinkTank extends CardImpl {
 
     }
 
-    public ThinkTank(final ThinkTank card) {
+    private ThinkTank(final ThinkTank card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class ThinkTankLookLibraryEffect extends OneShotEffect {
                     CardsImpl cards = new CardsImpl();
                     cards.add(card);
                     controller.lookAtCards("Think Tank", cards, game);
-                    if (controller.chooseUse(Outcome.Neutral, "Do you wish to put the card into your graveyard?", source, game)) {
+                    if (controller.chooseUse(Outcome.Neutral, "Put that card into your graveyard?", source, game)) {
                         return controller.moveCards(card, Zone.GRAVEYARD, source, game);
                     }
 

@@ -36,7 +36,7 @@ public final class Excavation extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Excavation(final Excavation card) {
+    private Excavation(final Excavation card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class ExcavationEffect extends OneShotEffect {
         if (source instanceof ActivatedAbilityImpl) {
             Player activator = game.getPlayer(((ActivatedAbilityImpl) source).getActivatorId());
             if (activator != null) {
-                activator.drawCards(1, game);
+                activator.drawCards(1, source, game);
                 return true;
             }
 

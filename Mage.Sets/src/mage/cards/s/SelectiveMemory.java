@@ -28,7 +28,7 @@ public final class SelectiveMemory extends CardImpl {
         this.getSpellAbility().addEffect(new SelectiveMemoryEffect());
     }
 
-    public SelectiveMemory(final SelectiveMemory card) {
+    private SelectiveMemory(final SelectiveMemory card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class SelectiveMemoryEffect extends OneShotEffect {
                 for (UUID targetId : target.getTargets()) {
                     Card card = player.getLibrary().remove(targetId, game);
                     if (card != null) {
-                        card.moveToExile(null, "", source.getSourceId(), game);
+                        card.moveToExile(null, "", source, game);
                     }
                 }
             }

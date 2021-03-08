@@ -37,7 +37,7 @@ public final class FathomMage extends CardImpl {
         this.addAbility(new FathomMageTriggeredAbility());
     }
 
-    public FathomMage(final FathomMage card) {
+    private FathomMage(final FathomMage card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class FathomMageTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_ADDED;
+        return event.getType() == GameEvent.EventType.COUNTER_ADDED;
     }
 
     @Override

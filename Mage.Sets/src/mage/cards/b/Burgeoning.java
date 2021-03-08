@@ -26,7 +26,7 @@ public final class Burgeoning extends CardImpl {
         this.addAbility(new BurgeoningTriggeredAbility());
     }
 
-    public Burgeoning(final Burgeoning card) {
+    private Burgeoning(final Burgeoning card) {
         super(card);
     }
 
@@ -48,7 +48,7 @@ class BurgeoningTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LAND_PLAYED;
+        return event.getType() == GameEvent.EventType.LAND_PLAYED;
     }
 
     @Override

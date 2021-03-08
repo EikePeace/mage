@@ -47,7 +47,7 @@ public final class KiraGreatGlassSpinner extends CardImpl {
 
     }
 
-    public KiraGreatGlassSpinner(final KiraGreatGlassSpinner card) {
+    private KiraGreatGlassSpinner(final KiraGreatGlassSpinner card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class KiraGreatGlassSpinnerAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

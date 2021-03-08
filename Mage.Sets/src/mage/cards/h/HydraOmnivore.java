@@ -32,7 +32,7 @@ public final class HydraOmnivore extends CardImpl {
         this.addAbility(new DealsDamageToOpponentTriggeredAbility(new HydraOmnivoreEffect(), false, true, true));
     }
 
-    public HydraOmnivore(final HydraOmnivore card) {
+    private HydraOmnivore(final HydraOmnivore card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class HydraOmnivoreEffect extends OneShotEffect {
                 if (!Objects.equals(playerId, damagedOpponent)) {
                     Player opponent = game.getPlayer(playerId);
                     if (opponent != null) {
-                        int dealtDamage = opponent.damage(amount, source.getSourceId(), game);
+                        int dealtDamage = opponent.damage(amount, source.getSourceId(), source, game);
                         game.informPlayers(object.getLogName() + " deals " + dealtDamage + " damage to " + opponent.getLogName());
                     }
                 }

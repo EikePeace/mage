@@ -40,7 +40,7 @@ public final class LumengridAugur extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LumengridAugur(final LumengridAugur card) {
+    private LumengridAugur(final LumengridAugur card) {
         super(card);
     }
 
@@ -71,8 +71,8 @@ class LumengridAugurEffect extends OneShotEffect {
         Player player = game.getPlayer(getTargetPointer().getFirst(game, source));
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
         if (player != null) {
-            player.drawCards(1, game);
-            Card discardedCard = player.discardOne(false, source, game);
+            player.drawCards(1, source, game);
+            Card discardedCard = player.discardOne(false, false, source, game);
             if (discardedCard != null && discardedCard.isArtifact()) {
                 if (sourcePermanent != null) {
                     sourcePermanent.untap(game);

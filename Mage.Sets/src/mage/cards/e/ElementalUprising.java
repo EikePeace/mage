@@ -14,7 +14,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPermanent;
 
 /**
@@ -34,7 +33,7 @@ public final class ElementalUprising extends CardImpl {
         this.getSpellAbility().addEffect(effect);
     }
 
-    public ElementalUprising(final ElementalUprising card) {
+    private ElementalUprising(final ElementalUprising card) {
         super(card);
     }
 

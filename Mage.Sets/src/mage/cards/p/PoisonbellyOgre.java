@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.constants.SetTargetPointer;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -39,7 +39,7 @@ public final class PoisonbellyOgre extends CardImpl {
         
     }
 
-    public PoisonbellyOgre(final PoisonbellyOgre card) {
+    private PoisonbellyOgre(final PoisonbellyOgre card) {
         super(card);
     }
 

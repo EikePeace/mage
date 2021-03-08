@@ -15,12 +15,10 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.FilterCard;
 import mage.game.Game;
-import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.util.CardUtil;
 
 /**
- *
  * @author North
  */
 public class SpellsCostReductionControllerEffect extends CostModificationEffectImpl {
@@ -39,9 +37,7 @@ public class SpellsCostReductionControllerEffect extends CostModificationEffectI
 
         StringBuilder sb = new StringBuilder();
         sb.append(filter.getMessage()).append(" you cast cost ");
-        for (String manaSymbol : manaCostsToReduce.getSymbols()) {
-            sb.append(manaSymbol);
-        }
+        sb.append(manaCostsToReduce.getText());
         sb.append(" less to cast. This effect reduces only the amount of colored mana you pay.");
         this.staticText = sb.toString();
     }
@@ -114,13 +110,9 @@ public class SpellsCostReductionControllerEffect extends CostModificationEffectI
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
         if (abilityToModify instanceof SpellAbility) {
             if (abilityToModify.isControlledBy(source.getControllerId())) {
-                Spell spell = (Spell) game.getStack().getStackObject(abilityToModify.getId());
-                if (spell != null) {
-                    return this.filter.match(spell, source.getSourceId(), source.getControllerId(), game);
-                } else {
-                    // used at least for flashback ability because Flashback ability doesn't use stack or for getPlayables where spell is not cast yet
-                    Card sourceCard = game.getCard(abilityToModify.getSourceId());
-                    return sourceCard != null && this.filter.match(sourceCard, source.getSourceId(), source.getControllerId(), game);
+                Card spellCard = ((SpellAbility) abilityToModify).getCharacteristics(game);;
+                if (spellCard != null) {
+                    return this.filter.match(spellCard, source.getSourceId(), source.getControllerId(), game);
                 }
             }
         }

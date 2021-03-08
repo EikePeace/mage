@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 /**
@@ -41,7 +41,7 @@ public final class StromkirkMentor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public StromkirkMentor(final StromkirkMentor card) {
+    private StromkirkMentor(final StromkirkMentor card) {
         super(card);
     }
 

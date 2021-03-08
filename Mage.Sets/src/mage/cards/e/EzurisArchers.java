@@ -37,7 +37,7 @@ public final class EzurisArchers extends CardImpl {
         this.addAbility(new BlocksCreatureWithFlyingTriggeredAbility(new BoostSourceEffect(3, 0, Duration.EndOfTurn), false));
     }
 
-    public EzurisArchers(final EzurisArchers card) {
+    private EzurisArchers(final EzurisArchers card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class BlocksCreatureWithFlyingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

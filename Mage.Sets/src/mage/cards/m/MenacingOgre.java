@@ -44,7 +44,7 @@ public final class MenacingOgre extends CardImpl {
 
     }
 
-    public MenacingOgre(final MenacingOgre card) {
+    private MenacingOgre(final MenacingOgre card) {
         super(card);
     }
 
@@ -96,10 +96,10 @@ class MenacingOgreEffect extends OneShotEffect {
             if (player != null) {
                 game.informPlayers(player.getLogName() + " chose number " + numberChosen.get(player));
                 if (numberChosen.get(player) >= highestNumber) {
-                    player.loseLife(highestNumber, game, false);
+                    player.loseLife(highestNumber, game, source, false);
                     if (player.getId().equals(source.getControllerId())
                             && menacingOgre != null) {
-                        menacingOgre.addCounters(CounterType.P1P1.createInstance(2), source, game);
+                        menacingOgre.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
                     }
                 }
             }

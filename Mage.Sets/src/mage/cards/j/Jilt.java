@@ -12,7 +12,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
@@ -45,7 +45,7 @@ public final class Jilt extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(JiltAdjuster.instance);
     }
 
-    public Jilt(final Jilt card) {
+    private Jilt(final Jilt card) {
         super(card);
     }
 

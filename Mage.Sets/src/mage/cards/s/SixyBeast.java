@@ -36,7 +36,7 @@ public final class SixyBeast extends CardImpl {
 
     }
 
-    public SixyBeast(final SixyBeast card) {
+    private SixyBeast(final SixyBeast card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class SixyBeastEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (permanent != null && controller != null) {
             int counterAmount = controller.getAmount(0, 6, "Secretly put up to six counters on " + permanent.getName(), game);
-            permanent.addCounters(CounterType.P1P1.createInstance(counterAmount), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(counterAmount), source.getControllerId(), source, game);
             Player opponent = null;
             Set<UUID> opponents = game.getOpponents(source.getControllerId());
             if (!opponents.isEmpty()) {
@@ -85,7 +85,7 @@ class SixyBeastEffect extends OneShotEffect {
                 int guessedAmount = opponent.getAmount(0, 6, "Guess the number of counters on " + permanent.getName(), game);
                 game.informPlayers(opponent.getLogName() + " guessed " + guessedAmount + " as the number of counters on " + permanent.getLogName());
                 if (counterAmount == guessedAmount) {
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                 }
             }
             return true;

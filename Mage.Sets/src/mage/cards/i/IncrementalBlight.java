@@ -36,7 +36,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
@@ -73,7 +73,7 @@ public final class IncrementalBlight extends CardImpl {
         this.getSpellAbility().addTarget(target3);
     }
 
-    public IncrementalBlight(final IncrementalBlight card) {
+    private IncrementalBlight(final IncrementalBlight card) {
         super(card);
     }
 
@@ -105,7 +105,7 @@ class IncrementalBlightEffect extends OneShotEffect {
             i++;
             Permanent creature = game.getPermanent(target.getFirstTarget());
             if (creature != null) {
-                creature.addCounters(CounterType.M1M1.createInstance(i), source, game);
+                creature.addCounters(CounterType.M1M1.createInstance(i), source.getControllerId(), source, game);
             }
         }
         return false;

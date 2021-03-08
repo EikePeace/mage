@@ -40,7 +40,7 @@ public final class SoltariVisionary extends CardImpl {
         this.addAbility(new SoltariVisionaryTriggeredAbility());
     }
 
-    public SoltariVisionary(final SoltariVisionary card) {
+    private SoltariVisionary(final SoltariVisionary card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class SoltariVisionaryTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

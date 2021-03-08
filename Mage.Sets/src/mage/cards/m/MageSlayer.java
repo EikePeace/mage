@@ -33,7 +33,7 @@ public final class MageSlayer extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.Benefit, new GenericManaCost(3), new TargetControlledCreaturePermanent()));
     }
 
-    public MageSlayer(final MageSlayer card) {
+    private MageSlayer(final MageSlayer card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class MageSlayerEffect extends OneShotEffect {
             if (power > 0 && defenderId != null) {
                 UUID sourceId = (UUID) this.getValue("sourceId");
                 if (sourceId != null) {
-                    game.damagePlayerOrPlaneswalker(defenderId, power, source.getSourceId(), game, false, true);
+                    game.damagePlayerOrPlaneswalker(defenderId, power, source.getSourceId(), source, game, false, true);
                 }
             }
             return true;

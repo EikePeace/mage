@@ -50,7 +50,7 @@ public final class ArchdemonOfGreed extends CardImpl {
         this.addAbility(new OnEventTriggeredAbility(GameEvent.EventType.UPKEEP_STEP_PRE, "beginning of your upkeep", new ArchdemonOfGreedEffect(), false));
     }
 
-    public ArchdemonOfGreed(final ArchdemonOfGreed card) {
+    private ArchdemonOfGreed(final ArchdemonOfGreed card) {
         super(card);
     }
 
@@ -85,16 +85,16 @@ public final class ArchdemonOfGreed extends CardImpl {
                 if (player != null) {
                     TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, false);
                     // if they can pay the cost, then they must pay
-                    if (target.canChoose(player.getId(), game)) {
+                    if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                         player.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
                         Permanent humanSacrifice = game.getPermanent(target.getFirstTarget());
                         if (humanSacrifice != null) {
                             // sacrifice the chosen card
-                            return humanSacrifice.sacrifice(source.getSourceId(), game);
+                            return humanSacrifice.sacrifice(source, game);
                         }
                     } else {
-                        permanent.tap(game);
-                        player.damage(9, source.getSourceId(), game);
+                        permanent.tap(source, game);
+                        player.damage(9, source.getSourceId(), source, game);
                     }
                 }
                 return true;

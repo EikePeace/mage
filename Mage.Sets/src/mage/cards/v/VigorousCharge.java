@@ -43,7 +43,7 @@ public final class VigorousCharge extends CardImpl {
 
     }
 
-    public VigorousCharge(final VigorousCharge card) {
+    private VigorousCharge(final VigorousCharge card) {
         super(card);
     }
 
@@ -70,9 +70,8 @@ class VigorousChargeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE
-                || event.getType() == EventType.DAMAGED_PLAYER
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

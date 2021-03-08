@@ -1,11 +1,10 @@
-
 package mage.watchers;
 
 import mage.constants.WatcherScope;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.players.PlayerList;
 import org.apache.log4j.Logger;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import java.io.Serializable;
 import java.lang.reflect.*;
@@ -24,7 +23,6 @@ public abstract class Watcher implements Serializable {
     protected UUID sourceId;
     protected boolean condition;
     protected final WatcherScope scope;
-
 
     public Watcher(WatcherScope scope) {
         this.scope = scope;
@@ -115,27 +113,50 @@ public abstract class Watcher implements Serializable {
                     if (field.getType() == Set.class) {
                         ((Set) field.get(watcher)).clear();
                         ((Set) field.get(watcher)).addAll((Set) field.get(this));
-                    } else if (field.getType() == Map.class) {
-                        Map target = ((Map) field.get(watcher));
-                        target.clear();
-                        Map source = (Map) field.get(this);
-
+                    } else if (field.getType() == Map.class || field.getType() == HashMap.class) {
                         ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
                         Type valueType = parameterizedType.getActualTypeArguments()[1];
-                        if (valueType instanceof ParameterizedTypeImpl && ((ParameterizedTypeImpl) valueType).getRawType().getSimpleName().contains("Set")) {
-                            source.entrySet().forEach(kv -> {
-                                Object key = ((Map.Entry) kv).getKey();
-                                Set value = (Set) ((Map.Entry) kv).getValue();
-                                target.put(key, new HashSet<>(value));
-                            });
-                        }
-                        else {
+                        if (valueType.getTypeName().contains("Set")) {
+                            Map<Object, Set<Object>> source = (Map<Object, Set<Object>>) field.get(this);
+                            Map<Object, Set<Object>> target = (Map<Object, Set<Object>>) field.get(watcher);
+                            target.clear();
+                            for (Map.Entry<Object, Set<Object>> e : source.entrySet()) {
+                                Set<Object> set = new HashSet<>();
+                                set.addAll(e.getValue());
+                                target.put(e.getKey(), set);
+                            }
+                        } else if (valueType.getTypeName().contains("PlayerList")) {
+                            Map<Object, PlayerList> source = (Map<Object, PlayerList>) field.get(this);
+                            Map<Object, PlayerList> target = (Map<Object, PlayerList>) field.get(watcher);
+                            target.clear();
+                            for (Map.Entry<Object, PlayerList> e : source.entrySet()) {
+                                PlayerList list = e.getValue().copy();
+                                target.put(e.getKey(), list);
+                            }
+                        } else if (valueType.getTypeName().contains("List")) {
+                            Map<Object, List<Object>> source = (Map<Object, List<Object>>) field.get(this);
+                            Map<Object, List<Object>> target = (Map<Object, List<Object>>) field.get(watcher);
+                            target.clear();
+                            for (Map.Entry<Object, List<Object>> e : source.entrySet()) {
+                                List<Object> list = new ArrayList<>();
+                                list.addAll(e.getValue());
+                                target.put(e.getKey(), list);
+                            }
+                        } else if (valueType.getTypeName().contains("Map")) {
+                            Map<Object, Map<Object, Object>> source = (Map<Object, Map<Object, Object>>) field.get(this);
+                            Map<Object, Map<Object, Object>> target = (Map<Object, Map<Object, Object>>) field.get(watcher);
+                            target.clear();
+                            for (Map.Entry<Object, Map<Object, Object>> e : source.entrySet()) {
+                                Map<Object, Object> map = new HashMap<>();
+                                map.putAll(e.getValue());
+                                target.put(e.getKey(), map);
+                            }
+                        } else {
                             ((Map) field.get(watcher)).putAll((Map) field.get(this));
                         }
                     } else if (field.getType() == List.class) {
                         ((List) field.get(watcher)).clear();
                         ((List) field.get(watcher)).addAll((List) field.get(this));
-
                     } else {
                         field.set(watcher, field.get(this));
                     }

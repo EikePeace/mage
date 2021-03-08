@@ -47,7 +47,7 @@ public final class SylvanPrimordial extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SylvanPrimordial(final SylvanPrimordial card) {
+    private SylvanPrimordial(final SylvanPrimordial card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class SylvanPrimordialEffect extends OneShotEffect {
             if (target instanceof TargetPermanent) {
                 Permanent targetPermanent = game.getPermanent(target.getFirstTarget());
                 if (targetPermanent != null) {
-                    if (targetPermanent.destroy(source.getSourceId(), game, false)) {
+                    if (targetPermanent.destroy(source, game, false)) {
                         destroyedCreatures++;
                     }
                 }

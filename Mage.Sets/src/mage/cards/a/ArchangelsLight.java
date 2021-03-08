@@ -29,7 +29,7 @@ public final class ArchangelsLight extends CardImpl {
 
     }
 
-    public ArchangelsLight(final ArchangelsLight card) {
+    private ArchangelsLight(final ArchangelsLight card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class ArchangelsLightEffect extends OneShotEffect {
         if (controller != null) {
             controller.gainLife(value.calculate(game, source, this) * 2, game, source);
             for (Card card: controller.getGraveyard().getCards(game)) {
-                controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+                controller.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             }            
             controller.shuffleLibrary(source, game);
             return true;

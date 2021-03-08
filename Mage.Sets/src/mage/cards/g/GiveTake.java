@@ -37,7 +37,7 @@ public final class GiveTake extends SplitCard {
         getRightHalfCard().getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
     }
 
-    public GiveTake(final GiveTake card) {
+    private GiveTake(final GiveTake card) {
         super(card);
     }
 
@@ -69,10 +69,10 @@ class TakeEffect extends OneShotEffect {
         if (creature != null) {
             int numberCounters = creature.getCounters(game).getCount(CounterType.P1P1);
             if (numberCounters > 0) {
-                creature.removeCounters(CounterType.P1P1.getName(), numberCounters, game);
+                creature.removeCounters(CounterType.P1P1.getName(), numberCounters, source, game);
                 Player controller = game.getPlayer(source.getControllerId());
                 if (controller != null) {
-                    controller.drawCards(numberCounters, game);
+                    controller.drawCards(numberCounters, source, game);
                 } else {
                     throw new UnsupportedOperationException("Controller missing");
                 }

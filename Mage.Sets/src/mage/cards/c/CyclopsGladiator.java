@@ -39,7 +39,7 @@ public final class CyclopsGladiator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CyclopsGladiator(final CyclopsGladiator card) {
+    private CyclopsGladiator(final CyclopsGladiator card) {
         super(card);
     }
 
@@ -74,8 +74,8 @@ class CyclopsGladiatorEffect extends OneShotEffect {
                     Permanent permanent = game.getPermanent(target.getFirstTarget());
                     Permanent cyclops = game.getPermanent(source.getSourceId());
                     if (permanent != null && cyclops != null) {
-                        permanent.damage(cyclops.getPower().getValue(), cyclops.getId(), game, false, true);
-                        cyclops.damage(permanent.getPower().getValue(), permanent.getId(), game, false, true);
+                        permanent.damage(cyclops.getPower().getValue(), cyclops.getId(), source, game, false, true);
+                        cyclops.damage(permanent.getPower().getValue(), permanent.getId(), source, game, false, true);
                         return true;
                     }
                 }

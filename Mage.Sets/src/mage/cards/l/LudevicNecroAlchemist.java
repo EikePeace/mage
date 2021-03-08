@@ -41,7 +41,7 @@ public final class LudevicNecroAlchemist extends CardImpl {
         this.addAbility(PartnerAbility.getInstance());
     }
 
-    public LudevicNecroAlchemist(final LudevicNecroAlchemist card) {
+    private LudevicNecroAlchemist(final LudevicNecroAlchemist card) {
         super(card);
     }
 
@@ -103,7 +103,7 @@ class LudevicNecroAlchemistEffect extends OneShotEffect {
         Player player = game.getPlayer(game.getActivePlayerId());
         if (player != null
                 && player.chooseUse(Outcome.DrawCard, "Draw a card?", source, game)) {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
             return true;
         }
         return false;

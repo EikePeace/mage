@@ -38,7 +38,7 @@ public final class WitchbaneOrb extends CardImpl {
 
     }
 
-    public WitchbaneOrb(final WitchbaneOrb card) {
+    private WitchbaneOrb(final WitchbaneOrb card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class WitchbaneOrbEffect extends OneShotEffect {
                 }
             }
             for (Permanent curse : toDestroy) {
-                curse.destroy(source.getSourceId(), game, false);
+                curse.destroy(source, game, false);
             }
             return true;
         }

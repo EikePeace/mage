@@ -35,7 +35,7 @@ public final class InTheEyeOfChaos extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(Zone.BATTLEFIELD, new InTheEyeOfChaosEffect(), filter, false, SetTargetPointer.SPELL));
     }
 
-    public InTheEyeOfChaos(final InTheEyeOfChaos card) {
+    private InTheEyeOfChaos(final InTheEyeOfChaos card) {
         super(card);
     }
 
@@ -68,8 +68,8 @@ class InTheEyeOfChaosEffect extends OneShotEffect {
             Player player = game.getPlayer(spell.getControllerId());
             if (player != null) {
                 Cost cost = ManaUtil.createManaCost(spell.getConvertedManaCost(), true);
-                if (!cost.pay(source, game, source.getSourceId(), player.getId(), false)) {
-                    game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                if (!cost.pay(source, game, source, player.getId(), false)) {
+                    game.getStack().counter(spell.getId(), source, game);
                 }
                 return true;
             }

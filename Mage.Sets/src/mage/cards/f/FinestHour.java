@@ -41,7 +41,7 @@ public final class FinestHour extends CardImpl {
         this.addAbility(new FinestHourAbility());
     }
 
-    public FinestHour(final FinestHour card) {
+    private FinestHour(final FinestHour card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class FinestHourAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override

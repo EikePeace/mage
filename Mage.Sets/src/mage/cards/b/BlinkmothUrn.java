@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.b;
 
 import java.util.UUID;
@@ -36,7 +31,7 @@ public final class BlinkmothUrn extends CardImpl {
         this.addAbility(new BeginningOfPreCombatMainTriggeredAbility(new BlinkmothUrnEffect(), TargetController.ANY, false));
     }
 
-    public BlinkmothUrn(final BlinkmothUrn card) {
+    private BlinkmothUrn(final BlinkmothUrn card) {
         super(card);
     }
 

@@ -54,7 +54,7 @@ public final class VorelOfTheHullClade extends CardImpl {
         
     }
 
-    public VorelOfTheHullClade(final VorelOfTheHullClade card) {
+    private VorelOfTheHullClade(final VorelOfTheHullClade card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class VorelOfTheHullCladeEffect extends OneShotEffect {
         }
         for (Counter counter : target.getCounters(game).values()) {
             Counter newCounter = new Counter(counter.getName(), counter.getCount());
-            target.addCounters(newCounter, source, game);
+            target.addCounters(newCounter, source.getControllerId(), source, game);
         }
         return true;
     }

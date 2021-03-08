@@ -10,7 +10,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
@@ -49,7 +49,7 @@ public final class FallOfTheHammer extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public FallOfTheHammer(final FallOfTheHammer card) {
+    private FallOfTheHammer(final FallOfTheHammer card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class FallOfTheHammerDamageEffect extends OneShotEffect {
             int damage = ownCreature.getPower().getValue();
             Permanent targetCreature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
             if (targetCreature != null) {
-                targetCreature.damage(damage, ownCreature.getId(), game, false, true);
+                targetCreature.damage(damage, ownCreature.getId(), source, game, false, true);
                 return true;
             }
         }

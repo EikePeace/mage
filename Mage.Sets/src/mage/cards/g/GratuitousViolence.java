@@ -29,7 +29,7 @@ public final class GratuitousViolence extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GratuitousViolenceReplacementEffect()));
     }
 
-    public GratuitousViolence(final GratuitousViolence card) {
+    private GratuitousViolence(final GratuitousViolence card) {
         super(card);
     }
 
@@ -58,9 +58,8 @@ class GratuitousViolenceReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
                 return true;
             default:
                 return false;
@@ -82,7 +81,7 @@ class GratuitousViolenceReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

@@ -34,7 +34,7 @@ public final class VillageCannibals extends CardImpl {
         this.addAbility(new VillageCannibalsTriggeredAbility());
     }
 
-    public VillageCannibals(final VillageCannibals card) {
+    private VillageCannibals(final VillageCannibals card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class VillageCannibalsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

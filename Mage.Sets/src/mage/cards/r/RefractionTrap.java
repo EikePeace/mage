@@ -43,7 +43,7 @@ public final class RefractionTrap extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public RefractionTrap(final RefractionTrap card) {
+    private RefractionTrap(final RefractionTrap card) {
         super(card);
     }
 
@@ -125,12 +125,12 @@ class RefractionTrapPreventDamageEffect extends PreventionEffectImpl {
             Permanent permanent = game.getPermanent(damageTarget);
             if (permanent != null) {
                 game.informPlayers("Dealing " + preventionData.getPreventedDamage() + " to " + permanent.getLogName());
-                permanent.damage(preventionData.getPreventedDamage(), source.getSourceId(), game, false, true);
+                permanent.damage(preventionData.getPreventedDamage(), source.getSourceId(), source, game, false, true);
             }
             Player player = game.getPlayer(damageTarget);
             if (player != null) {
                 game.informPlayers("Dealing " + preventionData.getPreventedDamage() + " to " + player.getLogName());
-                player.damage(preventionData.getPreventedDamage(), source.getSourceId(), game);
+                player.damage(preventionData.getPreventedDamage(), source.getSourceId(), source, game);
             }
         }
 

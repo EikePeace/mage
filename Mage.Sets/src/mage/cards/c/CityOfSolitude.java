@@ -29,7 +29,7 @@ public final class CityOfSolitude extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CityOfSolitudeEffect()));
     }
 
-    public CityOfSolitude(final CityOfSolitude card) {
+    private CityOfSolitude(final CityOfSolitude card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class CityOfSolitudeEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL || event.getType() == EventType.ACTIVATE_ABILITY;
+        return event.getType() == GameEvent.EventType.CAST_SPELL || event.getType() == GameEvent.EventType.ACTIVATE_ABILITY;
     }
 
     @Override

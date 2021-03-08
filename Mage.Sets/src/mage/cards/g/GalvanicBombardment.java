@@ -32,12 +32,12 @@ public final class GalvanicBombardment extends CardImpl {
 
         // Galvanic Bombardment deals X damage to target creature, where X is 2 plus the number of cards named Galvanic Bombardment in your graveyard.
         Effect effect = new DamageTargetEffect(new GalvanicBombardmentCardsInControllerGraveyardCount(filter));
-        effect.setText("{this} deals X damage to target creature, where X is 2 plus the number of cards named {source} in your graveyard");
+        effect.setText("{this} deals X damage to target creature, where X is 2 plus the number of cards named {this} in your graveyard");
         this.getSpellAbility().addEffect(effect);
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public GalvanicBombardment(final GalvanicBombardment card) {
+    private GalvanicBombardment(final GalvanicBombardment card) {
         super(card);
     }
 
@@ -60,11 +60,11 @@ class GalvanicBombardmentCardsInControllerGraveyardCount implements DynamicValue
     }
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
         int amount = 0;
-        Player controller = game.getPlayer(source.getControllerId());
+        Player controller = game.getPlayer(sourceAbility.getControllerId());
         if (controller != null) {
-                amount += controller.getGraveyard().count(filter, source.getSourceId(), source.getControllerId(), game);
+                amount += controller.getGraveyard().count(filter, sourceAbility.getSourceId(), sourceAbility.getControllerId(), game);
             }
         return amount + 2;
     }

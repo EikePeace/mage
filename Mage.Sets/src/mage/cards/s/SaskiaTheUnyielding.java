@@ -44,7 +44,7 @@ public final class SaskiaTheUnyielding extends CardImpl {
         ));
     }
 
-    public SaskiaTheUnyielding(final SaskiaTheUnyielding card) {
+    private SaskiaTheUnyielding(final SaskiaTheUnyielding card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ public final class SaskiaTheUnyielding extends CardImpl {
 class SaskiaTheUnyieldingEffect extends OneShotEffect {
 
     public SaskiaTheUnyieldingEffect() {
-        super(Outcome.Benefit);
+        super(Outcome.Detriment);
         this.staticText = "it deals that much damage to the chosen player";
     }
 
@@ -80,7 +80,7 @@ class SaskiaTheUnyieldingEffect extends OneShotEffect {
                 Integer damage = (Integer) this.getValue("damage");
                 UUID sourceId = (UUID) this.getValue("sourceId");
                 if (sourceId != null && damage > 0) {
-                    player.damage(damage, sourceId, game);
+                    player.damage(damage, sourceId, source, game);
                 }
             }
             return true;

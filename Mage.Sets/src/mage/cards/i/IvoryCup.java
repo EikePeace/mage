@@ -29,7 +29,7 @@ public final class IvoryCup extends CardImpl {
         this.addAbility(new IvoryCupAbility());
     }
 
-    public IvoryCup(final IvoryCup card) {
+    private IvoryCup(final IvoryCup card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class IvoryCupAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

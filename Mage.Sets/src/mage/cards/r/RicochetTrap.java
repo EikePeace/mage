@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.target.TargetSpell;
@@ -42,7 +42,7 @@ public final class RicochetTrap extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter));
     }
 
-    public RicochetTrap(final RicochetTrap card) {
+    private RicochetTrap(final RicochetTrap card) {
         super(card);
     }
 

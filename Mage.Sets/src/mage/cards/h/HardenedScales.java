@@ -30,7 +30,7 @@ public final class HardenedScales extends CardImpl {
 
     }
 
-    public HardenedScales(final HardenedScales card) {
+    private HardenedScales(final HardenedScales card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class HardenedScalesEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ADD_COUNTERS;
+        return event.getType() == GameEvent.EventType.ADD_COUNTERS;
     }
 
     @Override

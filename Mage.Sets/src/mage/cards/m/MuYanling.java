@@ -47,7 +47,7 @@ public final class MuYanling extends CardImpl {
         this.addAbility(new LoyaltyAbility(new MuYanlingEffect(), -10));
     }
 
-    public MuYanling(final MuYanling card) {
+    private MuYanling(final MuYanling card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class MuYanlingEffect extends OneShotEffect {
             return false;
         }
         for (Permanent creature : game.getBattlefield().getActivePermanents(filter, player.getId(), source.getSourceId(), game)) {
-            creature.tap(game);
+            creature.tap(source, game);
         }
         return new AddExtraTurnControllerEffect().apply(game, source);
     }

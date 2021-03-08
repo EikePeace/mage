@@ -47,7 +47,7 @@ public final class CurseOfMisfortunes extends CardImpl {
         this.addAbility(new OnEventTriggeredAbility(GameEvent.EventType.UPKEEP_STEP_PRE, "beginning of your upkeep", new CurseOfMisfortunesEffect(), true));
     }
 
-    public CurseOfMisfortunes(final CurseOfMisfortunes card) {
+    private CurseOfMisfortunes(final CurseOfMisfortunes card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ class CurseOfMisfortunesEffect extends OneShotEffect {
                         this.setTargetPointer(new FixedTarget(targetPlayer.getId()));
                         game.getState().setValue("attachTo:" + card.getId(), targetPlayer.getId());
                         if (controller.moveCards(card, Zone.BATTLEFIELD, source, game)) {
-                            targetPlayer.addAttachment(card.getId(), game);
+                            targetPlayer.addAttachment(card.getId(), source, game);
                         }
                     }
                 }

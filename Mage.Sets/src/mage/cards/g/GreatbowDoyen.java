@@ -45,7 +45,7 @@ public final class GreatbowDoyen extends CardImpl {
         this.addAbility(new GreatbowDoyenTriggeredAbility());
     }
 
-    public GreatbowDoyen(final GreatbowDoyen card) {
+    private GreatbowDoyen(final GreatbowDoyen card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class GreatbowDoyenTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
@@ -126,7 +126,7 @@ class GreatbowDoyenEffect extends OneShotEffect {
             if (permanent != null) {
                 Player player = game.getPlayer(controllerId);
                 if (player != null) {
-                    player.damage(damageAmount, sourceOfDamage, game);
+                    player.damage(damageAmount, sourceOfDamage, source, game);
                     game.informPlayers(permanent.getName() + " deals " + damageAmount + " damage to " + player.getLogName());
                     return true;
                 }

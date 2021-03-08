@@ -16,6 +16,7 @@ import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInASingleGraveyard;
 import mage.target.common.TargetCardInYourGraveyard;
+import mage.target.targetpointer.FixedTargets;
 import mage.util.CardUtil;
 
 /**
@@ -25,18 +26,21 @@ import mage.util.CardUtil;
 public class ExileFromGraveCost extends CostImpl {
 
     private final List<Card> exiledCards = new ArrayList<>();
+    private boolean setTargetPointer = false;
 
     public ExileFromGraveCost(TargetCardInYourGraveyard target) {
         target.setNotTarget(true);
         this.addTarget(target);
         if (target.getMaxNumberOfTargets() > 1) {
-            this.text = "Exile "
+            this.text = "exile "
                     + (target.getNumberOfTargets() == 1 && target.getMaxNumberOfTargets() == Integer.MAX_VALUE ? "one or more"
                     : ((target.getNumberOfTargets() < target.getMaxNumberOfTargets() ? "up to " : ""))
                     + CardUtil.numberToText(target.getMaxNumberOfTargets()))
                     + ' ' + target.getTargetName();
         } else {
-            this.text = "Exile " + target.getTargetName();
+            this.text = "exile "
+                    + (target.getTargetName().startsWith("card ") ? "a ":"") 
+                    + target.getTargetName();
         }
         if (!this.text.endsWith(" from your graveyard")) {
             this.text = this.text + " from your graveyard";
@@ -52,19 +56,25 @@ public class ExileFromGraveCost extends CostImpl {
     public ExileFromGraveCost(TargetCardInASingleGraveyard target) {
         target.setNotTarget(true);
         this.addTarget(target);
-        this.text = "Exile " + target.getTargetName();
+        this.text = "exile " + target.getTargetName();
+    }
+
+    public ExileFromGraveCost(TargetCardInYourGraveyard target, boolean setTargetPointer) {
+        this(target);
+        this.setTargetPointer = setTargetPointer;
     }
 
     public ExileFromGraveCost(final ExileFromGraveCost cost) {
         super(cost);
         this.exiledCards.addAll(cost.getExiledCards());
+        this.setTargetPointer = cost.setTargetPointer;
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
-            if (targets.choose(Outcome.Exile, controllerId, sourceId, game)) {
+            if (targets.choose(Outcome.Exile, controllerId, source.getSourceId(), game)) {
                 for (UUID targetId : targets.get(0).getTargets()) {
                     Card card = game.getCard(targetId);
                     if (card == null || game.getState().getZone(targetId) != Zone.GRAVEYARD) {
@@ -75,6 +85,9 @@ public class ExileFromGraveCost extends CostImpl {
                 Cards cardsToExile = new CardsImpl();
                 cardsToExile.addAll(exiledCards);
                 controller.moveCards(cardsToExile, Zone.EXILED, ability, game);
+                if (setTargetPointer) {
+                    source.getEffects().setTargetPointer(new FixedTargets(cardsToExile, game));
+                }
                 paid = true;
             }
 
@@ -83,8 +96,8 @@ public class ExileFromGraveCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return targets.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return targets.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override

@@ -18,7 +18,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.permanent.token.DragonToken2;
 
@@ -64,7 +64,7 @@ public final class LathlissDragonQueen extends CardImpl {
         ));
     }
 
-    public LathlissDragonQueen(final LathlissDragonQueen card) {
+    private LathlissDragonQueen(final LathlissDragonQueen card) {
         super(card);
     }
 

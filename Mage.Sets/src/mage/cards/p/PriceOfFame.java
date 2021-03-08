@@ -36,7 +36,7 @@ public final class PriceOfFame extends CardImpl {
 
         // This spell costs {2} less to cast if it targets a legendary creature.
         this.addAbility(new SimpleStaticAbility(
-                Zone.STACK, new SpellCostReductionSourceEffect(2, condition)
+                Zone.ALL, new SpellCostReductionSourceEffect(2, condition).setCanWorksOnStackOnly(true)
         ).setRuleAtTheTop(true));
 
         // Destroy target creature.
@@ -47,7 +47,7 @@ public final class PriceOfFame extends CardImpl {
         this.getSpellAbility().addEffect(new SurveilEffect(2));
     }
 
-    public PriceOfFame(final PriceOfFame card) {
+    private PriceOfFame(final PriceOfFame card) {
         super(card);
     }
 

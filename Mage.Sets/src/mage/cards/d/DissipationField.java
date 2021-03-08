@@ -27,7 +27,7 @@ public final class DissipationField extends CardImpl {
         this.addAbility(new DissipationFieldAbility());
     }
 
-    public DissipationField(final DissipationField card) {
+    private DissipationField(final DissipationField card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class DissipationFieldAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

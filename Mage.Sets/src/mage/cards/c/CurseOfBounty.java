@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import java.util.HashSet;
@@ -19,6 +18,7 @@ import mage.target.targetpointer.FixedTarget;
 import java.util.UUID;
 import mage.abilities.common.EnchantedPlayerAttackedTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
+import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.players.Player;
 
@@ -43,7 +43,7 @@ public final class CurseOfBounty extends CardImpl {
         this.addAbility(new EnchantedPlayerAttackedTriggeredAbility(new CurseOfBountyEffect()));
     }
 
-    public CurseOfBounty(final CurseOfBounty card) {
+    private CurseOfBounty(final CurseOfBounty card) {
         super(card);
     }
 
@@ -71,7 +71,12 @@ class CurseOfBountyEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        // In the case that the enchantment is blinked
+        Permanent enchantment = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+        if (enchantment == null) {
+            // It was not blinked, use the standard method
+            enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        }
         if (enchantment != null) {
             Player enchantedPlayer = game.getPlayer(enchantment.getAttachedTo());
             if (enchantedPlayer != null) {

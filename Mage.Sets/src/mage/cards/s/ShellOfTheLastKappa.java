@@ -1,7 +1,7 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.SacrificeSourceCost;
@@ -66,7 +66,7 @@ public final class ShellOfTheLastKappa extends CardImpl {
 
     }
 
-    public ShellOfTheLastKappa(final ShellOfTheLastKappa card) {
+    private ShellOfTheLastKappa(final ShellOfTheLastKappa card) {
         super(card);
     }
 
@@ -101,12 +101,12 @@ class ShellOfTheLastKappaEffect extends OneShotEffect {
                 sourcePermanent = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
             }
             if (sourcePermanent != null) {
-                game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                game.getStack().counter(spell.getId(), source, game);
                 Card card = spell.getCard();
                 if (card != null) {
                     return card.moveToExile(CardUtil.getExileZoneId(game, source.getSourceId(),
                             sourcePermanent.getZoneChangeCounter(game)),
-                            sourcePermanent.getName(), source.getSourceId(), game);
+                            sourcePermanent.getName(), source, game);
                 }
             }
         }
@@ -143,11 +143,10 @@ class ShellOfTheLastKappaCastEffect extends OneShotEffect {
                             sourcePermanent.getZoneChangeCounter(game))), target, game)) {
                 Card card = game.getCard(target.getFirstTarget());
                 if (card != null
-                        && controller.chooseUse(outcome, "Do you wish to cast card exiled with "
-                                + sourcePermanent.getLogName() + "?", source, game)) {
+                        && controller.chooseUse(outcome, "Cast " + card.getLogName() + " without paying its mana cost?", source, game)) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                     Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     return cardWasCast;
                 }

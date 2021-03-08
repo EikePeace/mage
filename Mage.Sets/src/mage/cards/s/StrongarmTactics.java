@@ -32,7 +32,7 @@ public final class StrongarmTactics extends CardImpl {
         this.getSpellAbility().addEffect(new StrongarmTacticsEffect());
     }
 
-    public StrongarmTactics(final StrongarmTactics card) {
+    private StrongarmTactics(final StrongarmTactics card) {
         super(card);
     }
 
@@ -85,8 +85,8 @@ class StrongarmTacticsEffect extends OneShotEffect {
                         for (UUID cardId : cardsPlayer) {
                             Card card = game.getCard(cardId);
                             if (card != null) {
-                                if (!(player.discard(card, source, game) && card.isCreature())) {
-                                    player.loseLife(4, game, false);
+                                if (!(player.discard(card, false, source, game) && card.isCreature())) {
+                                    player.loseLife(4, game, source, false);
                                 }
                             }
                         }

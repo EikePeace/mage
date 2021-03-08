@@ -59,7 +59,7 @@ public final class UmezawasJitte extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public UmezawasJitte(final UmezawasJitte card) {
+    private UmezawasJitte(final UmezawasJitte card) {
         super(card);
     }
 
@@ -91,8 +91,7 @@ class UmezawasJitteAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
         switch(event.getType()) {
-            case DAMAGED_CREATURE:
-            case DAMAGED_PLANESWALKER:
+            case DAMAGED_PERMANENT:
             case DAMAGED_PLAYER:
             case COMBAT_DAMAGE_STEP_PRE:
                 return true;
@@ -109,7 +108,7 @@ class UmezawasJitteAbility extends TriggeredAbilityImpl {
                 return true;
             }
         }
-        if (event.getType() == EventType.COMBAT_DAMAGE_STEP_PRE) {
+        if (event.getType() == GameEvent.EventType.COMBAT_DAMAGE_STEP_PRE) {
             usedInPhase = false;
         }
         return false;

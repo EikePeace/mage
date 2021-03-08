@@ -26,7 +26,7 @@ public final class DingusStaff extends CardImpl {
         addAbility(new DiesCreatureTriggeredAbility(new DingusStaffEffect(), false, false, true));
     }
 
-    public DingusStaff(final DingusStaff card) {
+    private DingusStaff(final DingusStaff card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class DingusStaffEffect extends OneShotEffect {
         if (permanent != null) {
             Player controller = game.getPlayer(permanent.getControllerId());
             if (controller != null) {
-                controller.damage(2, source.getSourceId(), game);
+                controller.damage(2, source.getSourceId(), source, game);
                 return true;
             }
         }

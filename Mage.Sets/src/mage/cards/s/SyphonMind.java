@@ -26,7 +26,7 @@ public final class SyphonMind extends CardImpl {
 
     }
 
-    public SyphonMind(final SyphonMind card) {
+    private SyphonMind(final SyphonMind card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class SyphonMindEffect extends OneShotEffect {
                         if (otherPlayer.choose(Outcome.Discard, target, source.getSourceId(), game)) {
                             Card card = game.getCard(target.getFirstTarget());
                             if (card != null) {
-                                if (otherPlayer.discard(card, source, game)) {
+                                if (otherPlayer.discard(card, false, source, game)) {
                                     amount += 1;
                                     result = true;
                                     target.clearChosen();
@@ -76,7 +76,7 @@ class SyphonMindEffect extends OneShotEffect {
                     }
                 }
             }
-            you.drawCards(amount, game);
+            you.drawCards(amount, source, game);
         }
         return result;
     }

@@ -25,7 +25,7 @@ public final class StrongholdDiscipline extends CardImpl {
         this.getSpellAbility().addEffect(new StrongholdDisciplineEffect());
     }
 
-    public StrongholdDiscipline(final StrongholdDiscipline card) {
+    private StrongholdDiscipline(final StrongholdDiscipline card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class StrongholdDisciplineEffect extends OneShotEffect {
                 if (count > 0) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.loseLife(count, game, false);
+                        player.loseLife(count, game, source, false);
                     }
                 }
             }

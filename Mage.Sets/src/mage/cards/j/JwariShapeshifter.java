@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class JwariShapeshifter extends CardImpl {
         this.addAbility(new EntersBattlefieldAbility(new CopyPermanentEffect(filter), true));
     }
 
-    public JwariShapeshifter(final JwariShapeshifter card) {
+    private JwariShapeshifter(final JwariShapeshifter card) {
         super(card);
     }
 

@@ -47,7 +47,7 @@ public final class StarlitSanctum extends CardImpl {
         this.addAbility(ability);
     }
 
-    public StarlitSanctum(final StarlitSanctum card) {
+    private StarlitSanctum(final StarlitSanctum card) {
         super(card);
     }
 
@@ -116,7 +116,7 @@ class StarlitSanctumBlackEffect extends OneShotEffect {
         if (amount > 0) {
             Player player = game.getPlayer(source.getFirstTarget());
             if (player != null) {
-                player.loseLife(amount, game, false);
+                player.loseLife(amount, game, source, false);
                 return true;
             }
         }

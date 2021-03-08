@@ -4,22 +4,22 @@ import mage.abilities.Abilities;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCost;
 import mage.abilities.costs.mana.ManaCosts;
-import mage.abilities.keyword.ChangelingAbility;
 import mage.abilities.text.TextPart;
 import mage.cards.Card;
 import mage.cards.FrameStyle;
 import mage.constants.CardType;
 import mage.constants.SubType;
+import mage.constants.SubTypeSet;
 import mage.constants.SuperType;
 import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 
 import java.io.Serializable;
-import java.util.EnumSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public interface MageObject extends MageItem, Serializable {
 
@@ -33,17 +33,52 @@ public interface MageObject extends MageItem, Serializable {
 
     void setName(String name);
 
-    Set<CardType> getCardType();
+    ArrayList<CardType> getCardType();
 
-    SubTypeList getSubtype(Game game);
+    /**
+     * Return original object's subtypes
+     *
+     * @return
+     */
+    SubTypes getSubtype();
+
+    /**
+     * Return full subtypes list (from object, from effects)
+     *
+     * @param game
+     * @return
+     */
+    SubTypes getSubtype(Game game);
 
     boolean hasSubtype(SubType subtype, Game game);
 
     Set<SuperType> getSuperType();
 
+    /**
+     * For cards: return basic abilities (without dynamic added)
+     * For permanents: return all abilities (dynamic ability inserts into permanent)
+     *
+     * @return
+     */
     Abilities<Ability> getAbilities();
 
-    boolean hasAbility(UUID abilityId, Game game);
+    /**
+     * Must return object specific abilities that will be added to the game
+     * It's a one time action on card/command object putting to the game
+     * <p>
+     * If your object contains inner cards/parts then each card will be added separately,
+     * see GameImpl.loadCards. So you must return only parent specific abilities here. All
+     * other abilities will be added from the parts.
+     *
+     * @return
+     */
+    default Abilities<Ability> getInitAbilities() {
+        return getAbilities();
+    }
+
+    boolean hasAbility(Ability ability, Game game);
+
+    ObjectColor getColor();
 
     ObjectColor getColor(Game game);
 
@@ -53,6 +88,14 @@ public interface MageObject extends MageItem, Serializable {
 
     ManaCosts<ManaCost> getManaCost();
 
+    default List<String> getManaCostSymbols() {
+        List<String> symbols = new ArrayList<>();
+        for (ManaCost cost : getManaCost()) {
+            symbols.add(cost.getText());
+        }
+        return symbols;
+    }
+
     int getConvertedManaCost();
 
     MageInt getPower();
@@ -60,6 +103,8 @@ public interface MageObject extends MageItem, Serializable {
     MageInt getToughness();
 
     int getStartingLoyalty();
+
+    void setStartingLoyalty(int startingLoyalty);
 
     void adjustCosts(Ability ability, Game game);
 
@@ -84,7 +129,7 @@ public interface MageObject extends MageItem, Serializable {
     default boolean isHistoric() {
         return getCardType().contains(CardType.ARTIFACT)
                 || getSuperType().contains(SuperType.LEGENDARY)
-                || hasSubtype(SubType.SAGA, null);
+                || getSubtype().contains(SubType.SAGA);
     }
 
     default boolean isCreature() {
@@ -119,6 +164,10 @@ public interface MageObject extends MageItem, Serializable {
         return getCardType().contains(CardType.PLANESWALKER);
     }
 
+    default boolean isTribal() {
+        return getCardType().contains(CardType.TRIBAL);
+    }
+
     default boolean isPermanent() {
         return isCreature() || isArtifact() || isPlaneswalker() || isEnchantment() || isLand();
     }
@@ -132,6 +181,9 @@ public interface MageObject extends MageItem, Serializable {
     }
 
     default void addSuperType(SuperType superType) {
+        if (getSuperType().contains(superType)) {
+            return;
+        }
         getSuperType().add(superType);
     }
 
@@ -144,7 +196,110 @@ public interface MageObject extends MageItem, Serializable {
     }
 
     default void addCardType(CardType cardType) {
+        if (getCardType().contains(cardType)) {
+            return;
+        }
         getCardType().add(cardType);
+    }
+
+    /**
+     * Add subtype temporary, for continuous effects only
+     *
+     * @param game
+     * @param subTypes
+     */
+    default void addSubType(Game game, Collection<SubType> subTypes) {
+        for (SubType subType : subTypes) {
+            addSubType(game, subType);
+        }
+    }
+
+    /**
+     * Add subtype permanently, for one shot effects and tokens setup
+     *
+     * @param subTypes
+     */
+    default void addSubType(SubType... subTypes) {
+        for (SubType subType : subTypes) {
+            if (subType.canGain(this)
+                    && !getSubtype().contains(subType)) {
+                getSubtype().add(subType);
+            }
+        }
+    }
+
+    /**
+     * Add subtype temporary, for continuous effects only
+     *
+     * @param game
+     * @param subTypes
+     */
+    default void addSubType(Game game, SubType... subTypes) {
+        for (SubType subType : subTypes) {
+            if (subType.canGain(this)
+                    && !hasSubtype(subType, game)) {
+                game.getState().getCreateMageObjectAttribute(this, game).getSubtype().add(subType);
+            }
+        }
+    }
+
+    default void copySubTypesFrom(Game game, MageObject mageObject) {
+        copySubTypesFrom(game, mageObject, null);
+    }
+
+    default void copySubTypesFrom(Game game, MageObject mageObject, SubTypeSet subTypeSet) {
+        if (subTypeSet == SubTypeSet.CreatureType || subTypeSet == null) {
+            this.setIsAllCreatureTypes(game, mageObject.isAllCreatureTypes(game));
+        }
+        for (SubType subType : mageObject.getSubtype(game)) {
+            if (subType.getSubTypeSet() == subTypeSet || subTypeSet == null) {
+                this.addSubType(game, subType);
+            }
+        }
+    }
+
+    default void removeAllSubTypes(Game game) {
+        removeAllSubTypes(game, null);
+    }
+
+    default void removeAllSubTypes(Game game, SubTypeSet subTypeSet) {
+        if (subTypeSet == null) {
+            setIsAllCreatureTypes(game, false);
+            game.getState().getCreateMageObjectAttribute(this, game).getSubtype().clear();
+        } else if (subTypeSet == SubTypeSet.CreatureType) {
+            removeAllCreatureTypes(game);
+        } else if (subTypeSet == SubTypeSet.NonBasicLandType) {
+            game.getState().getCreateMageObjectAttribute(this, game).getSubtype().removeAll(SubType.getLandTypes());
+        } else {
+            game.getState().getCreateMageObjectAttribute(this, game).getSubtype().removeAll(SubType.getBySubTypeSet(subTypeSet));
+        }
+    }
+
+    default void retainAllEnchantmentSubTypes(Game game) {
+        setIsAllCreatureTypes(game, false);
+        game.getState().getCreateMageObjectAttribute(this, game).getSubtype().retainAll(SubType.getEnchantmentTypes());
+    }
+
+    /**
+     * Remove object's own creature types forever (for copy effects usage)
+     */
+    default void removeAllCreatureTypes() {
+        setIsAllCreatureTypes(false);
+        getSubtype().removeAll(SubType.getCreatureTypes());
+    }
+
+    /**
+     * Remove object attribute's creature types temporary (for continuous effects usage)
+     *
+     * @param game
+     */
+    default void removeAllCreatureTypes(Game game) {
+        setIsAllCreatureTypes(game, false);
+        game.getState().getCreateMageObjectAttribute(this, game).getSubtype().removeAll(SubType.getCreatureTypes());
+    }
+
+    default void removeSubType(Game game, SubType subType) {
+        game.getState().getCreateMageObjectAttribute(this, game).getSubtype().remove(subType);
     }
 
     /**
@@ -173,34 +328,51 @@ public interface MageObject extends MageItem, Serializable {
         return false;
     }
 
-    default boolean shareSubtypes(Card otherCard, Game game) {
-
-        if (otherCard == null) {
-            throw new IllegalArgumentException("Params can't be null");
+    default boolean shareCreatureTypes(Game game, MageObject otherCard) {
+        if (!isCreature() && !isTribal()) {
+            return false;
         }
-
-        if (this.isCreature() && otherCard.isCreature()) {
-            if (this.getAbilities().contains(ChangelingAbility.getInstance())
-                    || this.isAllCreatureTypes()
-                    || otherCard.getAbilities().contains(ChangelingAbility.getInstance())
-                    || otherCard.isAllCreatureTypes()) {
-                return true;
-            }
+        if (!otherCard.isCreature() && !otherCard.isTribal()) {
+            return false;
         }
-        for (SubType subtype : this.getSubtype(game)) {
-            if (otherCard.hasSubtype(subtype, game)) {
-                return true;
-            }
+        boolean isAllA = this.isAllCreatureTypes(game);
+        boolean isAnyA = isAllA || this.getSubtype(game)
+                .stream()
+                .map(SubType::getSubTypeSet)
+                .anyMatch(SubTypeSet.CreatureType::equals);
+        boolean isAllB = otherCard.isAllCreatureTypes(game);
+        boolean isAnyB = isAllB || otherCard
+                .getSubtype(game)
+                .stream()
+                .map(SubType::getSubTypeSet)
+                .anyMatch(SubTypeSet.CreatureType::equals);
+        if (!isAnyA || !isAnyB) {
+            return false;
         }
-
-        return false;
+        if (isAllA) {
+            return isAllB || isAnyB;
+        }
+        return isAnyA
+                && (isAllB || this
+                .getSubtype(game)
+                .stream()
+                .filter(subType -> subType.getSubTypeSet() == SubTypeSet.CreatureType)
+                .anyMatch(subType -> otherCard.hasSubtype(subType, game)));
     }
 
-    boolean isAllCreatureTypes();
+    boolean isAllCreatureTypes(Game game);
 
     void setIsAllCreatureTypes(boolean value);
 
-    default void addCardTypes(Set<CardType> cardType) {
+    /**
+     * Change all creature type mark temporary, for continuous effects only
+     *
+     * @param game
+     * @param value
+     */
+    void setIsAllCreatureTypes(Game game, boolean value);
+
+    default void addCardTypes(ArrayList<CardType> cardType) {
         getCardType().addAll(cardType);
     }
 

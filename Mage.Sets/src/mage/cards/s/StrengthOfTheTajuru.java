@@ -33,7 +33,7 @@ public final class StrengthOfTheTajuru extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(StrengthOfTheTajuruAdjuster.instance);
     }
 
-    public StrengthOfTheTajuru(final StrengthOfTheTajuru card) {
+    private StrengthOfTheTajuru(final StrengthOfTheTajuru card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class StrengthOfTheTajuruAddCountersTargetEffect extends OneShotEffect {
 
     public StrengthOfTheTajuruAddCountersTargetEffect() {
         super(Outcome.BoostCreature);
-        staticText = "Choose target creature, then choose another target creature for each time Strength of the Tajuru was kicked. Put X +1/+1 counters on each of them";
+        staticText = "Choose target creature, then choose another target creature for each time this spell was kicked. Put X +1/+1 counters on each of them";
     }
 
     public StrengthOfTheTajuruAddCountersTargetEffect(final StrengthOfTheTajuruAddCountersTargetEffect effect) {
@@ -73,7 +73,7 @@ class StrengthOfTheTajuruAddCountersTargetEffect extends OneShotEffect {
         for (UUID uuid : targetPointer.getTargets(game, source)) {
             Permanent permanent = game.getPermanent(uuid);
             if (permanent != null) {
-                permanent.addCounters(counter.copy(), source, game);
+                permanent.addCounters(counter.copy(), source.getControllerId(), source, game);
                 affectedTargets++;
             }
         }

@@ -6,7 +6,6 @@ import mage.abilities.Ability;
 import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.effects.common.continuous.BoostAllEffect;
 import mage.abilities.keyword.DevoidAbility;
-import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -36,7 +35,7 @@ public final class FlayingTendrils extends CardImpl {
         this.getSpellAbility().addEffect(new FlayingTendrilsReplacementEffect());
     }
 
-    public FlayingTendrils(final FlayingTendrils card) {
+    private FlayingTendrils(final FlayingTendrils card) {
         super(card);
     }
 
@@ -74,7 +73,7 @@ class FlayingTendrilsReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

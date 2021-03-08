@@ -6,10 +6,8 @@ import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
-import mage.abilities.mana.BlackManaAbility;
 import mage.abilities.mana.BlueManaAbility;
 import mage.abilities.mana.GreenManaAbility;
-import mage.abilities.mana.RedManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -36,7 +34,7 @@ public final class SimicLocket extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SimicLocket(final SimicLocket card) {
+    private SimicLocket(final SimicLocket card) {
         super(card);
     }
 

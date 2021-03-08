@@ -16,7 +16,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class FoundryStreetDenizen extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn), filter, false, null, true));
     }
 
-    public FoundryStreetDenizen(final FoundryStreetDenizen card) {
+    private FoundryStreetDenizen(final FoundryStreetDenizen card) {
         super(card);
     }
 

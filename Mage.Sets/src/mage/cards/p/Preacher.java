@@ -4,8 +4,6 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.common.SkipUntapOptionalAbility;
-import mage.abilities.condition.CompoundCondition;
-import mage.abilities.condition.common.SourceHasRemainedInSameZoneCondition;
 import mage.abilities.condition.common.SourceTappedCondition;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.decorator.ConditionalContinuousEffect;
@@ -38,14 +36,14 @@ public final class Preacher extends CardImpl {
         // You may choose not to untap Preacher during your untap step.
         this.addAbility(new SkipUntapOptionalAbility());
 
-        // {tap}: Gain control of target creature of an opponent's choice that they control for as long as Preacher remains tapped.
+        // {T}: Gain control of target creature of an opponent's choice that they control for as long as Preacher remains tapped.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new PreacherEffect(), new TapSourceCost());
         ability.addTarget(new TargetOpponentsChoicePermanent(1, 1, new FilterControlledCreaturePermanent(), false));
         this.addAbility(ability);
 
     }
 
-    public Preacher(final Preacher card) {
+    private Preacher(final Preacher card) {
         super(card);
     }
 
@@ -74,22 +72,17 @@ class PreacherEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
+        Permanent targetPermanent = game.getPermanent(source.getFirstTarget());
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null
-                && sourcePermanent != null) {
-            Permanent targetPermanent = game.getPermanent(source.getFirstTarget());
-            if (targetPermanent != null) {
-                SourceTappedCondition sourceTappedCondition = SourceTappedCondition.instance;
-                SourceHasRemainedInSameZoneCondition conditionSourceSameZone = new SourceHasRemainedInSameZoneCondition(sourcePermanent.getId());
-                SourceHasRemainedInSameZoneCondition conditionTargetSameZone = new SourceHasRemainedInSameZoneCondition(targetPermanent.getId());
-                ConditionalContinuousEffect effect = new ConditionalContinuousEffect(
-                        new GainControlTargetEffect(Duration.Custom),
-                        new CompoundCondition(sourceTappedCondition, new CompoundCondition(conditionSourceSameZone, conditionTargetSameZone)),
-                        "Gain control of target creature of an opponent's choice that they control for as long as {this} remains tapped");
-                effect.setTargetPointer(new FixedTarget(targetPermanent.getId()));
-                game.addEffect(effect, source);
-                return true;
-            }
+        if (controller != null && sourcePermanent != null && targetPermanent != null) {
+            SourceTappedCondition sourceTappedCondition = SourceTappedCondition.instance;
+            ConditionalContinuousEffect effect = new ConditionalContinuousEffect(
+                    new GainControlTargetEffect(Duration.Custom),
+                    sourceTappedCondition,
+                    "Gain control of target creature of an opponent's choice that they control for as long as {this} remains tapped");
+            effect.setTargetPointer(new FixedTarget(targetPermanent.getId()));
+            game.addEffect(effect, source);
+            return true;
         }
         return false;
     }

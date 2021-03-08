@@ -7,7 +7,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePlayerOrPlaneswalker;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -24,24 +24,23 @@ public final class ConeOfFlame extends CardImpl {
     public ConeOfFlame(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{R}{R}");
 
-        // Cone of Flame deals 1 damage to any target, 2 damage to another any target, and 3 damage to a third any target.
-        FilterCreaturePlayerOrPlaneswalker filter1 = new FilterCreaturePlayerOrPlaneswalker("creature, player or planeswalker to deal 1 damage");
+        // Cone of Flame deals 1 damage to any target, 2 damage to another target, and 3 damage to a third target.
+        // 1
+        FilterCreaturePlayerOrPlaneswalker filter1 = new FilterCreaturePlayerOrPlaneswalker("any target to deal 1 damage");
         TargetAnyTarget target1 = new TargetAnyTarget(1, 1, filter1);
         target1.setTargetTag(1);
         this.getSpellAbility().addTarget(target1);
-
-        FilterCreaturePlayerOrPlaneswalker filter2 = new FilterCreaturePlayerOrPlaneswalker("another creature, player or planeswalker to deal 2 damage");
-        AnotherTargetPredicate predicate2 = new AnotherTargetPredicate(2);
-        filter2.getCreatureFilter().add(predicate2);
-        filter2.getPlayerFilter().add(predicate2);
+        // 2
+        FilterCreaturePlayerOrPlaneswalker filter2 = new FilterCreaturePlayerOrPlaneswalker("another target to deal 2 damage");
+        filter2.getPermanentFilter().add(new AnotherTargetPredicate(2));
+        filter2.getPlayerFilter().add(new AnotherTargetPredicate(2));
         TargetAnyTarget target2 = new TargetAnyTarget(1, 1, filter2);
         target2.setTargetTag(2);
         this.getSpellAbility().addTarget(target2);
-
-        FilterCreaturePlayerOrPlaneswalker filter3 = new FilterCreaturePlayerOrPlaneswalker("another creature, player or planeswalker to deal 3 damage");
-        AnotherTargetPredicate predicate3 = new AnotherTargetPredicate(3);
-        filter3.getCreatureFilter().add(predicate3);
-        filter3.getPlayerFilter().add(predicate3);
+        // 3
+        FilterCreaturePlayerOrPlaneswalker filter3 = new FilterCreaturePlayerOrPlaneswalker("third target to deal 3 damage");
+        filter3.getPermanentFilter().add(new AnotherTargetPredicate(3));
+        filter3.getPlayerFilter().add(new AnotherTargetPredicate(3));
         TargetAnyTarget target3 = new TargetAnyTarget(1, 1, filter3);
         target3.setTargetTag(3);
         this.getSpellAbility().addTarget(target3);
@@ -49,7 +48,7 @@ public final class ConeOfFlame extends CardImpl {
         this.getSpellAbility().addEffect(new ConeOfFlameEffect());
     }
 
-    public ConeOfFlame(final ConeOfFlame card) {
+    private ConeOfFlame(final ConeOfFlame card) {
         super(card);
     }
 
@@ -63,7 +62,7 @@ class ConeOfFlameEffect extends OneShotEffect {
 
     public ConeOfFlameEffect() {
         super(Outcome.Damage);
-        this.staticText = "{source} deals 1 damage to any target, "
+        this.staticText = "{this} deals 1 damage to any target, "
                 + "2 damage to another target, "
                 + "and 3 damage to a third target";
     }
@@ -84,11 +83,11 @@ class ConeOfFlameEffect extends OneShotEffect {
         for (Target target : source.getTargets()) {
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                applied |= (permanent.damage(damage, source.getSourceId(), game, false, true) > 0);
+                applied |= (permanent.damage(damage, source.getSourceId(), source, game, false, true) > 0);
             }
             Player player = game.getPlayer(target.getFirstTarget());
             if (player != null) {
-                applied |= (player.damage(damage, source.getSourceId(), game) > 0);
+                applied |= (player.damage(damage, source.getSourceId(), source, game) > 0);
             }
             damage++;
         }

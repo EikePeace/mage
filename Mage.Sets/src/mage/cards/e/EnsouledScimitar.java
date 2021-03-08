@@ -18,7 +18,6 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -38,7 +37,7 @@ public final class EnsouledScimitar extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new ManaCostsImpl("{2}")));
     }
 
-    public EnsouledScimitar(final EnsouledScimitar card) {
+    private EnsouledScimitar(final EnsouledScimitar card) {
         super(card);
     }
 

@@ -15,7 +15,7 @@ import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -51,7 +51,7 @@ public final class GlyphOfReincarnation extends CardImpl {
         this.getSpellAbility().addWatcher(new BlockedAttackerWatcher());
     }
 
-    public GlyphOfReincarnation(final GlyphOfReincarnation card) {
+    private GlyphOfReincarnation(final GlyphOfReincarnation card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class GlyphOfReincarnationEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent targetWall = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent targetWall = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && targetWall != null) {
             BlockedAttackerWatcher watcher = game.getState().getWatcher(BlockedAttackerWatcher.class);
             if (watcher != null) {
@@ -88,7 +88,7 @@ class GlyphOfReincarnationEffect extends OneShotEffect {
                 for (Permanent creature : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), source.getSourceId(), game)) {
                     if (!creature.getId().equals(targetWall.getId())) {
                         if (watcher.creatureHasBlockedAttacker(new MageObjectReference(creature, game), new MageObjectReference(targetWall, game), game)) {
-                            if (creature.destroy(source.getSourceId(), game, true)
+                            if (creature.destroy(source, game, true)
                                     && game.getState().getZone(creature.getId()) == Zone.GRAVEYARD) { // If a commander is replaced to command zone, the creature does not die
                                 Player permController = game.getPlayer(creature.getControllerId());
                                 if (permController != null) {

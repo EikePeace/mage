@@ -27,7 +27,7 @@ public final class MorophonTheBoundless extends CardImpl {
             = new FilterCreaturePermanent("creatures you control of the chosen type");
 
     static {
-        filter.add(ChosenSubtypePredicate.instance);
+        filter.add(ChosenSubtypePredicate.TRUE);
         filter2.add(TargetController.YOU.getControllerPredicate());
     }
 
@@ -40,7 +40,7 @@ public final class MorophonTheBoundless extends CardImpl {
         this.toughness = new MageInt(6);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         // As Morophon, the Boundless enters the battlefield, choose a creature type.
         this.addAbility(new AsEntersBattlefieldAbility(new ChooseCreatureTypeEffect(Outcome.BoostCreature)));

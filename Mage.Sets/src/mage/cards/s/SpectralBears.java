@@ -36,7 +36,7 @@ public final class SpectralBears extends CardImpl {
         this.addAbility(new SpectralBearsTriggeredAbility());
     }
 
-    public SpectralBears(final SpectralBears card) {
+    private SpectralBears(final SpectralBears card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class SpectralBearsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

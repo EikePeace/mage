@@ -12,17 +12,14 @@ import mage.abilities.text.TextPart;
 import mage.cards.Card;
 import mage.cards.FrameStyle;
 import mage.constants.CardType;
-import mage.constants.SpellAbilityType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
 import mage.util.GameLog;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Commander implements CommandObject {
 
@@ -34,17 +31,38 @@ public class Commander implements CommandObject {
     public Commander(Card card) {
         this.sourceObject = card;
 
-        // replace spell ability by commander cast spell (to cast from command zone)
-        if (card.getSpellAbility() != null) {
-            abilities.add(new CastCommanderAbility(card, card.getSpellAbility()));
-        }
+        // All abilities must be added to the game before usage. It adding by addCard and addCommandObject calls
+        // Example: if commander from mdf card then
+        // * commander object adds cast/play as commander abilities
+        // * sourceObject adds normal cast/play abilities and all other things
 
-        // replace alternative spell abilities by commander cast spell (to cast from command zone)
+        // replace spell ability by commander cast spell (to cast from command zone)
         for (Ability ability : card.getAbilities()) {
             if (ability instanceof SpellAbility) {
                 SpellAbility spellAbility = (SpellAbility) ability;
-                if (spellAbility.getSpellAbilityType() == SpellAbilityType.BASE_ALTERNATE) {
-                    abilities.add(new CastCommanderAbility(card, spellAbility));
+                switch (spellAbility.getSpellAbilityType()) {
+                    case BASE:
+                    case BASE_ALTERNATE:
+                    case SPLIT:
+                    case SPLIT_FUSED:
+                    case SPLIT_LEFT:
+                    case SPLIT_RIGHT:
+                    case MODAL:
+                    case MODAL_LEFT:
+                    case MODAL_RIGHT:
+                    case ADVENTURE_SPELL:
+                        // can be used from command zone
+                        if (canUseAbilityFromCommandZone(spellAbility)) {
+                            abilities.add(new CastCommanderAbility(card, spellAbility));
+                        }
+                        break;
+                    case FACE_DOWN_CREATURE: // dynamic added spell for alternative cost like cast as face down
+                    case SPLICE: // only from hand
+                    case SPLIT_AFTERMATH: // only from graveyard
+                        // can't use from command zone
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Error, unknown spell type in commander card: " + spellAbility.getSpellAbilityType() + " from " + card.getName());
                 }
             }
         }
@@ -52,17 +70,36 @@ public class Commander implements CommandObject {
         // replace play land with commander play land (to play from command zone)
         for (Ability ability : card.getAbilities()) {
             if (ability instanceof PlayLandAbility) {
-                Ability newAbility = new PlayLandAsCommanderAbility((PlayLandAbility) ability);
-                abilities.add(newAbility);
+                if (canUseAbilityFromCommandZone(ability)) {
+                    Ability newAbility = new PlayLandAsCommanderAbility((PlayLandAbility) ability);
+                    abilities.add(newAbility);
+                }
             }
         }
 
         // other abilities
         for (Ability ability : card.getAbilities()) {
-            if (!(ability instanceof SpellAbility) && !(ability instanceof PlayLandAbility)) {
-                Ability newAbility = ability.copy();
-                abilities.add(newAbility);
+            // skip already added above
+            if (ability instanceof SpellAbility || ability instanceof PlayLandAbility) {
+                continue;
             }
+
+            // all other abilities must be added to commander (example: triggers from command zone, alternative cost, etc)
+            // no changes to ability zone, so can add any
+            Ability newAbility = ability.copy();
+            abilities.add(newAbility);
+        }
+    }
+
+    private boolean canUseAbilityFromCommandZone(Ability ability) {
+        // ability can be restricted by zone usage, so you must ignore it for commander (example: Escape or Jumpstart)
+        switch (ability.getZone()) {
+            case ALL:
+            case COMMAND:
+            case HAND:
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -129,16 +166,20 @@ public class Commander implements CommandObject {
 
     @Override
     public void setName(String name) {
-
     }
 
     @Override
-    public Set<CardType> getCardType() {
+    public ArrayList<CardType> getCardType() {
         return sourceObject.getCardType();
     }
 
     @Override
-    public SubTypeList getSubtype(Game game) {
+    public SubTypes getSubtype() {
+        return sourceObject.getSubtype();
+    }
+
+    @Override
+    public SubTypes getSubtype(Game game) {
         return sourceObject.getSubtype(game);
     }
 
@@ -158,12 +199,33 @@ public class Commander implements CommandObject {
     }
 
     @Override
-    public boolean hasAbility(UUID abilityId, Game game) {
-        if (this.getAbilities().containsKey(abilityId)) {
+    public Abilities<Ability> getInitAbilities() {
+        // see commander contruction comments for more info
+
+        // collect ignore list
+        Set<UUID> ignore = new HashSet<>();
+        sourceObject.getAbilities().forEach(ability -> ignore.add(ability.getId()));
+
+        // return only object specific abilities
+        Abilities<Ability> res = new AbilitiesImpl<>();
+        this.getAbilities().stream()
+                .filter(ability -> !ignore.contains(ability.getId()))
+                .forEach(res::add);
+        return res;
+    }
+
+    @Override
+    public boolean hasAbility(Ability ability, Game game) {
+        if (this.getAbilities().contains(ability)) {
             return true;
         }
         Abilities<Ability> otherAbilities = game.getState().getAllOtherAbilities(getId());
-        return otherAbilities != null && otherAbilities.containsKey(abilityId);
+        return otherAbilities != null && otherAbilities.contains(ability);
+    }
+
+    @Override
+    public ObjectColor getColor() {
+        return sourceObject.getColor();
     }
 
     @Override
@@ -207,6 +269,10 @@ public class Commander implements CommandObject {
     }
 
     @Override
+    public void setStartingLoyalty(int startingLoyalty) {
+    }
+
+    @Override
     public void adjustCosts(Ability ability, Game game) {
     }
 
@@ -240,12 +306,16 @@ public class Commander implements CommandObject {
     }
 
     @Override
-    public boolean isAllCreatureTypes() {
+    public boolean isAllCreatureTypes(Game game) {
         return false;
     }
 
     @Override
     public void setIsAllCreatureTypes(boolean value) {
+    }
+
+    @Override
+    public void setIsAllCreatureTypes(Game game, boolean value) {
     }
 
     @Override

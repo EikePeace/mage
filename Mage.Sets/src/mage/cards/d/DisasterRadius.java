@@ -34,7 +34,7 @@ public final class DisasterRadius extends CardImpl {
         this.getSpellAbility().addEffect(new DisasterRadiusEffect());
     }
 
-    public DisasterRadius(final DisasterRadius card) {
+    private DisasterRadius(final DisasterRadius card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class DisasterRadiusEffect extends OneShotEffect {
             int damage = cost.convertedManaCosts;
             for (Permanent creature : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game)) {
                 if (creature != null) {
-                    creature.damage(damage, source.getSourceId(), game, false, false);
+                    creature.damage(damage, source.getSourceId(), source, game, false, false);
                 }
             }
             return true;

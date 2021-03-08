@@ -7,7 +7,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -32,7 +32,7 @@ public final class BloodFeud extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public BloodFeud(final BloodFeud card) {
+    private BloodFeud(final BloodFeud card) {
         super(card);
     }
 

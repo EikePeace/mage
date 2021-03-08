@@ -3,7 +3,7 @@ package mage.cards.e;
 
 import mage.abilities.Ability;
 import mage.abilities.condition.InvertCondition;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.decorator.ConditionalOneShotEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.SacrificeEffect;
@@ -30,13 +30,13 @@ public final class Epicenter extends CardImpl {
         // Target player sacrifices a land.
         this.getSpellAbility().addEffect(new ConditionalOneShotEffect(
                 new SacrificeEffect(StaticFilters.FILTER_LAND, 1, "Target player"),
-                new InvertCondition(new CardsInControllerGraveCondition(7)),
+                new InvertCondition(new CardsInControllerGraveyardCondition(7)),
                 "Target player sacrifices a land"
         ));
         // Threshold - Each player sacrifices all lands they control instead if seven or more cards are in your graveyard.
         this.getSpellAbility().addEffect(new ConditionalOneShotEffect(
                 new EpicenterEffect(),
-                new CardsInControllerGraveCondition(7),
+                new CardsInControllerGraveyardCondition(7),
                 "<br/><br/><i>Threshold</i> &mdash; Each player sacrifices all lands they control instead " +
                         "if seven or more cards are in your graveyard."
         ));
@@ -44,7 +44,7 @@ public final class Epicenter extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Epicenter(final Epicenter card) {
+    private Epicenter(final Epicenter card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class EpicenterEffect extends OneShotEffect {
         while (permanents.hasNext()) {
             Permanent p = permanents.next();
             if (p.isLand()) {
-                p.sacrifice(source.getSourceId(), game);
+                p.sacrifice(source, game);
             }
         }
 

@@ -40,7 +40,7 @@ public final class ForsakenWastes extends CardImpl {
         this.addAbility(new ForsakenWastesTriggeredAbility());
     }
 
-    public ForsakenWastes(final ForsakenWastes card) {
+    private ForsakenWastes(final ForsakenWastes card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class ForsakenWastesTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

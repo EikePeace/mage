@@ -37,7 +37,7 @@ public final class DrogskolReaver extends CardImpl {
         this.addAbility(new DrogskolReaverAbility());
     }
 
-    public DrogskolReaver(final DrogskolReaver card) {
+    private DrogskolReaver(final DrogskolReaver card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class DrogskolReaverAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAINED_LIFE;
+        return event.getType() == GameEvent.EventType.GAINED_LIFE;
     }
 
     @Override

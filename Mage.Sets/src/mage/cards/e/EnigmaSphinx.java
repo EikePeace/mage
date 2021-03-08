@@ -46,7 +46,7 @@ public final class EnigmaSphinx extends CardImpl {
         this.addAbility(new CascadeAbility());
     }
 
-    public EnigmaSphinx(final EnigmaSphinx card) {
+    private EnigmaSphinx(final EnigmaSphinx card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class EnigmaSphinxTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -126,7 +126,7 @@ class EnigmaSphinxEffect extends OneShotEffect {
         }
         Card card = (Card) source.getSourceObjectIfItStillExists(game);
         if (card != null) {
-            controller.putCardOnTopXOfLibrary(card, game, source, 3);
+            controller.putCardOnTopXOfLibrary(card, game, source, 3, true);
         }
         return true;
     }

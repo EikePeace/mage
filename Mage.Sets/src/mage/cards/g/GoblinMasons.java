@@ -3,7 +3,7 @@ package mage.cards.g;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -33,13 +33,13 @@ public final class GoblinMasons extends CardImpl {
         this.toughness = new MageInt(1);
 
         //When Goblin Masons dies, destroy target Wall
-        DiesTriggeredAbility ability = new DiesTriggeredAbility(new DestroyTargetEffect(), false);
+        DiesSourceTriggeredAbility ability = new DiesSourceTriggeredAbility(new DestroyTargetEffect(), false);
         ability.addTarget(new TargetPermanent(filter));
         this.addAbility(ability);
     
     }
 
-    public GoblinMasons(final GoblinMasons card) {
+    private GoblinMasons(final GoblinMasons card) {
         super(card);
     }
 

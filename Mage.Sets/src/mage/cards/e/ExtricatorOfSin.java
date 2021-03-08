@@ -20,7 +20,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.EldraziHorrorToken;
 import mage.target.common.TargetControlledPermanent;
 
@@ -59,7 +59,7 @@ public final class ExtricatorOfSin extends CardImpl {
                 .addHint(DeliriumHint.instance));
     }
 
-    public ExtricatorOfSin(final ExtricatorOfSin card) {
+    private ExtricatorOfSin(final ExtricatorOfSin card) {
         super(card);
     }
 

@@ -1,5 +1,6 @@
 package mage.cards.b;
 
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.condition.common.ManaWasSpentCondition;
 import mage.abilities.decorator.ConditionalOneShotEffect;
@@ -18,12 +19,11 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
-import java.util.UUID;
-
 /**
  * @author Dilnu
  */
 public final class BorosFuryShield extends CardImpl {
+
     private static final FilterAttackingOrBlockingCreature filter = new FilterAttackingOrBlockingCreature();
 
     public BorosFuryShield(UUID ownerId, CardSetInfo setInfo) {
@@ -39,7 +39,7 @@ public final class BorosFuryShield extends CardImpl {
                 new ManaWasSpentCondition(ColoredManaSymbol.R), "If {R} was spent to cast this spell, it deals damage to that creature's controller equal to the creature's power"));
     }
 
-    public BorosFuryShield(final BorosFuryShield card) {
+    private BorosFuryShield(final BorosFuryShield card) {
         super(card);
     }
 
@@ -49,6 +49,7 @@ public final class BorosFuryShield extends CardImpl {
     }
 
     static class BorosFuryShieldDamageEffect extends OneShotEffect {
+
         BorosFuryShieldDamageEffect() {
             super(Outcome.Damage);
             staticText = "{this} deals damage to that creature's controller equal to the creature's power";
@@ -60,12 +61,12 @@ public final class BorosFuryShield extends CardImpl {
 
         @Override
         public boolean apply(Game game, Ability source) {
-            Permanent target = game.getPermanent(targetPointer.getFirst(game, source));
+            Permanent target = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (target != null) {
                 Player player = game.getPlayer(target.getControllerId());
                 if (player != null) {
                     int power = target.getPower().getValue();
-                    player.damage(power, source.getId(), game);
+                    player.damage(power, source.getId(), source, game);
                 }
 
             }

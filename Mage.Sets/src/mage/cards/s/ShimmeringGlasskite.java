@@ -38,7 +38,7 @@ public final class ShimmeringGlasskite extends CardImpl {
 
     }
 
-    public ShimmeringGlasskite(final ShimmeringGlasskite card) {
+    private ShimmeringGlasskite(final ShimmeringGlasskite card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ShimmeringGlasskiteAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

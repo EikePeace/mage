@@ -13,7 +13,7 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetCardInGraveyard;
@@ -34,7 +34,7 @@ public final class Gravestorm extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Gravestorm(final Gravestorm card) {
+    private Gravestorm(final Gravestorm card) {
         super(card);
     }
 
@@ -73,13 +73,13 @@ class GravestormEffect extends OneShotEffect {
             if (opponentChoosesExile && targetPlayer.chooseTarget(Outcome.Exile, target, source, game)) {
                 Card card = game.getCard(target.getFirstTarget());
                 if (card != null) {                    
-                    opponentExilesACard = targetPlayer.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                    opponentExilesACard = targetPlayer.moveCardToExileWithInfo(card, null, "", source, game, Zone.GRAVEYARD, true);
                 }
             }
             
             if (!opponentExilesACard) {                
                 if (you.chooseUse(Outcome.DrawCard, "Draw a card?", source, game)) {
-                    you.drawCards(1, game);                            
+                    you.drawCards(1, source, game);
                 }
             }
             return true;

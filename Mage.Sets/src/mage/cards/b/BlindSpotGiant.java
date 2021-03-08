@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class BlindSpotGiant extends CardImpl {
 
     }
 
-    public BlindSpotGiant(final BlindSpotGiant card) {
+    private BlindSpotGiant(final BlindSpotGiant card) {
         super(card);
     }
 

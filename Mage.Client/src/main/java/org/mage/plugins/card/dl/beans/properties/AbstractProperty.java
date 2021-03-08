@@ -1,11 +1,7 @@
-/**
- * AbstractProperty.java
- * 
- * Created on 24.08.2010
- */
-
 package org.mage.plugins.card.dl.beans.properties;
 
+
+import java.util.Objects;
 
 import static java.lang.String.*;
 
@@ -28,7 +24,7 @@ public abstract class AbstractProperty<T> implements Property<T> {
         if(!(obj instanceof Property<?>)) return false;
         Object value = getValue();
         Object other = ((Property<?>) obj).getValue();
-        return value == other || (value != null && value.equals(other));
+        return Objects.equals(value, other);
     }
 
     @Override

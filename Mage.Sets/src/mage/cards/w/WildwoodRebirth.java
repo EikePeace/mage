@@ -5,7 +5,6 @@ import mage.abilities.effects.common.ReturnFromGraveyardToHandTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.filter.StaticFilters;
 import mage.target.common.TargetCardInYourGraveyard;
 
 import java.util.UUID;
@@ -23,7 +22,7 @@ public final class WildwoodRebirth extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard());
     }
 
-    public WildwoodRebirth(final WildwoodRebirth card) {
+    private WildwoodRebirth(final WildwoodRebirth card) {
         super(card);
     }
 

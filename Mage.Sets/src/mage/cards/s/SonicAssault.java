@@ -30,7 +30,7 @@ public final class SonicAssault extends CardImpl {
         this.addAbility(new JumpStartAbility(this));
     }
 
-    public SonicAssault(final SonicAssault card) {
+    private SonicAssault(final SonicAssault card) {
         super(card);
     }
 
@@ -63,12 +63,12 @@ class SonicAssaultEffect extends OneShotEffect {
         if (creature == null) {
             return false;
         }
-        creature.tap(game);
+        creature.tap(source, game);
         Player player = game.getPlayer(creature.getControllerId());
         if (player == null) {
             return false;
         }
-        player.damage(2, source.getSourceId(), game);
+        player.damage(2, source.getSourceId(), source, game);
         return true;
     }
 }

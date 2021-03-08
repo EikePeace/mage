@@ -16,6 +16,7 @@ import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.PreventDamageEvent;
+import mage.game.events.PreventedDamageEvent;
 import mage.game.permanent.Permanent;
 
 import java.util.UUID;
@@ -36,7 +37,7 @@ public final class PhyrexianHydra extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PhyrexianHydraEffect()));
     }
 
-    public PhyrexianHydra(final PhyrexianHydra card) {
+    private PhyrexianHydra(final PhyrexianHydra card) {
         super(card);
     }
 
@@ -71,16 +72,16 @@ class PhyrexianHydraEffect extends PreventionEffectImpl {
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         boolean retValue = false;
-        GameEvent preventEvent = new PreventDamageEvent(source.getFirstTarget(), source.getSourceId(), source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
+        GameEvent preventEvent = new PreventDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
         int damage = event.getAmount();
         if (!game.replaceEvent(preventEvent)) {
             event.setAmount(0);
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), damage));
+            game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), damage));
             retValue = true;
         }
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.addCounters(CounterType.M1M1.createInstance(damage), source, game);
+            permanent.addCounters(CounterType.M1M1.createInstance(damage), source.getControllerId(), source, game);
         }
         return retValue;
     }

@@ -25,7 +25,7 @@ public final class ChakramRetriever extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{U}");
 
         this.subtype.add(SubType.ELEMENTAL);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(2);
         this.toughness = new MageInt(4);
 
@@ -42,7 +42,7 @@ public final class ChakramRetriever extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ChakramRetriever(final ChakramRetriever card) {
+    private ChakramRetriever(final ChakramRetriever card) {
         super(card);
     }
 

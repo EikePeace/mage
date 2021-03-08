@@ -33,7 +33,7 @@ public final class Providence extends CardImpl {
 
     }
 
-    public Providence(final Providence card) {
+    private Providence(final Providence card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class ProvidenceDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

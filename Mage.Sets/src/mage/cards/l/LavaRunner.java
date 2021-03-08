@@ -36,7 +36,7 @@ public final class LavaRunner extends CardImpl {
         this.addAbility(new LavaRunnerAbility());
     }
 
-    public LavaRunner(final LavaRunner card) {
+    private LavaRunner(final LavaRunner card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class LavaRunnerAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

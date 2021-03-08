@@ -46,7 +46,7 @@ public final class DeepfathomSkulker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DeepfathomSkulker(final DeepfathomSkulker card) {
+    private DeepfathomSkulker(final DeepfathomSkulker card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class DeepfathomSkulkerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

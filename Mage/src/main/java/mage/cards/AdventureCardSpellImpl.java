@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards;
 
+import mage.abilities.Ability;
 import mage.abilities.Modes;
 import mage.abilities.SpellAbility;
 import mage.abilities.effects.common.ExileAdventureSpellEffect;
@@ -65,13 +61,13 @@ public class AdventureCardSpellImpl extends CardImpl implements AdventureCardSpe
     }
 
     @Override
-    public boolean moveToZone(Zone toZone, UUID sourceId, Game game, boolean flag, List<UUID> appliedEffects) {
-        return adventureCardParent.moveToZone(toZone, sourceId, game, flag, appliedEffects);
+    public boolean moveToZone(Zone toZone, Ability source, Game game, boolean flag, List<UUID> appliedEffects) {
+        return adventureCardParent.moveToZone(toZone, source, game, flag, appliedEffects);
     }
 
     @Override
-    public boolean moveToExile(UUID exileId, String name, UUID sourceId, Game game, List<UUID> appliedEffects) {
-        return adventureCardParent.moveToExile(exileId, name, sourceId, game, appliedEffects);
+    public boolean moveToExile(UUID exileId, String name, Ability source, Game game, List<UUID> appliedEffects) {
+        return adventureCardParent.moveToExile(exileId, name, source, game, appliedEffects);
     }
 
     @Override

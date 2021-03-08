@@ -32,7 +32,7 @@ public final class Tombfire extends CardImpl {
 
     }
 
-    public Tombfire(final Tombfire card) {
+    private Tombfire(final Tombfire card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class TombfireEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
             for (Card card : targetPlayer.getGraveyard().getCards(filter, game)) {
-                card.moveToExile(null, "", source.getSourceId(), game);
+                card.moveToExile(null, "", source, game);
             }
             return true;
         } 

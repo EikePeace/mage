@@ -1,11 +1,16 @@
 package mage.game;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import mage.abilities.Abilities;
 import mage.abilities.AbilitiesImpl;
 import mage.abilities.Ability;
+import mage.counters.Counter;
 import mage.counters.Counters;
 
 /**
@@ -19,6 +24,7 @@ public class CardState implements Serializable {
     protected Counters counters;
     protected Abilities<Ability> abilities;
     protected boolean lostAllAbilities;
+    protected boolean melded;
 
     private static final Map<String, String> emptyInfo = new HashMap<>();
     private static final Abilities<Ability> emptyAbilities = new AbilitiesImpl<>();
@@ -41,6 +47,7 @@ public class CardState implements Serializable {
             }
         }
         this.lostAllAbilities = state.lostAllAbilities;
+        this.melded = state.melded;
     }
 
     public CardState copy() {
@@ -117,4 +124,38 @@ public class CardState implements Serializable {
         this.lostAllAbilities = lostAllAbilities;
     }
 
+    public boolean isMelded() {
+        return melded;
+    }
+
+    public void setMelded(boolean melded) {
+        this.melded = melded;
+    }
+
+    @Override
+    public String toString() {
+        List<String> info = new ArrayList<>();
+
+        if (this.faceDown) {
+            info.add("face down");
+        }
+        if (this.counters != null && !this.counters.isEmpty()) {
+            info.add("counters: " + this.counters.values().stream().mapToInt(Counter::getCount).sum());
+        }
+        if (this.abilities != null && !this.abilities.isEmpty()) {
+            info.add("abilities: " + abilities.size());
+        }
+        if (this.lostAllAbilities) {
+            info.add("lost all");
+        }
+        if (this.melded) {
+            info.add("melded");
+        }
+
+        if (info.isEmpty()) {
+            return "";
+        } else {
+            return String.join("; ", info);
+        }
+    }
 }

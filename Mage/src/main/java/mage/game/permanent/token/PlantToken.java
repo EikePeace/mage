@@ -1,31 +1,22 @@
-
-
 package mage.game.permanent.token;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import mage.MageInt;
 import mage.constants.CardType;
 import mage.constants.SubType;
 
+import java.util.Arrays;
+
 public final class PlantToken extends TokenImpl {
 
-    static final private List<String> tokenImageSets = new ArrayList<>();
-
-    static {
-        tokenImageSets.addAll(Arrays.asList("WWK", "DDP", "OGW"));
-    }
-
     public PlantToken() {
-        super("Plant", "0/1 green Plant creature");
+        super("Plant", "0/1 green Plant creature token");
         cardType.add(CardType.CREATURE);
         color.setGreen(true);
         subtype.add(SubType.PLANT);
         power = new MageInt(0);
         toughness = new MageInt(1);
 
-        availableImageSetCodes = tokenImageSets;
+        availableImageSetCodes = Arrays.asList("ARC", "C13", "C18", "DDP", "OGW", "PC2", "WWK", "XLN", "ZEN", "ZNR", "CMR");
     }
 
     public PlantToken(final PlantToken token) {
@@ -34,5 +25,10 @@ public final class PlantToken extends TokenImpl {
 
     public PlantToken copy() {
         return new PlantToken(this);
+    }
+
+    @Override
+    public void setExpansionSetCodeForImage(String code) {
+        super.setExpansionSetCodeForImage(code);
     }
 }

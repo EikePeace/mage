@@ -58,7 +58,7 @@ public final class ArachnusSpinner extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ArachnusSpinner(final ArachnusSpinner card) {
+    private ArachnusSpinner(final ArachnusSpinner card) {
         super(card);
     }
 
@@ -115,7 +115,7 @@ class ArachnusSpinnerEffect extends OneShotEffect {
             if (permanent != null) {
                 game.getState().setValue("attachTo:" + card.getId(), permanent.getId());
                 if (controller.moveCards(card, Zone.BATTLEFIELD, source, game)) {
-                    permanent.addAttachment(card.getId(), game); // shouldn't this be done automatically by the logic using the "attachTo:" calue?
+                    permanent.addAttachment(card.getId(), source, game); // shouldn't this be done automatically by the logic using the "attachTo:" calue?
                 }
             }
         }

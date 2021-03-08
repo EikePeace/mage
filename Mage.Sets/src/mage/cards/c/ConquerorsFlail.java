@@ -44,7 +44,7 @@ public final class ConquerorsFlail extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(2)));
     }
 
-    public ConquerorsFlail(final ConquerorsFlail card) {
+    private ConquerorsFlail(final ConquerorsFlail card) {
         super(card);
     }
 
@@ -63,8 +63,8 @@ class ConquerorsFlailColorCount implements DynamicValue {
     }
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
-        Player controller = game.getPlayer(source.getControllerId());
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
+        Player controller = game.getPlayer(sourceAbility.getControllerId());
         int count = 0;
         if (controller != null) {
             Mana mana = new Mana();

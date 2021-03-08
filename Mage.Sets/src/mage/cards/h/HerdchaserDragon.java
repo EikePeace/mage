@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class HerdchaserDragon extends CardImpl {
         this.addAbility(new TurnedFaceUpSourceTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(), filter), false, false));
     }
 
-    public HerdchaserDragon(final HerdchaserDragon card) {
+    private HerdchaserDragon(final HerdchaserDragon card) {
         super(card);
     }
 

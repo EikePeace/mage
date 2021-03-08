@@ -53,7 +53,7 @@ public final class LivingArtifact extends CardImpl {
             new SourceHasCounterCondition(CounterType.VITALITY, 1), "At the beginning of your upkeep, you may remove a vitality counter from {this}. If you do, you gain 1 life"));
     }
 
-    public LivingArtifact(final LivingArtifact card) {
+    private LivingArtifact(final LivingArtifact card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class LivingArtifactTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

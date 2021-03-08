@@ -43,7 +43,7 @@ public final class BrineSeer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BrineSeer(final BrineSeer card) {
+    private BrineSeer(final BrineSeer card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class BrineSeerEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         RevealTargetFromHandCost cost = new RevealTargetFromHandCost(new TargetCardInHand(0, Integer.MAX_VALUE, filter));
-        if (!cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
+        if (!cost.pay(source, game, source, source.getControllerId(), true)) {
             return false;
         }
         int xValue = cost.getNumberRevealedCards();

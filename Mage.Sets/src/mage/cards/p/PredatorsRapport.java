@@ -31,7 +31,7 @@ public final class PredatorsRapport extends CardImpl {
         this.getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
     }
 
-    public PredatorsRapport(final PredatorsRapport card) {
+    private PredatorsRapport(final PredatorsRapport card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class TargetPermanentPowerPlusToughnessCount implements DynamicValue {
     public int calculate(Game game, Ability sourceAbility, Effect effect) {
         Permanent sourcePermanent = game.getPermanent(sourceAbility.getFirstTarget());
         if (sourcePermanent != null) {
-            return CardUtil.addWithOverflowCheck(sourcePermanent.getPower().getValue(), sourcePermanent.getToughness().getValue());
+            return CardUtil.overflowInc(sourcePermanent.getPower().getValue(), sourcePermanent.getToughness().getValue());
         }
         return 0;
     }

@@ -1,7 +1,5 @@
-
 package mage.cards.p;
 
-import java.util.Set;
 import java.util.UUID;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -29,7 +27,7 @@ public final class PedanticLearning extends CardImpl {
         this.addAbility(new PedanticLearningTriggeredAbility());
     }
 
-    public PedanticLearning(final PedanticLearning card) {
+    private PedanticLearning(final PedanticLearning card) {
         super(card);
     }
 
@@ -61,10 +59,8 @@ class PedanticLearningTriggeredAbility extends TriggeredAbilityImpl {
             Card card = game.getCard(event.getTargetId());
             if (card != null) {
                 UUID cardOwnerId = card.getOwnerId();
-                Set<CardType> cardType = card.getCardType();
                 if (cardOwnerId != null
                         && card.isOwnedBy(getControllerId())
-                        && cardType != null
                         && card.isLand()) {
                     return true;
                 }

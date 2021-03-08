@@ -28,7 +28,7 @@ public final class BattleStrain extends CardImpl {
         this.addAbility(new BattleStrainTriggeredAbility());
     }
 
-    public BattleStrain(final BattleStrain card) {
+    private BattleStrain(final BattleStrain card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class BattleStrainTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

@@ -13,7 +13,6 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.common.FilterCreaturePermanent;
 import mage.target.common.TargetControlledPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -40,7 +39,7 @@ public final class BarrinMasterWizard extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BarrinMasterWizard(final BarrinMasterWizard card) {
+    private BarrinMasterWizard(final BarrinMasterWizard card) {
         super(card);
     }
 

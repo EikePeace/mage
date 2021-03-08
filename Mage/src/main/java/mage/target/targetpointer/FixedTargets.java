@@ -1,26 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.target.targetpointer;
+
+import mage.MageObject;
+import mage.MageObjectReference;
+import mage.abilities.Ability;
+import mage.cards.Card;
+import mage.cards.Cards;
+import mage.constants.Zone;
+import mage.game.Game;
+import mage.game.permanent.Permanent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import mage.MageObjectReference;
-import mage.abilities.Ability;
-import mage.cards.Card;
-import mage.cards.Cards;
-import mage.game.Game;
-import mage.game.permanent.Permanent;
 
 /**
- *
  * @author LevelX2
  */
-public class FixedTargets implements TargetPointer {
+public class FixedTargets extends TargetPointerImpl {
 
     final ArrayList<MageObjectReference> targets = new ArrayList<>();
     final ArrayList<UUID> targetsNotInitialized = new ArrayList<>();
@@ -28,11 +25,15 @@ public class FixedTargets implements TargetPointer {
     private boolean initialized;
 
     public FixedTargets(UUID targetId) {
+        super();
+
         targetsNotInitialized.add(targetId);
         this.initialized = false;
     }
 
     public FixedTargets(Cards cards, Game game) {
+        super();
+
         for (UUID targetId : cards) {
             MageObjectReference mor = new MageObjectReference(targetId, game);
             targets.add(mor);
@@ -41,6 +42,8 @@ public class FixedTargets implements TargetPointer {
     }
 
     public FixedTargets(List<Permanent> permanents, Game game) {
+        super();
+
         for (Permanent permanent : permanents) {
             MageObjectReference mor = new MageObjectReference(permanent.getId(), permanent.getZoneChangeCounter(game), game);
             targets.add(mor);
@@ -49,6 +52,8 @@ public class FixedTargets implements TargetPointer {
     }
 
     public FixedTargets(Set<Card> cards, Game game) {
+        super();
+
         for (Card card : cards) {
             MageObjectReference mor = new MageObjectReference(card.getId(), card.getZoneChangeCounter(game), game);
             targets.add(mor);
@@ -56,10 +61,12 @@ public class FixedTargets implements TargetPointer {
         this.initialized = true;
     }
 
-    private FixedTargets(final FixedTargets fixedTargets) {
-        this.targets.addAll(fixedTargets.targets);
-        this.targetsNotInitialized.addAll(fixedTargets.targetsNotInitialized);
-        this.initialized = fixedTargets.initialized;
+    private FixedTargets(final FixedTargets targetPointer) {
+        super(targetPointer);
+
+        this.targets.addAll(targetPointer.targets);
+        this.targetsNotInitialized.addAll(targetPointer.targetsNotInitialized);
+        this.initialized = targetPointer.initialized;
     }
 
     @Override
@@ -75,9 +82,9 @@ public class FixedTargets implements TargetPointer {
     @Override
     public List<UUID> getTargets(Game game, Ability source) {
         // check target not changed zone
-        List<UUID> list = new ArrayList<>(1);
+        List<UUID> list = new ArrayList<>();
         for (MageObjectReference mor : targets) {
-            if (game.getState().getZoneChangeCounter(mor.getSourceId()) == mor.getZoneChangeCounter()) {
+            if (mor.getSourceId() != null && game.getState().getZoneChangeCounter(mor.getSourceId()) == mor.getZoneChangeCounter()) {
                 list.add(mor.getSourceId());
             }
         }
@@ -96,7 +103,7 @@ public class FixedTargets implements TargetPointer {
     }
 
     @Override
-    public TargetPointer copy() {
+    public FixedTargets copy() {
         return new FixedTargets(this);
     }
 
@@ -113,6 +120,36 @@ public class FixedTargets implements TargetPointer {
         UUID firstId = getFirst(game, source);
         if (firstId != null) {
             return new FixedTarget(firstId, game.getState().getZoneChangeCounter(firstId));
+        }
+        return null;
+    }
+
+    @Override
+    public Permanent getFirstTargetPermanentOrLKI(Game game, Ability source) {
+        UUID targetId = null;
+        int zoneChangeCounter = Integer.MIN_VALUE;
+        if (!targets.isEmpty()) {
+            MageObjectReference mor = targets.get(0);
+            targetId = mor.getSourceId();
+            zoneChangeCounter = mor.getZoneChangeCounter();
+        } else if (!targetsNotInitialized.isEmpty()) {
+            targetId = targetsNotInitialized.get(0);
+        }
+        if (targetId != null) {
+            Permanent permanent = game.getPermanent(targetId);
+            if (permanent != null
+                    && (zoneChangeCounter == Integer.MIN_VALUE || permanent.getZoneChangeCounter(game) == zoneChangeCounter)) {
+                return permanent;
+            }
+            MageObject mageObject;
+            if (zoneChangeCounter == Integer.MIN_VALUE) {
+                mageObject = game.getLastKnownInformation(targetId, Zone.BATTLEFIELD);
+            } else {
+                mageObject = game.getLastKnownInformation(targetId, Zone.BATTLEFIELD, zoneChangeCounter);
+            }
+            if (mageObject instanceof Permanent) {
+                return (Permanent) mageObject;
+            }
         }
         return null;
     }

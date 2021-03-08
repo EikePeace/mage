@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -7,21 +6,18 @@ import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldAllTriggeredAbility;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.GreatestPowerAmongControlledCreaturesValue;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.mana.AddManaInAnyCombinationEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -54,7 +50,7 @@ public final class SelvalaHeartOfTheWilds extends CardImpl {
 
         // {G}, {T}: Add X mana in any combination of colors, where X is the greatest power among creatures you control.
         ManaEffect manaEffect = new AddManaInAnyCombinationEffect(
-                GreatestPowerAmongControlledCreaturesValue.instance, rule2,
+                GreatestPowerAmongControlledCreaturesValue.instance, GreatestPowerAmongControlledCreaturesValue.instance, rule2,
                 ColoredManaSymbol.B, ColoredManaSymbol.U, ColoredManaSymbol.R, ColoredManaSymbol.W, ColoredManaSymbol.G);
         Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, manaEffect, new ManaCostsImpl("{G}"));
         ability.addCost(new TapSourceCost());
@@ -62,7 +58,7 @@ public final class SelvalaHeartOfTheWilds extends CardImpl {
 
     }
 
-    public SelvalaHeartOfTheWilds(final SelvalaHeartOfTheWilds card) {
+    private SelvalaHeartOfTheWilds(final SelvalaHeartOfTheWilds card) {
         super(card);
     }
 
@@ -96,13 +92,13 @@ class SelvalaHeartOfTheWildsEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(targetPointer.getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             if (filter2.match(permanent, game)) {
                 Player permanentController = game.getPlayer(permanent.getControllerId());
                 if (permanentController != null
                         && permanentController.chooseUse(Outcome.DrawCard, "Would you like to draw a card?", source, game)) {
-                    permanentController.drawCards(1, game);
+                    permanentController.drawCards(1, source, game);
                 }
             }
             return true;

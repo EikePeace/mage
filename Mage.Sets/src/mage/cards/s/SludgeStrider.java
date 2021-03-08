@@ -10,10 +10,9 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterArtifactPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -40,7 +39,7 @@ public final class SludgeStrider extends CardImpl {
 
     }
 
-    public SludgeStrider(final SludgeStrider card) {
+    private SludgeStrider(final SludgeStrider card) {
         super(card);
     }
 
@@ -70,7 +69,7 @@ class SludgeStriderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD || event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD || event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -122,7 +121,7 @@ class SludgeStriderEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(source.getFirstTarget());
         Player you = game.getPlayer(source.getControllerId());
         if (targetPlayer != null) {
-            targetPlayer.loseLife(1, game, false);
+            targetPlayer.loseLife(1, game, source, false);
         }
         if (you != null) {
             you.gainLife(1, game, source);

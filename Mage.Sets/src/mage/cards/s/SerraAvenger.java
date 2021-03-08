@@ -44,7 +44,7 @@ public final class SerraAvenger extends CardImpl {
 
     }
 
-    public SerraAvenger(final SerraAvenger card) {
+    private SerraAvenger(final SerraAvenger card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class CantCastSerraAvengerEffect extends ContinuousRuleModifyingEffectImpl {
 
     public CantCastSerraAvengerEffect() {
         super(Duration.WhileOnBattlefield, Outcome.Detriment);
-        staticText = "You can't cast {this} during your first, second, or third turns of the game";
+        staticText = "You can't cast this spell during your first, second, or third turns of the game";
     }
 
     public CantCastSerraAvengerEffect(final CantCastSerraAvengerEffect effect) {
@@ -77,7 +77,7 @@ class CantCastSerraAvengerEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == EventType.CAST_SPELL && event.getSourceId().equals(source.getSourceId())) {
+        if (event.getType() == GameEvent.EventType.CAST_SPELL && event.getSourceId().equals(source.getSourceId())) {
             Player controller = game.getPlayer(source.getControllerId());
             // it can be cast on other players turn 1 - 3 if some effect let allow you to do this
             if (controller != null && controller.getTurns() <= 3 && game.isActivePlayer(source.getControllerId())) {

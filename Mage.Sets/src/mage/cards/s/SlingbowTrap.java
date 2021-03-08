@@ -42,7 +42,7 @@ public final class SlingbowTrap extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAttackingCreature(1, 1, filter, false));
     }
 
-    public SlingbowTrap(final SlingbowTrap card) {
+    private SlingbowTrap(final SlingbowTrap card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ enum SlingbowTrapCondition implements Condition {
         for (UUID attackingCreatureId : game.getCombat().getAttackers()) {
             Permanent attackingCreature = game.getPermanent(attackingCreatureId);
             if (attackingCreature != null) {
-                if (attackingCreature.getColor(game).isBlack() && attackingCreature.hasAbility(FlyingAbility.getInstance().getId(), game)) {
+                if (attackingCreature.getColor(game).isBlack() && attackingCreature.hasAbility(FlyingAbility.getInstance(), game)) {
                     return true;
                 }
             }

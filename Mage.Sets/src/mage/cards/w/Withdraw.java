@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -43,7 +43,7 @@ public final class Withdraw extends CardImpl {
         this.getSpellAbility().addTarget(target);
     }
 
-    public Withdraw(final Withdraw card) {
+    private Withdraw(final Withdraw card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class WithdrawEffect extends OneShotEffect {
             if (creatureController != null) {
                 Cost cost = ManaUtil.createManaCost(1, false);
                 if (creatureController.chooseUse(Outcome.Benefit, "Pay {1}? (Otherwise " + secondCreature.getName() + " will be returned to its owner's hand)", source, game)) {
-                    cost.pay(source, game, source.getSourceId(), creatureController.getId(), false);
+                    cost.pay(source, game, source, creatureController.getId(), false);
                 }
                 if (!cost.isPaid()) {
                     creatureController.moveCards(secondCreature, Zone.HAND, source, game);

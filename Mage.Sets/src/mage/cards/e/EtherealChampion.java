@@ -29,11 +29,11 @@ public final class EtherealChampion extends CardImpl {
 
         // Pay 1 life: Prevent the next 1 damage that would be dealt to Ethereal Champion this turn.
         Effect effect = new PreventDamageToSourceEffect(Duration.EndOfTurn, 1);
-        effect.setText("Pay 1 life: Prevent the next 1 damage that would be dealt to {source} this turn");
+        effect.setText("Pay 1 life: Prevent the next 1 damage that would be dealt to {this} this turn");
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new PayLifeCost(1)));
     }
 
-    public EtherealChampion(final EtherealChampion card) {
+    private EtherealChampion(final EtherealChampion card) {
         super(card);
     }
 

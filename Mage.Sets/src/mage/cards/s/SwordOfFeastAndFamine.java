@@ -43,7 +43,7 @@ public final class SwordOfFeastAndFamine extends CardImpl {
         this.addAbility(new SwordOfFeastAndFamineAbility());
     }
 
-    public SwordOfFeastAndFamine(final SwordOfFeastAndFamine card) {
+    private SwordOfFeastAndFamine(final SwordOfFeastAndFamine card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class SwordOfFeastAndFamineAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

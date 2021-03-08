@@ -19,7 +19,6 @@ import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.Predicates;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
@@ -45,7 +44,7 @@ public final class QuestForUlasTemple extends CardImpl {
         this.addAbility(new QuestForUlasTempleTriggeredAbility(new PutCardFromHandOntoBattlefieldEffect(filter)));
     }
 
-    public QuestForUlasTemple(final QuestForUlasTemple card) {
+    private QuestForUlasTemple(final QuestForUlasTemple card) {
         super(card);
     }
 
@@ -80,11 +79,11 @@ class QuestForUlasTempleEffect extends OneShotEffect {
             Cards cards = new CardsImpl(card);
             controller.lookAtCards(sourcePermanent.getName(), cards, game);
             if (card.isCreature()) {
-                if (controller.chooseUse(Outcome.DrawCard, "Do you wish to reveal the creature card at the top of the library?", source, game)) {
+                if (controller.chooseUse(Outcome.DrawCard, "Reveal the top card of your library?", source, game)) {
                     controller.revealCards(sourcePermanent.getName(), cards, game);
                     Permanent questForUlasTemple = game.getPermanent(source.getSourceId());
                     if (questForUlasTemple != null) {
-                        questForUlasTemple.addCounters(CounterType.QUEST.createInstance(), source, game);
+                        questForUlasTemple.addCounters(CounterType.QUEST.createInstance(), source.getControllerId(), source, game);
                         return true;
                     }
                 }
@@ -111,7 +110,7 @@ class QuestForUlasTempleTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override

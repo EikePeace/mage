@@ -44,7 +44,7 @@ public final class ParadoxHaze extends CardImpl {
         this.addAbility(new ParadoxHazeTriggeredAbility(), new FirstTimeStepWatcher(EventType.UPKEEP_STEP_POST));
     }
 
-    public ParadoxHaze(final ParadoxHaze card) {
+    private ParadoxHaze(final ParadoxHaze card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class ParadoxHazeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

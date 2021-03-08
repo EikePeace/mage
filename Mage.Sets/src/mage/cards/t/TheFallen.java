@@ -1,25 +1,21 @@
 
 package mage.cards.t;
 
-import java.util.*;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.WatcherScope;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.watchers.Watcher;
 
+import java.util.*;
+
 /**
- *
  * @author L_J
  */
 public final class TheFallen extends CardImpl {
@@ -34,7 +30,7 @@ public final class TheFallen extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new TheFallenEffect(), TargetController.YOU, false), new TheFallenWatcher());
     }
 
-    public TheFallen(final TheFallen card) {
+    private TheFallen(final TheFallen card) {
         super(card);
     }
 
@@ -66,7 +62,7 @@ class TheFallenEffect extends OneShotEffect {
         if (watcher != null && watcher.getPlayersAndWalkersDealtDamageThisGame(source.getSourceId()) != null) {
             for (UUID playerId : watcher.getPlayersAndWalkersDealtDamageThisGame(source.getSourceId())) {
                 if (!source.isControlledBy(playerId)) {
-                    game.damagePlayerOrPlaneswalker(playerId, 1, source.getSourceId(), game, false, true);
+                    game.damagePlayerOrPlaneswalker(playerId, 1, source.getSourceId(), source, game, false, true);
                 }
             }
             return true;
@@ -85,20 +81,26 @@ class TheFallenWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGED_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER) {
-            Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
-            if (permanent != null) {
-                Set<UUID> toAdd;
-                if (playersAndWalkersDealtDamageThisGame.get(event.getSourceId()) == null) {
-                    toAdd = new HashSet<>();
-                } else {
-                    toAdd = playersAndWalkersDealtDamageThisGame.get(event.getSourceId());
-                }
-                toAdd.add(event.getPlayerId());
-                playersAndWalkersDealtDamageThisGame.put(event.getSourceId(), toAdd);
-            }
+        if (event.getType() != GameEvent.EventType.DAMAGED_PLAYER
+                && event.getType() != GameEvent.EventType.DAMAGED_PERMANENT) {
+            return;
         }
+        Permanent damaged = game.getPermanent(event.getTargetId());
+        if (damaged != null && !damaged.isPlaneswalker()) {
+            return;
+        }
+        Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
+        if (permanent == null) {
+            return;
+        }
+        Set<UUID> toAdd;
+        if (playersAndWalkersDealtDamageThisGame.get(event.getSourceId()) == null) {
+            toAdd = new HashSet<>();
+        } else {
+            toAdd = playersAndWalkersDealtDamageThisGame.get(event.getSourceId());
+        }
+        toAdd.add(event.getPlayerId());
+        playersAndWalkersDealtDamageThisGame.put(event.getSourceId(), toAdd);
     }
 
     public Set<UUID> getPlayersAndWalkersDealtDamageThisGame(UUID creatureId) {

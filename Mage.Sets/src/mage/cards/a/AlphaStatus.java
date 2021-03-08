@@ -1,7 +1,6 @@
 
 package mage.cards.a;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.dynamicvalue.DynamicValue;
@@ -18,8 +17,9 @@ import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Eirkei
  */
 public final class AlphaStatus extends CardImpl {
@@ -40,7 +40,7 @@ public final class AlphaStatus extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEnchantedEffect(dynamicValue, dynamicValue, Duration.WhileOnBattlefield)));
     }
 
-    public AlphaStatus(final AlphaStatus card) {
+    private AlphaStatus(final AlphaStatus card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class AlphaStatusDynamicValue implements DynamicValue {
             if (enchanted != null) {
                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, game)) {
                     if (!permanent.getId().equals(enchanted.getId())) {
-                        if (enchanted.shareSubtypes(permanent, game)) {
+                        if (enchanted.shareCreatureTypes(game, permanent)) {
                             xValue += 2;
                         }
                     }

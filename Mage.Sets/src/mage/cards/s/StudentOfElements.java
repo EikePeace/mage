@@ -20,7 +20,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -42,7 +41,7 @@ public final class StudentOfElements extends CardImpl {
         this.addAbility(new StudentOfElementsHasFlyingAbility());
     }
 
-    public StudentOfElements(final StudentOfElements card) {
+    private StudentOfElements(final StudentOfElements card) {
         super(card);
     }
 

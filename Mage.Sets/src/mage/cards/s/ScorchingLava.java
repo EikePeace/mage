@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -34,18 +33,21 @@ public final class ScorchingLava extends CardImpl {
 
         // Kicker {R}
         this.addAbility(new KickerAbility("{R}"));
-        // Scorching Lava deals 2 damage to any target. If Scorching Lava was kicked, that creature can't be regenerated this turn and if it would die this turn, exile it instead.
+        // Scorching Lava deals 2 damage to any target. If Scorching Lava was kicked, 
+        // that creature can't be regenerated this turn and if it would die this turn, exile it instead.
         this.getSpellAbility().addEffect(new DamageTargetEffect(2));
         this.getSpellAbility().addEffect(new ConditionalContinuousRuleModifyingEffect(
-                new CantRegenerateTargetEffect(Duration.EndOfTurn, "that creature"), new LockedInCondition(KickedCondition.instance)));
+                new CantRegenerateTargetEffect(Duration.EndOfTurn, "If Scorching Lava was kicked, "
+                        + "\n" + "that creature "),
+                new LockedInCondition(KickedCondition.instance)));
         this.getSpellAbility().addEffect(new ConditionalOneShotEffect(
                 new ExileTargetIfDiesEffect(),
-                new LockedInCondition(KickedCondition.instance)
-        ).setText("and if it would die this turn, exile it instead"));
+                new LockedInCondition(KickedCondition.instance),
+                "and if it would die this turn, exile it instead."));
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public ScorchingLava(final ScorchingLava card) {
+    private ScorchingLava(final ScorchingLava card) {
         super(card);
     }
 
@@ -59,7 +61,6 @@ class ScorchingLavaEffect extends OneShotEffect {
 
     public ScorchingLavaEffect() {
         super(Outcome.Exile);
-        this.staticText = "and if it would die this turn, exile it instead";
     }
 
     public ScorchingLavaEffect(final ScorchingLavaEffect effect) {

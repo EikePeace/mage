@@ -1,7 +1,10 @@
 package mage.actions.impl;
 
+import mage.abilities.Ability;
 import mage.game.Game;
 import mage.players.Player;
+
+import java.util.UUID;
 
 /**
  * Base class for mage actions.
@@ -52,10 +55,12 @@ public abstract class MageAction {
     /**
      * Execute action.
      *
+     *
+     * @param source
      * @param game Game context.
      * @return
      */
-    public abstract int doAction(final Game game);
+    public abstract int doAction(Ability source, final Game game);
 
     /**
      * Undo action.

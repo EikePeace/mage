@@ -44,7 +44,7 @@ public final class Interdict extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1).setText("<br><br>Draw a card"));
     }
 
-    public Interdict(final Interdict card) {
+    private Interdict(final Interdict card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class InterdictCounterEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         StackObject stackObject = game.getStack().getStackObject(source.getFirstTarget());
-        if (stackObject != null && game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game)) {
+        if (stackObject != null && game.getStack().counter(source.getFirstTarget(), source, game)) {
             Permanent sourcePermanent = stackObject.getStackAbility().getSourcePermanentIfItStillExists(game);
             if (sourcePermanent != null) {
                 InterdictCantActivateEffect effect = new InterdictCantActivateEffect();

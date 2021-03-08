@@ -30,7 +30,7 @@ public final class DictateOfKruphix extends CardImpl {
         this.addAbility(new DictateOfKruphixAbility());
     }
 
-    public DictateOfKruphix(final DictateOfKruphix card) {
+    private DictateOfKruphix(final DictateOfKruphix card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class DictateOfKruphixAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_STEP_PRE;
+        return event.getType() == GameEvent.EventType.DRAW_STEP_PRE;
     }
 
     @Override

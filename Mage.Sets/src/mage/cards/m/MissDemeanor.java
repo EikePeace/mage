@@ -42,7 +42,7 @@ public final class MissDemeanor extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new MissDemeanorEffect(), TargetController.NOT_YOU, false, true));
     }
 
-    public MissDemeanor(final MissDemeanor card) {
+    private MissDemeanor(final MissDemeanor card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class MissDemeanorEffect extends OneShotEffect {
                 // TODO(Ketsuban): this could probably stand to be randomly chosen from a pool of compliments
                 game.informPlayers(controller.getLogName() + ": That's a well-built deck and you pilot it well, " + activePlayerName + ".");
             } else {
-                sourceObject.sacrifice(source.getSourceId(), game);
+                sourceObject.sacrifice(source, game);
             }
             return true;
         }

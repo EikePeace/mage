@@ -42,7 +42,7 @@ public final class EyeOfSingularity extends CardImpl {
         this.addAbility(new EyeOfSingularityTriggeredAbility());
     }
 
-    public EyeOfSingularity(final EyeOfSingularity card) {
+    private EyeOfSingularity(final EyeOfSingularity card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class EyeOfSingularityETBEffect extends OneShotEffect {
         for (UUID id : toDestroy.keySet()) {
             Permanent permanent = game.getPermanent(id);
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;
@@ -115,7 +115,7 @@ class EyeOfSingularityTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
@@ -159,7 +159,7 @@ class EyeOfSingularityTriggeredEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Map<UUID, Integer> toDestroy = new HashMap<>();
-        Permanent etbPermanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent etbPermanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
 
         if (etbPermanent == null) {
             return false;
@@ -176,7 +176,7 @@ class EyeOfSingularityTriggeredEffect extends OneShotEffect {
         for (UUID id : toDestroy.keySet()) {
             Permanent permanent = game.getPermanent(id);
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
 

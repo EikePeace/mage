@@ -62,7 +62,7 @@ public final class DarigaazReincarnated extends CardImpl {
         this.addAbility(new DarigaazReincarnatedInterveningIfTriggeredAbility());
     }
 
-    public DarigaazReincarnated(final DarigaazReincarnated card) {
+    private DarigaazReincarnated(final DarigaazReincarnated card) {
         super(card);
     }
 
@@ -97,8 +97,8 @@ class DarigaazReincarnatedDiesEffect extends ReplacementEffectImpl {
             if (permCard == null) {
                 return false;
             }
-            return controller.moveCardToExileWithInfo(permanent, null, null, source.getSourceId(), game, Zone.BATTLEFIELD, true)
-                    && permCard.addCounters(CounterType.EGG.createInstance(3), source, game);
+            return controller.moveCardToExileWithInfo(permanent, null, null, source, game, Zone.BATTLEFIELD, true)
+                    && permCard.addCounters(CounterType.EGG.createInstance(3), source.getControllerId(), source, game);
         }
         return false;
     }

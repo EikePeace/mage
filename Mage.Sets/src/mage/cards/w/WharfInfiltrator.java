@@ -50,7 +50,7 @@ public final class WharfInfiltrator extends CardImpl {
         this.addAbility(new WharfInfiltratorDiscardAbility(doIfCostPaid));
     }
 
-    public WharfInfiltrator(final WharfInfiltrator card) {
+    private WharfInfiltrator(final WharfInfiltrator card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class WharfInfiltratorDiscardAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DISCARDED_CARD;
+        return event.getType() == GameEvent.EventType.DISCARDED_CARD;
     }
 
     @Override

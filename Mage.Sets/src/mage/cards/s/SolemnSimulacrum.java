@@ -2,7 +2,7 @@
 package mage.cards.s;
 
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.effects.common.search.SearchLibraryPutInPlayEffect;
@@ -25,11 +25,15 @@ public final class SolemnSimulacrum extends CardImpl {
         this.subtype.add(SubType.GOLEM);
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
-        this.addAbility(new EntersBattlefieldTriggeredAbility(new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(StaticFilters.FILTER_CARD_BASIC_LAND), true), true));
-        this.addAbility(new DiesTriggeredAbility(new DrawCardSourceControllerEffect(1), true));
+        this.addAbility(new EntersBattlefieldTriggeredAbility(
+            new SearchLibraryPutInPlayEffect(
+                new TargetCardInLibrary(StaticFilters.FILTER_CARD_BASIC_LAND), true)
+                .setText("search your library for a basic land card, put that card onto the battlefield tapped, then shuffle your library"),
+            true));
+        this.addAbility(new DiesSourceTriggeredAbility(new DrawCardSourceControllerEffect(1), true));
     }
 
-    public SolemnSimulacrum(final SolemnSimulacrum card) {
+    private SolemnSimulacrum(final SolemnSimulacrum card) {
         super(card);
     }
 

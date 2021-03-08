@@ -45,7 +45,7 @@ public final class HedronBlade extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public HedronBlade(final HedronBlade card) {
+    private HedronBlade(final HedronBlade card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class HedronBladeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_BLOCKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_BLOCKERS;
     }
 
     @Override
@@ -100,6 +100,7 @@ class HedronBladeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever equipped creature becomes blocked by one or more colorless creatures, " + super.getRule();
+        return "Whenever equipped creature becomes blocked by one or more colorless creatures, "
+                + "" + "it gains deathtouch until end of turn.";
     }
 }

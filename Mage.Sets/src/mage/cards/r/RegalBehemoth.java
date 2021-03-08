@@ -7,7 +7,7 @@ import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.mana.AddManaOfAnyColorEffect;
 import mage.abilities.effects.common.BecomesMonarchSourceEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.keyword.TrampleAbility;
 import mage.abilities.mana.TriggeredManaAbility;
 import mage.cards.CardImpl;
@@ -49,7 +49,7 @@ public final class RegalBehemoth extends CardImpl {
                 effect, new FilterControlledLandPermanent("you tap a land")));
     }
 
-    public RegalBehemoth(final RegalBehemoth card) {
+    private RegalBehemoth(final RegalBehemoth card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class RegalBehemothTriggeredManaAbility extends TriggeredManaAbility {
                 ManaEvent mEvent = (ManaEvent) event;
                 for (Effect effect : getEffects()) {
                     effect.setValue("mana", mEvent.getMana());
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                 }
                 return true;
             }

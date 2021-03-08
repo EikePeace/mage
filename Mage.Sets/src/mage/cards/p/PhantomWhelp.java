@@ -22,7 +22,7 @@ public final class PhantomWhelp extends CardImpl {
     public PhantomWhelp(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{U}");
         this.subtype.add(SubType.ILLUSION);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
 
@@ -33,7 +33,7 @@ public final class PhantomWhelp extends CardImpl {
         this.addAbility(new AttacksOrBlocksTriggeredAbility(effect, false));
     }
 
-    public PhantomWhelp(final PhantomWhelp card) {
+    private PhantomWhelp(final PhantomWhelp card) {
         super(card);
     }
 

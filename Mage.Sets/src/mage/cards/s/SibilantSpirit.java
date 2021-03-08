@@ -34,7 +34,7 @@ public final class SibilantSpirit extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new SibilantSpiritEffect(), false));
     }
 
-    public SibilantSpirit(final SibilantSpirit card) {
+    private SibilantSpirit(final SibilantSpirit card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class SibilantSpiritEffect extends OneShotEffect {
         Player defender = game.getPlayer(defenderId);
         if (defender != null) {
             if (defender.chooseUse(outcome, "Draw a card?", source, game)) {
-                defender.drawCards(1, game);
+                defender.drawCards(1, source, game);
             }
         }
         return false;

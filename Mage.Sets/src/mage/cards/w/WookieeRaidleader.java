@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -42,7 +42,7 @@ public final class WookieeRaidleader extends CardImpl {
 
     }
 
-    public WookieeRaidleader(final WookieeRaidleader card) {
+    private WookieeRaidleader(final WookieeRaidleader card) {
         super(card);
     }
 

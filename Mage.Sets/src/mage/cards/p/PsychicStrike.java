@@ -8,7 +8,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.stack.StackObject;
@@ -30,7 +29,7 @@ public final class PsychicStrike extends CardImpl {
         this.getSpellAbility().addEffect(new PsychicStrikeEffect());
     }
 
-    public PsychicStrike(final PsychicStrike card) {
+    private PsychicStrike(final PsychicStrike card) {
         super(card);
     }
 
@@ -60,13 +59,13 @@ class PsychicStrikeEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         boolean countered = false;
         StackObject stackObject = game.getStack().getStackObject(targetPointer.getFirst(game, source));
-        if (game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game)) {
+        if (game.getStack().counter(source.getFirstTarget(), source, game)) {
             countered = true;
         }
         if (stackObject != null) {
             Player controller = game.getPlayer(stackObject.getControllerId());
             if (controller != null) {
-                controller.moveCards(controller.getLibrary().getTopCards(game, 2), Zone.GRAVEYARD, source, game);
+                controller.millCards(2, source, game);
             }
         }
         return countered;

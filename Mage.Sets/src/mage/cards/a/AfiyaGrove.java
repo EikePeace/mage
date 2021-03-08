@@ -43,7 +43,7 @@ public final class AfiyaGrove extends CardImpl {
         this.addAbility(new AfiyaGroveNoCountersAbility());
     }
 
-    public AfiyaGrove(final AfiyaGrove card) {
+    private AfiyaGrove(final AfiyaGrove card) {
         super(card);
     }
 
@@ -76,8 +76,8 @@ class MoveCounterToTargetFromSourceEffect extends OneShotEffect {
         if (sourceObject != null && controller != null) {
             Permanent toPermanent = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (toPermanent != null && sourceObject.getCounters(game).getCount(CounterType.P1P1) > 0) {
-                sourceObject.removeCounters(CounterType.P1P1.createInstance(), game);
-                toPermanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                sourceObject.removeCounters(CounterType.P1P1.createInstance(), source, game);
+                toPermanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 game.informPlayers("Moved a +1/+1 counter from " + sourceObject.getLogName() + " to " + toPermanent.getLogName());
             }
             return true;

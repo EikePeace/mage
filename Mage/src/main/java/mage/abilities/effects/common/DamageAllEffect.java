@@ -19,7 +19,7 @@ public class DamageAllEffect extends OneShotEffect {
 
     private FilterPermanent filter;
     private DynamicValue amount;
-    private String sourceName = "{source}";
+    private String sourceName = "{this}";
 
     public DamageAllEffect(int amount, FilterPermanent filter) {
         this(StaticValue.get(amount), filter);
@@ -56,7 +56,7 @@ public class DamageAllEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game);
         for (Permanent permanent : permanents) {
-            permanent.damage(amount.calculate(game, source, this), source.getSourceId(), game, false, true);
+            permanent.damage(amount.calculate(game, source, this), source.getSourceId(), source, game, false, true);
         }
         return true;
     }

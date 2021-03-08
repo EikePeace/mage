@@ -29,7 +29,7 @@ public final class StartYourEngines extends CardImpl {
         this.getSpellAbility().addEffect(new BoostControlledEffect(2, 0, Duration.EndOfTurn));
     }
 
-    public StartYourEngines(final StartYourEngines card) {
+    private StartYourEngines(final StartYourEngines card) {
         super(card);
     }
 
@@ -43,7 +43,7 @@ class StartYourEnginesEffect extends ContinuousEffectImpl {
 
     public StartYourEnginesEffect() {
         super(Duration.EndOfTurn, Layer.TypeChangingEffects_4, SubLayer.NA, Outcome.BecomeCreature);
-        staticText = "Vehicles you control becomes artifact creatures until end of turn";
+        staticText = "Vehicles you control become artifact creatures until end of turn";
     }
 
     public StartYourEnginesEffect(final StartYourEnginesEffect effect) {
@@ -61,7 +61,7 @@ class StartYourEnginesEffect extends ContinuousEffectImpl {
             if (permanent != null && permanent.hasSubtype(SubType.VEHICLE, game)) {
                 if (sublayer == SubLayer.NA) {
                     permanent.addCardType(CardType.ARTIFACT);
-                    permanent.addCardType(CardType.CREATURE);// TODO: Chcek if giving CREATURE Type is correct
+                    permanent.addCardType(CardType.CREATURE);// TODO: Check if giving CREATURE Type is correct
                 }
             }
         }

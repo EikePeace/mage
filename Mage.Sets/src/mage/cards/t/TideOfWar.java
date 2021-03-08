@@ -34,7 +34,7 @@ public final class TideOfWar extends CardImpl {
         this.addAbility(new BlocksTriggeredAbility(new TideOfWarEffect(), false));
     }
 
-    public TideOfWar(final TideOfWar card) {
+    private TideOfWar(final TideOfWar card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class BlocksTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_BLOCKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_BLOCKERS;
     }
 
     @Override
@@ -121,7 +121,7 @@ class TideOfWarEffect extends OneShotEffect {
             for(UUID creatureId: toSacrifice) {
                 Permanent creature = game.getPermanent(creatureId);
                 if (creature != null) {
-                    creature.sacrifice(source.getSourceId(), game);
+                    creature.sacrifice(source, game);
                     Player player = game.getPlayer(creature.getControllerId());
                     if (player != null) {
                         game.informPlayers(player.getLogName() + " sacrifices " + creature.getName());

@@ -52,7 +52,7 @@ public final class Suncleanser extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Suncleanser(final Suncleanser card) {
+    private Suncleanser(final Suncleanser card) {
         super(card);
     }
 
@@ -67,9 +67,9 @@ class SuncleanserRemoveCountersEffect extends OneShotEffect {
     public SuncleanserRemoveCountersEffect(boolean player) {
         super(Outcome.Benefit);
         if (player) {
-            staticText = "Target opponent loses all counters.";
+            staticText = "Target opponent loses all counters";
         } else {
-            staticText = "Remove all counters from target creature.";
+            staticText = "Remove all counters from target creature";
         }
     }
 
@@ -87,7 +87,7 @@ class SuncleanserRemoveCountersEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (permanent != null) {
             for (Counter counter : permanent.getCounters(game).copy().values()) { // copy to prevent ConcurrentModificationException
-                permanent.removeCounters(counter, game);
+                permanent.removeCounters(counter, source, game);
             }
             return true;
         }

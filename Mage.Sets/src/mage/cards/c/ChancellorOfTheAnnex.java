@@ -46,7 +46,7 @@ public final class ChancellorOfTheAnnex extends CardImpl {
         this.addAbility(new SpellCastOpponentTriggeredAbility(Zone.BATTLEFIELD, new CounterUnlessPaysEffect(new GenericManaCost(1)), StaticFilters.FILTER_SPELL, false, SetTargetPointer.SPELL));
     }
 
-    public ChancellorOfTheAnnex(final ChancellorOfTheAnnex card) {
+    private ChancellorOfTheAnnex(final ChancellorOfTheAnnex card) {
         super(card);
     }
 
@@ -99,7 +99,7 @@ class ChancellorOfTheAnnexDelayedTriggeredAbility extends DelayedTriggeredAbilit
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

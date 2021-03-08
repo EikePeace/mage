@@ -35,7 +35,7 @@ public final class ScarscaleRitual extends CardImpl {
 
     }
 
-    public ScarscaleRitual(final ScarscaleRitual card) {
+    private ScarscaleRitual(final ScarscaleRitual card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class ScarscaleRitualCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, controllerId, game)) {
             return permanent != null;
         }
@@ -64,7 +64,7 @@ class ScarscaleRitualCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(ability.getControllerId());
         if (controller != null) {
             Target target = new TargetControlledCreaturePermanent();
@@ -72,7 +72,7 @@ class ScarscaleRitualCost extends CostImpl {
             controller.chooseTarget(Outcome.UnboostCreature, target, ability, game);
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                permanent.addCounters(CounterType.M1M1.createInstance(), ability, game);
+                permanent.addCounters(CounterType.M1M1.createInstance(), controllerId, ability, game);
                 game.informPlayers(controller.getLogName() + " puts a -1/-1 counter on " + permanent.getLogName());
                 this.paid = true;
             }

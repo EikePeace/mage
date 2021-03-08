@@ -15,7 +15,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.game.permanent.token.WaylayToken;
 import mage.target.targetpointer.FixedTargets;
@@ -33,7 +32,7 @@ public final class Waylay extends CardImpl {
         this.getSpellAbility().addEffect(new WaylayEffect());
     }
 
-    public Waylay(final Waylay card) {
+    private Waylay(final Waylay card) {
         super(card);
     }
 
@@ -62,7 +61,7 @@ class WaylayEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Token token = new WaylayToken();
-        token.putOntoBattlefield(3, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(3, game, source, source.getControllerId());
         List<Permanent> toExile = new ArrayList<>();
         for (UUID tokenId : token.getLastAddedTokenIds()) {
             Permanent tokenPermanent = game.getPermanent(tokenId);

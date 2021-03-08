@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterTeamPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class BullRushBruiser extends CardImpl {
         ));
     }
 
-    public BullRushBruiser(final BullRushBruiser card) {
+    private BullRushBruiser(final BullRushBruiser card) {
         super(card);
     }
 

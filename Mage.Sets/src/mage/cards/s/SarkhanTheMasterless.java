@@ -80,7 +80,7 @@ class SarkhanTheMasterlessDamageEffect extends OneShotEffect {
         }
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(source.getControllerId())) {
             if (permanent != null && permanent.hasSubtype(SubType.DRAGON, game)) {
-                creature.damage(1, permanent.getId(), game);
+                creature.damage(1, permanent.getId(), source, game);
             }
         }
         return true;
@@ -127,8 +127,8 @@ class SarkhanTheMasterlessBecomeDragonEffect extends ContinuousEffectImpl {
                     if (sublayer == SubLayer.NA) {
                         permanent.getCardType().clear();
                         permanent.addCardType(CardType.CREATURE);
-                        permanent.getSubtype(game).clear();
-                        permanent.getSubtype(game).add(SubType.DRAGON);
+                        permanent.removeAllSubTypes(game);
+                        permanent.addSubType(game, SubType.DRAGON);
                     }
                     break;
                 case ColorChangingEffects_5:

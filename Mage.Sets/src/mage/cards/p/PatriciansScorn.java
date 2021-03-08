@@ -37,7 +37,7 @@ public final class PatriciansScorn extends CardImpl {
         this.getSpellAbility().addEffect(new DestroyAllEffect(StaticFilters.FILTER_ENCHANTMENT_PERMANENT));
     }
 
-    public PatriciansScorn(final PatriciansScorn card) {
+    private PatriciansScorn(final PatriciansScorn card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class PatriciansScornWatcher extends Watcher {
         if (condition) { //no need to check - condition has already occured
             return;
         }
-        if (event.getType() == EventType.SPELL_CAST && controllerId.equals(event.getPlayerId())) {
+        if (event.getType() == GameEvent.EventType.SPELL_CAST && controllerId.equals(event.getPlayerId())) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (spell != null && filter.match(spell, game)) {
                 condition = true;

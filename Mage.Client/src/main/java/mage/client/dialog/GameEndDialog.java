@@ -1,10 +1,3 @@
-
-
- /*
-  * GameEndDialog.java
-  *
-  * Created on Jul 31, 2013, 9:41:00 AM
-  */
  package mage.client.dialog;
 
  import mage.client.MageFrame;
@@ -27,11 +20,11 @@
  import java.util.Calendar;
 
  /**
+  * Game GUI: end game window
+  *
   * @author LevelX2
   */
  public class GameEndDialog extends MageDialog {
-
-     private final DateFormat df = DateFormat.getDateTimeInstance();
 
      /**
       * Creates new form GameEndDialog
@@ -39,7 +32,6 @@
       * @param gameEndView
       */
      public GameEndDialog(GameEndView gameEndView) {
-
          initComponents();
          this.modal = true;
 
@@ -47,7 +39,14 @@
          pnlText.setBackground(new Color(240, 240, 240, 140));
 
          Rectangle r = new Rectangle(610, 250);
-         Image image = ImageHelper.getImageFromResources(gameEndView.hasWon() ? "/game_won.jpg" : "/game_lost.jpg");
+
+         Image image;
+         if (gameEndView.hasWon()) {
+             image = ImageHelper.getImageFromResources(PreferencesDialog.getCurrentTheme().getWinlossPath("game_won.jpg"));
+         } else {
+             image = ImageHelper.getImageFromResources(PreferencesDialog.getCurrentTheme().getWinlossPath("game_lost.jpg"));
+         }
+
          BufferedImage imageResult = ImageHelper.getResizedImage(BufferedImageBuilder.bufferImage(image, BufferedImage.TYPE_INT_ARGB), r);
          ImageIcon icon = new ImageIcon(imageResult);
          lblResultImage.setIcon(icon);
@@ -60,6 +59,8 @@
          if (autoSave.equals("true")) {
              this.saveGameLog(gameEndView);
          }
+
+         DateFormat df = DateFormat.getDateTimeInstance();
 
          // game duration
          txtDurationGame.setText(" " + Format.getDuration(gameEndView.getStartTime(), gameEndView.getEndTime()));

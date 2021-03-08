@@ -28,7 +28,7 @@ public final class ParadigmShift extends CardImpl {
         this.getSpellAbility().addEffect(new ExileLibraryEffect());
     }
 
-    public ParadigmShift(final ParadigmShift card) {
+    private ParadigmShift(final ParadigmShift card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class ExileLibraryEffect extends OneShotEffect {
             controller.moveCards(cards, Zone.EXILED, source, game);
             
             for (Card card: controller.getGraveyard().getCards(game)) {
-                controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+                controller.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             }            
             controller.shuffleLibrary(source, game);
             return true;

@@ -41,7 +41,7 @@ public final class HuntersProwess extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public HuntersProwess(final HuntersProwess card) {
+    private HuntersProwess(final HuntersProwess card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class HuntersProwessDrawEffect extends OneShotEffect {
         if (controller != null) {
             int damage = (Integer) this.getValue("damage");
             if (damage > 0) {
-                controller.drawCards(damage, game);
+                controller.drawCards(damage, source, game);
             }
             return true;
         }

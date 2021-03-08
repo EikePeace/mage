@@ -12,7 +12,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -37,7 +36,7 @@ public final class KrosanTusker extends CardImpl {
                 true));
     }
 
-    public KrosanTusker(final KrosanTusker card) {
+    private KrosanTusker(final KrosanTusker card) {
         super(card);
     }
 

@@ -33,7 +33,7 @@ public final class RunicArmasaur extends CardImpl {
         this.addAbility(new RunicArmasaurTriggeredAbility());
     }
 
-    public RunicArmasaur(final RunicArmasaur card) {
+    private RunicArmasaur(final RunicArmasaur card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class RunicArmasaurTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ACTIVATED_ABILITY;
+        return event.getType() == GameEvent.EventType.ACTIVATED_ABILITY;
     }
 
     @Override
@@ -68,9 +68,12 @@ class RunicArmasaurTriggeredAbility extends TriggeredAbilityImpl {
         StackAbility stackAbility = (StackAbility) game.getStack().getStackObject(event.getSourceId());
         if (stackAbility != null
                 && stackAbility.getAbilityType() == AbilityType.ACTIVATED
-                && game.getOpponents(this.getControllerId()).contains(stackAbility.getControllerId())) {
+                && game.getOpponents(this.getControllerId()).contains(stackAbility.getControllerId())
+                && stackAbility.getSourcePermanentOrLKI(game) != null) { // must be a permanent
             MageObject abilitySourceObject = stackAbility.getSourceObject(game);
-            return abilitySourceObject != null && (abilitySourceObject.isLand() || abilitySourceObject.isCreature());
+            return abilitySourceObject != null
+                    && (abilitySourceObject.isLand()
+                    || abilitySourceObject.isCreature());
         }
         return false;
     }

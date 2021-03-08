@@ -32,7 +32,7 @@ public final class ThornbowArcher extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new ThornbowArcherEffect(), false));
     }
 
-    public ThornbowArcher(final ThornbowArcher card) {
+    private ThornbowArcher(final ThornbowArcher card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ThornbowArcherEffect extends OneShotEffect {
                 Player opponent = game.getPlayer(opponentId);
                 if (opponent != null) {
                     if (game.getBattlefield().countAll(filter, opponentId, game) == 0) {
-                        opponent.loseLife(1, game, false);
+                        opponent.loseLife(1, game, source, false);
                     }
                 }
             }

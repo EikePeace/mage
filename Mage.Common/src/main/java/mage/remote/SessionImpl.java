@@ -116,6 +116,9 @@ public class SessionImpl implements Session {
     }
 
     private void showMessageToUser(String message) {
+        if (message.contains("free port for use")) {
+            message += " (try to close and restart a client app)";
+        }
         client.showMessage("Remote task error. " + message);
     }
 
@@ -143,7 +146,7 @@ public class SessionImpl implements Session {
                     logger.error("Connect: unknown server error", exep.getCause());
                 }
             } else if (cause instanceof NoSuchMethodException) {
-                // NoSuchMethodException is thrown on an invocation of an unknow JBoss remoting
+                // NoSuchMethodException is thrown on an invocation of an unknown JBoss remoting
                 // method, so it's likely to be because of a version incompatibility.
                 addMessage = "The following method is not available in the server, probably the "
                         + "server version is not compatible with the client: " + cause.getMessage();
@@ -558,15 +561,6 @@ public class SessionImpl implements Session {
         @Override
         public void handleCallback(Callback callback) throws HandleCallbackException {
             try {
-//                Object object = callback.getCallbackObject();
-//                if (((ClientCallback) object).getMethod().equals(ClientCallbackMethod.GAME_TARGET)) {
-//                    Object data = ((ClientCallback) object).getData();
-//                    if (data instanceof GameClientMessage) {
-//                        GameClientMessage message = (GameClientMessage) ((ClientCallback) object).getData();
-//                        logger.info("Client Session Event->" + ((ClientCallback) object).getMethod() + " (id:" + ((ClientCallback) object).getMessageId() + ") " + message.getMessage()
-//                        );
-//                    }
-//                }
                 client.processCallback((ClientCallback) callback.getCallbackObject());
             } catch (Exception ex) {
                 logger.error("handleCallback error", ex);
@@ -647,7 +641,7 @@ public class SessionImpl implements Session {
     public Optional<UUID> getRoomChatId(UUID roomId) {
         try {
             if (isConnected()) {
-                return server.getRoomChatId(roomId);
+                return Optional.of(server.getRoomChatId(roomId));
             }
         } catch (MageException ex) {
             handleMageException(ex);
@@ -659,7 +653,7 @@ public class SessionImpl implements Session {
     public Optional<UUID> getTableChatId(UUID tableId) {
         try {
             if (isConnected()) {
-                return server.getTableChatId(tableId);
+                return Optional.of(server.getTableChatId(tableId));
             }
         } catch (MageException ex) {
             handleMageException(ex);
@@ -671,7 +665,7 @@ public class SessionImpl implements Session {
     public Optional<UUID> getGameChatId(UUID gameId) {
         try {
             if (isConnected()) {
-                return server.getGameChatId(gameId);
+                return Optional.of(server.getGameChatId(gameId));
             }
         } catch (MageException ex) {
             handleMageException(ex);
@@ -685,7 +679,7 @@ public class SessionImpl implements Session {
     public Optional<TableView> getTable(UUID roomId, UUID tableId) {
         try {
             if (isConnected()) {
-                return server.getTable(roomId, tableId);
+                return Optional.of(server.getTable(roomId, tableId));
             }
         } catch (MageException ex) {
             handleMageException(ex);
@@ -829,7 +823,7 @@ public class SessionImpl implements Session {
     public Optional<UUID> getTournamentChatId(UUID tournamentId) {
         try {
             if (isConnected()) {
-                return server.getTournamentChatId(tournamentId);
+                return Optional.of(server.getTournamentChatId(tournamentId));
             }
         } catch (MageException ex) {
             handleMageException(ex);

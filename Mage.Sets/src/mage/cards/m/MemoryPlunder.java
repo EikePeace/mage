@@ -1,7 +1,7 @@
 package mage.cards.m;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
@@ -39,7 +39,7 @@ public final class MemoryPlunder extends CardImpl {
 
     }
 
-    public MemoryPlunder(final MemoryPlunder card) {
+    private MemoryPlunder(final MemoryPlunder card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class MemoryPlunderEffect extends OneShotEffect {
                     && controller.chooseUse(Outcome.PlayForFree, "Cast " + card.getName() + " without paying cost?", source, game)) {
                 game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                 Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                        game, true, new ApprovingObject(source, game));
                 game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                 return cardWasCast;
             }

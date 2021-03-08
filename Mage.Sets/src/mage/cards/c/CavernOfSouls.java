@@ -1,11 +1,9 @@
-
 package mage.cards.c;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import mage.ConditionalMana;
 import mage.MageObject;
+import mage.MageObjectReference;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.AsEntersBattlefieldAbility;
@@ -48,7 +46,7 @@ public final class CavernOfSouls extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new CavernOfSoulsCantCounterEffect()));
     }
 
-    public CavernOfSouls(final CavernOfSouls card) {
+    private CavernOfSouls(final CavernOfSouls card) {
         super(card);
     }
 
@@ -70,7 +68,7 @@ class CavernOfSoulsManaBuilder extends ConditionalManaBuilder {
         }
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = game.getObject(source.getSourceId());
-        if (controller != null && sourceObject != null) {
+        if (controller != null && sourceObject != null && mana.getAny() == 0) {
             game.informPlayers(controller.getLogName() + " produces " + mana.toString() + " with " + sourceObject.getLogName()
                     + " (can only be spend to cast for creatures of type " + creatureType + " and that spell can't be countered)");
         }
@@ -121,7 +119,7 @@ class CavernOfSoulsManaCondition extends CreatureCastManaCondition {
 
 class CavernOfSoulsWatcher extends Watcher {
 
-    private List<UUID> spells = new ArrayList<>();
+    private final Set<MageObjectReference> spells = new HashSet<>();
     private final UUID originalId;
 
     public CavernOfSoulsWatcher(UUID originalId) {
@@ -132,14 +130,14 @@ class CavernOfSoulsWatcher extends Watcher {
     @Override
     public void watch(GameEvent event, Game game) {
         if (event.getType() == GameEvent.EventType.MANA_PAID) {
-            if (event.getData() != null && event.getData().equals(originalId.toString())) {
-                spells.add(event.getTargetId());
+            if (event.getData() != null && event.getData().equals(originalId.toString()) && event.getTargetId() != null) {
+                spells.add(new MageObjectReference(game.getObject(event.getTargetId()), game));
             }
         }
     }
 
-    public boolean spellCantBeCountered(UUID spellId) {
-        return spells.contains(spellId);
+    public boolean spellCantBeCountered(MageObjectReference mor) {
+        return spells.contains(mor);
     }
 
     @Override
@@ -188,6 +186,6 @@ class CavernOfSoulsCantCounterEffect extends ContinuousRuleModifyingEffectImpl {
     public boolean applies(GameEvent event, Ability source, Game game) {
         CavernOfSoulsWatcher watcher = game.getState().getWatcher(CavernOfSoulsWatcher.class, source.getSourceId());
         Spell spell = game.getStack().getSpell(event.getTargetId());
-        return spell != null && watcher != null && watcher.spellCantBeCountered(spell.getId());
+        return spell != null && watcher != null && watcher.spellCantBeCountered(new MageObjectReference(spell, game));
     }
 }

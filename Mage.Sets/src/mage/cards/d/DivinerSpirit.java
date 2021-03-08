@@ -31,7 +31,7 @@ public final class DivinerSpirit extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new DivinerSpiritEffect(), false, true));
     }
 
-    public DivinerSpirit(final DivinerSpirit card) {
+    private DivinerSpirit(final DivinerSpirit card) {
         super(card);
     }
 
@@ -64,8 +64,8 @@ class DivinerSpiritEffect extends OneShotEffect {
         if (sourceController != null && damagedPlayer != null) {
             int amount = (Integer) getValue("damage");
             if (amount > 0) {
-                sourceController.drawCards(amount, game);
-                damagedPlayer.drawCards(amount, game);
+                sourceController.drawCards(amount, source, game);
+                damagedPlayer.drawCards(amount, source, game);
                 return true;
             }
         }

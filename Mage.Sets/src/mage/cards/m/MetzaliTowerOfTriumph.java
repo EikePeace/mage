@@ -61,7 +61,7 @@ public final class MetzaliTowerOfTriumph extends CardImpl {
 
     }
 
-    public MetzaliTowerOfTriumph(final MetzaliTowerOfTriumph card) {
+    private MetzaliTowerOfTriumph(final MetzaliTowerOfTriumph card) {
         super(card);
     }
 
@@ -103,7 +103,7 @@ class MetzaliTowerOfTriumphEffect extends OneShotEffect {
             if (!available.isEmpty()) {
                 Permanent permanent = available.get(RandomUtil.nextInt(available.size()));
                 if (permanent != null) {
-                    permanent.destroy(source.getSourceId(), game, false);
+                    permanent.destroy(source, game, false);
                 }
             }
             return true;

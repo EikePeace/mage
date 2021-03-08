@@ -43,7 +43,7 @@ public final class Excavator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Excavator(final Excavator card) {
+    private Excavator(final Excavator card) {
         super(card);
     }
 
@@ -112,7 +112,7 @@ class ExcavatorEffect extends ContinuousEffectImpl implements SourceEffect {
             if (permanent != null) {
                 for(Ability ability : abilities)
                 {
-                    permanent.addAbility(ability, source.getSourceId(), game, false);
+                    permanent.addAbility(ability, source.getSourceId(), game);
                 }
             }
         }

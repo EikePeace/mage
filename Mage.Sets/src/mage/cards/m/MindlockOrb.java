@@ -30,7 +30,7 @@ public final class MindlockOrb extends CardImpl {
 
     }
 
-    public MindlockOrb(final MindlockOrb card) {
+    private MindlockOrb(final MindlockOrb card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class MindlockRuleModifyingEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        return event.getType() == EventType.SEARCH_LIBRARY;
+        return event.getType() == GameEvent.EventType.SEARCH_LIBRARY;
     }
 
     @Override

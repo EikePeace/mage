@@ -14,7 +14,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -52,7 +52,7 @@ public final class FaerieMiscreant extends CardImpl {
         ));
     }
 
-    public FaerieMiscreant(final FaerieMiscreant card) {
+    private FaerieMiscreant(final FaerieMiscreant card) {
         super(card);
     }
 

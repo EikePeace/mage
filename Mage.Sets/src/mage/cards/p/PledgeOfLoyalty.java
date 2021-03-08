@@ -19,7 +19,6 @@ import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.players.PlayerList;
 import mage.target.common.TargetCreaturePermanent;
 import mage.abilities.Ability;
 import mage.abilities.effects.common.AttachEffect;
@@ -54,7 +53,7 @@ public final class PledgeOfLoyalty extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public PledgeOfLoyalty(final PledgeOfLoyalty card) {
+    private PledgeOfLoyalty(final PledgeOfLoyalty card) {
         super(card);
     }
 

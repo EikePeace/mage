@@ -40,7 +40,7 @@ public final class ThelonsChant extends CardImpl {
                 "Whenever a player puts a Swamp onto the battlefield, {this} deals 3 damage to that player unless they put a -1/-1 counter on a creature they control."));
     }
 
-    public ThelonsChant(final ThelonsChant card) {
+    private ThelonsChant(final ThelonsChant card) {
         super(card);
     }
 
@@ -78,12 +78,12 @@ class ThelonsChantEffect extends OneShotEffect {
                     && player.choose(Outcome.UnboostCreature, target, source.getSourceId(), game)) {
                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                 if (permanent != null) {
-                    permanent.addCounters(CounterType.M1M1.createInstance(), source, game);
+                    permanent.addCounters(CounterType.M1M1.createInstance(), player.getId(), source, game);
                     paid = true;
                 }
             }
             if (!paid) {
-                player.damage(3, source.getSourceId(), game);
+                player.damage(3, source.getSourceId(), source, game);
             }
             return true;
         }

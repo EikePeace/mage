@@ -32,7 +32,7 @@ public final class CosisTrickster extends CardImpl {
         this.addAbility(new CosisTricksterTriggeredAbility());
     }
 
-    public CosisTrickster(final CosisTrickster card) {
+    private CosisTrickster(final CosisTrickster card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class CosisTricksterTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LIBRARY_SHUFFLED;
+        return event.getType() == GameEvent.EventType.LIBRARY_SHUFFLED;
     }
 
     @Override

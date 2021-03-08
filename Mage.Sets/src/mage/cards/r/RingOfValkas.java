@@ -40,14 +40,14 @@ public final class RingOfValkas extends CardImpl {
         
         // At the beginning of your upkeep, put a +1/+1 counter on equipped creature if it's red.
         TriggeredAbility triggeredAbility = new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new AddPlusOneCountersAttachedEffect(1), TargetController.YOU, false);
-        ConditionalInterveningIfTriggeredAbility ability = new ConditionalInterveningIfTriggeredAbility(triggeredAbility, new AttachedToMatchesFilterCondition(filter), "At the beginning of your upkeep, put a +1/+1 counter on equipped creature if it's red");
+        ConditionalInterveningIfTriggeredAbility ability = new ConditionalInterveningIfTriggeredAbility(triggeredAbility, new AttachedToMatchesFilterCondition(filter), "At the beginning of your upkeep, put a +1/+1 counter on equipped creature if it's red.");
         this.addAbility(ability);
         
         // Equip {1}
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(1)));
     }
 
-    public RingOfValkas(final RingOfValkas card) {
+    private RingOfValkas(final RingOfValkas card) {
         super(card);
     }
 

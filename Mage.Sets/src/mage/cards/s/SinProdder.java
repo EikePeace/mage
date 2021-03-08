@@ -34,7 +34,7 @@ public final class SinProdder extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new SinProdderEffect(), TargetController.YOU, false));
     }
 
-    public SinProdder(final SinProdder card) {
+    private SinProdder(final SinProdder card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class SinProdderEffect extends OneShotEffect {
                     Player opponent = game.getPlayer(opponentUuid);
                     if (opponent != null && !putInGraveyard && opponent.chooseUse(Outcome.Damage, message, source, game)) {
                         putInGraveyard = true;
-                        opponent.damage(card.getConvertedManaCost(), source.getSourceId(), game);
+                        opponent.damage(card.getConvertedManaCost(), source.getSourceId(), source, game);
                         // 4/8/2016: Each opponent in turn order, starting with the one after you in turn order, may choose to have you put that card into your graveyard.
                         // Once a player does so, Sin Prodder deals damage equal to that card's converted mana cost to that player immediately
                         // and Sin Prodder's trigger has no further action.

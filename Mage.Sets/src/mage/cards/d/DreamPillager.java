@@ -42,7 +42,7 @@ public final class DreamPillager extends CardImpl {
         this.addAbility(new DreamPillagerTriggeredAbility());
     }
 
-    public DreamPillager(final DreamPillager card) {
+    private DreamPillager(final DreamPillager card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class DreamPillagerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -37,7 +37,7 @@ public final class DarkSphere extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DarkSphere(final DarkSphere card) {
+    private DarkSphere(final DarkSphere card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class DarkSpherePreventionEffect extends ReplacementEffectImpl {
         MageObject sourceObject = game.getObject(source.getSourceId());
         DamageEvent damageEvent = (DamageEvent) event;
         if (controller != null) {
-            controller.damage((int) Math.ceil(damageEvent.getAmount() / 2.0), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());            
+            controller.damage((int) Math.ceil(damageEvent.getAmount() / 2.0), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
             StringBuilder sb = new StringBuilder(sourceObject != null ? sourceObject.getLogName() : "");
             sb.append(": ").append(damageEvent.getAmount() / 2).append(" damage prevented");
             sb.append(" from ").append(controller.getLogName());

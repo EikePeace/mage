@@ -31,7 +31,7 @@ public final class Fastbond extends CardImpl {
         this.addAbility(new PlayALandTriggeredAbility());
     }
 
-    public Fastbond(final Fastbond card) {
+    private Fastbond(final Fastbond card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class PlayALandTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LAND_PLAYED;
+        return event.getType() == GameEvent.EventType.LAND_PLAYED;
     }
 
     @Override
@@ -79,7 +79,7 @@ class PlayALandTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever you play a land, if it wasn't the first land you played this turn, {source} deals 1 damage to you";
+        return "Whenever you play a land, if it wasn't the first land you played this turn, {this} deals 1 damage to you";
     }
 
 }

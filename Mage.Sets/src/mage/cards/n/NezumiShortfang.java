@@ -18,7 +18,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
 
@@ -48,7 +47,7 @@ public final class NezumiShortfang extends CardImpl {
         this.addAbility(ability);
     }
 
-    public NezumiShortfang(final NezumiShortfang card) {
+    private NezumiShortfang(final NezumiShortfang card) {
         super(card);
     }
 
@@ -105,7 +104,7 @@ class StabwhiskerLoseLifeEffect extends OneShotEffect {
         if (opponent != null) {
             int lifeLose = 3 - opponent.getHand().size();
             if (lifeLose > 0) {
-                opponent.loseLife(lifeLose, game, false);
+                opponent.loseLife(lifeLose, game, source, false);
             }
             return true;
         }

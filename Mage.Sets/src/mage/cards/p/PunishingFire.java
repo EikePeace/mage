@@ -33,7 +33,7 @@ public final class PunishingFire extends CardImpl {
         this.addAbility(new PunishingFireTriggeredAbility());
     }
 
-    public PunishingFire(final PunishingFire card) {
+    private PunishingFire(final PunishingFire card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class PunishingFireTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAINED_LIFE;
+        return event.getType() == GameEvent.EventType.GAINED_LIFE;
     }
 
     @Override

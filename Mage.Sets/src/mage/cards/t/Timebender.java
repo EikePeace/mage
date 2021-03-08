@@ -51,7 +51,7 @@ public final class Timebender extends CardImpl {
 
     }
 
-    public Timebender(final Timebender card) {
+    private Timebender(final Timebender card) {
         super(card);
     }
 
@@ -90,18 +90,18 @@ class TimebenderEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
         if (permanent != null) {
             if (addCounters) {
-                permanent.addCounters(CounterType.TIME.createInstance(2), source, game);
+                permanent.addCounters(CounterType.TIME.createInstance(2), source.getControllerId(), source, game);
             } else {
-                permanent.removeCounters(CounterType.TIME.getName(), 2, game);
+                permanent.removeCounters(CounterType.TIME.getName(), 2, source, game);
             }
             return true;
         }
         Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
         if (card != null) {
             if (addCounters) {
-                card.addCounters(CounterType.TIME.createInstance(2), source, game);
+                card.addCounters(CounterType.TIME.createInstance(2), source.getControllerId(), source, game);
             } else {
-                card.removeCounters(CounterType.TIME.getName(), 2, game);
+                card.removeCounters(CounterType.TIME.getName(), 2, source, game);
             }
             return true;
         }

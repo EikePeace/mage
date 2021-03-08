@@ -34,7 +34,7 @@ public final class MorticianBeetle extends CardImpl {
         this.addAbility(new PlayerSacrificesCreatureTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), true));
     }
 
-    public MorticianBeetle(final MorticianBeetle card) {
+    private MorticianBeetle(final MorticianBeetle card) {
         super(card);
     }
 
@@ -56,16 +56,14 @@ class PlayerSacrificesCreatureTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getType() == EventType.SACRIFICED_PERMANENT) {
-            MageObject mageObject = game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
-            if (mageObject != null && mageObject.isCreature()) {
-                return true;
-            }
+        MageObject mageObject = game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
+        if (mageObject != null && mageObject.isCreature()) {
+            return true;
         }
         return false;
     }

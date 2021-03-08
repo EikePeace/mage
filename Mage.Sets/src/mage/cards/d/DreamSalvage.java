@@ -3,7 +3,6 @@ package mage.cards.d;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
@@ -34,7 +33,7 @@ public final class DreamSalvage extends CardImpl {
 
     }
 
-    public DreamSalvage(final DreamSalvage card) {
+    private DreamSalvage(final DreamSalvage card) {
         super(card);
     }
 
@@ -97,7 +96,7 @@ class DreamSalvageEffect extends OneShotEffect {
                 && controller != null
                 && watcher != null
                 && watcher.getAmountCardsDiscarded(targetOpponent.getId()) > 0) {
-            controller.drawCards(watcher.getAmountCardsDiscarded(targetOpponent.getId()), game);
+            controller.drawCards(watcher.getAmountCardsDiscarded(targetOpponent.getId()), source, game);
             return true;
         }
         return false;

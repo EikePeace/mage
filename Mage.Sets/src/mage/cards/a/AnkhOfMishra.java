@@ -31,7 +31,7 @@ public final class AnkhOfMishra extends CardImpl {
 
     }
 
-    public AnkhOfMishra(final AnkhOfMishra card) {
+    private AnkhOfMishra(final AnkhOfMishra card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class AnkhOfMishraAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

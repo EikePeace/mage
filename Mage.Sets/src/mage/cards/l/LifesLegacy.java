@@ -31,7 +31,7 @@ public final class LifesLegacy extends CardImpl {
 
     }
 
-    public LifesLegacy(final LifesLegacy card) {
+    private LifesLegacy(final LifesLegacy card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class LifesLegacyEffect extends OneShotEffect {
             }
         }
         if (power > 0) {
-            controller.drawCards(power, game);
+            controller.drawCards(power, source, game);
         }
         return true;
     }

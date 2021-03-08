@@ -1,8 +1,5 @@
 package mage.cards.f;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
@@ -16,8 +13,11 @@ import mage.game.Game;
 import mage.players.Player;
 import mage.util.CardUtil;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class Fluctuator extends CardImpl {
@@ -29,7 +29,7 @@ public final class Fluctuator extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new FluctuatorEffect()));
     }
 
-    public Fluctuator(final Fluctuator card) {
+    private Fluctuator(final Fluctuator card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class FluctuatorEffect extends CostModificationEffectImpl {
             }
             if (reduceMax > 0) {
                 int reduce;
-                if (game.inCheckPlayableState()) {
+                if (game.inCheckPlayableState() || controller.isComputer()) {
                     reduce = reduceMax;
                 } else {
                     ChoiceImpl choice = new ChoiceImpl(true);

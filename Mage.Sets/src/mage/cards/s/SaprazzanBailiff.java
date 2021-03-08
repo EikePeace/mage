@@ -47,7 +47,7 @@ public final class SaprazzanBailiff extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new ReturnToHandFromGraveyardAllEffect(filter).setText("return all artifact and enchantment cards from all graveyards to their owners' hands"), false));
     }
 
-    public SaprazzanBailiff(final SaprazzanBailiff card) {
+    private SaprazzanBailiff(final SaprazzanBailiff card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class SaprazzanBailiffEffect extends OneShotEffect {
                 for (UUID cid : player.getGraveyard().copy()) {
                     Card card = game.getCard(cid);
                     if (card != null && (card.isArtifact() || card.isEnchantment())) {
-                        controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                        controller.moveCardToExileWithInfo(card, null, "", source, game, Zone.GRAVEYARD, true);
                     }
                 }
             }

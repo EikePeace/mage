@@ -10,7 +10,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -31,7 +30,7 @@ public final class OnduGiant extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(StaticFilters.FILTER_CARD_BASIC_LAND), true), true));
     }
 
-    public OnduGiant(final OnduGiant card) {
+    private OnduGiant(final OnduGiant card) {
         super(card);
     }
 

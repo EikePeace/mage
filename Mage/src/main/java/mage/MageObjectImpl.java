@@ -9,21 +9,24 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.Effect;
-import mage.abilities.keyword.ChangelingAbility;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.abilities.text.TextPart;
 import mage.abilities.text.TextPartSubType;
 import mage.cards.FrameStyle;
+import mage.cards.mock.MockCard;
 import mage.constants.*;
 import mage.game.Game;
+import mage.game.MageObjectAttribute;
 import mage.game.events.ZoneChangeEvent;
-import mage.game.permanent.Permanent;
 import mage.util.GameLog;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
+import org.apache.log4j.Logger;
 
 import java.util.*;
 
 public abstract class MageObjectImpl implements MageObject {
+
+    private static final Logger logger = Logger.getLogger(MageObjectImpl.class);
 
     protected UUID objectId;
 
@@ -32,9 +35,8 @@ public abstract class MageObjectImpl implements MageObject {
     protected ObjectColor color;
     protected ObjectColor frameColor;
     protected FrameStyle frameStyle;
-    protected Set<CardType> cardType = EnumSet.noneOf(CardType.class);
-    protected SubTypeList subtype = new SubTypeList();
-    protected boolean isAllCreatureTypes;
+    protected ArrayList<CardType> cardType = new ArrayList<>();
+    protected SubTypes subtype = new SubTypes();
     protected Set<SuperType> supertype = EnumSet.noneOf(SuperType.class);
     protected Abilities<Ability> abilities;
     protected String text;
@@ -55,7 +57,7 @@ public abstract class MageObjectImpl implements MageObject {
         color = new ObjectColor();
         frameColor = new ObjectColor();
         frameStyle = FrameStyle.M15_NORMAL;
-        manaCost = new ManaCostsImpl<>("");
+        manaCost = new ManaCostsImpl<>();
         abilities = new AbilitiesImpl<>();
         textParts = new ArrayList<>();
     }
@@ -72,8 +74,7 @@ public abstract class MageObjectImpl implements MageObject {
         toughness = object.toughness.copy();
         abilities = object.abilities.copy();
         this.cardType.addAll(object.cardType);
-        this.subtype.addAll(object.subtype);
-        isAllCreatureTypes = object.isAllCreatureTypes;
+        this.subtype.copyFrom(object.subtype);
         supertype.addAll(object.supertype);
         this.copy = object.copy;
         this.copyFrom = (object.copyFrom != null ? object.copyFrom.copy() : null);
@@ -112,12 +113,23 @@ public abstract class MageObjectImpl implements MageObject {
     }
 
     @Override
-    public Set<CardType> getCardType() {
+    public ArrayList<CardType> getCardType() {
         return cardType;
     }
 
     @Override
-    public SubTypeList getSubtype(Game game) {
+    public SubTypes getSubtype() {
+        return subtype;
+    }
+
+    @Override
+    public SubTypes getSubtype(Game game) {
+        if (game != null) {
+            MageObjectAttribute mageObjectAttribute = game.getState().getMageObjectAttribute(getId());
+            if (mageObjectAttribute != null) {
+                return mageObjectAttribute.getSubtype();
+            }
+        }
         return subtype;
     }
 
@@ -132,12 +144,12 @@ public abstract class MageObjectImpl implements MageObject {
     }
 
     @Override
-    public boolean hasAbility(UUID abilityId, Game game) {
-        if (this.getAbilities().containsKey(abilityId)) {
+    public boolean hasAbility(Ability ability, Game game) {
+        if (this.getAbilities().contains(ability)) {
             return true;
         }
         Abilities<Ability> otherAbilities = game.getState().getAllOtherAbilities(getId());
-        return otherAbilities != null && otherAbilities.containsKey(abilityId);
+        return otherAbilities != null && otherAbilities.contains(ability);
     }
 
     @Override
@@ -161,49 +173,47 @@ public abstract class MageObjectImpl implements MageObject {
     }
 
     @Override
+    public void setStartingLoyalty(int startingLoyalty) {
+        for (Ability ab : getAbilities()) {
+            if (ab instanceof PlaneswalkerEntersWithLoyaltyCountersAbility) {
+                ((PlaneswalkerEntersWithLoyaltyCountersAbility) ab).setStartingLoyalty(startingLoyalty);
+            }
+        }
+    }
+
+    @Override
+    public ObjectColor getColor() {
+        return color;
+    }
+
+    @Override
     public ObjectColor getColor(Game game) {
+        if (game != null) {
+            MageObjectAttribute mageObjectAttribute = game.getState().getMageObjectAttribute(getId());
+            if (mageObjectAttribute != null) {
+                return mageObjectAttribute.getColor();
+            }
+        }
         return color;
     }
 
     @Override
     public ObjectColor getFrameColor(Game game) {
         // For lands, add any colors of mana the land can produce to
-        // its frame colors.
-        if (this.isLand()) {
+        // its frame colors while game is active to represent ability changes during the game.
+        if (this.isLand() && !(this instanceof MockCard)) {
             ObjectColor cl = frameColor.copy();
+            Set<ManaType> manaTypes = EnumSet.noneOf(ManaType.class);
             for (Ability ab : getAbilities()) {
                 if (ab instanceof ActivatedManaAbilityImpl) {
-                    ActivatedManaAbilityImpl mana = (ActivatedManaAbilityImpl) ab;
-                    try {
-                        List<Mana> manaAdded = mana.getNetMana(game);
-                        for (Mana m : manaAdded) {
-                            if (m.getAny() > 0) {
-                                return new ObjectColor("WUBRG");
-                            }
-                            if (m.getWhite() > 0) {
-                                cl.setWhite(true);
-                            }
-                            if (m.getBlue() > 0) {
-                                cl.setBlue(true);
-                            }
-                            if (m.getBlack() > 0) {
-                                cl.setBlack(true);
-                            }
-                            if (m.getRed() > 0) {
-                                cl.setRed(true);
-                            }
-                            if (m.getGreen() > 0) {
-                                cl.setGreen(true);
-                            }
-                        }
-                    } catch (NullPointerException e) {
-                        // Ability depends on game
-                        // but no game passed
-                        // All such abilities are 5-color ones
-                        return new ObjectColor("WUBRG");
-                    }
+                    manaTypes.addAll(((ActivatedManaAbilityImpl) ab).getProducableManaTypes(game));
                 }
             }
+            cl.setWhite(manaTypes.contains(ManaType.WHITE));
+            cl.setBlue(manaTypes.contains(ManaType.BLUE));
+            cl.setBlack(manaTypes.contains(ManaType.BLACK));
+            cl.setRed(manaTypes.contains(ManaType.RED));
+            cl.setGreen(manaTypes.contains(ManaType.GREEN));
             return cl;
         } else {
             // For everything else, just return the frame colors
@@ -242,25 +252,10 @@ public abstract class MageObjectImpl implements MageObject {
         if (value == null) {
             return false;
         }
-        SubTypeList subtypes = this.getSubtype(game);
-        if (subtypes.contains(value)) {
+        if (value.getSubTypeSet() == SubTypeSet.CreatureType && isAllCreatureTypes(game)) {
             return true;
-        } else {
-            // checking for Changeling
-            // first make sure input parameter is a creature subtype
-            // if not, then ChangelingAbility doesn't matter
-            if (value.getSubTypeSet() != SubTypeSet.CreatureType) {
-                return false;
-            }
-            // as it is a creature subtype, then check the existence of Changeling
-            Abilities<Ability> checkList;
-            if (this instanceof Permanent) {
-                checkList = ((Permanent) this).getAbilities(game);
-            } else {
-                checkList = abilities;
-            }
-            return checkList.contains(ChangelingAbility.getInstance()) || isAllCreatureTypes();
         }
+        return getSubtype(game).contains(value);
     }
 
     @Override
@@ -295,13 +290,18 @@ public abstract class MageObjectImpl implements MageObject {
     }
 
     @Override
-    public boolean isAllCreatureTypes() {
-        return isAllCreatureTypes;
+    public boolean isAllCreatureTypes(Game game) {
+        return this.getSubtype(game).isAllCreatureTypes();
     }
 
     @Override
     public void setIsAllCreatureTypes(boolean value) {
-        isAllCreatureTypes = value;
+        this.getSubtype().setIsAllCreatureTypes(value && (this.isTribal() || this.isCreature()));
+    }
+
+    @Override
+    public void setIsAllCreatureTypes(Game game, boolean value) {
+        this.getSubtype(game).setIsAllCreatureTypes(value && (this.isTribal() || this.isCreature()));
     }
 
     @Override
@@ -338,5 +338,10 @@ public abstract class MageObjectImpl implements MageObject {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return getIdName() + " (" + super.getClass().getSuperclass().getSimpleName() + " -> " + this.getClass().getSimpleName() + ")";
     }
 }

@@ -12,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -23,7 +22,7 @@ public final class ArmorcraftJudge extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("creature you control with a +1/+1 counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public ArmorcraftJudge(UUID ownerId, CardSetInfo setInfo) {
@@ -37,7 +36,7 @@ public final class ArmorcraftJudge extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new DrawCardSourceControllerEffect(new PermanentsOnBattlefieldCount(filter))));
     }
 
-    public ArmorcraftJudge(final ArmorcraftJudge card) {
+    private ArmorcraftJudge(final ArmorcraftJudge card) {
         super(card);
     }
 

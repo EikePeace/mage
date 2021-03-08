@@ -28,7 +28,7 @@ public final class Spellshock extends CardImpl {
         this.addAbility(new SpellshockTriggeredAbility());
     }
 
-    public Spellshock(final Spellshock card) {
+    private Spellshock(final Spellshock card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class SpellshockTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

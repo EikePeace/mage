@@ -35,7 +35,7 @@ public final class ChandrasSpitfire extends CardImpl {
         this.addAbility(new ChandrasSpitfireAbility());
     }
 
-    public ChandrasSpitfire(final ChandrasSpitfire card) {
+    private ChandrasSpitfire(final ChandrasSpitfire card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class ChandrasSpitfireAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

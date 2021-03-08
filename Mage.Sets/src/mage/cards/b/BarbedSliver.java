@@ -28,11 +28,11 @@ public final class BarbedSliver extends CardImpl {
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn),
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn).setText("this creature gets +1/+0 until end of turn"),
                 new GenericManaCost(2)), Duration.WhileOnBattlefield, StaticFilters.FILTER_PERMANENT_CREATURE_SLIVERS, false)));
     }
 
-    public BarbedSliver(final BarbedSliver card) {
+    private BarbedSliver(final BarbedSliver card) {
         super(card);
     }
 

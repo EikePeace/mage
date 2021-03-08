@@ -37,7 +37,7 @@ public final class PhyrexianNegator extends CardImpl {
         this.addAbility(new PhyrexianNegatorTriggeredAbility());
     }
 
-    public PhyrexianNegator(final PhyrexianNegator card) {
+    private PhyrexianNegator(final PhyrexianNegator card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class PhyrexianNegatorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
     
     @Override

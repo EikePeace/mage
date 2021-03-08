@@ -46,7 +46,7 @@ public final class CrazedArmodon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CrazedArmodon(final CrazedArmodon card) {
+    private CrazedArmodon(final CrazedArmodon card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ public final class CrazedArmodon extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.END_TURN_STEP_PRE;
+            return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
         }
 
         @Override

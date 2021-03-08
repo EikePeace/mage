@@ -13,7 +13,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
-import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.Predicates;
@@ -54,7 +53,7 @@ public final class BrutalizerExarch extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BrutalizerExarch(final BrutalizerExarch card) {
+    private BrutalizerExarch(final BrutalizerExarch card) {
         super(card);
     }
 
@@ -83,13 +82,9 @@ class BrutalizerExarchEffect2 extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getFirstTarget());
-        if (permanent != null) {
-            Player player = game.getPlayer(permanent.getOwnerId());
-            if (player == null) {
-                return false;
-            }
-
-            return permanent.moveToZone(Zone.LIBRARY, source.getSourceId(), game, false);
+        Player controller = game.getPlayer(source.getControllerId());
+        if (permanent != null && controller != null) {
+            return controller.putCardsOnBottomOfLibrary(permanent, game, source, true);
         }
         return false;
     }

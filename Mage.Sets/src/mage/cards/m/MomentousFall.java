@@ -31,7 +31,7 @@ public final class MomentousFall extends CardImpl {
         this.getSpellAbility().addEffect(new MomentousFallEffect());
     }
 
-    public MomentousFall(final MomentousFall card) {
+    private MomentousFall(final MomentousFall card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class MomentousFallEffect extends OneShotEffect {
                 }
             }
             if (power > 0) {
-                controller.drawCards(power, game);
+                controller.drawCards(power, source, game);
             }
             if (toughness > 0) {
                 controller.gainLife(toughness, game, source);

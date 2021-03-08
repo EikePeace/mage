@@ -33,7 +33,7 @@ public final class RavingOniSlave extends CardImpl {
         this.addAbility(new EntersBattlefieldOrLeavesSourceTriggeredAbility(new RavingOniSlaveEffect(), false));
     }
 
-    public RavingOniSlave(final RavingOniSlave card) {
+    private RavingOniSlave(final RavingOniSlave card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class RavingOniSlaveEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             if (game.getBattlefield().count(new FilterCreaturePermanent(SubType.DEMON, "Demon"), source.getSourceId(), source.getControllerId(), game) < 1) {
-                controller.loseLife(3, game, false);
+                controller.loseLife(3, game, source, false);
             }
             return true;
         }

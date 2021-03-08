@@ -50,7 +50,7 @@ public final class ShivanSandMage extends CardImpl {
         this.addAbility(new SuspendAbility(4, new ManaCostsImpl("{R}"), this));
     }
 
-    public ShivanSandMage(final ShivanSandMage card) {
+    private ShivanSandMage(final ShivanSandMage card) {
         super(card);
     }
 
@@ -89,18 +89,18 @@ class ShivanSandMageEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
         if (permanent != null) {
             if (addCounters) {
-                permanent.addCounters(CounterType.TIME.createInstance(2), source, game);
+                permanent.addCounters(CounterType.TIME.createInstance(2), source.getControllerId(), source, game);
             } else {
-                permanent.removeCounters(CounterType.TIME.getName(), 2, game);
+                permanent.removeCounters(CounterType.TIME.getName(), 2, source, game);
             }
             return true;
         }
         Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
         if (card != null) {
             if (addCounters) {
-                card.addCounters(CounterType.TIME.createInstance(2), source, game);
+                card.addCounters(CounterType.TIME.createInstance(2), source.getControllerId(), source, game);
             } else {
-                card.removeCounters(CounterType.TIME.getName(), 2, game);
+                card.removeCounters(CounterType.TIME.getName(), 2, source, game);
             }
             return true;
         }

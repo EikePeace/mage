@@ -26,7 +26,7 @@ public final class HoardersGreed extends CardImpl {
         this.getSpellAbility().addEffect(new HoardersGreedEffect());
     }
 
-    public HoardersGreed(final HoardersGreed card) {
+    private HoardersGreed(final HoardersGreed card) {
         super(card);
     }
 
@@ -57,8 +57,8 @@ class HoardersGreedEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             do {
-                controller.loseLife(2, game, false);
-                controller.drawCards(2, game);
+                controller.loseLife(2, game, source, false);
+                controller.drawCards(2, source, game);
             } while (controller.canRespond() && ClashEffect.getInstance().apply(game, source));
             return true;
         }

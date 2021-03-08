@@ -27,7 +27,7 @@ public final class Renounce extends CardImpl {
         this.getSpellAbility().addEffect(new RenounceEffect());
     }
 
-    public Renounce(final Renounce card) {
+    private Renounce(final Renounce card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class RenounceEffect extends OneShotEffect {
             for(UUID uuid : toSacrifice.getTargets()){
                 Permanent permanent = game.getPermanent(uuid);
                 if(permanent != null){
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                     amount++;
                 }
             }

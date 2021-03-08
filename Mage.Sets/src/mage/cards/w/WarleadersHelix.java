@@ -1,8 +1,6 @@
 
 package mage.cards.w;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import mage.abilities.effects.common.DamageTargetEffect;
@@ -26,7 +24,7 @@ public final class WarleadersHelix extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public WarleadersHelix(final WarleadersHelix card) {
+    private WarleadersHelix(final WarleadersHelix card) {
         super(card);
     }
 

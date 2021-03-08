@@ -40,7 +40,7 @@ public final class AngelicArbiter extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AngelicArbiterEffect2()), new PlayerAttackedWatcher());
     }
 
-    public AngelicArbiter(final AngelicArbiter card) {
+    private AngelicArbiter(final AngelicArbiter card) {
         super(card);
     }
 
@@ -105,7 +105,7 @@ class AngelicArbiterEffect2 extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL;
+        return event.getType() == GameEvent.EventType.CAST_SPELL;
     }
 
     @Override

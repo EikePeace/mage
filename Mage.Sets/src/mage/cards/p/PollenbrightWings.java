@@ -8,7 +8,6 @@ import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.UntapAllLandsControllerEffect;
 import mage.abilities.effects.common.continuous.GainAbilityAttachedEffect;
 import mage.abilities.keyword.EnchantAbility;
 import mage.abilities.keyword.FlyingAbility;
@@ -52,7 +51,7 @@ public final class PollenbrightWings extends CardImpl {
         this.addAbility(new PollenbrightWingsAbility());
     }
 
-    public PollenbrightWings(final PollenbrightWings card) {
+    private PollenbrightWings(final PollenbrightWings card) {
         super(card);
     }
 
@@ -79,7 +78,7 @@ class PollenbrightWingsAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

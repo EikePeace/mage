@@ -30,7 +30,7 @@ public final class ColdSnap extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new ColdSnapDamageTargetEffect(), TargetController.ANY, false, true));
     }
 
-    public ColdSnap(final ColdSnap card) {
+    private ColdSnap(final ColdSnap card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ColdSnapDamageTargetEffect extends OneShotEffect {
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
             int damage = game.getBattlefield().getAllActivePermanents(filter, targetPointer.getFirst(game, source), game).size();
-            player.damage(damage, source.getSourceId(), game);
+            player.damage(damage, source.getSourceId(), source, game);
             return true;
         }
         return false;

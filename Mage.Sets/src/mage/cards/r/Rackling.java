@@ -28,7 +28,7 @@ public final class Rackling extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new RacklingEffect(), TargetController.OPPONENT, false, true));
     }
 
-    public Rackling(final Rackling card) {
+    private Rackling(final Rackling card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class RacklingEffect extends OneShotEffect {
         if (player != null) {
             int damage = 3 - player.getHand().size();
             if (damage > 0) {
-                player.damage(damage, source.getSourceId(), game);
+                player.damage(damage, source.getSourceId(), source, game);
             }
             return true;
         }

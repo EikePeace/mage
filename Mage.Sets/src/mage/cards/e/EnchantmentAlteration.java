@@ -13,7 +13,7 @@ import mage.filter.FilterPermanent;
 import mage.filter.predicate.ObjectSourcePlayer;
 import mage.filter.predicate.ObjectSourcePlayerPredicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.AttachmentAttachedToCardTypePredicate;
+import mage.filter.predicate.permanent.AttachmentAttachedToCardTypePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.StackObject;
@@ -51,7 +51,7 @@ public final class EnchantmentAlteration extends CardImpl {
 
     }
 
-    public EnchantmentAlteration(final EnchantmentAlteration card) {
+    private EnchantmentAlteration(final EnchantmentAlteration card) {
         super(card);
     }
 
@@ -131,9 +131,9 @@ class EnchantmentAlterationEffect extends OneShotEffect {
                     Target auraTarget = aura.getSpellAbility().getTargets().get(0);
                     if (!auraTarget.canTarget(permanentToBeAttachedTo.getId(), game)) {
                         game.informPlayers(aura.getLogName() + " was not attched to " + permanentToBeAttachedTo.getLogName() + " because it's no legal target for the aura");
-                    } else if (oldPermanent.removeAttachment(aura.getId(), game)) {
+                    } else if (oldPermanent.removeAttachment(aura.getId(), source, game)) {
                         game.informPlayers(aura.getLogName() + " was unattached from " + oldPermanent.getLogName() + " and attached to " + permanentToBeAttachedTo.getLogName());
-                        permanentToBeAttachedTo.addAttachment(aura.getId(), game);
+                        permanentToBeAttachedTo.addAttachment(aura.getId(), source, game);
                     }
                 }
             }

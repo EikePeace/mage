@@ -28,7 +28,7 @@ public final class PetalsOfInsight extends CardImpl {
         this.getSpellAbility().addEffect(new PetalsOfInsightEffect());
     }
 
-    public PetalsOfInsight(final PetalsOfInsight card) {
+    private PetalsOfInsight(final PetalsOfInsight card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class PetalsOfInsightEffect extends OneShotEffect {
                 controller.moveCards(spellCard, Zone.HAND, source, game);
             }
         } else {
-            controller.drawCards(3, game);
+            controller.drawCards(3, source, game);
         }
         return true;
     }

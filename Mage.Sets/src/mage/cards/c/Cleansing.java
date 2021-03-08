@@ -27,7 +27,7 @@ public final class Cleansing extends CardImpl {
         this.getSpellAbility().addEffect(new CleansingEffect());
     }
 
-    public Cleansing(final Cleansing card) {
+    private Cleansing(final Cleansing card) {
         super(card);
     }
 
@@ -61,9 +61,9 @@ class CleansingEffect extends OneShotEffect {
                     Player player = game.getPlayer(playerId);
                     if(player != null) {
                         cost.clearPaid();
-                        if (cost.canPay(source, source.getSourceId(), player.getId(), game)
+                        if (cost.canPay(source, source, player.getId(), game)
                                 && player.chooseUse(outcome, "Pay 1 life to prevent this?", source, game)) {
-                            if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                            if (cost.pay(source, game, source, player.getId(), false, null)) {
                                 game.informPlayers(player.getLogName() + " pays 1 life to prevent the destruction of " + p.getLogName());
                                 paidLife = true;
                             }
@@ -71,7 +71,7 @@ class CleansingEffect extends OneShotEffect {
                     }
                 }
                 if (!paidLife) {
-                    p.destroy(source.getSourceId(), game, false);
+                    p.destroy(source, game, false);
                 }
             }
         }

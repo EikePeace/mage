@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.condition.common.SourceOnBattlefieldCondition;
+import mage.abilities.condition.common.SourceRemainsInZoneCondition;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.decorator.ConditionalContinuousEffect;
@@ -19,7 +19,6 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -30,7 +29,7 @@ public final class CytoplastManipulator extends CardImpl {
     
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("a creature with a +1/+1 counter on it");
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }    
 
     public CytoplastManipulator(UUID ownerId, CardSetInfo setInfo) {
@@ -47,7 +46,7 @@ public final class CytoplastManipulator extends CardImpl {
         // {U}, {tap}: Gain control of target creature with a +1/+1 counter on it for as long as Cytoplast Manipulator remains on the battlefield.
         ConditionalContinuousEffect effect = new ConditionalContinuousEffect(
                 new GainControlTargetEffect(Duration.Custom, true),
-                SourceOnBattlefieldCondition.instance,
+                new SourceRemainsInZoneCondition(Zone.BATTLEFIELD),
                 "gain control of target creature with a +1/+1 counter on it for as long as {this} remains on the battlefield");
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new ManaCostsImpl("{U}"));
         ability.addCost(new TapSourceCost());
@@ -56,7 +55,7 @@ public final class CytoplastManipulator extends CardImpl {
         
     }
 
-    public CytoplastManipulator(final CytoplastManipulator card) {
+    private CytoplastManipulator(final CytoplastManipulator card) {
         super(card);
     }
 

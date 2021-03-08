@@ -39,7 +39,7 @@ public final class SunhomeEnforcer extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn), new ManaCostsImpl("{1}{R}")));
     }
 
-    public SunhomeEnforcer(final SunhomeEnforcer card) {
+    private SunhomeEnforcer(final SunhomeEnforcer card) {
         super(card);
     }
 
@@ -66,9 +66,8 @@ class SunhomeEnforcerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE 
-                || event.getType() == EventType.DAMAGED_PLAYER 
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
     
     @Override

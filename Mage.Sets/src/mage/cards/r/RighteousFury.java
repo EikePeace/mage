@@ -28,7 +28,7 @@ public final class RighteousFury extends CardImpl {
         this.getSpellAbility().addEffect(new RighteousFuryEffect());
     }
 
-    public RighteousFury(final RighteousFury card) {
+    private RighteousFury(final RighteousFury card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class RighteousFuryEffect extends OneShotEffect {
             FilterCreaturePermanent filter = new FilterCreaturePermanent("all tapped creatures");
             filter.add(TappedPredicate.instance);
             for(Permanent creature: game.getState().getBattlefield().getActivePermanents(filter, controller.getId(), game)) {
-                if (creature.destroy(source.getSourceId(), game, false)) {
+                if (creature.destroy(source, game, false)) {
                     destroyedCreature++;
                 }
             }

@@ -40,7 +40,7 @@ public final class SakikoMotherOfSummer extends CardImpl {
 
     }
 
-    public SakikoMotherOfSummer(final SakikoMotherOfSummer card) {
+    private SakikoMotherOfSummer(final SakikoMotherOfSummer card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class SakikoMotherOfSummerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -42,7 +42,7 @@ public final class ThoughtHemorrhage extends CardImpl {
         this.getSpellAbility().addEffect(new ThoughtHemorrhageEffect());
     }
 
-    public ThoughtHemorrhage(final ThoughtHemorrhage card) {
+    private ThoughtHemorrhage(final ThoughtHemorrhage card) {
         super(card);
     }
 
@@ -86,12 +86,12 @@ class ThoughtHemorrhageEffect extends OneShotEffect {
                         + targetPlayer.getName(), targetPlayer.getHand(), game);
                 int cardsFound = 0;
                 for (Card card : targetPlayer.getHand().getCards(game)) {
-                    if (CardUtil.haveSameNames(card.getName(), cardName)) {
+                    if (CardUtil.haveSameNames(card, cardName, game)) {
                         cardsFound++;
                     }
                 }
                 if (cardsFound > 0) {
-                    targetPlayer.damage(3 * cardsFound, source.getSourceId(), game);
+                    targetPlayer.damage(3 * cardsFound, source.getSourceId(), source, game);
                 }
                 // Exile all cards with the same name
                 // Building a card filter with the name

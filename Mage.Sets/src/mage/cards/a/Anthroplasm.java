@@ -42,7 +42,7 @@ public final class Anthroplasm extends CardImpl {
 
     }
 
-    public Anthroplasm(final Anthroplasm card) {
+    private Anthroplasm(final Anthroplasm card) {
         super(card);
     }
 
@@ -73,9 +73,9 @@ class AnthroplasmEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
             //Remove all +1/+1 counters
-            permanent.removeCounters(permanent.getCounters(game).get(CounterType.P1P1.getName()), game);
+            permanent.removeCounters(permanent.getCounters(game).get(CounterType.P1P1.getName()), source, game);
             //put X +1/+1 counters
-            permanent.addCounters(CounterType.P1P1.createInstance(source.getManaCostsToPay().getX()), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(source.getManaCostsToPay().getX()), source.getControllerId(), source, game);
             return true;
         }
         return false;

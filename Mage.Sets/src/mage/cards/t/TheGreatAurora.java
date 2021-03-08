@@ -33,7 +33,7 @@ public final class TheGreatAurora extends CardImpl {
         this.getSpellAbility().addEffect(ExileSpellEffect.getInstance());
     }
 
-    public TheGreatAurora(final TheGreatAurora card) {
+    private TheGreatAurora(final TheGreatAurora card) {
         super(card);
     }
 
@@ -83,14 +83,14 @@ class TheGreatAuroraEffect extends OneShotEffect {
                     permanentsCount.put(playerId, handCards + (list != null ? list.size() : 0));
                     if (list != null) {
                         for (Permanent permanent : list) {
-                            player.moveCardToLibraryWithInfo(permanent, source.getSourceId(), game, Zone.BATTLEFIELD, true, true);
+                            player.moveCardToLibraryWithInfo(permanent, source, game, Zone.BATTLEFIELD, true, true);
                         }
                         player.shuffleLibrary(source, game);
                     }
                 }
             }
 
-            game.applyEffects(); // so effects from creatures that were on the battlefield won't trigger from draw or put into play
+            game.getState().processAction(game); // so effects from creatures that were on the battlefield won't trigger from draw or put into play
 
             // Draw cards
             for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
@@ -98,7 +98,7 @@ class TheGreatAuroraEffect extends OneShotEffect {
                 if (player != null) {
                     int count = permanentsCount.get(playerId);
                     if (count > 0) {
-                        player.drawCards(count, game);
+                        player.drawCards(count, source, game);
                     }
                 }
             }

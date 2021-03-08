@@ -18,7 +18,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.mageobject.MulticoloredPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -57,7 +57,7 @@ public final class GrixisGrimblade extends CardImpl {
         
     }
 
-    public GrixisGrimblade(final GrixisGrimblade card) {
+    private GrixisGrimblade(final GrixisGrimblade card) {
         super(card);
     }
 

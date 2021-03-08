@@ -42,7 +42,7 @@ public final class SanguinePraetor extends CardImpl {
 
     }
 
-    public SanguinePraetor(final SanguinePraetor card) {
+    private SanguinePraetor(final SanguinePraetor card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SanguinePraetorEffect extends OneShotEffect {
 
         for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
             if (permanent.getConvertedManaCost() == cmc) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

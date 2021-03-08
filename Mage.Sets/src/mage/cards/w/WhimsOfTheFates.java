@@ -32,7 +32,7 @@ public final class WhimsOfTheFates extends CardImpl {
         this.getSpellAbility().addEffect(new WhimsOfTheFateEffect());
     }
 
-    public WhimsOfTheFates(final WhimsOfTheFates card) {
+    private WhimsOfTheFates(final WhimsOfTheFates card) {
         super(card);
     }
 
@@ -145,7 +145,7 @@ class WhimsOfTheFateEffect extends OneShotEffect {
                     for (UUID permanentId : playerPiles.getValue().get(sacrificePile)) {
                         Permanent permanent = game.getPermanent(permanentId);
                         if (permanent != null) {
-                            permanent.sacrifice(source.getSourceId(), game);
+                            permanent.sacrifice(source, game);
                         }
                     }
                 }

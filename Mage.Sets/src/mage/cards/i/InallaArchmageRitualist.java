@@ -28,7 +28,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
@@ -82,7 +82,7 @@ public final class InallaArchmageRitualist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public InallaArchmageRitualist(final InallaArchmageRitualist card) {
+    private InallaArchmageRitualist(final InallaArchmageRitualist card) {
         super(card);
     }
 
@@ -110,7 +110,7 @@ class InallaArchmageRitualistEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = ((FixedTarget) getTargetPointer()).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(null, null, true);
             effect.setTargetPointer(getTargetPointer());

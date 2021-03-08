@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -35,7 +35,7 @@ public final class AviaryMechanic extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new ReturnToHandChosenControlledPermanentEffect(filter), true));
     }
 
-    public AviaryMechanic(final AviaryMechanic card) {
+    private AviaryMechanic(final AviaryMechanic card) {
         super(card);
     }
 

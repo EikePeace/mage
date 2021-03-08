@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.effects.common.continuous.BoostControlledEffect;
 import mage.abilities.keyword.FlyingAbility;
@@ -33,13 +33,13 @@ public final class SilverSeraph extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
         // Threshold - Other creatures you control get +2/+2 as long as seven or more cards are in your graveyard.
         Ability ability = new SimpleStaticAbility(Zone.BATTLEFIELD, new ConditionalContinuousEffect(
-            new BoostControlledEffect(2, 2, Duration.WhileOnBattlefield, true), new CardsInControllerGraveCondition(7),
+            new BoostControlledEffect(2, 2, Duration.WhileOnBattlefield, true), new CardsInControllerGraveyardCondition(7),
             "other creatures you control +2/+2 as long as seven or more cards are in your graveyard"));
         ability.setAbilityWord(AbilityWord.THRESHOLD);
         this.addAbility(ability);
     }
 
-    public SilverSeraph(final SilverSeraph card) {
+    private SilverSeraph(final SilverSeraph card) {
         super(card);
     }
 

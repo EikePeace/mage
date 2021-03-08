@@ -8,7 +8,6 @@ import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ReturnFromGraveyardToBattlefieldTargetEffect;
 import mage.abilities.effects.common.ReturnFromGraveyardToHandTargetEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.abilities.keyword.FirstStrikeAbility;
@@ -19,7 +18,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.SuperType;
-import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -53,7 +51,7 @@ public final class TianaShipsCaretaker extends CardImpl {
         this.addAbility(new TianaShipsCaretakerTriggeredAbility());
     }
 
-    public TianaShipsCaretaker(final TianaShipsCaretaker card) {
+    private TianaShipsCaretaker(final TianaShipsCaretaker card) {
         super(card);
     }
 
@@ -80,7 +78,7 @@ class TianaShipsCaretakerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -130,7 +128,7 @@ class TianaShipsCaretakerEffect extends OneShotEffect {
         Card card = game.getCard(getTargetPointer().getFirst(game, source));
         if (card != null && game.getState().getZone(card.getId()) == Zone.GRAVEYARD) {
             Effect effect = new ReturnFromGraveyardToHandTargetEffect();
-            effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+            effect.setTargetPointer(new FixedTarget(card, game));
             effect.setText("return that card to your hand at the beginning of the next end step");
             game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);
             return true;

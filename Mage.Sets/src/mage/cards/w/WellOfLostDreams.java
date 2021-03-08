@@ -26,7 +26,7 @@ public final class WellOfLostDreams extends CardImpl {
         this.addAbility(new GainLifeControllerTriggeredAbility(new WellOfLostDreamsEffect(), true, true));
     }
 
-    public WellOfLostDreams(final WellOfLostDreams card) {
+    private WellOfLostDreams(final WellOfLostDreams card) {
         super(card);
     }
 
@@ -60,9 +60,9 @@ class WellOfLostDreamsEffect extends OneShotEffect {
             if (amount > 0) {
                 int xValue = controller.announceXMana(0, amount, "Announce X Value", game, source);
                 if (xValue > 0) {
-                    if (new GenericManaCost(xValue).pay(source, game, source.getSourceId(), controller.getId(), false)) {
+                    if (new GenericManaCost(xValue).pay(source, game, source, controller.getId(), false)) {
                         game.informPlayers(controller.getLogName() + " payed {" + xValue + '}');
-                        controller.drawCards(xValue, game);
+                        controller.drawCards(xValue, source, game);
                     } else {
                         return false;
                     }

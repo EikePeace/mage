@@ -30,7 +30,7 @@ public final class KnowledgeAndPower extends CardImpl {
 
     }
 
-    public KnowledgeAndPower(final KnowledgeAndPower card) {
+    private KnowledgeAndPower(final KnowledgeAndPower card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class ScryTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SCRY;
+        return event.getType() == GameEvent.EventType.SCRIED;
     }
 
     @Override

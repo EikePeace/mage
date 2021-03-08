@@ -1,4 +1,3 @@
-
 package mage.abilities.keyword;
 
 import mage.MageObject;
@@ -12,6 +11,7 @@ import mage.cards.Card;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.SpellAbilityCastMode;
 import mage.constants.SpellAbilityType;
 import mage.constants.SubType;
 import mage.constants.TimingRule;
@@ -92,6 +92,7 @@ public class BestowAbility extends SpellAbility {
     public BestowAbility(Card card, String manaString) {
         super(new ManaCostsImpl(manaString), card.getName() + " using bestow");
         this.spellAbilityType = SpellAbilityType.BASE_ALTERNATE;
+        this.spellAbilityCastMode = SpellAbilityCastMode.BESTOW;
         this.timing = TimingRule.SORCERY;
         TargetPermanent auraTarget = new TargetCreaturePermanent();
         this.addTarget(auraTarget);
@@ -121,19 +122,29 @@ public class BestowAbility extends SpellAbility {
     }
 
     static public void becomeCreature(Permanent permanent, Game game) {
+        // permanently changes to the object
         if (permanent != null) {
             MageObject basicObject = permanent.getBasicMageObject(game);
             if (basicObject != null) {
-                basicObject.getSubtype(null).remove(SubType.AURA);
+                basicObject.getSubtype().remove(SubType.AURA);
                 if (!basicObject.isCreature()) {
                     basicObject.addCardType(CardType.CREATURE);
                 }
             }
-            permanent.getSubtype(null).remove(SubType.AURA);
+            permanent.getSubtype().remove(SubType.AURA);
             if (!permanent.isCreature()) {
                 permanent.addCardType(CardType.CREATURE);
             }
 
+        }
+    }
+
+    static public void becomeAura(Card card) {
+        // permanently changes to the object
+        if (card != null) {
+            card.addSubType(SubType.AURA);
+            card.getCardType().remove(CardType.CREATURE);
+            card.getCardType().add(CardType.ENCHANTMENT);
         }
     }
 }
@@ -164,7 +175,7 @@ class BestowEntersBattlefieldEffect extends ReplacementEffectImpl {
         if (bestowPermanent != null) {
             if (bestowPermanent.hasSubtype(SubType.AURA, game)) {
                 MageObject basicObject = bestowPermanent.getBasicMageObject(game);
-                if (basicObject != null && !basicObject.getSubtype(null).contains(SubType.AURA)) {
+                if (basicObject != null && !basicObject.getSubtype().contains(SubType.AURA)) {
                     basicObject.getSubtype(null).add(SubType.AURA);
                     basicObject.getCardType().remove(CardType.CREATURE);
                 }

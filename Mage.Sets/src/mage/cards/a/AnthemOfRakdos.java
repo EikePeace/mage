@@ -41,7 +41,7 @@ public final class AnthemOfRakdos extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new AnthemOfRakdosHellbentEffect()));
     }
 
-    public AnthemOfRakdos(final AnthemOfRakdos card) {
+    private AnthemOfRakdos(final AnthemOfRakdos card) {
         super(card);
     }
 
@@ -69,9 +69,8 @@ class AnthemOfRakdosHellbentEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override
@@ -86,7 +85,7 @@ class AnthemOfRakdosHellbentEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

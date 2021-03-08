@@ -43,7 +43,7 @@ public final class PhyrexianFurnace extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PhyrexianFurnace(final PhyrexianFurnace card) {
+    private PhyrexianFurnace(final PhyrexianFurnace card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class PhyrexianFurnaceEffect extends OneShotEffect {
                 break;
             }
             if (bottomCard != null) {
-                return player.moveCardToExileWithInfo(bottomCard, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                return player.moveCardToExileWithInfo(bottomCard, null, "", source, game, Zone.GRAVEYARD, true);
             }
             return true;
         }

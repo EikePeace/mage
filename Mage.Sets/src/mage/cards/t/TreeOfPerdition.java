@@ -40,7 +40,7 @@ public final class TreeOfPerdition extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TreeOfPerdition(final TreeOfPerdition card) {
+    private TreeOfPerdition(final TreeOfPerdition card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class TreeOfPerditionEffect extends OneShotEffect {
 
     public TreeOfPerditionEffect() {
         super(Outcome.Neutral);
-        staticText = "Exchange target opponent's life total with Tree of Perdition's toughness";
+        staticText = "Exchange target opponent's life total with {this}'s toughness";
     }
 
     public TreeOfPerditionEffect(final TreeOfPerditionEffect effect) {

@@ -22,7 +22,7 @@ public class DamageEverythingEffect extends OneShotEffect {
     private DynamicValue amount;
     private FilterPermanent filter;
     private UUID damageSource;
-    private String sourceName = "{source}";
+    private String sourceName = "{this}";
 
     public DamageEverythingEffect(int amount) {
         this(StaticValue.get(amount), new FilterCreaturePermanent());
@@ -77,12 +77,12 @@ public class DamageEverythingEffect extends OneShotEffect {
         int damage = amount.calculate(game, source, this);
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
-            permanent.damage(damage, damageSource == null ? source.getSourceId() : damageSource, game, false, true);
+            permanent.damage(damage, damageSource == null ? source.getSourceId() : damageSource, source, game, false, true);
         }
         for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                player.damage(damage, damageSource == null ? source.getSourceId() : damageSource, game);
+                player.damage(damage, damageSource == null ? source.getSourceId() : damageSource, source, game);
             }
         }
         return true;

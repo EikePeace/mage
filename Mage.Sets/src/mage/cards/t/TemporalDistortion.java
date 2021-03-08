@@ -20,7 +20,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -35,7 +34,7 @@ public final class TemporalDistortion extends CardImpl {
 
     static {
         filter.add(Predicates.or(CardType.LAND.getPredicate(), CardType.CREATURE.getPredicate()));
-        filter2.add(new CounterPredicate(CounterType.HOURGLASS));
+        filter2.add(CounterType.HOURGLASS.getPredicate());
     }
 
     public TemporalDistortion(UUID ownerId, CardSetInfo setInfo) {
@@ -53,7 +52,7 @@ public final class TemporalDistortion extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new TemporalDistortionRemovalEffect(), TargetController.ANY, false));
     }
 
-    public TemporalDistortion(final TemporalDistortion card) {
+    private TemporalDistortion(final TemporalDistortion card) {
         super(card);
     }
 
@@ -77,7 +76,7 @@ class TemporalDistortionRemovalEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(game.getActivePlayerId())) {
-            permanent.removeCounters(CounterType.HOURGLASS.createInstance(permanent.getCounters(game).getCount(CounterType.HOURGLASS)), game);
+            permanent.removeCounters(CounterType.HOURGLASS.createInstance(permanent.getCounters(game).getCount(CounterType.HOURGLASS)), source, game);
         }
         return true;
     }

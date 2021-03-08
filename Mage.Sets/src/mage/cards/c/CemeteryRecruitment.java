@@ -30,7 +30,7 @@ public final class CemeteryRecruitment extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD));
     }
 
-    public CemeteryRecruitment(final CemeteryRecruitment card) {
+    private CemeteryRecruitment(final CemeteryRecruitment card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class CemeteryRecruitmentEffect extends OneShotEffect {
             if (card != null) {
                 if (controller.moveCards(card, Zone.HAND, source, game)
                         && card.hasSubtype(SubType.ZOMBIE, game)) {
-                    controller.drawCards(1, game);
+                    controller.drawCards(1, source, game);
                 }
             }
             return true;

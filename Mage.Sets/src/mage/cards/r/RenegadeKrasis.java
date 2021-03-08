@@ -13,11 +13,9 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 
 public final class RenegadeKrasis extends CardImpl {
 
@@ -36,7 +34,7 @@ public final class RenegadeKrasis extends CardImpl {
         this.addAbility(new RenegadeKrasisTriggeredAbility());
     }
 
-    public RenegadeKrasis(final RenegadeKrasis card) {
+    private RenegadeKrasis(final RenegadeKrasis card) {
         super(card);
     }
 
@@ -53,7 +51,7 @@ class RenegadeKrasisTriggeredAbility extends TriggeredAbilityImpl {
 
     static {
         filter.add(AnotherPredicate.instance);
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public RenegadeKrasisTriggeredAbility() {
@@ -71,7 +69,7 @@ class RenegadeKrasisTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.EVOLVED_CREATURE;
+        return event.getType() == GameEvent.EventType.EVOLVED_CREATURE;
     }
 
     @Override

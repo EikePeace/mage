@@ -56,7 +56,7 @@ public final class SekkiSeasonsGuide extends CardImpl {
                 new SacrificeTargetCost(new TargetControlledPermanent(8, 8, filter, true))));
     }
 
-    public SekkiSeasonsGuide(final SekkiSeasonsGuide card) {
+    private SekkiSeasonsGuide(final SekkiSeasonsGuide card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class SekkiSeasonsGuideEffect extends PreventionEffectImpl {
         preventDamageAction(event, source, game);
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.removeCounters(CounterType.P1P1.createInstance(damage), game);
+            permanent.removeCounters(CounterType.P1P1.createInstance(damage), source, game);
         }
         new CreateTokenEffect(new SpiritToken(), damage).apply(game, source);
         return true;

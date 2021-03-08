@@ -4,7 +4,7 @@ package mage.cards.r;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.CreateDelayedTriggeredAbilityEffect;
@@ -31,11 +31,11 @@ public final class RukhEgg extends CardImpl {
         // When Rukh Egg dies, create a 4/4 red Bird creature token with flying at the beginning of the next end step.
         Effect effect = new CreateDelayedTriggeredAbilityEffect(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(new CreateTokenEffect(new RukhEggBirdToken())));
         effect.setText("create a 4/4 red Bird creature token with flying at the beginning of the next end step");
-        Ability ability = new DiesTriggeredAbility(effect);
+        Ability ability = new DiesSourceTriggeredAbility(effect);
         this.addAbility(ability);
     }
 
-    public RukhEgg(final RukhEgg card) {
+    private RukhEgg(final RukhEgg card) {
         super(card);
     }
 

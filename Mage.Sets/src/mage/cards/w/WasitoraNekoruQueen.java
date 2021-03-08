@@ -47,7 +47,7 @@ public final class WasitoraNekoruQueen extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new WasitoraNekoruQueenEffect(), false, true));
     }
 
-    public WasitoraNekoruQueen(final WasitoraNekoruQueen card) {
+    private WasitoraNekoruQueen(final WasitoraNekoruQueen card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class WasitoraNekoruQueenEffect extends OneShotEffect {
             if (damagedPlayer.choose(Outcome.Sacrifice, target, source.getSourceId(), game)) {
                 Permanent objectToBeSacrificed = game.getPermanent(target.getFirstTarget());
                 if (objectToBeSacrificed != null) {
-                    if (objectToBeSacrificed.sacrifice(source.getSourceId(), game)) {
+                    if (objectToBeSacrificed.sacrifice(source, game)) {
                         return true;
                     }
                 }

@@ -51,7 +51,7 @@ public final class LilianaOfTheVeil extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LilianaOfTheVeil(final LilianaOfTheVeil card) {
+    private LilianaOfTheVeil(final LilianaOfTheVeil card) {
         super(card);
     }
 
@@ -118,7 +118,7 @@ class LilianaOfTheVeilEffect extends OneShotEffect {
     private void sacrificePermanents(List<Permanent> pile, Game game, Ability source) {
         for (Permanent permanent : pile) {
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
     }

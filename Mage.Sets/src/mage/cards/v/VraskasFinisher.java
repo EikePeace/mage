@@ -26,7 +26,7 @@ public final class VraskasFinisher extends CardImpl {
     );
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
         filter.add(TargetController.OPPONENT.getControllerPredicate());
     }
 

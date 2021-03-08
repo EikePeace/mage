@@ -2,15 +2,12 @@
 package mage.cards.v;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.target.common.TargetLandPermanent;
 
@@ -30,7 +27,7 @@ public final class Vivify extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public Vivify(final Vivify card) {
+    private Vivify(final Vivify card) {
         super(card);
     }
 

@@ -30,7 +30,7 @@ public final class RootMaze extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new RootMazeEffect()));
     }
 
-    public RootMaze(final RootMaze card) {
+    private RootMaze(final RootMaze card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class RootMazeEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

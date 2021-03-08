@@ -27,7 +27,7 @@ public final class MisfortunesGain extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public MisfortunesGain(final MisfortunesGain card) {
+    private MisfortunesGain(final MisfortunesGain card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class MisfortunesGainEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent target = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (controller != null && target != null) {
-            target.destroy(source.getSourceId(), game, false);
+            target.destroy(source, game, false);
             Player owner = game.getPlayer(target.getOwnerId());
             if (owner != null) {
                 owner.gainLife(4, game, source);

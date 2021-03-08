@@ -37,7 +37,7 @@ public final class WallOfHope extends CardImpl {
 
     }
 
-    public WallOfHope(final WallOfHope card) {
+    private WallOfHope(final WallOfHope card) {
         super(card);
     }
 
@@ -64,13 +64,13 @@ class WallOfHopeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getTargetId().equals(this.sourceId)) {
-            this.getEffects().get(0).setValue("damageAmount", event.getAmount());
+            this.getEffects().setValue("damageAmount", event.getAmount());
             return true;
         }
         return false;

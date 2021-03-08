@@ -15,7 +15,6 @@ import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -47,7 +46,7 @@ public final class OpalPalace extends CardImpl {
 
     }
 
-    public OpalPalace(final OpalPalace card) {
+    private OpalPalace(final OpalPalace card) {
         super(card);
     }
 
@@ -59,7 +58,7 @@ public final class OpalPalace extends CardImpl {
 
 class OpalPalaceWatcher extends Watcher {
 
-    private List<UUID> commanderId = new ArrayList<>();
+    private final List<UUID> commanderPartsId = new ArrayList<>();
     private final String originalId;
 
     public OpalPalaceWatcher(String originalId) {
@@ -67,8 +66,8 @@ class OpalPalaceWatcher extends Watcher {
         this.originalId = originalId;
     }
 
-    public boolean manaUsedToCastCommander(UUID id){
-        return commanderId.contains(id);
+    public boolean manaUsedToCastCommanderPart(UUID id) {
+        return commanderPartsId.contains(id);
     }
 
     @Override
@@ -82,8 +81,9 @@ class OpalPalaceWatcher extends Watcher {
                         for (UUID playerId : game.getPlayerList()) {
                             Player player = game.getPlayer(playerId);
                             if (player != null) {
-                                if (game.getCommandersIds(player).contains(card.getId())) {
-                                    commanderId.add(card.getId());
+                                // need check all card parts (example: mdf cards)
+                                if (game.getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER, true).contains(card.getId())) {
+                                    commanderPartsId.add(card.getId());
                                     break;
                                 }
                             }
@@ -97,7 +97,7 @@ class OpalPalaceWatcher extends Watcher {
     @Override
     public void reset() {
         super.reset();
-        commanderId.clear();
+        commanderPartsId.clear();
     }
 }
 
@@ -114,13 +114,13 @@ class OpalPalaceEntersBattlefieldEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         OpalPalaceWatcher watcher = game.getState().getWatcher(OpalPalaceWatcher.class, source.getSourceId());
-        return watcher != null && watcher.manaUsedToCastCommander(event.getTargetId());
+        return watcher != null && watcher.manaUsedToCastCommanderPart(event.getTargetId());
     }
 
     @Override
@@ -130,7 +130,7 @@ class OpalPalaceEntersBattlefieldEffect extends ReplacementEffectImpl {
             CommanderPlaysCountWatcher watcher = game.getState().getWatcher(CommanderPlaysCountWatcher.class);
             int castCount = watcher.getPlaysCount(permanent.getId());
             if (castCount > 0) {
-                permanent.addCounters(CounterType.P1P1.createInstance(castCount), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(castCount), source.getControllerId(), source, game);
             }
         }
         return false;

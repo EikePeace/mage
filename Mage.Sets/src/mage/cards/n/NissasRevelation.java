@@ -31,7 +31,7 @@ public final class NissasRevelation extends CardImpl {
 
     }
 
-    public NissasRevelation(final NissasRevelation card) {
+    private NissasRevelation(final NissasRevelation card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class NissasRevelationEffect extends OneShotEffect {
                 cards.add(card);
                 controller.revealCards(sourceObject.getIdName(), cards, game);
                 if (card.isCreature()) {
-                    controller.drawCards(card.getPower().getValue(), game);
+                    controller.drawCards(card.getPower().getValue(), source, game);
                     controller.gainLife(card.getToughness().getValue(), game, source);
                 }
             }

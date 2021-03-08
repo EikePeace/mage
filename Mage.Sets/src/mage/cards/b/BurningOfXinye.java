@@ -34,7 +34,7 @@ public final class BurningOfXinye extends CardImpl {
         this.getSpellAbility().addEffect(new DamageAllEffect(4, new FilterCreaturePermanent()));
     }
 
-    public BurningOfXinye(final BurningOfXinye card) {
+    private BurningOfXinye(final BurningOfXinye card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class BurningOfXinyeEffect extends OneShotEffect{
 
         Target target = new TargetControlledPermanent(amount, amount, filter, true);
         if (amount > 0 && target.canChoose(source.getSourceId(), player.getId(), game)) {
-            while (!target.isChosen() && target.canChoose(player.getId(), game) && player.canRespond()) {
+            while (!target.isChosen() && target.canChoose(source.getSourceId(), player.getId(), game) && player.canRespond()) {
                 player.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
             }
 
@@ -92,7 +92,7 @@ class BurningOfXinyeEffect extends OneShotEffect{
                 Permanent permanent = game.getPermanent(target.getTargets().get(idx));
 
                 if ( permanent != null ) {
-                    abilityApplied |= permanent.destroy(source.getSourceId(), game, false);
+                    abilityApplied |= permanent.destroy(source, game, false);
                 }
             }
         }

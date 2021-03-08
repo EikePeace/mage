@@ -24,7 +24,7 @@ public final class DebtToTheDeathless extends CardImpl {
         this.getSpellAbility().addEffect(new DebtToTheDeathlessEffect());
     }
 
-    public DebtToTheDeathless(final DebtToTheDeathless card) {
+    private DebtToTheDeathless(final DebtToTheDeathless card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class DebtToTheDeathlessEffect extends OneShotEffect {
             for (UUID opponentId : game.getOpponents(source.getControllerId())) {
                 Player opponent = game.getPlayer(opponentId);
                 if (opponent != null) {
-                    lifeLost += opponent.loseLife(xValue * 2, game, false);
+                    lifeLost += opponent.loseLife(xValue * 2, game, source, false);
                 }
             }
             controller.gainLife(lifeLost, game, source);

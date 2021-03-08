@@ -13,8 +13,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.filter.StaticFilters;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.target.common.TargetLandPermanent;
 
@@ -37,7 +35,7 @@ public final class Soilshaper extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Soilshaper(final Soilshaper card) {
+    private Soilshaper(final Soilshaper card) {
         super(card);
     }
 

@@ -53,7 +53,7 @@ public final class StensiaMasquerade extends CardImpl {
         this.addAbility(new MadnessAbility(this, new ManaCostsImpl("{2}{R}")));
     }
 
-    public StensiaMasquerade(final StensiaMasquerade card) {
+    private StensiaMasquerade(final StensiaMasquerade card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class StensiaMasqueradeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -91,7 +91,7 @@ class StensiaMasqueradeTriggeredAbility extends TriggeredAbilityImpl {
                 && permanent.hasSubtype(SubType.VAMPIRE, game) && permanent.isControlledBy(controllerId)) {
             this.getEffects().clear();
             AddCountersTargetEffect effect = new AddCountersTargetEffect(CounterType.P1P1.createInstance());
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             this.addEffect(effect);
             return true;
         }

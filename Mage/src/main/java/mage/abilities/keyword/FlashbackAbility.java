@@ -1,6 +1,5 @@
 package mage.abilities.keyword;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.costs.Cost;
@@ -8,22 +7,21 @@ import mage.abilities.costs.Costs;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.ReplacementEffectImpl;
 import mage.cards.Card;
+import mage.cards.ModalDoubleFacesCard;
 import mage.cards.SplitCard;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.SpellAbilityCastMode;
-import mage.constants.SpellAbilityType;
-import mage.constants.TimingRule;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
+import mage.util.CardUtil;
+
+import java.util.UUID;
 
 /**
  * 702.32. Flashback
- *
+ * <p>
  * 702.32a. Flashback appears on some instants and sorceries. It represents two
  * static abilities: one that functions while the card is in a player‘s
  * graveyard and the other that functions while the card is on the stack.
@@ -57,6 +55,7 @@ public class FlashbackAbility extends SpellAbility {
 
     @Override
     public ActivationStatus canActivate(UUID playerId, Game game) {
+        // flashback ability dynamicly added to all card's parts (split cards)
         if (super.canActivate(playerId, game).canActivate()) {
             Card card = game.getCard(getSourceId());
             if (card != null) {
@@ -69,11 +68,18 @@ public class FlashbackAbility extends SpellAbility {
                     return ActivationStatus.getFalse();
                 }
                 // Flashback can never cast a split card by Fuse, because Fuse only works from hand
-                if (card.isSplitCard()) {
+                // https://tappedout.net/mtg-questions/snapcaster-mage-and-flashback-on-a-fuse-card-one-or-both-halves-legal-targets/
+                if (card instanceof SplitCard) {
                     if (((SplitCard) card).getLeftHalfCard().getName().equals(abilityName)) {
                         return ((SplitCard) card).getLeftHalfCard().getSpellAbility().canActivate(playerId, game);
                     } else if (((SplitCard) card).getRightHalfCard().getName().equals(abilityName)) {
                         return ((SplitCard) card).getRightHalfCard().getSpellAbility().canActivate(playerId, game);
+                    }
+                } else if (card instanceof ModalDoubleFacesCard) {
+                    if (((ModalDoubleFacesCard) card).getLeftHalfCard().getName().equals(abilityName)) {
+                        return ((ModalDoubleFacesCard) card).getLeftHalfCard().getSpellAbility().canActivate(playerId, game);
+                    } else if (((ModalDoubleFacesCard) card).getRightHalfCard().getName().equals(abilityName)) {
+                        return ((ModalDoubleFacesCard) card).getRightHalfCard().getSpellAbility().canActivate(playerId, game);
                     }
                 }
                 return card.getSpellAbility().canActivate(playerId, game);
@@ -88,11 +94,17 @@ public class FlashbackAbility extends SpellAbility {
         if (card != null) {
             if (spellAbilityToResolve == null) {
                 SpellAbility spellAbilityCopy = null;
-                if (card.isSplitCard()) {
+                if (card instanceof SplitCard) {
                     if (((SplitCard) card).getLeftHalfCard().getName().equals(abilityName)) {
                         spellAbilityCopy = ((SplitCard) card).getLeftHalfCard().getSpellAbility().copy();
                     } else if (((SplitCard) card).getRightHalfCard().getName().equals(abilityName)) {
                         spellAbilityCopy = ((SplitCard) card).getRightHalfCard().getSpellAbility().copy();
+                    }
+                } else if (card instanceof ModalDoubleFacesCard) {
+                    if (((ModalDoubleFacesCard) card).getLeftHalfCard().getName().equals(abilityName)) {
+                        spellAbilityCopy = ((ModalDoubleFacesCard) card).getLeftHalfCard().getSpellAbility().copy();
+                    } else if (((ModalDoubleFacesCard) card).getRightHalfCard().getName().equals(abilityName)) {
+                        spellAbilityCopy = ((ModalDoubleFacesCard) card).getRightHalfCard().getSpellAbility().copy();
                     }
                 } else {
                     spellAbilityCopy = card.getSpellAbility().copy();
@@ -213,14 +225,13 @@ class FlashbackReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getTargetId().equals(source.getSourceId())
+        UUID cardId = CardUtil.getMainCardId(game, source.getSourceId()); // for split cards
+        if (cardId.equals(event.getTargetId())
                 && ((ZoneChangeEvent) event).getFromZone() == Zone.STACK
                 && ((ZoneChangeEvent) event).getToZone() != Zone.EXILED) {
 
-            int zcc = game.getState().getZoneChangeCounter(source.getSourceId());
-            if (((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == zcc) {
-                return true;
-            }
+            int zcc = game.getState().getZoneChangeCounter(cardId);
+            return ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1 == zcc;
 
         }
         return false;

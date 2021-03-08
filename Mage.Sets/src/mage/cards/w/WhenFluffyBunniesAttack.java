@@ -33,7 +33,7 @@ public final class WhenFluffyBunniesAttack extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public WhenFluffyBunniesAttack(final WhenFluffyBunniesAttack card) {
+    private WhenFluffyBunniesAttack(final WhenFluffyBunniesAttack card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class WhenFluffyBunniesAttackEffect extends OneShotEffect {
                 }
             }
             BoostTargetEffect effect = new BoostTargetEffect(unboostValue, unboostValue, Duration.EndOfTurn);
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
             return true;
         }

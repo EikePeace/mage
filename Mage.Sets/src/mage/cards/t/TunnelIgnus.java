@@ -19,7 +19,6 @@ import mage.watchers.Watcher;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 /**
@@ -37,7 +36,7 @@ public final class TunnelIgnus extends CardImpl {
         this.addAbility(new TunnelIgnusTriggeredAbility(), new TunnelIgnusWatcher());
     }
 
-    public TunnelIgnus(final TunnelIgnus card) {
+    private TunnelIgnus(final TunnelIgnus card) {
         super(card);
     }
 
@@ -91,7 +90,7 @@ class TunnelIgnusTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

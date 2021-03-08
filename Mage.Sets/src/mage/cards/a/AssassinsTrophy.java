@@ -40,7 +40,7 @@ public final class AssassinsTrophy extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPermanent(filter));
     }
 
-    public AssassinsTrophy(final AssassinsTrophy card) {
+    private AssassinsTrophy(final AssassinsTrophy card) {
         super(card);
     }
 
@@ -70,11 +70,11 @@ class AssassinsTrophyEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player controller = game.getPlayer(permanent.getControllerId());
             if (controller != null) {
-                if (controller.chooseUse(Outcome.PutLandInPlay, "Do you wish to search for a basic land, put it onto the battlefield and then shuffle your library?", source, game)) {
+                if (controller.chooseUse(Outcome.PutLandInPlay, "Search for a basic land, put it onto the battlefield and then shuffle your library?", source, game)) {
                     TargetCardInLibrary target = new TargetCardInLibrary(StaticFilters.FILTER_CARD_BASIC_LAND);
                     if (controller.searchLibrary(target, source, game)) {
                         Card card = controller.getLibrary().getCard(target.getFirstTarget(), game);

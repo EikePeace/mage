@@ -29,7 +29,7 @@ public final class ThroneOfBone extends CardImpl {
         this.addAbility(new ThroneOfBoneAbility());
     }
 
-    public ThroneOfBone(final ThroneOfBone card) {
+    private ThroneOfBone(final ThroneOfBone card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class ThroneOfBoneAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

@@ -3,10 +3,7 @@ package mage.cards.t;
 
 import java.util.UUID;
 import mage.ObjectColor;
-import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.costs.Cost;
-import mage.abilities.costs.CostImpl;
 import mage.abilities.costs.common.PayLifeCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.costs.OrCost;
@@ -47,7 +44,7 @@ public final class TidalControl extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TidalControl(final TidalControl card) {
+    private TidalControl(final TidalControl card) {
         super(card);
     }
 

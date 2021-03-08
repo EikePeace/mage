@@ -30,7 +30,7 @@ public final class AmassTheComponents extends CardImpl {
 
     }
 
-    public AmassTheComponents(final AmassTheComponents card) {
+    private AmassTheComponents(final AmassTheComponents card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class AmassTheComponentsEffect extends OneShotEffect {
             return false;
         }
 
-        player.drawCards(3, game);
+        player.drawCards(3, source, game);
         if (!player.getHand().isEmpty()) {
             FilterCard filter = new FilterCard("card from your hand to put on the bottom of your library");
             TargetCard target = new TargetCard(Zone.HAND, filter);
@@ -71,8 +71,7 @@ class AmassTheComponentsEffect extends OneShotEffect {
             if (player.choose(Outcome.Detriment, player.getHand(), target, game)) {
                 Card card = player.getHand().get(target.getFirstTarget(), game);
                 if (card != null) {
-                    player.removeFromHand(card, game);
-                    card.moveToZone(Zone.LIBRARY, source.getSourceId(), game, false);
+                    return player.putCardsOnBottomOfLibrary(card, game, source, true);
                 }
             }
         }

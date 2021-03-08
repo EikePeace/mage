@@ -27,12 +27,12 @@ public final class OnduChampion extends CardImpl {
         this.power = new MageInt(4);
         this.toughness = new MageInt(3);
 
-        // <i>Rally</i> — Whenever Ondu Champion or another Ally enters the battlefield under your control, creatures you control gain trample until end of turn.
+        // <i>Rally</i> &mdash; Whenever Ondu Champion or another Ally enters the battlefield under your control, creatures you control gain trample until end of turn.
         this.addAbility(new AllyEntersBattlefieldTriggeredAbility(
                 new GainAbilityControlledEffect(TrampleAbility.getInstance(), Duration.EndOfTurn, FILTER_PERMANENT_CREATURES), false));
     }
 
-    public OnduChampion(final OnduChampion card) {
+    private OnduChampion(final OnduChampion card) {
         super(card);
     }
 

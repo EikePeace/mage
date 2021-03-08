@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.costs.common;
 
 import java.util.UUID;
@@ -33,7 +28,7 @@ public class ExileTopCardOfGraveyardCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         Player controller = game.getPlayer(controllerId);
         if(controller == null) {
             return false;
@@ -42,7 +37,7 @@ public class ExileTopCardOfGraveyardCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if(controller != null) {
             Card topCard = null;
@@ -50,7 +45,7 @@ public class ExileTopCardOfGraveyardCost extends CostImpl {
                 topCard = card;
             }
             if (topCard != null) {
-                controller.moveCardToExileWithInfo(topCard, null, "", ability.getSourceId(), game, Zone.GRAVEYARD, true);
+                controller.moveCardToExileWithInfo(topCard, null, "", source, game, Zone.GRAVEYARD, true);
                 paid = true;
             }
         }

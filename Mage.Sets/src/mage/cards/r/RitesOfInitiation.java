@@ -26,7 +26,7 @@ public final class RitesOfInitiation extends CardImpl {
         this.getSpellAbility().addEffect(new RitesOfInitiationEffect());
     }
 
-    public RitesOfInitiation(final RitesOfInitiation card) {
+    private RitesOfInitiation(final RitesOfInitiation card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class RitesOfInitiationEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {            
             int numToDiscard = player.getAmount(0, player.getHand().size(), "Discard how many cards at random?", game);
-            player.discard(numToDiscard, true, source, game);
+            player.discard(numToDiscard, true, false, source, game);
             game.addEffect(new BoostControlledEffect(numToDiscard, 0, Duration.EndOfTurn), source);
             return true;
         }

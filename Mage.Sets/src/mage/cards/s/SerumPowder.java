@@ -35,7 +35,7 @@ public final class SerumPowder extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.HAND, new SerumPowderReplaceEffect()));
     }
 
-    public SerumPowder(final SerumPowder card) {
+    private SerumPowder(final SerumPowder card) {
         super(card);
     }
 
@@ -67,9 +67,9 @@ class SerumPowderReplaceEffect extends ReplacementEffectImpl {
             if (cardsHand > 0){
                 Cards cards = new CardsImpl(controller.getHand());
                 for (Card card: cards.getCards(game)) {
-                    card.moveToExile(null, null, source.getSourceId(), game);
+                    card.moveToExile(null, null, source, game);
                 }
-                controller.drawCards(cardsHand, game);
+                controller.drawCards(cardsHand, source, game); // original event is not a draw event, so skip it in params
             }
             game.informPlayers(sourceCard.getLogName() +": " + controller.getLogName() + " exiles hand and draws " + cardsHand + " card(s)");
             return true;

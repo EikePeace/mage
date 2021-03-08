@@ -5,7 +5,6 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.abilities.keyword.CrewAbility;
 import mage.cards.CardImpl;
@@ -35,7 +34,7 @@ public final class BallistaCharger extends CardImpl {
         this.addAbility(new CrewAbility(3));
     }
 
-    public BallistaCharger(final BallistaCharger card) {
+    private BallistaCharger(final BallistaCharger card) {
         super(card);
     }
 

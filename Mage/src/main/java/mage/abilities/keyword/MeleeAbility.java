@@ -19,7 +19,7 @@ import mage.watchers.Watcher;
  *
  * @author emerald000
  */
-public class MeleeAbility extends AttacksTriggeredAbility { 
+public class MeleeAbility extends AttacksTriggeredAbility {
 
     public MeleeAbility() {
         super(new BoostSourceEffect(new MeleeDynamicValue(), new MeleeDynamicValue(), Duration.EndOfTurn), false);
@@ -37,7 +37,7 @@ public class MeleeAbility extends AttacksTriggeredAbility {
 
     @Override
     public String getRule() {
-        return "Melee <i>(Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked with a creature this combat.)</i>";
+        return "melee <i>(Whenever this creature attacks, it gets +1/+1 until end of turn for each opponent you attacked this combat.)</i>";
     }
 }
 
@@ -51,10 +51,10 @@ class MeleeWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.BEGIN_COMBAT_STEP_PRE) {
+        if (event.getType() == GameEvent.EventType.BEGIN_COMBAT_STEP_PRE) {
             this.playersAttacked.clear();
         }
-        else if (event.getType() == EventType.ATTACKER_DECLARED) {
+        else if (event.getType() == GameEvent.EventType.ATTACKER_DECLARED) {
             Set<UUID> attackedPlayers = this.playersAttacked.getOrDefault(event.getPlayerId(), new HashSet<>(1));
             attackedPlayers.add(event.getTargetId());
             this.playersAttacked.put(event.getPlayerId(), attackedPlayers);

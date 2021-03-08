@@ -37,7 +37,7 @@ public final class CurseOfBloodletting extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CurseOfBloodlettingEffect()));
     }
 
-    public CurseOfBloodletting(final CurseOfBloodletting card) {
+    private CurseOfBloodletting(final CurseOfBloodletting card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class CurseOfBloodlettingEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 

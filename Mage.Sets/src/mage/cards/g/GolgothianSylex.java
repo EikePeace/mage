@@ -14,7 +14,7 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.ExpansionSetPredicate;
+import mage.filter.predicate.card.ExpansionSetPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -34,7 +34,7 @@ public final class GolgothianSylex extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GolgothianSylex(final GolgothianSylex card) {
+    private GolgothianSylex(final GolgothianSylex card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class GolgothianSylexEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, game)) {
-             permanent.sacrifice(source.getSourceId(), game);
+             permanent.sacrifice(source, game);
         }
         return true;
     }

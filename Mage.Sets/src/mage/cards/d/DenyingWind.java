@@ -31,7 +31,7 @@ public final class DenyingWind extends CardImpl {
         getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public DenyingWind(final DenyingWind card) {
+    private DenyingWind(final DenyingWind card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class DenyingWindEffect extends OneShotEffect {
                 for (UUID targetId : targets) {
                     Card card = player.getLibrary().remove(targetId, game);
                     if (card != null) {
-                        controller.moveCardToExileWithInfo(card, null, null, source.getSourceId(), game, Zone.LIBRARY, true);
+                        controller.moveCardToExileWithInfo(card, null, null, source, game, Zone.LIBRARY, true);
                     }
                 }
             }

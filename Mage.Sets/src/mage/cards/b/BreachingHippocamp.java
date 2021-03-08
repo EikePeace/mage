@@ -12,7 +12,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -41,7 +41,7 @@ public final class BreachingHippocamp extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BreachingHippocamp(final BreachingHippocamp card) {
+    private BreachingHippocamp(final BreachingHippocamp card) {
         super(card);
     }
 

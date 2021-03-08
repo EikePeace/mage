@@ -18,8 +18,8 @@ import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
-import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
-import mage.filter.predicate.other.AuraPermanentCanAttachToPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToPermanentId;
+import mage.filter.predicate.permanent.AuraPermanentCanAttachToPermanentId;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -47,7 +47,7 @@ public final class BrunaLightOfAlabaster extends CardImpl {
         this.addAbility(new AttacksOrBlocksTriggeredAbility(new BrunaLightOfAlabasterEffect(), true));
     }
 
-    public BrunaLightOfAlabaster(final BrunaLightOfAlabaster card) {
+    private BrunaLightOfAlabaster(final BrunaLightOfAlabaster card) {
         super(card);
     }
 
@@ -156,16 +156,16 @@ class BrunaLightOfAlabasterEffect extends OneShotEffect {
         for (Permanent aura : fromBattlefield) {
             Permanent attachedTo = game.getPermanent(aura.getAttachedTo());
             if (attachedTo != null) {
-                attachedTo.removeAttachment(aura.getId(), game);
+                attachedTo.removeAttachment(aura.getId(), source, game);
             }
-            sourcePermanent.addAttachment(aura.getId(), game);
+            sourcePermanent.addAttachment(aura.getId(), source, game);
         }
         // Move cards
         for (Card aura : fromHandGraveyard) {
             if (aura != null) {
                 game.getState().setValue("attachTo:" + aura.getId(), sourcePermanent);
                 controller.moveCards(aura, Zone.BATTLEFIELD, source, game);
-                sourcePermanent.addAttachment(aura.getId(), game);
+                sourcePermanent.addAttachment(aura.getId(), source, game);
             }
         }
         return true;

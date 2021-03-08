@@ -22,7 +22,6 @@ import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
-import mage.MageObject;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.common.CopyEffect;
 import mage.util.CardUtil;
@@ -52,7 +51,7 @@ public final class IdentityThief extends CardImpl {
         this.addAbility(ability);
     }
 
-    public IdentityThief(final IdentityThief card) {
+    private IdentityThief(final IdentityThief card) {
         super(card);
     }
 
@@ -75,7 +74,7 @@ class IdentityThiefAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override
@@ -108,13 +107,13 @@ class IdentityThiefEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent targetPermanent = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent targetPermanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         Player controller = game.getPlayer(source.getControllerId());
         Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (controller != null
                 && targetPermanent != null
                 && sourcePermanent != null) {
-            ContinuousEffect copyEffect = new CopyEffect(Duration.EndOfTurn, targetPermanent.getMainCard(), source.getSourceId());
+            ContinuousEffect copyEffect = new CopyEffect(Duration.EndOfTurn, targetPermanent, source.getSourceId());
             copyEffect.setTargetPointer(new FixedTarget(sourcePermanent.getId()));
             game.addEffect(copyEffect, source);
             UUID exileZoneId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());

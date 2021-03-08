@@ -15,7 +15,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -52,7 +52,7 @@ public final class ImperialAerosaur extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ImperialAerosaur(final ImperialAerosaur card) {
+    private ImperialAerosaur(final ImperialAerosaur card) {
         super(card);
     }
 

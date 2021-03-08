@@ -3,7 +3,6 @@ package mage.cards.i;
 import java.util.UUID;
 
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
-import mage.abilities.effects.common.TapTargetEffect;
 import mage.abilities.effects.common.UntapTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -28,7 +27,7 @@ public final class Inspire extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public Inspire(final Inspire card) {
+    private Inspire(final Inspire card) {
         super(card);
     }
 

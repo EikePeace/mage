@@ -10,11 +10,11 @@ import mage.abilities.effects.common.DoIfCostPaid;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.effects.mana.AddConditionalManaOfAnyColorEffect;
 import mage.abilities.mana.conditional.ConditionalSpellManaBuilder;
-import mage.constants.SubType;
-import mage.constants.SuperType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
+import mage.constants.SubType;
+import mage.constants.SuperType;
 import mage.filter.FilterSpell;
 import mage.game.permanent.token.DragonToken2;
 
@@ -47,6 +47,7 @@ public final class SarkhanFireblood extends CardImpl {
         this.addAbility(new LoyaltyAbility(
                 new AddConditionalManaOfAnyColorEffect(
                         StaticValue.get(2),
+                        StaticValue.get(2),
                         new ConditionalSpellManaBuilder(filter),
                         false
                 ), 1
@@ -56,7 +57,7 @@ public final class SarkhanFireblood extends CardImpl {
         this.addAbility(new LoyaltyAbility(new CreateTokenEffect(new DragonToken2(), 4), -7));
     }
 
-    public SarkhanFireblood(final SarkhanFireblood card) {
+    private SarkhanFireblood(final SarkhanFireblood card) {
         super(card);
     }
 

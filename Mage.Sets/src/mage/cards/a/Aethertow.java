@@ -9,10 +9,10 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.filter.common.FilterAttackingOrBlockingCreature;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
+import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -34,7 +34,7 @@ public final class Aethertow extends CardImpl {
         this.addAbility(new ConspireAbility(getId(), ConspireAbility.ConspireTargets.ONE));
     }
 
-    public Aethertow(final Aethertow card) {
+    private Aethertow(final Aethertow card) {
         super(card);
     }
 
@@ -58,9 +58,9 @@ class AethertowEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent targetCreature = game.getPermanent(targetPointer.getFirst(game, source));
+        Player controller = game.getPlayer(source.getControllerId());
         if (targetCreature != null) {
-            targetCreature.moveToZone(Zone.LIBRARY, source.getSourceId(), game, true);
-            return true;
+            return controller.putCardsOnTopOfLibrary(targetCreature, game, source, true);
         }
         return false;
     }

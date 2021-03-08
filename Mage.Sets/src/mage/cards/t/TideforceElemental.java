@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.ColoredManaSymbol;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -51,7 +51,7 @@ public final class TideforceElemental extends CardImpl {
         this.addAbility(new LandfallAbility(new UntapSourceEffect(), true));
     }
 
-    public TideforceElemental(final TideforceElemental card) {
+    private TideforceElemental(final TideforceElemental card) {
         super(card);
     }
 

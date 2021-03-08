@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -53,7 +53,7 @@ public final class AdmonitionAngel extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public AdmonitionAngel(final AdmonitionAngel card) {
+    private AdmonitionAngel(final AdmonitionAngel card) {
         super(card);
     }
 

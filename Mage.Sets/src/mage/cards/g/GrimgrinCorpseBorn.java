@@ -58,7 +58,7 @@ public final class GrimgrinCorpseBorn extends CardImpl {
         this.addAbility(new GrimgrinCorpseBornAbility());
     }
 
-    public GrimgrinCorpseBorn(final GrimgrinCorpseBorn card) {
+    private GrimgrinCorpseBorn(final GrimgrinCorpseBorn card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class GrimgrinCorpseBornAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

@@ -37,7 +37,7 @@ public final class WoollySpider extends CardImpl {
         this.addAbility(new BlocksCreatureWithFlyingTriggeredAbility(new BoostSourceEffect(0, 2, Duration.EndOfTurn), false));
     }
 
-    public WoollySpider(final WoollySpider card) {
+    private WoollySpider(final WoollySpider card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class BlocksCreatureWithFlyingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

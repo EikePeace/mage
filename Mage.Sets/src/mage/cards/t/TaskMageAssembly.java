@@ -2,7 +2,6 @@
 package mage.cards.t;
 
 import java.util.UUID;
-import mage.abilities.Ability;
 import mage.abilities.StateTriggeredAbility;
 import mage.abilities.common.ActivateAsSorceryActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -39,7 +38,7 @@ public final class TaskMageAssembly extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TaskMageAssembly(final TaskMageAssembly card) {
+    private TaskMageAssembly(final TaskMageAssembly card) {
         super(card);
     }
 

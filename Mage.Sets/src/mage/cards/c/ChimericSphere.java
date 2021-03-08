@@ -3,7 +3,6 @@ package mage.cards.c;
 
 import java.util.UUID;
 
-import mage.MageInt;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.continuous.BecomesCreatureSourceEffect;
@@ -14,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.custom.CreatureToken;
 
 /**
@@ -41,7 +39,7 @@ public final class ChimericSphere extends CardImpl {
                 "", Duration.EndOfTurn), new ManaCostsImpl("{2}")));
     }
 
-    public ChimericSphere(final ChimericSphere card) {
+    private ChimericSphere(final ChimericSphere card) {
         super(card);
     }
 

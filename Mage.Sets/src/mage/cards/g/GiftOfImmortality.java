@@ -45,7 +45,7 @@ public final class GiftOfImmortality extends CardImpl {
         this.addAbility(new DiesAttachedTriggeredAbility(new GiftOfImmortalityEffect(), "enchanted creature", false));
     }
 
-    public GiftOfImmortality(final GiftOfImmortality card) {
+    private GiftOfImmortality(final GiftOfImmortality card) {
         super(card);
     }
 
@@ -117,7 +117,7 @@ class GiftOfImmortalityReturnEnchantmentEffect extends OneShotEffect {
             if (controller != null && creature != null) {
                 game.getState().setValue("attachTo:" + aura.getId(), creature);
                 controller.moveCards(aura, Zone.BATTLEFIELD, source, game);
-                return creature.addAttachment(aura.getId(), game);
+                return creature.addAttachment(aura.getId(), source, game);
             }
         }
 

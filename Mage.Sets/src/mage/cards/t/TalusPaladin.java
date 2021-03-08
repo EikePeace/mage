@@ -15,7 +15,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterControlledPermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
@@ -39,7 +38,7 @@ public final class TalusPaladin extends CardImpl {
         this.addAbility(new TalusPaladinTriggeredAbility());
     }
     
-    public TalusPaladin(final TalusPaladin card) {
+    private TalusPaladin(final TalusPaladin card) {
         super(card);
     }
     
@@ -73,7 +72,7 @@ class TalusPaladinTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
     
     @Override
@@ -116,7 +115,7 @@ class TalusPaladinEffect extends OneShotEffect {
             if (!player.chooseUse(Outcome.Benefit, question, source, game)) {
                 return false;
             }
-            taluspPaladin.addCounters(CounterType.P1P1.createInstance(), source, game);
+            taluspPaladin.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
         }
         return false;
     }

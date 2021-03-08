@@ -26,7 +26,7 @@ public final class WingStorm extends CardImpl {
         this.getSpellAbility().addEffect(new WingStormEffect());
     }
 
-    public WingStorm(final WingStorm card) {
+    private WingStorm(final WingStorm card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class WingStormEffect extends OneShotEffect {
                 if (amount > 0) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.damage(amount * 2, source.getSourceId(), game);
+                        player.damage(amount * 2, source.getSourceId(), source, game);
                     }
                 }
             }

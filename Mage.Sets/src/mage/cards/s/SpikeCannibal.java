@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -39,7 +38,7 @@ public final class SpikeCannibal extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SpikeCannibalEffect()));
     }
 
-    public SpikeCannibal(final SpikeCannibal card) {
+    private SpikeCannibal(final SpikeCannibal card) {
         super(card);
     }
 
@@ -54,7 +53,7 @@ class SpikeCannibalEffect extends OneShotEffect {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Creatures with +1/+1 counter");
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     SpikeCannibalEffect() {
@@ -81,14 +80,14 @@ class SpikeCannibalEffect extends OneShotEffect {
                 if (!Objects.equals(creature, sourcePermanent)) {
                     int numberCounters = creature.getCounters(game).getCount(CounterType.P1P1);
                     if (numberCounters > 0) {
-                        creature.removeCounters(CounterType.P1P1.getName(), numberCounters, game);
+                        creature.removeCounters(CounterType.P1P1.getName(), numberCounters, source, game);
                         countersRemoved += numberCounters;
                     }
                 }
             }
 
             if (countersRemoved > 0) {
-                sourcePermanent.addCounters(CounterType.P1P1.createInstance(countersRemoved), source, game);
+                sourcePermanent.addCounters(CounterType.P1P1.createInstance(countersRemoved), source.getControllerId(), source, game);
                 return true;
             }
         }

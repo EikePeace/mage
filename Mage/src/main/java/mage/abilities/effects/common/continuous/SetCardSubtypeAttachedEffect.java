@@ -5,36 +5,25 @@ import mage.abilities.effects.ContinuousEffectImpl;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.util.SubTypeList;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author nantuko
  */
 public class SetCardSubtypeAttachedEffect extends ContinuousEffectImpl {
 
-    private SubTypeList setSubtypes = new SubTypeList();
+    private List<SubType> setSubtypes = new ArrayList<>();
     private final AttachmentType attachmentType;
 
     public SetCardSubtypeAttachedEffect(Duration duration, AttachmentType attachmentType, SubType... setSubtype) {
         super(duration, Layer.TypeChangingEffects_4, SubLayer.NA, Outcome.Benefit);
-        this.setSubtypes.add(setSubtype);
+        this.setSubtypes.addAll(Arrays.asList(setSubtype));
         this.attachmentType = attachmentType;
         this.setText();
     }
-
-    /*public SetCardSubtypeAttachedEffect(SubType setSubtype, Duration duration, AttachmentType attachmentType) {
-        super(duration, Layer.TypeChangingEffects_4, SubLayer.NA, Outcome.Benefit);
-        this.setSubtypes.add(setSubtype);
-        this.attachmentType = attachmentType;
-        setText();
-    }
-
-    public SetCardSubtypeAttachedEffect(List<String> setSubtypes, Duration duration, AttachmentType attachmentType) {
-        super(duration, Layer.TypeChangingEffects_4, SubLayer.NA, Outcome.Benefit);
-        this.setSubtypes.addAll(setSubtypes);
-        this.attachmentType = attachmentType;
-        setText();
-    }*/
 
     public SetCardSubtypeAttachedEffect(final SetCardSubtypeAttachedEffect effect) {
         super(effect);
@@ -45,13 +34,15 @@ public class SetCardSubtypeAttachedEffect extends ContinuousEffectImpl {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent equipment = game.getPermanent(source.getSourceId());
-        if (equipment != null && equipment.getAttachedTo() != null) {
-            Permanent target = game.getPermanent(equipment.getAttachedTo());
-            if (target != null) {
-                target.getSubtype(game).retainAll(SubType.getLandTypes());
-                target.getSubtype(game).addAll(setSubtypes);
-            }
+        if (equipment == null || equipment.getAttachedTo() == null) {
+            return true;
         }
+        Permanent target = game.getPermanent(equipment.getAttachedTo());
+        if (target == null) {
+            return true;
+        }
+        target.removeAllCreatureTypes(game);
+        target.addSubType(game, setSubtypes);
         return true;
     }
 

@@ -33,7 +33,7 @@ public final class BlasphemousAct extends CardImpl {
         this.getSpellAbility().addEffect(new DamageAllEffect(13, new FilterCreaturePermanent()));
     }
 
-    public BlasphemousAct(final BlasphemousAct card) {
+    private BlasphemousAct(final BlasphemousAct card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class BlasphemousCostReductionEffect extends CostModificationEffectImpl {
 
     BlasphemousCostReductionEffect() {
         super(Duration.WhileOnStack, Outcome.Benefit, CostModificationType.REDUCE_COST);
-        staticText = "{this} costs {1} less to cast for each creature on the battlefield";
+        staticText = "this spell costs {1} less to cast for each creature on the battlefield";
     }
 
     BlasphemousCostReductionEffect(BlasphemousCostReductionEffect effect) {

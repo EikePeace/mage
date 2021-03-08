@@ -4,9 +4,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.*;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.condition.common.MyTurnCondition;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.continuous.GainAbilitySourceEffect;
 import mage.abilities.effects.common.counter.AddCountersTargetEffect;
 import mage.abilities.keyword.FirstStrikeAbility;
@@ -16,7 +14,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -55,7 +53,7 @@ public final class HanSoloScrumrat extends CardImpl {
         this.addAbility(ability);
     }
 
-    public HanSoloScrumrat(final HanSoloScrumrat card) {
+    private HanSoloScrumrat(final HanSoloScrumrat card) {
         super(card);
     }
 
@@ -82,9 +80,8 @@ class HanSoloScrumratTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE
-                || event.getType() ==  GameEvent.EventType.DAMAGED_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() ==  GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

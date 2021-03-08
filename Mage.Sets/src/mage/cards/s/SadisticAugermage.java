@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -32,10 +32,10 @@ public final class SadisticAugermage extends CardImpl {
         this.toughness = new MageInt(1);
 
         // When Sadistic Augermage dies, each player puts a card from their hand on top of their library.
-        this.addAbility(new DiesTriggeredAbility(new WidespreadPanicEffect()));
+        this.addAbility(new DiesSourceTriggeredAbility(new WidespreadPanicEffect()));
     }
 
-    public SadisticAugermage(final SadisticAugermage card) {
+    private SadisticAugermage(final SadisticAugermage card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class WidespreadPanicEffect extends OneShotEffect {
                         player.choose(Outcome.Detriment, target, source.getSourceId(), game);
                         Card card = player.getHand().get(target.getFirstTarget(), game);
                         if (card != null) {
-                            player.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, false);
+                            player.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, false);
                         }
                     }
                 }

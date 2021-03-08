@@ -32,7 +32,7 @@ public final class ImpulsiveManeuvers extends CardImpl {
                 SetTargetPointer.PERMANENT, false));
     }
 
-    public ImpulsiveManeuvers(final ImpulsiveManeuvers card) {
+    private ImpulsiveManeuvers(final ImpulsiveManeuvers card) {
         super(card);
     }
 
@@ -68,8 +68,7 @@ class ImpulsiveManeuversEffect extends PreventionEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE ||
-                event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER ||
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT ||
                 event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
@@ -92,7 +91,7 @@ class ImpulsiveManeuversEffect extends PreventionEffectImpl {
                 DamageEvent damageEvent = (DamageEvent) event;
                 if (damageEvent.isCombatDamage()) {
                     if (wonFlip) {
-                        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+                        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
                         this.discard();
                     } else {
                         preventDamageAction(event, source, game);

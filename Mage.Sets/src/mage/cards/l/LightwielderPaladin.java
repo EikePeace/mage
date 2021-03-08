@@ -41,7 +41,7 @@ public final class LightwielderPaladin extends CardImpl {
         this.addAbility(new LightwielderPaladinTriggeredAbility());
     }
 
-    public LightwielderPaladin(final LightwielderPaladin card) {
+    private LightwielderPaladin(final LightwielderPaladin card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class LightwielderPaladinTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

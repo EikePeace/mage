@@ -40,7 +40,7 @@ public final class BidentOfThassa extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BidentOfThassa(final BidentOfThassa card) {
+    private BidentOfThassa(final BidentOfThassa card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class BidentOfThassaTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

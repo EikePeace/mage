@@ -35,7 +35,7 @@ public final class IllusoryAmbusher extends CardImpl {
         this.addAbility(new DealtDamageToSourceTriggeredAbility(new IllusoryAmbusherDealtDamageEffect(), false, false, true));
     }
 
-    public IllusoryAmbusher(final IllusoryAmbusher card) {
+    private IllusoryAmbusher(final IllusoryAmbusher card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class IllusoryAmbusherDealtDamageEffect extends OneShotEffect {
         if (player != null) {
             int amount = (Integer) getValue("damage");
             if (amount > 0) {
-                player.drawCards(amount, game);
+                player.drawCards(amount, source, game);
             }
             return true;
         }

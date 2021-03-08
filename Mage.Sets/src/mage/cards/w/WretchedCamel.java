@@ -4,9 +4,9 @@ package mage.cards.w;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.condition.OrCondition;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.condition.common.PermanentsOnTheBattlefieldCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.discard.DiscardTargetEffect;
@@ -42,17 +42,17 @@ public final class WretchedCamel extends CardImpl {
 
         // When Wretched Camel dies, if you control a Desert or there is a Desert card in your graveyard, target player discards a card.
         Ability ability = new ConditionalInterveningIfTriggeredAbility(
-                new DiesTriggeredAbility(new DiscardTargetEffect(1)),
+                new DiesSourceTriggeredAbility(new DiscardTargetEffect(1)),
                 new OrCondition(
                         new PermanentsOnTheBattlefieldCondition(new FilterControlledPermanent(filterDesertPermanent)),
-                        new CardsInControllerGraveCondition(1, filterDesertCard)),
+                        new CardsInControllerGraveyardCondition(1, filterDesertCard)),
                 "When {this} dies, if you control a Desert or there is a Desert card in your graveyard, target player discards a card.");
 
         ability.addTarget(new TargetPlayer());
         this.addAbility(ability);
     }
 
-    public WretchedCamel(final WretchedCamel card) {
+    private WretchedCamel(final WretchedCamel card) {
         super(card);
     }
 

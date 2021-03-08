@@ -36,7 +36,7 @@ public final class Clambassadors extends CardImpl {
         this.addAbility(new DealsDamageToAPlayerTriggeredAbility(new ClambassadorsEffect(), false, true));
     }
 
-    public Clambassadors(final Clambassadors card) {
+    private Clambassadors(final Clambassadors card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class ClambassadorsEffect extends OneShotEffect {
         if (controller != null) {
             Target target = new TargetControlledPermanent(1, 1, filter, true);
             if (target.canChoose(source.getSourceId(), controller.getId(), game)) {
-                while (!target.isChosen() && target.canChoose(controller.getId(), game) && controller.canRespond()) {
+                while (!target.isChosen() && target.canChoose(source.getSourceId(), controller.getId(), game) && controller.canRespond()) {
                     controller.chooseTarget(outcome, target, source, game);
                 }
             }

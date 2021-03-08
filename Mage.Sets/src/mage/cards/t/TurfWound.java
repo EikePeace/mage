@@ -32,7 +32,7 @@ public final class TurfWound extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public TurfWound(final TurfWound card) {
+    private TurfWound(final TurfWound card) {
         super(card);
     }
 
@@ -46,7 +46,7 @@ class TurfWoundEffect extends ContinuousRuleModifyingEffectImpl {
 
     public TurfWoundEffect() {
         super(Duration.EndOfTurn, Outcome.Detriment);
-        staticText = "Target player can't play land cards this turn.";
+        staticText = "Target player can't play land cards this turn";
     }
 
     public TurfWoundEffect(final TurfWoundEffect effect) {

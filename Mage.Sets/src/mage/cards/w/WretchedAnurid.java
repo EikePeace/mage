@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class WretchedAnurid extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new LoseLifeSourceControllerEffect(1), filter));
     }
 
-    public WretchedAnurid(final WretchedAnurid card) {
+    private WretchedAnurid(final WretchedAnurid card) {
         super(card);
     }
 

@@ -24,7 +24,7 @@ public final class SkycloudEgg extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{1}");
 
         // {2}, {tap}, Sacrifice Skycloud Egg: Add {W}{U}. Draw a card.
-        ActivatedManaAbilityImpl ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 1, 0, 0, 0, 0), new ManaCostsImpl("{2}"));
+        ActivatedManaAbilityImpl ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 0, 0, 0, 0, 0, 0), new ManaCostsImpl("{2}"));
         ability.addCost(new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
         ability.addEffect(new DrawCardSourceControllerEffect(1));
@@ -32,7 +32,7 @@ public final class SkycloudEgg extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SkycloudEgg(final SkycloudEgg card) {
+    private SkycloudEgg(final SkycloudEgg card) {
         super(card);
     }
 

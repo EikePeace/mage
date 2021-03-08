@@ -49,7 +49,7 @@ public final class CelestialMantle extends CardImpl {
         this.addAbility(new CelestialMantleAbility());
     }
 
-    public CelestialMantle(final CelestialMantle card) {
+    private CelestialMantle(final CelestialMantle card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class CelestialMantleAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

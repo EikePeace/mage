@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -43,7 +43,7 @@ public final class EldraziMimic extends CardImpl {
         this.addAbility(new EntersBattlefieldControlledTriggeredAbility(Zone.BATTLEFIELD, new EldraziMimicEffect(), FILTER, true, SetTargetPointer.PERMANENT, null));
     }
 
-    public EldraziMimic(final EldraziMimic card) {
+    private EldraziMimic(final EldraziMimic card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class EldraziMimicEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent permanent = ((FixedTarget) getTargetPointer()).getTargetedPermanentOrLKIBattlefield(game);
+            Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (permanent != null) {
                 ContinuousEffect effect = new SetPowerToughnessTargetEffect(permanent.getPower().getValue(), permanent.getToughness().getValue(), Duration.EndOfTurn);
                 effect.setTargetPointer(new FixedTarget(source.getSourceId()));

@@ -1,8 +1,5 @@
-
 package mage.game.command.planes;
 
-import java.util.ArrayList;
-import java.util.List;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.ActivateIfConditionActivatedAbility;
@@ -15,10 +12,8 @@ import mage.abilities.effects.common.DrawCardTargetEffect;
 import mage.abilities.effects.common.RollPlanarDieEffect;
 import mage.abilities.effects.common.continuous.MaximumHandSizeControllerEffect;
 import mage.abilities.effects.common.continuous.MaximumHandSizeControllerEffect.HandSizeModification;
-import mage.constants.CardType;
-import mage.constants.Duration;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.abilities.effects.common.cost.PlanarDieRollCostIncreasingEffect;
+import mage.constants.*;
 import mage.filter.FilterCard;
 import mage.game.Game;
 import mage.game.command.Plane;
@@ -30,8 +25,10 @@ import mage.target.Target;
 import mage.target.targetpointer.FixedTarget;
 import mage.watchers.common.PlanarRollWatcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author spjspj
  */
 public class UndercityReachesPlane extends Plane {
@@ -43,10 +40,10 @@ public class UndercityReachesPlane extends Plane {
     }
 
     public UndercityReachesPlane() {
-        this.setName("Plane - Undercity Reaches");
+        this.setPlaneType(Planes.PLANE_UNDERCITY_REACHES);
         this.setExpansionSetCodeForImage("PCA");
 
-        // Whenever a creature deals combat damage to a player, its controller may a draw a card
+        // Whenever a creature deals combat damage to a player, its controller may draw a card.
         Ability ability = new UndercityReachesTriggeredAbility();
 
         this.getAbilities().add(ability);
@@ -71,7 +68,7 @@ public class UndercityReachesPlane extends Plane {
 class UndercityReachesTriggeredAbility extends TriggeredAbilityImpl {
 
     public UndercityReachesTriggeredAbility() {
-        super(Zone.COMMAND, null, true);
+        super(Zone.COMMAND, null, false); // effect must be optional
     }
 
     public UndercityReachesTriggeredAbility(final UndercityReachesTriggeredAbility ability) {
@@ -85,7 +82,7 @@ class UndercityReachesTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -94,16 +91,16 @@ class UndercityReachesTriggeredAbility extends TriggeredAbilityImpl {
         if (cPlane == null) {
             return false;
         }
-        if (!cPlane.getName().equalsIgnoreCase("Plane - Undercity Reaches")) {
+        if (!cPlane.getPlaneType().equals(Planes.PLANE_UNDERCITY_REACHES)) {
             return false;
         }
 
         if (((DamagedPlayerEvent) event).isCombatDamage()) {
             Permanent creature = game.getPermanent(event.getSourceId());
             if (creature != null) {
-                Effect effect = new DrawCardTargetEffect(StaticValue.get(1), false, true);
+                Effect effect = new DrawCardTargetEffect(StaticValue.get(1), true, false);
                 effect.setTargetPointer(new FixedTarget(creature.getControllerId()));
-                effect.apply(game, null);
+                effect.apply(game, this);
                 return true;
             }
         }

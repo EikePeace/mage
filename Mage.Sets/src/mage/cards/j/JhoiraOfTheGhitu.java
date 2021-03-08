@@ -44,7 +44,7 @@ public final class JhoiraOfTheGhitu extends CardImpl {
 
     }
 
-    public JhoiraOfTheGhitu(final JhoiraOfTheGhitu card) {
+    private JhoiraOfTheGhitu(final JhoiraOfTheGhitu card) {
         super(card);
     }
 
@@ -91,8 +91,8 @@ class JhoiraOfTheGhituSuspendEffect extends OneShotEffect {
             boolean hasSuspend = card.getAbilities(game).containsClass(SuspendAbility.class);
 
             UUID exileId = SuspendAbility.getSuspendExileId(controller.getId(), game);
-            if (controller.moveCardToExileWithInfo(card, exileId, "Suspended cards of " + controller.getName(), source.getSourceId(), game, Zone.HAND, true)) {
-                card.addCounters(CounterType.TIME.createInstance(4), source, game);
+            if (controller.moveCardToExileWithInfo(card, exileId, "Suspended cards of " + controller.getName(), source, game, Zone.HAND, true)) {
+                card.addCounters(CounterType.TIME.createInstance(4), source.getControllerId(), source, game);
                 if (!hasSuspend) {
                     game.addEffect(new GainSuspendEffect(new MageObjectReference(card, game)), source);
                 }

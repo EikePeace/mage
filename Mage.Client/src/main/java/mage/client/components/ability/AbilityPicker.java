@@ -158,7 +158,7 @@ public class AbilityPicker extends JXPanel implements MouseWheelListener {
         rows.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
-                if (evt.getButton() == MouseEvent.BUTTON1) {
+                if (SwingUtilities.isLeftMouseButton(evt)) {
                     objectMouseClicked(evt);
                 }
             }
@@ -320,7 +320,6 @@ public class AbilityPicker extends JXPanel implements MouseWheelListener {
             if (isSelected) {
                 label.setIcon(new ImageIcon(rightImageHovered));
                 label.setForeground(SELECTED_COLOR);
-                //label.setBorder(BorderFactory.createLineBorder(BORDER_COLOR));
                 label.setBorder(BorderFactory.createEmptyBorder());
             } else {
                 label.setIcon(new ImageIcon(rightImage));
@@ -383,7 +382,7 @@ public class AbilityPicker extends JXPanel implements MouseWheelListener {
 
     public static void main(String[] argv) {
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ex) {
         }
 
@@ -391,7 +390,7 @@ public class AbilityPicker extends JXPanel implements MouseWheelListener {
 
         List<Object> objectList = new ArrayList<>();
         objectList.add("T: add {R}. 111111111111111111111111111");
-        objectList.add("T: add {B}. {source} deals 1 damage to you.");
+        objectList.add("T: add {B}. {this} deals 1 damage to you.");
         objectList.add("{T}: add {B}");
         objectList.add("T: add {B}");
         objectList.add("T: add {B}");

@@ -31,7 +31,7 @@ public final class KarmicJustice extends CardImpl {
         this.addAbility(new KarmicJusticeTriggeredAbility());
     }
 
-    public KarmicJustice(final KarmicJustice card) {
+    private KarmicJustice(final KarmicJustice card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class KarmicJusticeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DESTROYED_PERMANENT;
+        return event.getType() == GameEvent.EventType.DESTROYED_PERMANENT;
     }
     
     @Override

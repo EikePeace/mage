@@ -17,7 +17,7 @@ import mage.constants.ComparisonType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class ReaverDrone extends CardImpl {
                 "you lose 1 life unless you control another colorless creature"), TargetController.YOU, false));
     }
 
-    public ReaverDrone(final ReaverDrone card) {
+    private ReaverDrone(final ReaverDrone card) {
         super(card);
     }
 

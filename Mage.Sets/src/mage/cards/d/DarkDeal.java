@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.j256.ormlite.stmt.query.In;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -28,7 +27,7 @@ public final class DarkDeal extends CardImpl {
         this.getSpellAbility().addEffect(new DarkDealEffect());
     }
 
-    public DarkDeal(final DarkDeal card) {
+    private DarkDeal(final DarkDeal card) {
         super(card);
     }
 
@@ -63,7 +62,7 @@ class DarkDealEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int cardsInHand = player.getHand().size();
-                    player.discard(cardsInHand, false, source, game);
+                    player.discard(cardsInHand, false, false, source, game);
                     if (cardsInHand > 1) {
                         cardsToDraw.put(playerId, cardsInHand - 1);
                     }
@@ -72,7 +71,7 @@ class DarkDealEffect extends OneShotEffect {
             for (Map.Entry<UUID, Integer> toDrawByPlayer : cardsToDraw.entrySet()) {
                 Player player = game.getPlayer(toDrawByPlayer.getKey());
                 if (player != null) {
-                    player.drawCards(toDrawByPlayer.getValue(), game);
+                    player.drawCards(toDrawByPlayer.getValue(), source, game);
                 }
             }
             return true;

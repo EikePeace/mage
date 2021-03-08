@@ -18,7 +18,6 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
-import mage.game.stack.Spell;
 import mage.util.CardUtil;
 
 /**
@@ -41,7 +40,7 @@ public final class Warbringer extends CardImpl {
         this.addAbility(new DashAbility(this, "{2}{R}"));
     }
 
-    public Warbringer(final Warbringer card) {
+    private Warbringer(final Warbringer card) {
         super(card);
     }
 
@@ -72,10 +71,7 @@ class WarbringerSpellsCostReductionEffect extends CostModificationEffectImpl {
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
         if (abilityToModify instanceof SpellAbility) {
             if (abilityToModify.isControlledBy(source.getControllerId())) {
-                Spell spell = (Spell) game.getStack().getStackObject(abilityToModify.getId());
-                if (spell != null) {
-                    return DashedCondition.instance.apply(game, abilityToModify);
-                }
+                return DashedCondition.instance.apply(game, abilityToModify);
             }
         }
         return false;

@@ -45,7 +45,7 @@ public final class ElderSpawn extends CardImpl {
         this.addAbility(new SimpleEvasionAbility(new CantBeBlockedByCreaturesSourceEffect(filter, Duration.WhileOnBattlefield)));
     }
 
-    public ElderSpawn(final ElderSpawn card) {
+    private ElderSpawn(final ElderSpawn card) {
         super(card);
     }
 
@@ -84,11 +84,11 @@ class ElderSpawnEffect extends OneShotEffect {
         if (controller != null && sourcePermanent != null) {
             TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
             SacrificeTargetCost cost = new SacrificeTargetCost(target);
-            if (!controller.chooseUse(Outcome.AIDontUseIt, "Do you wish to sacrifice an Island?", source, game)
-                    || !cost.canPay(source, source.getSourceId(), source.getControllerId(), game)
-                    || !cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
-                sourcePermanent.sacrifice(source.getSourceId(), game);
-                controller.damage(6, sourcePermanent.getId(), game);
+            if (!controller.chooseUse(Outcome.AIDontUseIt, "Sacrifice an Island?", source, game)
+                    || !cost.canPay(source, source, source.getControllerId(), game)
+                    || !cost.pay(source, game, source, source.getControllerId(), true)) {
+                sourcePermanent.sacrifice(source, game);
+                controller.damage(6, sourcePermanent.getId(), source, game);
             }
             return true;
         }

@@ -1,7 +1,5 @@
-
 package mage.cards.i;
 
-import java.util.List;
 import java.util.UUID;
 import mage.MageInt;
 import mage.ObjectColor;
@@ -16,14 +14,14 @@ import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -45,7 +43,7 @@ public final class ImpelledGiant extends CardImpl {
     }
 
     public ImpelledGiant(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{4}{R}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{R}{R}");
         this.subtype.add(SubType.GIANT);
         this.subtype.add(SubType.WARRIOR);
 
@@ -60,7 +58,7 @@ public final class ImpelledGiant extends CardImpl {
 
     }
 
-    public ImpelledGiant(final ImpelledGiant card) {
+    private ImpelledGiant(final ImpelledGiant card) {
         super(card);
     }
 
@@ -85,15 +83,16 @@ class ImpelledGiantCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        if (target.choose(Outcome.Tap, controllerId, sourceId, game)) {
-            for (UUID targetId: target.getTargets()) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
+        if (target.choose(Outcome.Tap, controllerId, source.getSourceId(), game)) {
+            for (UUID targetId : target.getTargets()) {
                 Permanent permanent = game.getPermanent(targetId);
-                if (permanent == null)
+                if (permanent == null) {
                     return false;
-                paid |= permanent.tap(game);
+                }
+                paid |= permanent.tap(source, game);
                 for (Effect effect : ability.getEffects()) {
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                 }
             }
         }
@@ -101,8 +100,8 @@ class ImpelledGiantCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return target.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return target.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override
@@ -110,9 +109,7 @@ class ImpelledGiantCost extends CostImpl {
         return new ImpelledGiantCost(this);
     }
 
-
 }
-
 
 class ImpelledGiantBoostEffect extends OneShotEffect {
 
@@ -128,7 +125,7 @@ class ImpelledGiantBoostEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent impelledGiant = game.getPermanent(source.getSourceId());
-        Permanent tappedCreature = game.getPermanentOrLKIBattlefield(this.targetPointer.getFirst(game, source));
+        Permanent tappedCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (tappedCreature != null && impelledGiant != null) {
             int amount = tappedCreature.getPower().getValue();
             game.addEffect(new BoostSourceEffect(amount, 0, Duration.EndOfTurn), source);

@@ -8,23 +8,18 @@ import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.CounterTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AbilityType;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterStackObject;
-import mage.filter.predicate.Predicate;
-import mage.filter.predicate.ability.ArtifactSourcePredicate;
+import mage.filter.predicate.other.ArtifactSourcePredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.game.stack.StackAbility;
 import mage.game.stack.StackObject;
 import mage.target.common.TargetActivatedAbility;
-import mage.target.common.TargetActivatedOrTriggeredAbility;
 
 /**
  *
@@ -53,7 +48,7 @@ public final class OupheVandals extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OupheVandals(final OupheVandals card) {
+    private OupheVandals(final OupheVandals card) {
         super(card);
     }
 
@@ -83,12 +78,12 @@ class OupheVandalsEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         UUID targetId = source.getFirstTarget();
         StackObject stackObject = game.getStack().getStackObject(targetId);
-        if (targetId != null && game.getStack().counter(targetId, source.getSourceId(), game)) {
+        if (targetId != null && game.getStack().counter(targetId, source, game)) {
             UUID permanentId = stackObject.getSourceId();
             if (permanentId != null) {
                 Permanent usedPermanent = game.getPermanent(permanentId);
                 if (usedPermanent != null) {
-                    usedPermanent.destroy(source.getSourceId(), game, false);
+                    usedPermanent.destroy(source, game, false);
                 }
             }
             return true;

@@ -16,7 +16,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterInstantOrSorcerySpell;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetSpell;
 
 /**
@@ -50,7 +50,7 @@ public final class MausoleumWanderer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MausoleumWanderer(final MausoleumWanderer card) {
+    private MausoleumWanderer(final MausoleumWanderer card) {
         super(card);
     }
 

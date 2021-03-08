@@ -1,6 +1,5 @@
 package mage.abilities.effects.common.continuous;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -85,9 +84,7 @@ public class LoseAbilityAllEffect extends ContinuousEffectImpl {
             for (Iterator<MageObjectReference> it = affectedObjectList.iterator(); it.hasNext();) { // filter may not be used again, because object can have changed filter relevant attributes but still geets boost
                 Permanent perm = it.next().getPermanentOrLKIBattlefield(game); //LKI is neccessary for "dies triggered abilities" to work given to permanets  (e.g. Showstopper)
                 if (perm != null) {
-                    for (Ability ability : ability) {
-                        perm.getAbilities().removeIf(entry -> entry.getId().equals(ability.getId()));
-                    }
+                    perm.removeAbilities(ability, source.getSourceId(), game);
                 } else {
                     it.remove();
                     if (affectedObjectList.isEmpty()) {
@@ -99,9 +96,7 @@ public class LoseAbilityAllEffect extends ContinuousEffectImpl {
             for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 if (!(excludeSource && perm.getId().equals(source.getSourceId()))) {
                     System.out.println(game.getTurn() + ", " + game.getPhase() + ": " + "remove from size " + perm.getAbilities().size());
-                    for (Ability ability : ability) {
-                        perm.getAbilities().removeIf(entry -> entry.getId().equals(ability.getId()));
-                    }
+                    perm.removeAbilities(ability, source.getSourceId(), game);
                 }
             }
             // still as long as the prev. permanent is known to the LKI (e.g. Mikaeus, the Unhallowed) so gained dies triggered ability will trigger
@@ -111,9 +106,7 @@ public class LoseAbilityAllEffect extends ContinuousEffectImpl {
                     Permanent perm = (Permanent) mageObject;
                     if (!(excludeSource && perm.getId().equals(source.getSourceId()))) {
                         if (filter.match(perm, source.getSourceId(), source.getControllerId(), game)) {
-                            for (Ability ability : ability) {
-                                perm.getAbilities().removeIf(entry -> entry.getId().equals(ability.getId()));
-                            }
+                            perm.removeAbilities(ability, source.getSourceId(), game);
                         }
                     }
                 }

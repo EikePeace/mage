@@ -17,7 +17,7 @@ public final class ChampionOfArashin extends CardImpl {
 
     public ChampionOfArashin(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.WARRIOR);
         this.power = new MageInt(3);
         this.toughness = new MageInt(2);
@@ -26,7 +26,7 @@ public final class ChampionOfArashin extends CardImpl {
         this.addAbility(LifelinkAbility.getInstance());
     }
 
-    public ChampionOfArashin(final ChampionOfArashin card) {
+    private ChampionOfArashin(final ChampionOfArashin card) {
         super(card);
     }
 

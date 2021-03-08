@@ -38,7 +38,7 @@ public final class ElspethTirel extends CardImpl {
         this.addAbility(new LoyaltyAbility(new ElspethTirelThirdEffect(), -5));
     }
 
-    public ElspethTirel(final ElspethTirel card) {
+    private ElspethTirel(final ElspethTirel card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class ElspethTirelThirdEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         for (Permanent perm : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
             if (!perm.getId().equals(source.getSourceId()) && !(perm instanceof PermanentToken) && !(perm.isLand())) {
-                perm.destroy(source.getSourceId(), game, false);
+                perm.destroy(source, game, false);
             }
         }
         return true;

@@ -13,7 +13,6 @@ import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.players.Player;
 
 /**
  *
@@ -28,7 +27,7 @@ public final class BakisCurse extends CardImpl {
         this.getSpellAbility().addEffect(new BakisCurseEffect());
     }
 
-    public BakisCurse(final BakisCurse card) {
+    private BakisCurse(final BakisCurse card) {
         super(card);
     }
 
@@ -61,11 +60,11 @@ class BakisCurseEffect extends OneShotEffect {
             List<UUID> attachments = creature.getAttachments();
             for (UUID attachmentId : attachments) {
                 Permanent attached = game.getPermanent(attachmentId);
-                if (attached != null && attached.getSubtype(game).contains(SubType.AURA)) {
+                if (attached != null && attached.hasSubtype(SubType.AURA, game)) {
                     count++;
                 }
             }
-            creature.damage(count * 2, source.getId(), game, false, true);
+            creature.damage(count * 2, source.getId(), source, game, false, true);
         }
         return true;
     }

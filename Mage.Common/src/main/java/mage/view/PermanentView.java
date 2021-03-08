@@ -1,19 +1,19 @@
-
 package mage.view;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.TurnFaceUpAbility;
 import mage.cards.Card;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentToken;
+import mage.game.permanent.token.Token;
 import mage.players.Player;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class PermanentView extends CardView {
@@ -36,8 +36,8 @@ public class PermanentView extends CardView {
     private final boolean attachedToPermanent;
 
     public PermanentView(Permanent permanent, Card card, UUID createdForPlayerId, Game game) {
-        super(permanent, game, (permanent.getControllerId() == null) ? false : permanent.getControllerId().equals(createdForPlayerId));
-        this.controlled = (permanent.getControllerId() == null) ? false : permanent.getControllerId().equals(createdForPlayerId);
+        super(permanent, game, permanent.getControllerId() != null && permanent.getControllerId().equals(createdForPlayerId));
+        this.controlled = permanent.getControllerId() != null && permanent.getControllerId().equals(createdForPlayerId);
         this.rules = permanent.getRules(game);
         this.tapped = permanent.isTapped();
         this.flipped = permanent.isFlipped();
@@ -52,14 +52,14 @@ public class PermanentView extends CardView {
         }
         this.attachedTo = permanent.getAttachedTo();
         if (isToken()) {
-            original = new CardView(((PermanentToken) permanent).getToken());
+            original = new CardView(((PermanentToken) permanent).getToken(), game);
             original.expansionSetCode = permanent.getExpansionSetCode();
             tokenSetCode = original.getTokenSetCode();
             tokenDescriptor = original.getTokenDescriptor();
         } else {
             if (card != null) {
                 // original may not be face down
-                original = new CardView(card);
+                original = new CardView(card, game);
             } else {
                 original = null;
             }
@@ -94,11 +94,10 @@ public class PermanentView extends CardView {
         if (permanent.isFaceDown(game) && card != null) {
             if (controlled) {
                 // must be a morphed or manifested card
-                for (Ability permanentAbility : permanent.getAbilities()) {
-                    if (permanentAbility instanceof TurnFaceUpAbility && !permanentAbility.getRuleVisible()) {
-                        this.rules.add(permanentAbility.getRule(true));
-                    }
+                for (Ability permanentAbility : permanent.getAbilities(game)) {
                     if (permanentAbility.getWorksFaceDown()) {
+                        this.rules.add(permanentAbility.getRule(true));
+                    } else if (permanentAbility instanceof TurnFaceUpAbility && !permanentAbility.getRuleVisible()) {
                         this.rules.add(permanentAbility.getRule());
                     }
                 }

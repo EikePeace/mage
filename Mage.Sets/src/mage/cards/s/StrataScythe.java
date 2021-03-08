@@ -40,7 +40,7 @@ public final class StrataScythe extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(3)));
     }
 
-    public StrataScythe(final StrataScythe card) {
+    private StrataScythe(final StrataScythe card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class StrataScytheImprintEffect extends OneShotEffect {
                 UUID cardId = target.getTargets().get(0);
                 Card card = player.getLibrary().remove(cardId, game);
                 if (card != null) {
-                    card.moveToExile(source.getSourceId(), "Strata Scythe", source.getSourceId(), game);
+                    card.moveToExile(source.getSourceId(), "Strata Scythe", source, game);
                     Permanent permanent = game.getPermanent(source.getSourceId());
                     if (permanent != null) {
                         permanent.imprint(card.getId(), game);

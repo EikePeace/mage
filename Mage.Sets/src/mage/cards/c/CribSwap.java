@@ -28,7 +28,7 @@ public final class CribSwap extends CardImpl {
         this.subtype.add(SubType.SHAPESHIFTER);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         // Exile target creature. Its controller creates a 1/1 colorless Shapeshifter creature token with changeling.
         this.getSpellAbility().addEffect(new ExileTargetEffect());
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
@@ -36,7 +36,7 @@ public final class CribSwap extends CardImpl {
 
     }
 
-    public CribSwap(final CribSwap card) {
+    private CribSwap(final CribSwap card) {
         super(card);
     }
 
@@ -66,10 +66,10 @@ class CribSwapEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent targetCreature = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+            Permanent targetCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (targetCreature != null) {
                 CribSwapShapeshifterWhiteToken token = new CribSwapShapeshifterWhiteToken();
-                return token.putOntoBattlefield(1, game, source.getSourceId(), targetCreature.getControllerId());
+                return token.putOntoBattlefield(1, game, source, targetCreature.getControllerId());
             }
         }
         return false;

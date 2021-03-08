@@ -46,7 +46,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.WasDealtDamageThisTurnPredicate;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -57,7 +56,7 @@ public final class InitiateOfBlood extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
 
     public InitiateOfBlood(UUID ownerId, CardSetInfo setInfo) {
@@ -80,7 +79,7 @@ public final class InitiateOfBlood extends CardImpl {
 
     }
 
-    public InitiateOfBlood(final InitiateOfBlood card) {
+    private InitiateOfBlood(final InitiateOfBlood card) {
         super(card);
     }
 
@@ -95,7 +94,7 @@ class GokaTheUnjust extends TokenImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
 
     GokaTheUnjust() {

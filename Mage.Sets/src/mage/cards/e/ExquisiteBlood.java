@@ -26,7 +26,7 @@ public final class ExquisiteBlood extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ExquisiteBlood(final ExquisiteBlood card) {
+    private ExquisiteBlood(final ExquisiteBlood card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class ExquisiteBloodTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST_LIFE;
+        return event.getType() == GameEvent.EventType.LOST_LIFE;
     }
 
     @Override

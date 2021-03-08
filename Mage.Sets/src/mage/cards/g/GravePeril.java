@@ -38,7 +38,7 @@ public final class GravePeril extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new GravePerilEffect(), filter, false, SetTargetPointer.PERMANENT, null));
     }
 
-    public GravePeril(final GravePeril card) {
+    private GravePeril(final GravePeril card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class GravePerilEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = (Permanent) source.getSourceObjectIfItStillExists(game);
         if (permanent != null) {
-            if (permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent.sacrifice(source, game)) {
                 Effect effect = new DestroyTargetEffect();
                 effect.setTargetPointer(this.getTargetPointer());
                 return effect.apply(game, source);

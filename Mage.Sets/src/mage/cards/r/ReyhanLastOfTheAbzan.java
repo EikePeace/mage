@@ -50,7 +50,7 @@ public final class ReyhanLastOfTheAbzan extends CardImpl {
         this.addAbility(PartnerAbility.getInstance());
     }
 
-    public ReyhanLastOfTheAbzan(final ReyhanLastOfTheAbzan card) {
+    private ReyhanLastOfTheAbzan(final ReyhanLastOfTheAbzan card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class ReyhanLastOfTheAbzanTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -117,6 +117,6 @@ class ReyhanLastOfTheAbzanTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever a creature you control dies or is put into the command zone, if it had one or more +1/+1 counters on it, you may put that may +1/+1 counters on target creature.";
+        return "Whenever a creature you control dies or is put into the command zone, if it had one or more +1/+1 counters on it, you may put that many +1/+1 counters on target creature.";
     }
 }

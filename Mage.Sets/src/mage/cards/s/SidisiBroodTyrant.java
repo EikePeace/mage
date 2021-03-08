@@ -1,13 +1,11 @@
-
 package mage.cards.s;
 
-import java.util.Set;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.EntersBattlefieldOrAttacksSourceTriggeredAbility;
 import mage.abilities.effects.common.CreateTokenEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveControllerEffect;
+import mage.abilities.effects.common.MillCardsControllerEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -36,13 +34,13 @@ public final class SidisiBroodTyrant extends CardImpl {
         this.toughness = new MageInt(3);
 
         // Whenever Sidisi, Brood Tyrant enters the battlefield or attacks, put the top three cards of your library into your graveyard.
-        this.addAbility(new EntersBattlefieldOrAttacksSourceTriggeredAbility(new PutTopCardOfLibraryIntoGraveControllerEffect(3)));
+        this.addAbility(new EntersBattlefieldOrAttacksSourceTriggeredAbility(new MillCardsControllerEffect(3)));
 
         // Whenever one or more creature cards are put into your graveyard from your library, create a 2/2 black Zombie creature token.
         this.addAbility(new SidisiBroodTyrantTriggeredAbility());
     }
 
-    public SidisiBroodTyrant(final SidisiBroodTyrant card) {
+    private SidisiBroodTyrant(final SidisiBroodTyrant card) {
         super(card);
     }
 
@@ -70,16 +68,15 @@ class SidisiBroodTyrantTriggeredAbility extends TriggeredAbilityImpl {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         ZoneChangeGroupEvent zEvent = (ZoneChangeGroupEvent) event;
-        if (zEvent != null && Zone.LIBRARY == zEvent.getFromZone() && Zone.GRAVEYARD == zEvent.getToZone() && zEvent.getCards() != null) {
+        if (zEvent != null
+                && Zone.LIBRARY == zEvent.getFromZone()
+                && Zone.GRAVEYARD == zEvent.getToZone()
+                && zEvent.getCards() != null) {
             for (Card card : zEvent.getCards()) {
                 if (card != null) {
-
                     UUID cardOwnerId = card.getOwnerId();
-                    Set<CardType> cardType = card.getCardType();
-
                     if (cardOwnerId != null
                             && card.isOwnedBy(getControllerId())
-                            && cardType != null
                             && card.isCreature()) {
                         return true;
                     }

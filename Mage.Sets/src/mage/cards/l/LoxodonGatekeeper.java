@@ -38,7 +38,7 @@ public final class LoxodonGatekeeper extends CardImpl {
 
     }
 
-    public LoxodonGatekeeper(final LoxodonGatekeeper card) {
+    private LoxodonGatekeeper(final LoxodonGatekeeper card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class LoxodonGatekeeperTapEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

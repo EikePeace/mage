@@ -26,11 +26,11 @@ public final class GhostlyChangeling extends CardImpl {
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 1, Duration.EndOfTurn), new ManaCostsImpl("{1}{B}")));
     }
 
-    public GhostlyChangeling(final GhostlyChangeling card) {
+    private GhostlyChangeling(final GhostlyChangeling card) {
         super(card);
     }
 

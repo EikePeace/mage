@@ -48,7 +48,7 @@ public final class DuskmantleGuildmage extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DuskmantleGuildmage(final DuskmantleGuildmage card) {
+    private DuskmantleGuildmage(final DuskmantleGuildmage card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class CardPutIntoOpponentGraveThisTurn extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

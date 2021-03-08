@@ -43,7 +43,7 @@ public final class SuturePriest extends CardImpl {
 
     }
 
-    public SuturePriest(final SuturePriest card) {
+    private SuturePriest(final SuturePriest card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class SuturePriestSecondTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

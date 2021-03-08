@@ -39,7 +39,7 @@ public final class CryptbornHorror extends CardImpl {
         this.addAbility(new EntersBattlefieldAbility(new CryptbornHorrorEffect(), rule));
     }
 
-    public CryptbornHorror(final CryptbornHorror card) {
+    private CryptbornHorror(final CryptbornHorror card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class CryptbornHorrorEffect extends OneShotEffect {
         if (permanent != null) {
             int oll = OpponentsLostLifeCount.instance.calculate(game, source, this);
             if (oll > 0) {
-                permanent.addCounters(CounterType.P1P1.createInstance(oll), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(oll), source.getControllerId(), source, game);
             }
             return true;
         }

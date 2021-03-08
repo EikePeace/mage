@@ -19,7 +19,6 @@ import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.watchers.common.CreaturesDiedWatcher;
 
 /**
@@ -49,7 +48,7 @@ public final class KuonOgreAscendant extends CardImpl {
                 new CreaturesDiedWatcher());
     }
 
-    public KuonOgreAscendant(final KuonOgreAscendant card) {
+    private KuonOgreAscendant(final KuonOgreAscendant card) {
         super(card);
     }
 

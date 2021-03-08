@@ -11,7 +11,6 @@ import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.filter.common.FilterCreaturePermanent;
 
 /**
  *
@@ -29,7 +28,7 @@ public final class BontusLastReckoning extends CardImpl {
                 .setText("Lands you control don't untap during your next untap step"));
     }
 
-    public BontusLastReckoning(final BontusLastReckoning card) {
+    private BontusLastReckoning(final BontusLastReckoning card) {
         super(card);
     }
 

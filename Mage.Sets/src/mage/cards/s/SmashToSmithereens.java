@@ -28,7 +28,7 @@ public final class SmashToSmithereens extends CardImpl {
 
     }
 
-    public SmashToSmithereens(final SmashToSmithereens card) {
+    private SmashToSmithereens(final SmashToSmithereens card) {
         super(card);
     }
 
@@ -56,12 +56,12 @@ class SmashToSmithereensEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent targetArtifact = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent targetArtifact = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (targetArtifact != null) {
             Player controllerOfArtifact = game.getPlayer(targetArtifact.getControllerId());
-            targetArtifact.destroy(source.getSourceId(), game, false);
+            targetArtifact.destroy(source, game, false);
             if (controllerOfArtifact != null) {
-                controllerOfArtifact.damage(3, source.getSourceId(), game);
+                controllerOfArtifact.damage(3, source.getSourceId(), source, game);
             }
             return true;
         }

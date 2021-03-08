@@ -22,12 +22,12 @@ public final class DarkwaterCatacombs extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.LAND},"");
 
         // {1}, {tap}: Add {U}{B}.
-        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 0, 1, 0, 0, 0), new ManaCostsImpl("{1}"));
+        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 1, 0, 0, 0, 0, 0), new ManaCostsImpl("{1}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
     }
 
-    public DarkwaterCatacombs(final DarkwaterCatacombs card) {
+    private DarkwaterCatacombs(final DarkwaterCatacombs card) {
         super(card);
     }
 

@@ -61,7 +61,7 @@ public final class AngrathTheFlameChained extends CardImpl {
 
     }
 
-    public AngrathTheFlameChained(final AngrathTheFlameChained card) {
+    private AngrathTheFlameChained(final AngrathTheFlameChained card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ class AngrathTheFlameUltimateEffect extends OneShotEffect {
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player player = game.getPlayer(opponentId);
             if (player != null && !player.getGraveyard().isEmpty()) {
-                player.loseLife(player.getGraveyard().size(), game, false);
+                player.loseLife(player.getGraveyard().size(), game, source, false);
             }
         }
         return true;

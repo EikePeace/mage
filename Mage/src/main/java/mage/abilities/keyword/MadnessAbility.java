@@ -1,8 +1,6 @@
 package mage.abilities.keyword;
 
-import java.util.UUID;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.StaticAbility;
@@ -13,35 +11,35 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.ReplacementEffectImpl;
 import mage.cards.Card;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.SpellAbilityCastMode;
-import mage.constants.SpellAbilityType;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.events.MadnessCardExiledEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.stack.Spell;
 import mage.players.Player;
 
+import java.util.UUID;
+import mage.ApprovingObject;
+
 /**
  * 702.33. Madness
- *
+ * <p>
  * 702.33a. Madness is a keyword that represents two abilities.
- *
+ * <p>
  * The first is a static ability that functions while the card with madness is
  * in a player's hand. The second is a triggered ability that functions when the
  * first ability is applied.
- *
+ * <p>
  * "Madness [cost]" means "If a player would discard this card, that player
  * discards it, but may exile it instead of putting it into their graveyard" and
  * "When this card is exiled this way, its owner may cast it by paying [cost]
  * rather than paying its mana cost. If that player doesn't, they put this
  * card into their graveyard.
- *
+ * <p>
  * 702.33b. Casting a spell using its madness ability follows the rules for
  * paying alternative costs in rules 601.2b and 601.2e-g.
- *
+ * <p>
  * SOI Changes: If you discard a card with madness, you exile it instead of
  * putting it into your graveyard. Note that the mandatory discard into exile is
  * a small change from previous rules. Before, you could discard a card with
@@ -52,7 +50,7 @@ import mage.players.Player;
  */
 public class MadnessAbility extends StaticAbility {
 
-    private String rule;
+    private final String rule;
 
     @SuppressWarnings("unchecked")
     public MadnessAbility(Card card, ManaCosts madnessCost) {
@@ -108,9 +106,9 @@ class MadnessReplacementEffect extends ReplacementEffectImpl {
         if (controller != null) {
             Card card = game.getCard(event.getTargetId());
             if (card != null) {
-                if (controller.moveCardToExileWithInfo(card, source.getSourceId(), "Madness", source.getSourceId(), game, ((ZoneChangeEvent) event).getFromZone(), true)) {
+                if (controller.moveCardToExileWithInfo(card, source.getSourceId(), "Madness", source, game, ((ZoneChangeEvent) event).getFromZone(), true)) {
                     game.applyEffects(); // needed to add Madness ability to cards (e.g. by Falkenrath Gorger)
-                    GameEvent gameEvent = GameEvent.getEvent(GameEvent.EventType.MADNESS_CARD_EXILED, card.getId(), source.getOriginalId(), controller.getId());
+                    GameEvent gameEvent = new MadnessCardExiledEvent(card.getId(), source, controller.getId());
                     game.fireEvent(gameEvent);
                 }
                 return true;
@@ -205,26 +203,24 @@ class MadnessCastEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Player owner = null;
         Card card = game.getCard(source.getSourceId());
-        if (card != null) {
-            owner = game.getPlayer(card.getOwnerId());
+        if (card == null) {
+            return false;
         }
-        if (owner != null && card != null
-                && owner.chooseUse(outcome, "Cast " + card.getLogName() + " by madness?", source, game)) {
 
-            // replace with the new cost
-            SpellAbility castByMadness = card.getSpellAbility().copy();
-            ManaCosts<ManaCost> costRef = castByMadness.getManaCostsToPay();
-            castByMadness.setSpellAbilityType(SpellAbilityType.BASE_ALTERNATE);
-            castByMadness.setSpellAbilityCastMode(SpellAbilityCastMode.MADNESS);
-            costRef.clear();
-            costRef.add(madnessCost);
-            boolean result = owner.cast(castByMadness, game, false, new MageObjectReference(source.getSourceObject(game), game));
-            return result;
-
+        Player owner = game.getPlayer(card.getOwnerId());
+        if (owner == null) {
+            return false;
         }
-        return false;
+
+        // replace with the new cost
+        SpellAbility castByMadness = card.getSpellAbility().copy();
+        ManaCosts<ManaCost> costRef = castByMadness.getManaCostsToPay();
+        castByMadness.setSpellAbilityType(SpellAbilityType.BASE_ALTERNATE);
+        castByMadness.setSpellAbilityCastMode(SpellAbilityCastMode.MADNESS);
+        costRef.clear();
+        costRef.add(madnessCost);
+        return owner.cast(castByMadness, game, false, new ApprovingObject(source, game));
     }
 
     @Override

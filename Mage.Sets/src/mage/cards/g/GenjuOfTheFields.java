@@ -19,7 +19,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterLandPermanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
@@ -47,7 +46,7 @@ public final class GenjuOfTheFields extends CardImpl {
                 "Until end of turn, enchanted Plains becomes a 2/5 white Spirit creature", Duration.EndOfTurn);
         Ability ability2 = new SimpleActivatedAbility(Zone.BATTLEFIELD, effect, new GenericManaCost(2));
         effect = new GainAbilityAttachedEffect(new DealsDamageGainLifeSourceTriggeredAbility(), AttachmentType.AURA, Duration.EndOfTurn);
-        effect.setText("with \"Whenever this creature deals damage, its controller gains that much life.\".  It's still a land");
+        effect.setText("with \"Whenever this creature deals damage, its controller gains that much life.\" It's still a land");
         ability2.addEffect(effect);
         this.addAbility(ability2);
 
@@ -56,7 +55,7 @@ public final class GenjuOfTheFields extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public GenjuOfTheFields(final GenjuOfTheFields card) {
+    private GenjuOfTheFields(final GenjuOfTheFields card) {
         super(card);
     }
 

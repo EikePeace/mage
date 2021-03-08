@@ -38,7 +38,7 @@ public final class CraterHellion extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CraterHellionEffect(), false));
     }
 
-    public CraterHellion(final CraterHellion card) {
+    private CraterHellion(final CraterHellion card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class CraterHellionEffect extends OneShotEffect {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
             if (!permanent.getId().equals(source.getSourceId())) {
-                permanent.damage(4, source.getSourceId(), game, false, true);
+                permanent.damage(4, source.getSourceId(), source, game, false, true);
             }
         }
         return true;

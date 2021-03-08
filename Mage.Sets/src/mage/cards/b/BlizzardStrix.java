@@ -16,7 +16,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -92,9 +92,9 @@ class BlizzardStrixEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (controller != null && permanent != null && sourcePermanent != null) {
-            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
+            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
                 //create delayed triggered ability
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                 effect.setText("Return that card to the battlefield under its owner's control at the beginning of the next end step");
                 effect.setTargetPointer(new FixedTarget(source.getFirstTarget(), game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);

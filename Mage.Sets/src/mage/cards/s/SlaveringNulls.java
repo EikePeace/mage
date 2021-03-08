@@ -38,7 +38,7 @@ public final class SlaveringNulls extends CardImpl {
         this.addAbility(new SlaveringNullsTriggeredAbility());
     }
 
-    public SlaveringNulls(final SlaveringNulls card) {
+    private SlaveringNulls(final SlaveringNulls card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class SlaveringNullsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

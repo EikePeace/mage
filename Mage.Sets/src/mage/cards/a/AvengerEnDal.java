@@ -42,7 +42,7 @@ public final class AvengerEnDal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AvengerEnDal(final AvengerEnDal card) {
+    private AvengerEnDal(final AvengerEnDal card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class AvengerEnDalEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {

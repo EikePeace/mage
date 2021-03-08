@@ -1,5 +1,6 @@
 package mage.cards.e;
 
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -15,14 +16,12 @@ import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledEnchantmentPermanent;
 import mage.filter.common.FilterCreatureCard;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCardInLibrary;
-
-import java.util.UUID;
 
 /**
  * @author TheElk801
@@ -59,10 +58,10 @@ class EnigmaticIncarnationEffect extends OneShotEffect {
 
     EnigmaticIncarnationEffect() {
         super(Outcome.Benefit);
-        staticText = "you may sacrifice another enchantment. If you do, " +
-                "search your library for a creature card with converted mana cost " +
-                "equal to 1 plus the sacrificed enchantment's converted mana cost, " +
-                "put that card onto the battlefield, then shuffle your library.";
+        staticText = "you may sacrifice another enchantment. If you do, "
+                + "search your library for a creature card with converted mana cost "
+                + "equal to 1 plus the sacrificed enchantment's converted mana cost, "
+                + "put that card onto the battlefield, then shuffle your library.";
     }
 
     private EnigmaticIncarnationEffect(final EnigmaticIncarnationEffect effect) {
@@ -88,8 +87,9 @@ class EnigmaticIncarnationEffect extends OneShotEffect {
         if (permanent == null) {
             return false;
         }
+        game.getState().processAction(game);
         int cmc = permanent.getConvertedManaCost();
-        if (!permanent.sacrifice(source.getSourceId(), game)) {
+        if (!permanent.sacrifice(source, game)) {
             return false;
         }
         FilterCard filterCard = new FilterCreatureCard("creature card with converted mana cost " + (cmc + 1));

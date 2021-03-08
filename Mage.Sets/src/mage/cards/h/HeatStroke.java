@@ -2,29 +2,20 @@
 package mage.cards.h;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EndOfCombatTriggeredAbility;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.DestroyAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.filter.FilterPermanent;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.BlockedPredicate;
-import mage.filter.predicate.permanent.BlockingPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.players.Player;
 import mage.watchers.common.BlockedThisTurnWatcher;
 import mage.watchers.common.WasBlockedThisTurnWatcher;
 
@@ -43,7 +34,7 @@ public final class HeatStroke extends CardImpl {
         this.addAbility(ability);
     }
 
-    public HeatStroke(final HeatStroke card) {
+    private HeatStroke(final HeatStroke card) {
         super(card);
     }
 
@@ -83,7 +74,7 @@ class HeatStrokeEffect extends OneShotEffect {
         for (MageObjectReference mor : toDestroy) {
             Permanent permanent = mor.getPermanent(game);
             if (permanent != null && permanent.isCreature() && inROI.contains(permanent)){
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
                 toRet = true;
             }
         }

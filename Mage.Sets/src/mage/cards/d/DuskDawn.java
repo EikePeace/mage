@@ -9,7 +9,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.DestroyAllEffect;
 import mage.abilities.keyword.AftermathAbility;
 import mage.cards.Card;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -48,7 +47,7 @@ public final class DuskDawn extends SplitCard {
 
     }
 
-    public DuskDawn(final DuskDawn card) {
+    private DuskDawn(final DuskDawn card) {
         super(card);
     }
 

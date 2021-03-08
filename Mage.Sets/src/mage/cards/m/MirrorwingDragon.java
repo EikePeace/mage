@@ -43,7 +43,7 @@ public final class MirrorwingDragon extends CardImpl {
         this.addAbility(new MirrorwingDragonCopyTriggeredAbility());
     }
 
-    public MirrorwingDragon(final MirrorwingDragon card) {
+    private MirrorwingDragon(final MirrorwingDragon card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class MirrorwingDragonCopyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

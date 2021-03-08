@@ -40,7 +40,7 @@ public final class NissasDefeat extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPermanent(filter));
     }
 
-    public NissasDefeat(final NissasDefeat card) {
+    private NissasDefeat(final NissasDefeat card) {
         super(card);
     }
 
@@ -79,11 +79,11 @@ class NissasDefeatEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
 
         if (permanent != null) {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
 
             // If it was a Nissa planeswalker, draw a card
             if (filter.match(permanent, game) && controller != null) {
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
             }
             return true;
         }

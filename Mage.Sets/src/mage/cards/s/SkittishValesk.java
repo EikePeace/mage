@@ -38,7 +38,7 @@ public final class SkittishValesk extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{5}{R}")));
     }
 
-    public SkittishValesk(final SkittishValesk card) {
+    private SkittishValesk(final SkittishValesk card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class SkittishValeskEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null && !controller.flipCoin(source, game, true)) {
-            return permanent.turnFaceDown(game, source.getControllerId());
+            return permanent.turnFaceDown(source, game, source.getControllerId());
         }
         return false;
     }

@@ -49,7 +49,7 @@ public final class FungalBehemoth extends CardImpl {
         this.addAbility(new FungalBehemothTriggeredAbility());
     }
 
-    public FungalBehemoth(final FungalBehemoth card) {
+    private FungalBehemoth(final FungalBehemoth card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class FungalBehemothTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_REMOVED;
+        return event.getType() == GameEvent.EventType.COUNTER_REMOVED;
     }
 
     @Override

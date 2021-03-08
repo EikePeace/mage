@@ -1,4 +1,3 @@
-
 package mage.cards.e;
 
 import java.util.UUID;
@@ -7,6 +6,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostImpl;
+import mage.abilities.costs.common.ExileSourceFromHandCost;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -35,7 +35,7 @@ public final class ElvishSpiritGuide extends CardImpl {
         this.addAbility(new SimpleManaAbility(Zone.HAND, Mana.GreenMana(1), new ExileSourceFromHandCost()));
     }
 
-    public ElvishSpiritGuide(final ElvishSpiritGuide card) {
+    private ElvishSpiritGuide(final ElvishSpiritGuide card) {
         super(card);
     }
 
@@ -43,41 +43,4 @@ public final class ElvishSpiritGuide extends CardImpl {
     public ElvishSpiritGuide copy() {
         return new ElvishSpiritGuide(this);
     }
-}
-
-
-class ExileSourceFromHandCost extends CostImpl {
-
-    public ExileSourceFromHandCost() {
-        this.text = "Exile {this} from your hand";
-    }
-
-    public ExileSourceFromHandCost(ExileSourceFromHandCost cost) {
-        super(cost);
-    }
-
-    @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        Card card = game.getCard(sourceId);
-        Player player = game.getPlayer(controllerId);
-        if (player != null && player.getHand().contains(sourceId) && card != null) {
-            paid = card.moveToExile(ability.getSourceId(), "from Hand", ability.getSourceId(), game);
-        }
-        return paid;
-    }
-
-    @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        Player player = game.getPlayer(controllerId);
-        if (player != null && player.getHand().contains(sourceId)) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public ExileSourceFromHandCost copy() {
-        return new ExileSourceFromHandCost(this);
-    }
-
 }

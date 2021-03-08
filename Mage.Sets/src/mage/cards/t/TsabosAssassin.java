@@ -42,7 +42,7 @@ public final class TsabosAssassin extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TsabosAssassin(final TsabosAssassin card) {
+    private TsabosAssassin(final TsabosAssassin card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class TsabosAssasinEffect extends OneShotEffect {
             Condition condition = new MostCommonColorCondition(permanent.getColor(game));
             if (condition.apply(game, source)) {
                 Effect effect = new DestroyTargetEffect();
-                effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                effect.setTargetPointer(new FixedTarget(permanent, game));
                 return effect.apply(game, source);
             }
         }

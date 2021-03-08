@@ -2,7 +2,6 @@
 package mage.cards.e;
 
 import java.util.UUID;
-import mage.abilities.Ability;
 import mage.abilities.common.ActivateAsSorceryActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.InfoEffect;
@@ -32,7 +31,7 @@ public final class EndbringersRevel extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EndbringersRevel(final EndbringersRevel card) {
+    private EndbringersRevel(final EndbringersRevel card) {
         super(card);
     }
 

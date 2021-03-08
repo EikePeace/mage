@@ -28,12 +28,12 @@ public final class RithsAttendant extends CardImpl {
         this.toughness = new MageInt(3);
 
         // {1}, Sacrifice Rith's Attendant: Add {R}{G}{W}.
-        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 0, 1, 0, 0, 0, 0), new ManaCostsImpl("{1}"));
+        Ability ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 0, 1, 1, 0, 0, 0), new ManaCostsImpl("{1}"));
         ability.addCost(new SacrificeSourceCost());
         this.addAbility(ability);
     }
 
-    public RithsAttendant(final RithsAttendant card) {
+    private RithsAttendant(final RithsAttendant card) {
         super(card);
     }
 

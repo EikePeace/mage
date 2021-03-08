@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class YomijiWhoBarsTheWay extends CardImpl {
         this.addAbility(new PutIntoGraveFromBattlefieldAllTriggeredAbility(effect, false, filter, true));
     }
 
-    public YomijiWhoBarsTheWay(final YomijiWhoBarsTheWay card) {
+    private YomijiWhoBarsTheWay(final YomijiWhoBarsTheWay card) {
         super(card);
     }
 

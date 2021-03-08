@@ -22,15 +22,15 @@ public final class BenedictionOfMoons extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{W}");
 
         // You gain 1 life for each player.
-        this.getSpellAbility().addEffect(new GainLifeEffect(new PlayerCount()));
+        this.getSpellAbility().addEffect(new GainLifeEffect(new PlayerCount()).setText("you gain 1 life for each player"));
 
         // Haunt
         // When the creature Benediction of Moons haunts dies, you gain 1 life for each player.
-        this.addAbility(new HauntAbility(this, new GainLifeEffect(new PlayerCount())));
+        this.addAbility(new HauntAbility(this, new GainLifeEffect(new PlayerCount()).setText("you gain 1 life for each player")));
 
     }
 
-    public BenedictionOfMoons(final BenedictionOfMoons card) {
+    private BenedictionOfMoons(final BenedictionOfMoons card) {
         super(card);
     }
 

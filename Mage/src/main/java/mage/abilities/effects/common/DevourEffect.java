@@ -7,7 +7,7 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
@@ -15,7 +15,6 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetControlledCreaturePermanent;
-import mage.util.SubTypeList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,28 +86,28 @@ public class DevourEffect extends ReplacementEffectImpl {
             if (controller.chooseUse(Outcome.Detriment, "Devour creatures?", source, game)) {
                 controller.chooseTarget(Outcome.Detriment, target, source, game);
                 if (!target.getTargets().isEmpty()) {
-                    List<SubTypeList> cardSubtypes = new ArrayList<>();
-                    int devouredCreatures = target.getTargets().size();
+                    List<Permanent> creaturesDevoured = new ArrayList<>();
+                    int devouredCreatures = 0;
+                    for (UUID targetId : target.getTargets()) {
+                        Permanent targetCreature = game.getPermanent(targetId);
+                        if (targetCreature != null && targetCreature.sacrifice(source, game)) {
+                            creaturesDevoured.add(targetCreature);
+                            devouredCreatures++;
+                        }
+                    }
                     if (!game.isSimulation()) {
                         game.informPlayers(creature.getLogName() + " devours " + devouredCreatures + " creatures");
                     }
-                    for (UUID targetId : target.getTargets()) {
-                        Permanent targetCreature = game.getPermanent(targetId);
-                        if (targetCreature != null) {
-                            cardSubtypes.add(targetCreature.getSubtype(game));
-                        }
-                        if (targetCreature == null || !targetCreature.sacrifice(source.getSourceId(), game)) {
-                            return false;
-                        }
-                    }
+                    game.getState().processAction(game); // need for multistep effects
+
                     int amountCounters;
                     if (devourFactor == DevourFactor.DevourX) {
                         amountCounters = devouredCreatures * devouredCreatures;
                     } else {
                         amountCounters = devouredCreatures * devourFactor.getFactor();
                     }
-                    creature.addCounters(CounterType.P1P1.createInstance(amountCounters), source, game);
-                    game.getState().setValue(creature.getId().toString() + "devoured", cardSubtypes);
+                    creature.addCounters(CounterType.P1P1.createInstance(amountCounters), source.getControllerId(), source, game);
+                    game.getState().setValue(creature.getId().toString() + "devoured", creaturesDevoured);
                 }
 
             }
@@ -124,10 +123,10 @@ public class DevourEffect extends ReplacementEffectImpl {
         return sb.toString();
     }
 
-    public List<SubTypeList> getSubtypes(Game game, UUID permanentId) {
+    public List<Permanent> getDevouredCreatures(Game game, UUID permanentId) {
         Object object = game.getState().getValue(permanentId.toString() + "devoured");
         if (object != null) {
-            return (List<SubTypeList>) object;
+            return (List<Permanent>) object;
         }
         return Collections.emptyList();
     }
@@ -135,7 +134,7 @@ public class DevourEffect extends ReplacementEffectImpl {
     public int getDevouredCreaturesAmount(Game game, UUID permanentId) {
         Object object = game.getState().getValue(permanentId.toString() + "devoured");
         if (object != null) {
-            return ((List<SubTypeList>) object).size();
+            return ((List<Permanent>) object).size();
         }
         return 0;
     }

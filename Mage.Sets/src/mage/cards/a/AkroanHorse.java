@@ -17,7 +17,6 @@ import mage.constants.*;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.SoldierToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.Target;
@@ -44,7 +43,7 @@ public final class AkroanHorse extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new AkroanHorseCreateTokenEffect(), TargetController.YOU, false));
     }
 
-    public AkroanHorse(final AkroanHorse card) {
+    private AkroanHorse(final AkroanHorse card) {
         super(card);
     }
 
@@ -113,7 +112,7 @@ class AkroanHorseGainControlEffect extends ContinuousEffectImpl {
             permanent = game.getPermanent(targetPointer.getFirst(game, source));
         }
         if (permanent != null) {
-            return permanent.changeControllerId(controller, game);
+            return permanent.changeControllerId(controller, game, source);
         }
         return false;
     }
@@ -144,7 +143,7 @@ class AkroanHorseCreateTokenEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Token token = new SoldierToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), opponentId);
+            token.putOntoBattlefield(1, game, source, opponentId);
         }
         return true;
     }

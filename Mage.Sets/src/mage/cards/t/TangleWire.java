@@ -37,7 +37,7 @@ public final class TangleWire extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new TangleWireEffect(), TargetController.ANY, false, true));
     }
 
-    public TangleWire(final TangleWire card) {
+    private TangleWire(final TangleWire card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class TangleWireEffect extends OneShotEffect {
             for (UUID uuid : target.getTargets()) {
                 Permanent selectedPermanent = game.getPermanent(uuid);
                 if ( selectedPermanent != null ) {
-                    abilityApplied |= selectedPermanent.tap(game);
+                    abilityApplied |= selectedPermanent.tap(source, game);
                 }
             }
 

@@ -2,7 +2,6 @@
 package mage.cards.h;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.ExileFromGraveCost;
@@ -16,8 +15,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterLandCard;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.ElementalCreatureToken;
 import mage.target.common.TargetCardInYourGraveyard;
 
@@ -42,7 +39,7 @@ public final class HostileDesert extends CardImpl {
         addAbility(ability);
     }
 
-    public HostileDesert(final HostileDesert card) {
+    private HostileDesert(final HostileDesert card) {
         super(card);
     }
 

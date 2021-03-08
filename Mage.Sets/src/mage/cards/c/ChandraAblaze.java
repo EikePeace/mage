@@ -1,6 +1,5 @@
 package mage.cards.c;
 
-import mage.MageObjectReference;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.LoyaltyAbility;
@@ -28,6 +27,7 @@ import mage.target.common.TargetDiscard;
 
 import java.util.Set;
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author North
@@ -57,7 +57,7 @@ public final class ChandraAblaze extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ChandraAblaze(final ChandraAblaze card) {
+    private ChandraAblaze(final ChandraAblaze card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class ChandraAblazeEffect1 extends OneShotEffect {
             player.choose(Outcome.Discard, target, source.getSourceId(), game);
             Card card = player.getHand().get(target.getFirstTarget(), game);
             if (card != null) {
-                player.discard(card, source, game);
+                player.discard(card, false, source, game);
                 source.getEffects().get(1).setValue("discardedCard", card);
                 game.getState().setValue(source.getSourceId().toString(), card);
                 return true;
@@ -123,13 +123,13 @@ class ChandraAblazeEffect2 extends OneShotEffect {
         if (card != null && card.getColor(game).isRed()) {
             Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
             if (permanent != null) {
-                permanent.damage(4, source.getSourceId(), game, false, true);
+                permanent.damage(4, source.getSourceId(), source, game, false, true);
                 return true;
             }
 
             Player player = game.getPlayer(targetPointer.getFirst(game, source));
             if (player != null) {
-                player.damage(4, source.getSourceId(), game);
+                player.damage(4, source.getSourceId(), source, game);
                 return true;
             }
         }
@@ -171,8 +171,7 @@ class ChandraAblazeEffect5 extends OneShotEffect {
                 if (player.choose(outcome, target, source.getSourceId(), game)) {
                     Card card = game.getCard(target.getFirstTarget());
                     if (card != null) {
-                        player.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
-                        player.getGraveyard().remove(card);
+                        player.cast(card.getSpellAbility(), game, true, new ApprovingObject(source, game));
                         cards.remove(card);
                     }
                 }

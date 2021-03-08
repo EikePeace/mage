@@ -19,7 +19,7 @@ import mage.game.permanent.Permanent;
 import mage.game.permanent.token.BrudicladTelchorMyrToken;
 import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 import java.util.UUID;
 
@@ -43,13 +43,13 @@ public final class BrudicladTelchorEngineer extends CardImpl {
         this.toughness = new MageInt(4);
 
         // Creature tokens you control have haste.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(HasteAbility.getInstance(), Duration.WhileOnBattlefield, filter, true)));
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(HasteAbility.getInstance(), Duration.WhileOnBattlefield, filter, false)));
 
         // At the beginning of combat on your turn, create a 2/1 blue Myr artifact creature token. Then you may choose a token you control. If you do, each other token you control becomes a copy of that token.
         this.addAbility(new BeginningOfCombatTriggeredAbility(new BrudicladTelchorEngineerEffect(), TargetController.YOU, false));
     }
 
-    public BrudicladTelchorEngineer(final BrudicladTelchorEngineer card) {
+    private BrudicladTelchorEngineer(final BrudicladTelchorEngineer card) {
         super(card);
     }
 
@@ -99,7 +99,7 @@ class BrudicladTelchorEngineerEffect extends OneShotEffect {
                 if (toCopyFromPermanent != null) {
                     for (Permanent toCopyToPermanent : game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game)) {
                         if (!toCopyToPermanent.equals(toCopyFromPermanent)) {
-                            game.copyPermanent(toCopyFromPermanent, toCopyToPermanent.getId(), source, new EmptyApplyToPermanent());
+                            game.copyPermanent(toCopyFromPermanent, toCopyToPermanent.getId(), source, new EmptyCopyApplier());
                         }
                     }
                     return true;

@@ -4,7 +4,6 @@ package mage.cards.g;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
@@ -29,7 +28,7 @@ public final class GoblinGame extends CardImpl {
 
     }
 
-    public GoblinGame(final GoblinGame card) {
+    private GoblinGame(final GoblinGame card) {
         super(card);
     }
 
@@ -80,7 +79,7 @@ class GoblinGameEffect extends OneShotEffect {
         for (Player player : game.getPlayers().values()) {
             if (player != null) {
                 game.informPlayers(player.getLogName() + " chose number " + numberChosen.get(player));
-                player.loseLife(numberChosen.get(player), game, false);
+                player.loseLife(numberChosen.get(player), game, source, false);
             }
         }
         for (Player player : game.getPlayers().values()) {
@@ -89,7 +88,7 @@ class GoblinGameEffect extends OneShotEffect {
                     game.informPlayers(player.getLogName() + " chose the lowest number");
                     Integer amount = (int) Math.ceil(player.getLife() / 2f);
                     if (amount > 0) {
-                        player.loseLife(amount, game, false);
+                        player.loseLife(amount, game, source, false);
                     }
                 }
             }

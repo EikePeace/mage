@@ -6,8 +6,8 @@ import mage.client.cards.CardEventSource;
 import mage.client.cards.ICardGrid;
 import mage.client.deckeditor.SortSetting;
 import mage.client.plugins.impl.Plugins;
-import mage.client.util.ClientEventType;
 import mage.client.util.ClientDefaultSettings;
+import mage.client.util.ClientEventType;
 import mage.client.util.Event;
 import mage.client.util.Listener;
 import mage.client.util.gui.GuiDisplayUtil;
@@ -68,6 +68,17 @@ public class TableModel extends AbstractTableModel implements ICardGrid {
     public void clear() {
         this.clearCardEventListeners();
         this.clearCards();
+        this.view.clear();
+    }
+
+    @Override
+    public Object getCardsStore() {
+        return this.cards;
+    }
+
+    @Override
+    public void clearCardsStoreBeforeUpdate() {
+        this.cards.clear();
         this.view.clear();
     }
 
@@ -215,7 +226,7 @@ public class TableModel extends AbstractTableModel implements ICardGrid {
                 return c.getDisplayFullName(); // show full name in deck editor table, e.g. adventure with spell name
             case 2:
                 // new svg images version
-                return ManaSymbols.getStringManaCost(c.getManaCost());
+                return ManaSymbols.getClearManaCost(c.getManaCostStr());
                 /*
                 // old html images version
                 String manaCost = "";
@@ -235,7 +246,7 @@ public class TableModel extends AbstractTableModel implements ICardGrid {
                 return c.isCreature() ? c.getPower() + '/'
                         + c.getToughness() : "-";
             case 6:
-                return c.getRarity().toString();
+                return c.getRarity() == null ? "" : c.getRarity().toString();
             case 7:
                 return c.getExpansionSetCode();
             case 8:
@@ -293,22 +304,17 @@ public class TableModel extends AbstractTableModel implements ICardGrid {
         cardEventSource.fireEvent(card, ClientEventType.SET_NUMBER, number);
     }
 
-    public void doubleClick(int index) {
+    public void doubleClick(int index, MouseEvent e, boolean forceFakeAltDown) {
         CardView card = view.get(index);
-        cardEventSource.fireEvent(card, ClientEventType.DOUBLE_CLICK);
-    }
-
-    public void altDoubleClick(int index) {
-        CardView card = view.get(index);
-        cardEventSource.fireEvent(card, ClientEventType.ALT_DOUBLE_CLICK);
+        cardEventSource.fireEvent(card, ClientEventType.CARD_DOUBLE_CLICK, e, forceFakeAltDown);
     }
 
     public void removeFromMainEvent(int index) {
-        cardEventSource.fireEvent(ClientEventType.REMOVE_MAIN);
+        cardEventSource.fireEvent(ClientEventType.DECK_REMOVE_SELECTION_MAIN);
     }
 
     public void removeFromSideEvent(int index) {
-        cardEventSource.fireEvent(ClientEventType.REMOVE_SIDEBOARD);
+        cardEventSource.fireEvent(ClientEventType.DECK_REMOVE_SELECTION_SIDEBOARD);
     }
 
     public void addListeners(final JTable table) {

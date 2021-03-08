@@ -40,7 +40,7 @@ public final class KnollspineDragon extends CardImpl {
 
     }
 
-    public KnollspineDragon(final KnollspineDragon card) {
+    private KnollspineDragon(final KnollspineDragon card) {
         super(card);
     }
 
@@ -71,12 +71,11 @@ class KnollspineDragonEffect extends OneShotEffect {
                 AmountOfDamageAPlayerReceivedThisTurnWatcher watcher = game.getState().getWatcher(AmountOfDamageAPlayerReceivedThisTurnWatcher.class);
                 if (watcher != null) {
                     int drawAmount = watcher.getAmountOfDamageReceivedThisTurn(targetOpponent.getId());
-                    controller.drawCards(drawAmount, game);
-                    game.informPlayers(controller.getLogName() + "draws " + drawAmount + " cards");
+                    controller.drawCards(drawAmount, source, game);
                     return true;
                 }
             }
-            game.informPlayers(controller.getLogName() + "drew no cards");
+            game.informPlayers(controller.getLogName() + " drew no cards");
             return true;
         }
         return false;

@@ -26,7 +26,7 @@ public final class MadcapExperiment extends CardImpl {
         this.getSpellAbility().addEffect(new MadcapExperimentEffect());
     }
 
-    public MadcapExperiment(final MadcapExperiment card) {
+    private MadcapExperiment(final MadcapExperiment card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class MadcapExperimentEffect extends OneShotEffect {
             int damage = toReveal.size();
             toReveal.remove(toBattlefield);
             controller.putCardsOnBottomOfLibrary(toReveal, game, source, false);
-            controller.damage(damage, source.getSourceId(), game);
+            controller.damage(damage, source.getSourceId(), source, game);
 
             return true;
         }

@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.keyword;
 
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.condition.common.SourceHasCounterCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.dynamicvalue.common.StaticValue;
@@ -30,7 +25,7 @@ import mage.game.events.GameEvent;
  *
  * @author Styxo
  */
-public class RepairAbility extends DiesTriggeredAbility {
+public class RepairAbility extends DiesSourceTriggeredAbility {
 
     private String ruleText;
 

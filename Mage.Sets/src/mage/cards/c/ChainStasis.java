@@ -36,7 +36,7 @@ public final class ChainStasis extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public ChainStasis(final ChainStasis card) {
+    private ChainStasis(final ChainStasis card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class ChainStasisEffect extends OneShotEffect {
                 return false;
             }
             Cost cost = new ManaCostsImpl("{2}{U}");
-            if (cost.pay(source, game, player.getId(), controller.getId(), false)) {
+            if (cost.pay(source, game, source, controller.getId(), false)) {
                 if (player.chooseUse(outcome, "Copy the spell?", source, game)) {
                     Spell spell = game.getStack().getSpell(source.getSourceId());
                     if (spell != null) {

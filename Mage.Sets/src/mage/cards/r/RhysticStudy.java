@@ -30,7 +30,7 @@ public final class RhysticStudy extends CardImpl {
         this.addAbility(new SpellCastOpponentTriggeredAbility(Zone.BATTLEFIELD, new RhysticStudyDrawEffect(), StaticFilters.FILTER_SPELL, false, SetTargetPointer.PLAYER));
     }
 
-    public RhysticStudy(final RhysticStudy card) {
+    private RhysticStudy(final RhysticStudy card) {
         super(card);
     }
 
@@ -66,10 +66,10 @@ class RhysticStudyDrawEffect extends OneShotEffect {
                 Cost cost = ManaUtil.createManaCost(1, false);
                 String message = "Would you like to pay {1} to prevent the opponent to draw a card?";
                 if (opponent.chooseUse(Outcome.Benefit, message, source, game)
-                        && cost.pay(source, game, source.getSourceId(), opponent.getId(), false, null)) {
+                        && cost.pay(source, game, source, opponent.getId(), false, null)) {
                     return true;
                 }
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
             }
             return true;
         }

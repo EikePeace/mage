@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import static mage.filter.StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
@@ -49,7 +49,7 @@ public final class DroolingGroodion extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DroolingGroodion(final DroolingGroodion card) {
+    private DroolingGroodion(final DroolingGroodion card) {
         super(card);
     }
 

@@ -29,7 +29,7 @@ public final class CrystalRod extends CardImpl {
         this.addAbility(new CrystalRodAbility());
     }
 
-    public CrystalRod(final CrystalRod card) {
+    private CrystalRod(final CrystalRod card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class CrystalRodAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

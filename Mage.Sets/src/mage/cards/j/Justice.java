@@ -40,7 +40,7 @@ public final class Justice extends CardImpl {
         this.addAbility(new JusticeTriggeredAbility(new JusticeEffect()));
     }
 
-    public Justice(final Justice card) {
+    private Justice(final Justice card) {
         super(card);
     }
 
@@ -67,9 +67,8 @@ class JusticeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE
-                || event.getType() == EventType.DAMAGED_PLAYER
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -114,7 +113,7 @@ class JusticeEffect extends OneShotEffect {
         if (damageAmount != null && targetId != null) {
             Player player = game.getPlayer(targetId);
             if (player != null) {
-                player.damage(damageAmount, targetId, game);
+                player.damage(damageAmount, targetId, source, game);
                 return true;
             }
         }

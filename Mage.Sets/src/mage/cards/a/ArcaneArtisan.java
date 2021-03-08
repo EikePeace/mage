@@ -30,6 +30,7 @@ import mage.util.CardUtil;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import mage.cards.CardsImpl;
 
 /**
  * @author TheElk801
@@ -57,7 +58,7 @@ public final class ArcaneArtisan extends CardImpl {
         this.addAbility(new ArcaneArtisanLeavesBattlefieldTriggeredAbility());
     }
 
-    public ArcaneArtisan(final ArcaneArtisan card) {
+    private ArcaneArtisan(final ArcaneArtisan card) {
         super(card);
     }
 
@@ -90,7 +91,7 @@ class ArcaneArtisanCreateTokenEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        player.drawCards(1, game);
+        player.drawCards(1, source, game);
         TargetCard target = new TargetCardInHand(1, StaticFilters.FILTER_CARD);
         if (!player.chooseTarget(Outcome.Exile, player.getHand(), target, source, game)) {
             return false;
@@ -143,7 +144,7 @@ class ArcaneArtisanLeavesBattlefieldTriggeredAbility extends ZoneChangeTriggered
 
     @Override
     public String getRule() {
-        return "When {this} leaves the battlefield, exile all tokens created with it at the beginning of the next end step";
+        return "When {this} leaves the battlefield, exile all tokens created with it at the beginning of the next end step.";
     }
 }
 
@@ -167,12 +168,10 @@ class ArcaneArtisanExileEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Object object = game.getState().getValue(CardUtil.getCardZoneString("_tokensCreated", source.getSourceId(), game, true));
         if (object != null) {
-            Set<UUID> tokensCreated = (Set<UUID>) object;
-            for (UUID tokenId : tokensCreated) {
-                Permanent token = game.getPermanent(tokenId);
-                if (token != null) {
-                    token.destroy(source.getSourceId(), game, true);
-                }
+            Player controller = game.getPlayer(source.getControllerId());
+            if (controller != null) {
+                controller.moveCards(new CardsImpl((Set<UUID>) object), Zone.EXILED, source, game);
+                return true;
             }
         }
         return true;

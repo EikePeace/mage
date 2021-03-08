@@ -15,7 +15,6 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetCard;
-import mage.target.targetpointer.FixedTarget;
 
 /**
  *
@@ -40,7 +39,7 @@ public final class CreamOfTheCrop extends CardImpl {
                 + "your library in any order"));
     }
 
-    public CreamOfTheCrop(final CreamOfTheCrop card) {
+    private CreamOfTheCrop(final CreamOfTheCrop card) {
         super(card);
     }
 
@@ -72,7 +71,7 @@ class CreamOfTheCropEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent permanent = ((FixedTarget) getTargetPointer()).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && permanent != null) {
             Cards cards = new CardsImpl(controller.getLibrary().getTopCards(game, permanent.getPower().getValue()));
             if (!cards.isEmpty()) {

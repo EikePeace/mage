@@ -22,7 +22,7 @@ public final class UniversalAutomaton extends CardImpl {
         this.toughness = new MageInt(1);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
     }
 
     private UniversalAutomaton(final UniversalAutomaton card) {

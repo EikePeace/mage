@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -35,7 +34,7 @@ public final class ScaleBlessing extends CardImpl {
 
     }
 
-    public ScaleBlessing(final ScaleBlessing card) {
+    private ScaleBlessing(final ScaleBlessing card) {
         super(card);
     }
 
@@ -50,7 +49,7 @@ class ScaleBlessingEffect extends OneShotEffect {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent();
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public ScaleBlessingEffect() {
@@ -73,7 +72,7 @@ class ScaleBlessingEffect extends OneShotEffect {
         MageObject sourceObject = source.getSourceObject(game);
         if (controller != null && sourceObject != null) {
             for (Permanent permanent : game.getState().getBattlefield().getAllActivePermanents(filter, controller.getId(), game)) {
-                permanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 game.informPlayers(sourceObject.getName() + ": Put a +1/+1 counter on " + permanent.getLogName());
             }
         }

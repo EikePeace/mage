@@ -18,7 +18,6 @@ import mage.constants.Outcome;
 import mage.constants.WatcherScope;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -103,7 +102,7 @@ class AureliasFuryEffect extends OneShotEffect {
             for (UUID creatureId : watcher.getDamagedCreatures()) {
                 Permanent permanent = game.getPermanent(creatureId);
                 if (permanent != null) {
-                    permanent.tap(game);
+                    permanent.tap(source, game);
                 }
             }
             for (UUID playerId : watcher.getDamagedPlayers()) {
@@ -177,21 +176,19 @@ class AureliasFuryDamagedByWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.DAMAGED_CREATURE) {
-            MageObject obj = game.getObject(event.getSourceId());
-            if (obj instanceof Spell) {
-                if (sourceId.equals(((Spell) obj).getSourceId())) {
+        MageObject obj = game.getObject(event.getSourceId());
+        if (!(obj instanceof Spell) || !sourceId.equals(((Spell) obj).getSourceId())) {
+            return;
+        }
+        switch (event.getType()) {
+            case DAMAGED_PERMANENT:
+                Permanent permanent = game.getPermanent(event.getTargetId());
+                if (permanent != null && permanent.isCreature()) {
                     damagedCreatures.add(event.getTargetId());
                 }
-            }
-        }
-        if (event.getType() == EventType.DAMAGED_PLAYER) {
-            MageObject obj = game.getObject(event.getSourceId());
-            if (obj instanceof Spell) {
-                if (sourceId.equals(((Spell) obj).getSourceId())) {
-                    damagedPlayers.add(event.getTargetId());
-                }
-            }
+                return;
+            case DAMAGED_PLAYER:
+                damagedPlayers.add(event.getTargetId());
         }
     }
 

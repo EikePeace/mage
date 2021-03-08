@@ -1,7 +1,5 @@
-
 package mage.cards.g;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -10,29 +8,22 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
-import mage.constants.TargetController;
+import mage.constants.SubType;
 import mage.constants.Zone;
-import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
-import mage.target.common.TargetCreaturePermanent;
+import mage.target.common.TargetOpponentsCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
+import mage.util.GameLog;
+
+import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class GruulRagebeast extends CardImpl {
-
-    private static final FilterCreaturePermanent filter2 = new FilterCreaturePermanent("creature an opponent controls");
-
-    static {
-        filter2.add(TargetController.OPPONENT.getControllerPredicate());
-    }
 
     public GruulRagebeast(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{5}{R}{G}");
@@ -42,13 +33,10 @@ public final class GruulRagebeast extends CardImpl {
         this.toughness = new MageInt(6);
 
         // Whenever Gruul Ragebeast or another creature enters the battlefield under your control, that creature fights target creature an opponent controls.
-        Ability ability = new GruulRagebeastTriggeredAbility();
-
-        ability.addTarget(new TargetCreaturePermanent(filter2));
-        this.addAbility(ability);
+        this.addAbility(new GruulRagebeastTriggeredAbility());
     }
 
-    public GruulRagebeast(final GruulRagebeast card) {
+    private GruulRagebeast(final GruulRagebeast card) {
         super(card);
     }
 
@@ -62,9 +50,10 @@ class GruulRagebeastTriggeredAbility extends TriggeredAbilityImpl {
 
     GruulRagebeastTriggeredAbility() {
         super(Zone.BATTLEFIELD, new GruulRagebeastEffect(), false);
+        this.addTarget(new TargetOpponentsCreaturePermanent().withChooseHint("for fighting"));
     }
 
-    GruulRagebeastTriggeredAbility(final GruulRagebeastTriggeredAbility ability) {
+    private GruulRagebeastTriggeredAbility(final GruulRagebeastTriggeredAbility ability) {
         super(ability);
     }
 
@@ -75,19 +64,25 @@ class GruulRagebeastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         UUID targetId = event.getTargetId();
         Permanent permanent = game.getPermanent(targetId);
-        if (permanent.isControlledBy(this.controllerId)
-                && permanent.isCreature()
-                && (targetId.equals(this.getSourceId())
-                || !targetId.equals(this.getSourceId()))) {
+        Permanent sourceObject = game.getPermanent(this.getSourceId());
+        if (sourceObject != null
+                && permanent != null
+                && permanent.isControlledBy(this.getControllerId())
+                && permanent.isCreature()) {
             for (Effect effect : this.getEffects()) {
-                effect.setTargetPointer(new FixedTarget(event.getTargetId()));
+                if (effect instanceof GruulRagebeastEffect) {
+                    effect.setTargetPointer(
+                            new FixedTarget(event.getTargetId())
+                                    .withData("triggeredName", GameLog.getColoredObjectIdNameForTooltip(sourceObject))
+                    );
+                }
             }
             return true;
         }
@@ -96,7 +91,13 @@ class GruulRagebeastTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever {this} or another creature enters the battlefield under your control, that creature fights target creature an opponent controls.";
+        // that triggers depends on stack order, so make each trigger unique with extra info
+        String triggeredInfo = "";
+        if (this.getEffects().get(0).getTargetPointer() != null) {
+            triggeredInfo = " Your fighting creature: " + this.getEffects().get(0).getTargetPointer().getData("triggeredName") + ".";
+        }
+        return "Whenever {this} or another creature enters the battlefield under your control, "
+                + "that creature fights target creature an opponent controls." + triggeredInfo;
     }
 }
 
@@ -106,13 +107,13 @@ class GruulRagebeastEffect extends OneShotEffect {
         super(Outcome.Damage);
     }
 
-    GruulRagebeastEffect(final GruulRagebeastEffect effect) {
+    private GruulRagebeastEffect(final GruulRagebeastEffect effect) {
         super(effect);
     }
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent triggeredCreature = game.getPermanent(targetPointer.getFirst(game, source));
+        Permanent triggeredCreature = game.getPermanent(this.targetPointer.getFirst(game, source));
         Permanent target = game.getPermanent(source.getFirstTarget());
         if (triggeredCreature != null
                 && target != null

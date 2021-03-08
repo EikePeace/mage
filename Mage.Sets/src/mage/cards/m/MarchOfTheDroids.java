@@ -37,7 +37,7 @@ public final class MarchOfTheDroids extends CardImpl {
         this.getSpellAbility().addEffect(new CreateTokenEffect(new DroidToken(), new PermanentsOnBattlefieldCount(new FilterPermanent(SubType.DROID, "Droid you control"))));
     }
 
-    public MarchOfTheDroids(final MarchOfTheDroids card) {
+    private MarchOfTheDroids(final MarchOfTheDroids card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class MarchOfTheDroidsEffect extends OneShotEffect {
                     int number = card.getCounters(game).getCount(CounterType.REPAIR);
                     if (number > 0) {
                         cardsToReturn.add(card);
-                        card.removeCounters(CounterType.REPAIR.createInstance(number), game);
+                        card.removeCounters(CounterType.REPAIR.createInstance(number), source, game);
                     }
                 }
             }

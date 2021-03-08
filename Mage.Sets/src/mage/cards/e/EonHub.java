@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.e;
 
 import java.util.UUID;
@@ -33,7 +28,7 @@ public final class EonHub extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SkipUpkeepStepEffect()));
     }
     
-    public EonHub(final EonHub card) {
+    private EonHub(final EonHub card) {
         super(card);
     }
     
@@ -62,7 +57,7 @@ class SkipUpkeepStepEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP;
     }
     
     @Override

@@ -1,7 +1,5 @@
-
 package mage.cards.t;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -15,9 +13,8 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.Zone;
-import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.permanent.CounterAnyPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
@@ -25,23 +22,24 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801, jeffwadsworth
  */
 public final class TogetherForever extends CardImpl {
 
-    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature with a counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterAnyPredicate.instance);
     }
 
     public TogetherForever(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{W}{W}");
 
-        // When Together Forever enters the battlefield, support 2. (Put a +1/+1 counter on each of up to two other target creatures.)
-        this.addAbility(new SupportAbility(this, 2));
+        // When Together Forever enters the battlefield, support 2. (Put a +1/+1 counter on each of up to two target creatures.)
+        this.addAbility(new SupportAbility(this, 2, false));
 
         // {1}: Choose target creature with a counter on it. When that creature dies this turn, return that card to its owner's hand.
         Ability ability = new SimpleActivatedAbility(new TogetherForeverEffect(), new GenericManaCost(1));
@@ -49,7 +47,7 @@ public final class TogetherForever extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TogetherForever(final TogetherForever card) {
+    private TogetherForever(final TogetherForever card) {
         super(card);
     }
 

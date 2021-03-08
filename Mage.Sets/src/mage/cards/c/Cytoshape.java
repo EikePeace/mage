@@ -16,7 +16,7 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class Cytoshape extends CardImpl {
 
     }
 
-    public Cytoshape(final Cytoshape card) {
+    private Cytoshape(final Cytoshape card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class CytoshapeEffect extends OneShotEffect {
         if (copyFrom != null) {
             Permanent copyTo = game.getPermanentOrLKIBattlefield(ability.getTargets().get(1).getFirstTarget());
             if (copyTo != null) {
-                game.copyPermanent(Duration.EndOfTurn, copyFrom, copyTo.getId(), ability, new EmptyApplyToPermanent());
+                game.copyPermanent(Duration.EndOfTurn, copyFrom, copyTo.getId(), ability, new EmptyCopyApplier());
             }
         }
         return true;

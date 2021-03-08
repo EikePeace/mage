@@ -39,7 +39,7 @@ public final class HellholeRats extends CardImpl {
 
     }
 
-    public HellholeRats(final HellholeRats card) {
+    private HellholeRats(final HellholeRats card) {
         super(card);
     }
 
@@ -70,12 +70,12 @@ class HellholeRatsEffect extends OneShotEffect {
         int damage = 0;
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            Cards cards = targetPlayer.discard(1, false, source, game);
+            Cards cards = targetPlayer.discard(1, false, false, source, game);
             if (!cards.isEmpty()) {
                 for (Card card : cards.getCards(game)) {
                     damage = card.getConvertedManaCost();
                 }
-                targetPlayer.damage(damage, source.getSourceId(), game);
+                targetPlayer.damage(damage, source.getSourceId(), source, game);
             }
             return true;
         }

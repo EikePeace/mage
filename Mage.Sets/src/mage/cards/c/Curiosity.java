@@ -42,7 +42,7 @@ public final class Curiosity extends CardImpl {
         this.addAbility(new CuriosityAbility());
     }
 
-    public Curiosity(final Curiosity card) {
+    private Curiosity(final Curiosity card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class CuriosityAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

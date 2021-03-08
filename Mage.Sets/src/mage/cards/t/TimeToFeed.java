@@ -62,7 +62,7 @@ public final class TimeToFeed extends CardImpl {
         
     }
 
-    public TimeToFeed(final TimeToFeed card) {
+    private TimeToFeed(final TimeToFeed card) {
         super(card);
     }
 
@@ -102,8 +102,8 @@ class TimeToFeedTextEffect extends OneShotEffect {
 
 class TimeToFeedDiesTriggeredAbility extends DelayedTriggeredAbility {
 
-    private UUID watchedCreatureId;
-    private int zoneChangeCounter;
+    private final UUID watchedCreatureId;
+    private final int zoneChangeCounter;
 
     public TimeToFeedDiesTriggeredAbility(UUID watchedCreatureId, int zoneChangeCounter) {
         super(new GainLifeEffect(3), Duration.EndOfTurn, false);
@@ -124,7 +124,7 @@ class TimeToFeedDiesTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

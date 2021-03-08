@@ -27,7 +27,7 @@ public final class WrackWithMadness extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public WrackWithMadness(final WrackWithMadness card) {
+    private WrackWithMadness(final WrackWithMadness card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class WrackWithMadnessEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
         if (permanent != null) {
-            permanent.damage(permanent.getPower().getValue(), permanent.getId(), game, false, true);
+            permanent.damage(permanent.getPower().getValue(), permanent.getId(), source, game, false, true);
             return true;
         }
         return false;

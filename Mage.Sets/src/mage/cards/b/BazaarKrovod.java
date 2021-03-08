@@ -14,7 +14,7 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetAttackingCreature;
@@ -44,7 +44,7 @@ public final class BazaarKrovod extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BazaarKrovod(final BazaarKrovod card) {
+    private BazaarKrovod(final BazaarKrovod card) {
         super(card);
     }
 

@@ -1,4 +1,3 @@
-
 /*
  *  Copyright 2010 BetaSteward_at_googlemail.com. All rights reserved.
  *
@@ -71,7 +70,7 @@ public class KeeperOfTheMind extends CardImpl {
         this.addAbility(ability);
     }
 
-    public KeeperOfTheMind(final KeeperOfTheMind card) {
+    private KeeperOfTheMind(final KeeperOfTheMind card) {
         super(card);
     }
 

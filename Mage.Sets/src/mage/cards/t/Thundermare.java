@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class Thundermare extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new TapAllEffect(filter)));
     }
 
-    public Thundermare(final Thundermare card) {
+    private Thundermare(final Thundermare card) {
         super(card);
     }
 

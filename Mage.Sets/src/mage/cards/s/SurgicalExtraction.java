@@ -5,7 +5,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.cards.SplitCard;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SuperType;
@@ -15,12 +14,13 @@ import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.NamePredicate;
 import mage.game.Game;
 import mage.players.Player;
+import mage.target.TargetCard;
 import mage.target.common.TargetCardInGraveyard;
 import mage.target.common.TargetCardInLibrary;
+import mage.util.CardUtil;
 
 import java.util.List;
 import java.util.UUID;
-import mage.target.TargetCard;
 
 /**
  * @author North
@@ -43,7 +43,7 @@ public final class SurgicalExtraction extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInGraveyard(filter));
     }
 
-    public SurgicalExtraction(final SurgicalExtraction card) {
+    private SurgicalExtraction(final SurgicalExtraction card) {
         super(card);
     }
 
@@ -56,8 +56,10 @@ public final class SurgicalExtraction extends CardImpl {
 class SurgicalExtractionEffect extends OneShotEffect {
 
     public SurgicalExtractionEffect() {
-        super(Outcome.Exile);
-        this.staticText = "Choose target card in a graveyard other than a basic land card. Search its owner's graveyard, hand, and library for any number of cards with the same name as that card and exile them. Then that player shuffles their library";
+        super(Outcome.Detriment);
+        this.staticText = "Choose target card in a graveyard other than a basic land card. "
+                + "Search its owner's graveyard, hand, and library for any number of cards "
+                + "with the same name as that card and exile them. Then that player shuffles their library";
     }
 
     public SurgicalExtractionEffect(final SurgicalExtractionEffect effect) {
@@ -80,21 +82,23 @@ class SurgicalExtractionEffect extends OneShotEffect {
         if (chosenCard != null && controller != null) {
             Player owner = game.getPlayer(chosenCard.getOwnerId());
             if (owner != null) {
-                String nameToSearch = chosenCard.isSplitCard() ? ((SplitCard) chosenCard).getLeftHalfCard().getName() : chosenCard.getName();
+                String nameToSearch = CardUtil.getCardNameForSameNameSearch(chosenCard);
                 FilterCard filterNamedCard = new FilterCard("card named " + nameToSearch);
                 filterNamedCard.add(new NamePredicate(nameToSearch));
 
                 // cards in Graveyard
                 int cardsCount = owner.getGraveyard().count(filterNamedCard, game);
                 if (cardsCount > 0) {
-                    filterNamedCard.setMessage("card named " + nameToSearch + " in the graveyard of " + owner.getName());
+                    filterNamedCard.setMessage("card named " + nameToSearch
+                            + " in the graveyard of " + owner.getName());
                     TargetCardInGraveyard target = new TargetCardInGraveyard(0, cardsCount, filterNamedCard);
                     if (controller.chooseTarget(Outcome.Exile, owner.getGraveyard(), target, source, game)) {
                         List<UUID> targets = target.getTargets();
                         for (UUID targetId : targets) {
                             Card targetCard = owner.getGraveyard().get(targetId, game);
                             if (targetCard != null) {
-                                controller.moveCardToExileWithInfo(targetCard, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                                controller.moveCardToExileWithInfo(targetCard, null,
+                                        "", source, game, Zone.GRAVEYARD, true);
                             }
                         }
                     }
@@ -109,7 +113,7 @@ class SurgicalExtractionEffect extends OneShotEffect {
                     for (UUID targetId : targets) {
                         Card targetCard = owner.getHand().get(targetId, game);
                         if (targetCard != null) {
-                            controller.moveCardToExileWithInfo(targetCard, null, "", source.getSourceId(), game, Zone.HAND, true);
+                            controller.moveCardToExileWithInfo(targetCard, null, "", source, game, Zone.HAND, true);
                         }
                     }
                 }
@@ -122,7 +126,7 @@ class SurgicalExtractionEffect extends OneShotEffect {
                     for (UUID targetId : targets) {
                         Card targetCard = owner.getLibrary().getCard(targetId, game);
                         if (targetCard != null) {
-                            controller.moveCardToExileWithInfo(targetCard, null, "", source.getSourceId(), game, Zone.LIBRARY, true);
+                            controller.moveCardToExileWithInfo(targetCard, null, "", source, game, Zone.LIBRARY, true);
                         }
                     }
                 }

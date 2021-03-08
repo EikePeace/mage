@@ -37,7 +37,7 @@ public final class SamuraiOfThePaleCurtain extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SamuraiOfThePaleCurtainEffect()));
     }
 
-    public SamuraiOfThePaleCurtain(final SamuraiOfThePaleCurtain card) {
+    private SamuraiOfThePaleCurtain(final SamuraiOfThePaleCurtain card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class SamuraiOfThePaleCurtainEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

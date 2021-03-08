@@ -8,8 +8,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
-import mage.filter.common.FilterControlledLandPermanent;
 import mage.target.common.TargetCardInLibrary;
 import mage.target.common.TargetControlledPermanent;
 
@@ -27,11 +25,11 @@ public final class Harrow extends CardImpl {
         this.getSpellAbility().addCost(new SacrificeTargetCost(new TargetControlledPermanent(StaticFilters.FILTER_CONTROLLED_LAND_SHORT_TEXT)));
 
         // Search your library for up to two basic land cards and put them onto the battlefield. Then shuffle your library.
-        TargetCardInLibrary target = new TargetCardInLibrary(0, 2, StaticFilters.FILTER_CARD_BASIC_LAND);
+        TargetCardInLibrary target = new TargetCardInLibrary(0, 2, StaticFilters.FILTER_CARD_BASIC_LANDS);
         this.getSpellAbility().addEffect(new SearchLibraryPutInPlayEffect(target, false, Outcome.PutLandInPlay));
     }
 
-    public Harrow(final Harrow card) {
+    private Harrow(final Harrow card) {
         super(card);
     }
 

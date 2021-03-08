@@ -29,7 +29,7 @@ public final class SurvivalCache extends CardImpl {
         this.addAbility(new ReboundAbility());
     }
 
-    public SurvivalCache(final SurvivalCache card) {
+    private SurvivalCache(final SurvivalCache card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class SurvivalCacheEffect extends OneShotEffect {
                 }
             }
             if (haveMoreLife)
-                sourcePlayer.drawCards(1, game);
+                sourcePlayer.drawCards(1, source, game);
         }
         return false;
     }

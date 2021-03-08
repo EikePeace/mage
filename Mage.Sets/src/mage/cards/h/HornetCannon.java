@@ -17,7 +17,6 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.HornetToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.target.targetpointer.FixedTarget;
 
@@ -36,7 +35,7 @@ public final class HornetCannon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public HornetCannon(final HornetCannon card) {
+    private HornetCannon(final HornetCannon card) {
         super(card);
     }
 
@@ -65,7 +64,7 @@ class HornetCannonEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Token hornetToken = new HornetToken();
-        hornetToken.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        hornetToken.putOntoBattlefield(1, game, source, source.getControllerId());
         for (UUID tokenId : hornetToken.getLastAddedTokenIds()) {
             Permanent tokenPermanent = game.getPermanent(tokenId);
             if (tokenPermanent != null) {

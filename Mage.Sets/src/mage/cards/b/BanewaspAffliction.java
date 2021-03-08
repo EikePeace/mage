@@ -41,7 +41,7 @@ public final class BanewaspAffliction extends CardImpl {
         this.addAbility( new DiesAttachedTriggeredAbility(new BanewaspAfflictionLoseLifeEffect(), "enchanted creature"));
     }
 
-    public BanewaspAffliction(final BanewaspAffliction card) {
+    private BanewaspAffliction(final BanewaspAffliction card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class BanewaspAfflictionLoseLifeEffect extends OneShotEffect {
         if(creature != null){
             Player player = game.getPlayer(creature.getOwnerId());
             if (player != null) {
-                player.loseLife(creature.getToughness().getValue(), game, false);
+                player.loseLife(creature.getToughness().getValue(), game, source, false);
                 return true;
             }
         }

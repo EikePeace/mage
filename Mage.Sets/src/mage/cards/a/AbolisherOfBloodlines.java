@@ -42,7 +42,7 @@ public final class AbolisherOfBloodlines extends CardImpl {
         this.addAbility(new AbolisherOfBloodlinesAbility());
     }
 
-    public AbolisherOfBloodlines(final AbolisherOfBloodlines card) {
+    private AbolisherOfBloodlines(final AbolisherOfBloodlines card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class AbolisherOfBloodlinesAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TRANSFORMED;
+        return event.getType() == GameEvent.EventType.TRANSFORMED;
     }
 
     @Override

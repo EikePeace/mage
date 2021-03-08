@@ -13,7 +13,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -24,7 +23,7 @@ public final class InspiringCall extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("creature you control with a +1/+1 counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public InspiringCall(UUID ownerId, CardSetInfo setInfo) {
@@ -33,11 +32,11 @@ public final class InspiringCall extends CardImpl {
         // Draw a card for each creature you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn. <i>(Damage and effects that say "destroy" don't destroy them.)
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(new PermanentsOnBattlefieldCount(filter)));
         Effect effect = new GainAbilityControlledEffect(IndestructibleAbility.getInstance(), Duration.EndOfTurn, filter);
-        effect.setText("Those creatures gain indestructible until end of turn. <i>(Damage and effects that say \"destroy\" don't destroy them.)");
+        effect.setText("Those creatures gain indestructible until end of turn. <i>(Damage and effects that say \"destroy\" don't destroy them.)</i>");
         this.getSpellAbility().addEffect(effect);
     }
 
-    public InspiringCall(final InspiringCall card) {
+    private InspiringCall(final InspiringCall card) {
         super(card);
     }
 

@@ -40,7 +40,7 @@ public final class GahijiHonoredOne extends CardImpl {
 
     }
 
-    public GahijiHonoredOne(final GahijiHonoredOne card) {
+    private GahijiHonoredOne(final GahijiHonoredOne card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class GahijiHonoredOneTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

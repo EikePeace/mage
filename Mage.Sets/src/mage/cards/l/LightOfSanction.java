@@ -30,7 +30,7 @@ public final class LightOfSanction extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new LightOfSanctionEffect()));
     }
 
-    public LightOfSanction(final LightOfSanction card) {
+    private LightOfSanction(final LightOfSanction card) {
         super(card);
     }
 
@@ -54,9 +54,9 @@ class LightOfSanctionEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGE_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.isControlledBy(source.getControllerId())) {
+            if (permanent != null && permanent.isCreature() && permanent.isControlledBy(source.getControllerId())) {
                 MageObject damageSource = game.getObject(event.getSourceId());
                 if (damageSource instanceof Controllable) {
                     return ((Controllable) damageSource).isControlledBy(source.getControllerId());

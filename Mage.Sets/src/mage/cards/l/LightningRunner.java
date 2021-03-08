@@ -48,7 +48,7 @@ public final class LightningRunner extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new LightningRunnerEffect(), false));
     }
 
-    public LightningRunner(final LightningRunner card) {
+    private LightningRunner(final LightningRunner card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class LightningRunnerEffect extends OneShotEffect {
                         "Pay {E}{E}{E}{E}{E}{E}{E}{E} to use this? ",
                         "Untap all creatures you control and after this phase, there is an additional combat phase.",
                         "Yes", "No", source, game)
-                        && cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
+                        && cost.pay(source, game, source, source.getControllerId(), true)) {
                     new UntapAllControllerEffect(new FilterControlledCreaturePermanent()).apply(game, source);
                     new AdditionalCombatPhaseEffect().apply(game, source);
                 }

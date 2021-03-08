@@ -46,7 +46,7 @@ public final class WithengarUnbound extends CardImpl {
 
     }
 
-    public WithengarUnbound(final WithengarUnbound card) {
+    private WithengarUnbound(final WithengarUnbound card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class WithengarUnboundTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LOST;
+        return event.getType() == GameEvent.EventType.LOST;
     }
 
     @Override

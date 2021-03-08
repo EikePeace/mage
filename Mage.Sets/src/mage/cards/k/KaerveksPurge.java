@@ -31,7 +31,7 @@ public final class KaerveksPurge extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(KaerveksPurgeAdjuster.instance);
     }
 
-    public KaerveksPurge(final KaerveksPurge card) {
+    private KaerveksPurge(final KaerveksPurge card) {
         super(card);
     }
 
@@ -77,8 +77,8 @@ class KaerveksPurgeEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         // Destroy target creature with converted mana cost X.
         Permanent targetCreature = game.getPermanent(getTargetPointer().getFirst(game, source));
-        if (targetCreature != null && targetCreature.destroy(source.getSourceId(), game, false)) {
-            game.applyEffects();
+        if (targetCreature != null && targetCreature.destroy(source, game, false)) {
+            game.getState().processAction(game);
             if (targetCreature.getZoneChangeCounter(game) + 1 == game.getState().getZoneChangeCounter(targetCreature.getId())
                     && game.getState().getZone(targetCreature.getId()) != Zone.GRAVEYARD) {
                 // A replacement effect has moved the card to another zone as graveyard
@@ -88,7 +88,7 @@ class KaerveksPurgeEffect extends OneShotEffect {
             Player creatureController = game.getPlayer(targetCreature.getControllerId());
             int power = targetCreature.getPower().getValue();
             if (creatureController != null) {
-                creatureController.damage(power, source.getSourceId(), game);
+                creatureController.damage(power, source.getSourceId(), source, game);
             }
         }
         return true;

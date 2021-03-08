@@ -3,7 +3,6 @@ package mage.cards.s;
 import java.util.UUID;
 
 import mage.abilities.Ability;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
@@ -30,7 +29,7 @@ public final class SinsOfTheFather extends CardImpl {
         this.getSpellAbility().addEffect(new SinsOfTheFatherEffect());
     }
 
-    public SinsOfTheFather(final SinsOfTheFather card) {
+    private SinsOfTheFather(final SinsOfTheFather card) {
         super(card);
     }
 
@@ -61,12 +60,12 @@ class SinsOfTheFatherEffect extends OneShotEffect {
             int exiledCards = 0;
             for(Card card : targetPlayer.getGraveyard().getCards(game)) {
                 if(filter.match(card, game)) {
-                    if(card.moveToExile(null, "", source.getSourceId(), game)) {
+                    if(card.moveToExile(null, "", source, game)) {
                         exiledCards++;
                     }
                 }
             }
-            targetPlayer.loseLife(exiledCards, game, false);
+            targetPlayer.loseLife(exiledCards, game, source, false);
             return true;
         }
         return false;

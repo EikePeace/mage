@@ -45,7 +45,7 @@ public final class EntomberExarch extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EntomberExarch(final EntomberExarch card) {
+    private EntomberExarch(final EntomberExarch card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class EntomberExarchEffect extends OneShotEffect {
                 TargetCard target = new TargetCard(Zone.HAND, StaticFilters.FILTER_CARD_A_NON_CREATURE);
                 if (you.choose(Outcome.Benefit, player.getHand(), target, game)) {
                     Card card = player.getHand().get(target.getFirstTarget(), game);
-                    return player.discard(card, source, game);
+                    return player.discard(card, false, source, game);
 
                 }
             }

@@ -22,9 +22,10 @@ import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
 import mage.util.GameLog;
 import mage.util.RandomUtil;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -34,11 +35,11 @@ import java.util.UUID;
  */
 public class Plane implements CommandObject {
 
-    private static EnumSet<CardType> emptySet = EnumSet.noneOf(CardType.class);
+    private static ArrayList<CardType> emptySet = new ArrayList<>();
     private static ObjectColor emptyColor = new ObjectColor();
     private static ManaCosts emptyCost = new ManaCostsImpl();
 
-    private String name = "";
+    private Planes planeType = null;
     private UUID id;
     private UUID controllerId;
     private MageObject sourceObject;
@@ -55,7 +56,7 @@ public class Plane implements CommandObject {
 
     public Plane(final Plane plane) {
         this.id = plane.id;
-        this.name = plane.name;
+        this.planeType = plane.planeType;
         this.frameStyle = plane.frameStyle;
         this.controllerId = plane.controllerId;
         this.sourceObject = plane.sourceObject;
@@ -78,9 +79,6 @@ public class Plane implements CommandObject {
     public void setSourceObject(MageObject sourceObject) {
         this.sourceObject = sourceObject;
         if (sourceObject instanceof Card) {
-            if (name.isEmpty()) {
-                name = sourceObject.getSubtype(null).toString();
-            }
             if (expansionSetCodeForImage.isEmpty()) {
                 expansionSetCodeForImage = ((Card) sourceObject).getExpansionSetCode();
             }
@@ -128,7 +126,7 @@ public class Plane implements CommandObject {
 
     @Override
     public String getName() {
-        return name;
+        return planeType != null ? planeType.getFullName() : "";
     }
 
     @Override
@@ -143,22 +141,35 @@ public class Plane implements CommandObject {
 
     @Override
     public String getImageName() {
-        return this.name;
+        return planeType != null ? planeType.getFullName() : "";
     }
 
     @Override
     public void setName(String name) {
-        this.name = name;
+        throw new UnsupportedOperationException("Planes don't use setName, use setPlaneType instead");
+    }
+
+    public void setPlaneType(Planes planeType) {
+        this.planeType = planeType;
+    }
+
+    public Planes getPlaneType() {
+        return this.planeType;
     }
 
     @Override
-    public EnumSet<CardType> getCardType() {
+    public ArrayList<CardType> getCardType() {
         return emptySet;
     }
 
     @Override
-    public SubTypeList getSubtype(Game game) {
-        return new SubTypeList();
+    public SubTypes getSubtype() {
+        return new SubTypes();
+    }
+
+    @Override
+    public SubTypes getSubtype(Game game) {
+        return new SubTypes();
     }
 
     @Override
@@ -177,8 +188,13 @@ public class Plane implements CommandObject {
     }
 
     @Override
-    public boolean hasAbility(UUID abilityId, Game game) {
-        return abilites.containsKey(abilityId);
+    public boolean hasAbility(Ability ability, Game game) {
+        return getAbilities().contains(ability);
+    }
+
+    @Override
+    public ObjectColor getColor() {
+        return emptyColor;
     }
 
     @Override
@@ -214,6 +230,10 @@ public class Plane implements CommandObject {
     @Override
     public int getStartingLoyalty() {
         return 0;
+    }
+
+    @Override
+    public void setStartingLoyalty(int startingLoyalty) {
     }
 
     @Override
@@ -257,11 +277,17 @@ public class Plane implements CommandObject {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
-    public boolean isAllCreatureTypes() {
+    @Override
+    public boolean isAllCreatureTypes(Game game) {
         return false;
     }
 
+    @Override
     public void setIsAllCreatureTypes(boolean value) {
+    }
+
+    @Override
+    public void setIsAllCreatureTypes(Game game, boolean value) {
     }
 
     public void discardEffects() {
@@ -288,19 +314,30 @@ public class Plane implements CommandObject {
     public void removePTCDA() {
     }
 
-    public static Plane getRandomPlane() {
-        int pick = RandomUtil.nextInt(Planes.values().length);
-        String planeName = Planes.values()[pick].toString();
-        planeName = "mage.game.command.planes." + planeName;
-        try {
-            Class<?> c = Class.forName(planeName);
-            Constructor<?> cons = c.getConstructor();
-            Object plane = cons.newInstance();
-            if (plane instanceof Plane) {
-                return (Plane) plane;
+    public static Plane createPlane(Planes planeType) {
+        if (planeType != null) {
+            String planeFullClass = "mage.game.command.planes." + planeType.getClassName();
+            try {
+                Class<?> c = Class.forName(planeFullClass);
+                Constructor<?> cons = c.getConstructor();
+                Object plane = cons.newInstance();
+                if (plane instanceof Plane) {
+                    return (Plane) plane;
+                }
+            } catch (Exception ex) {
             }
-        } catch (Exception ex) {
         }
         return null;
+    }
+
+    public static Plane createPlaneByFullName(String fullName) {
+        Planes planeType = Planes.fromFullName(fullName);
+        return createPlane(planeType);
+    }
+
+    public static Plane createRandomPlane() {
+        int pick = RandomUtil.nextInt(Planes.values().length);
+        Planes planeType = Planes.values()[pick];
+        return createPlane(planeType);
     }
 }

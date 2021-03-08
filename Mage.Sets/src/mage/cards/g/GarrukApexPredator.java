@@ -15,7 +15,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.command.emblems.GarrukApexPredatorEmblem;
 import mage.game.permanent.Permanent;
@@ -68,7 +68,7 @@ public final class GarrukApexPredator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GarrukApexPredator(final GarrukApexPredator card) {
+    private GarrukApexPredator(final GarrukApexPredator card) {
         super(card);
     }
 
@@ -97,7 +97,7 @@ class GarrukApexPredatorEffect3 extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
-        Permanent creature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent creature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (player != null && creature != null) {
             player.gainLife(creature.getToughness().getValue(), game, source);
             return true;

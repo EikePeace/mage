@@ -36,7 +36,7 @@ public final class TimeOut extends CardImpl {
 
     }
 
-    public TimeOut(final TimeOut card) {
+    private TimeOut(final TimeOut card) {
         super(card);
     }
 
@@ -72,8 +72,8 @@ class TimeOutEffect extends OneShotEffect {
                 if (owner == null) {
                     return false;
                 }
-                int amount = controller.rollDice(game, 6);
-                controller.putCardOnTopXOfLibrary(permanent, game, source, amount);
+                int amount = controller.rollDice(source, game, 6);
+                controller.putCardOnTopXOfLibrary(permanent, game, source, amount, true);
                 return true;
             }
         }

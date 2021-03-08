@@ -15,7 +15,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -34,7 +33,7 @@ public final class GuardianIdol extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new GuardianIdolGolemToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{2}")));
     }
 
-    public GuardianIdol(final GuardianIdol card) {
+    private GuardianIdol(final GuardianIdol card) {
         super(card);
     }
 

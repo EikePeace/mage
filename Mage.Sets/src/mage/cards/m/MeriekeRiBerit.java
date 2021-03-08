@@ -1,4 +1,3 @@
-
 package mage.cards.m;
 
 import java.util.UUID;
@@ -25,6 +24,7 @@ import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
 import mage.target.targetpointer.FixedTarget;
+import mage.watchers.common.LostControlWatcher;
 
 /**
  *
@@ -50,11 +50,12 @@ public final class MeriekeRiBerit extends CardImpl {
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, MeriekeRiBeritGainControlEffect, new TapSourceCost());
         ability.addTarget(new TargetPermanent(new FilterCreaturePermanent("target creature")));
         ability.addEffect(new MeriekeRiBeritCreateDelayedTriggerEffect());
+        ability.addWatcher(new LostControlWatcher());
         this.addAbility(ability);
 
     }
 
-    public MeriekeRiBerit(final MeriekeRiBerit card) {
+    private MeriekeRiBerit(final MeriekeRiBerit card) {
         super(card);
     }
 
@@ -105,8 +106,8 @@ class MeriekeRiBeritDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE
-                || event.getType() == EventType.UNTAPPED;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE
+                || event.getType() == GameEvent.EventType.UNTAPPED;
     }
 
     @Override
@@ -118,7 +119,7 @@ class MeriekeRiBeritDelayedTriggeredAbility extends DelayedTriggeredAbility {
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getTargetId() != null) {
-            if (event.getType() == EventType.ZONE_CHANGE
+            if (event.getType() == GameEvent.EventType.ZONE_CHANGE
                     && event.getTargetId().equals(getSourceId())) {
                 ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
                 return zEvent.getFromZone() == Zone.BATTLEFIELD;

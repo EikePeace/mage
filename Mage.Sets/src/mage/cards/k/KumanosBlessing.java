@@ -13,10 +13,8 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
-import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 import mage.watchers.Watcher;
@@ -49,7 +47,7 @@ public final class KumanosBlessing extends CardImpl {
 
     }
 
-    public KumanosBlessing(final KumanosBlessing card) {
+    private KumanosBlessing(final KumanosBlessing card) {
         super(card);
     }
 
@@ -77,17 +75,13 @@ class KumanosBlessingEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Permanent permanent = ((ZoneChangeEvent) event).getTarget();
-        Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null && permanent != null) {
-            return controller.moveCardToExileWithInfo(permanent, null, null, source.getSourceId(), game, Zone.BATTLEFIELD, true);
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -114,12 +108,14 @@ class DamagedByEnchantedWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.DAMAGED_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGED_PERMANENT) {
             Permanent enchantment = game.getPermanent(this.getSourceId());
             if (enchantment != null && enchantment.isAttachedTo(event.getSourceId())) {
-                MageObjectReference mor = new MageObjectReference(event.getTargetId(), game);
-                damagedCreatures.add(mor);
-
+                Permanent permanent = game.getPermanent(event.getTargetId());
+                if (permanent != null && permanent.isCreature()) {
+                    MageObjectReference mor = new MageObjectReference(event.getTargetId(), game);
+                    damagedCreatures.add(mor);
+                }
             }
         }
     }

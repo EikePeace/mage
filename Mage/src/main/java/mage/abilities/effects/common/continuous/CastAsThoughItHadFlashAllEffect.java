@@ -1,19 +1,19 @@
-
-
 package mage.abilities.effects.common.continuous;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.AsThoughEffectImpl;
+import mage.abilities.keyword.MorphAbility;
 import mage.cards.Card;
 import mage.constants.AsThoughEffectType;
+import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.FilterCard;
 import mage.game.Game;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 
@@ -53,7 +53,25 @@ public class CastAsThoughItHadFlashAllEffect extends AsThoughEffectImpl {
     public boolean applies(UUID affectedSpellId, Ability source, UUID affectedControllerId, Game game) {
         if (anyPlayer || source.isControlledBy(affectedControllerId)) {
             Card card = game.getCard(affectedSpellId);
-            return card != null && filter.match(card, game);
+            if (card != null) {
+                //Allow lands with morph to be played at instant speed
+                if (card.isLand()) {
+                    boolean morphAbility = false;
+                    for (Ability checkAbility : card.getAbilities()) {
+                        if (checkAbility instanceof MorphAbility) {
+                            morphAbility = true;
+                            break;
+                        }
+                    }
+                    if (morphAbility) {
+                        Card cardCopy = card.copy();
+                        cardCopy.getCardType().clear();
+                        cardCopy.addCardType(CardType.CREATURE);
+                        return filter.match(cardCopy, source.getSourceId(), affectedControllerId, game);
+                    }
+                }
+                return filter.match(card, source.getSourceId(), affectedControllerId, game);
+            }
         }
         return false;
     }

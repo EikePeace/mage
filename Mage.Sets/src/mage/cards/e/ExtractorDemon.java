@@ -14,7 +14,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPlayer;
 
 /**
@@ -49,7 +49,7 @@ public final class ExtractorDemon extends CardImpl {
         this.addAbility(new UnearthAbility(new ManaCostsImpl("{2}{B}")));
     }
 
-    public ExtractorDemon(final ExtractorDemon card) {
+    private ExtractorDemon(final ExtractorDemon card) {
         super(card);
     }
 

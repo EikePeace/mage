@@ -41,7 +41,7 @@ public final class PowderKeg extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PowderKeg(final PowderKeg card) {
+    private PowderKeg(final PowderKeg card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class PowderKegEffect extends OneShotEffect {
         filter.add(Predicates.or(CardType.ARTIFACT.getPredicate(), CardType.CREATURE.getPredicate()));
         filter.add(new ConvertedManaCostPredicate(ComparisonType.EQUAL_TO, count));
         for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-            perm.destroy(source.getSourceId(), game, false);
+            perm.destroy(source, game, false);
         }
         return true;
     }

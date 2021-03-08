@@ -16,7 +16,6 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
-import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
@@ -39,7 +38,7 @@ public final class FlayedNim extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RegenerateSourceEffect(), new ManaCostsImpl("{2}{B}")));
     }
 
-    public FlayedNim(final FlayedNim card) {
+    private FlayedNim(final FlayedNim card) {
         super(card);
     }
 
@@ -67,7 +66,7 @@ class FlayedNimEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent creature = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent creature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (creature == null) {
             return false;
         }
@@ -76,7 +75,7 @@ class FlayedNimEffect extends OneShotEffect {
             return false;
         }
         int damage = (int) this.getValue("damage");
-        player.loseLife(damage, game, false);
+        player.loseLife(damage, game, source, false);
         return true;
     }
 }

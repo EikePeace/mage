@@ -39,12 +39,12 @@ public final class SunTitan extends CardImpl {
         this.addAbility(VigilanceAbility.getInstance());
 
         // Whenever Sun Titan enters the battlefield or attacks, you may return target permanent card with converted mana cost 3 or less from your graveyard to the battlefield.
-        Ability ability = new EntersBattlefieldOrAttacksSourceTriggeredAbility(new ReturnFromGraveyardToBattlefieldTargetEffect(), true);
+        Ability ability = new EntersBattlefieldOrAttacksSourceTriggeredAbility(new ReturnFromGraveyardToBattlefieldTargetEffect(false, false), true);
         ability.addTarget(new TargetCardInYourGraveyard(filter));
         this.addAbility(ability);
     }
 
-    public SunTitan(final SunTitan card) {
+    private SunTitan(final SunTitan card) {
         super(card);
     }
 

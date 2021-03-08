@@ -43,7 +43,7 @@ public final class CabalInterrogator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CabalInterrogator(final CabalInterrogator card) {
+    private CabalInterrogator(final CabalInterrogator card) {
         super(card);
     }
 
@@ -112,7 +112,7 @@ class CabalInterrogatorEffect extends OneShotEffect {
                 card = revealedCards.getRandom(game);
             }
 
-            targetPlayer.discard(card, source, game);
+            targetPlayer.discard(card, false, source, game);
         }
         return true;
     }

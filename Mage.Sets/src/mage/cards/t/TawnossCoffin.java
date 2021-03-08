@@ -52,7 +52,7 @@ public final class TawnossCoffin extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public TawnossCoffin(final TawnossCoffin card) {
+    private TawnossCoffin(final TawnossCoffin card) {
         super(card);
     }
 
@@ -221,7 +221,7 @@ class TawnossCoffinReturnEffect extends OneShotEffect {
             for (Card enchantment : returningAuras) {
                 Permanent permanent = game.getPermanent(enchantment.getId());
                 if (permanent != null) {
-                    newPermanent.addAttachment(permanent.getId(), game);
+                    newPermanent.addAttachment(permanent.getId(), source, game);
                 }
             }
         }

@@ -54,7 +54,7 @@ public final class SwordOfBodyAndMind extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public SwordOfBodyAndMind(final SwordOfBodyAndMind card) {
+    private SwordOfBodyAndMind(final SwordOfBodyAndMind card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class SwordOfBodyAndMindAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override
@@ -100,6 +100,6 @@ class SwordOfBodyAndMindAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever equipped creature deals combat damage to a player, you create a 2/2 green Wolf creature token and that player puts the top ten cards of their library into their graveyard.";
+        return "Whenever equipped creature deals combat damage to a player, you create a 2/2 green Wolf creature token and that player mills ten cards.";
     }
 }

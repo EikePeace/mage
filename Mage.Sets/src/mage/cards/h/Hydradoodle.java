@@ -1,7 +1,6 @@
 
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
@@ -17,13 +16,14 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.permanent.CounterAnyPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class Hydradoodle extends CardImpl {
@@ -32,7 +32,7 @@ public final class Hydradoodle extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{X}{X}{G}{G}");
 
         this.subtype.add(SubType.HYDRA);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(0);
         this.toughness = new MageInt(0);
 
@@ -48,7 +48,7 @@ public final class Hydradoodle extends CardImpl {
         this.addAbility(TrampleAbility.getInstance());
     }
 
-    public Hydradoodle(final Hydradoodle card) {
+    private Hydradoodle(final Hydradoodle card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class HydradoodleEffect extends OneShotEffect {
     private static final FilterPermanent filter = new FilterPermanent("permanent with a counter");
 
     static {
-        filter.add(new CounterPredicate(null));
+        filter.add(CounterAnyPredicate.instance);
     }
 
     HydradoodleEffect() {
@@ -71,7 +71,7 @@ class HydradoodleEffect extends OneShotEffect {
         this.staticText = "roll X six-sided dice. {this} enters the battlefield with a number of +1/+1 counters on it equal to the total of those results";
     }
 
-    HydradoodleEffect(final HydradoodleEffect effect) {
+    private HydradoodleEffect(final HydradoodleEffect effect) {
         super(effect);
     }
 
@@ -93,11 +93,11 @@ class HydradoodleEffect extends OneShotEffect {
                 if (amount > 0) {
                     int total = 0;
                     for (int roll = 0; roll < amount; roll++) {
-                        int thisRoll = controller.rollDice(game, 6);
+                        int thisRoll = controller.rollDice(source, game, 6);
                         total += thisRoll;
                     }
 
-                    permanent.addCounters(CounterType.P1P1.createInstance(total), source, game);
+                    permanent.addCounters(CounterType.P1P1.createInstance(total), source.getControllerId(), source, game);
                 }
             }
             return true;

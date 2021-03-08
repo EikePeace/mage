@@ -35,11 +35,11 @@ public final class CouncilGuardian extends CardImpl {
         this.toughness = new MageInt(5);
 
         // Will of the council - When Council Guardian enters the battlefield, starting with you, each player votes for blue, black, red, or green. Council Guardian gains protection from each color with the most votes or tied for most votes.
-        this.addAbility(new EntersBattlefieldTriggeredAbility(new CouncilsGuardianEffect(), false, "<i>Will of the council</i> — "));
+        this.addAbility(new EntersBattlefieldTriggeredAbility(new CouncilsGuardianEffect(), false, "<i>Will of the council</i> &mdash; "));
 
     }
 
-    public CouncilGuardian(final CouncilGuardian card) {
+    private CouncilGuardian(final CouncilGuardian card) {
         super(card);
     }
 

@@ -17,7 +17,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -52,7 +52,7 @@ public final class TimberProtector extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public TimberProtector(final TimberProtector card) {
+    private TimberProtector(final TimberProtector card) {
         super(card);
     }
 

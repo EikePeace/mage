@@ -47,7 +47,7 @@ public final class SpectralPrison extends CardImpl {
         this.addAbility(new SpectralPrisonAbility());
     }
 
-    public SpectralPrison(final SpectralPrison card) {
+    private SpectralPrison(final SpectralPrison card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class SpectralPrisonAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

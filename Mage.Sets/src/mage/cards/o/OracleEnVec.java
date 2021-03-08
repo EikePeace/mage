@@ -52,7 +52,7 @@ public final class OracleEnVec extends CardImpl {
         this.addAbility(ability, new AttackedThisTurnWatcher());
     }
 
-    public OracleEnVec(final OracleEnVec card) {
+    private OracleEnVec(final OracleEnVec card) {
         super(card);
     }
 
@@ -89,11 +89,11 @@ class OracleEnVecEffect extends OneShotEffect {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(new FilterControlledCreaturePermanent(), opponent.getId(), source.getSourceId(), game)) {
                     if (target.getTargets().contains(permanent.getId())) {
                         RequirementEffect effect = new OracleEnVecMustAttackRequirementEffect();
-                        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                        effect.setTargetPointer(new FixedTarget(permanent, game));
                         game.addEffect(effect, source);
                     } else {
                         RestrictionEffect effect = new OracleEnVecCantAttackRestrictionEffect();
-                        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                        effect.setTargetPointer(new FixedTarget(permanent, game));
                         game.addEffect(effect, source);
                     }
                 }

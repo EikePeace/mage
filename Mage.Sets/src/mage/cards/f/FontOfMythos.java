@@ -24,7 +24,7 @@ public final class FontOfMythos extends CardImpl {
         this.addAbility(new FontOfMythosAbility());
     }
 
-    public FontOfMythos(final FontOfMythos card) {
+    private FontOfMythos(final FontOfMythos card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class FontOfMythosAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_STEP_PRE;
+        return event.getType() == GameEvent.EventType.DRAW_STEP_PRE;
     }
 
     @Override

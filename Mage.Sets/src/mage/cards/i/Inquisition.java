@@ -30,7 +30,7 @@ public final class Inquisition extends CardImpl {
         this.getSpellAbility().addEffect(new InquisitionEffect());
     }
 
-    public Inquisition(final Inquisition card) {
+    private Inquisition(final Inquisition card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class InquisitionEffect extends OneShotEffect {
                     }
                 }
                 if (cardsFound > 0) {
-                    targetPlayer.damage(cardsFound, source.getSourceId(), game);
+                    targetPlayer.damage(cardsFound, source.getSourceId(), source, game);
                 }
                 return true;
             }

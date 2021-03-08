@@ -1,9 +1,6 @@
 
 package mage.cards.c;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -13,8 +10,8 @@ import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.filter.common.FilterControlledArtifactPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterControlledEnchantmentPermanent;
@@ -26,14 +23,17 @@ import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
- *
  * @author fireshoes
  */
 public final class CataclysmicGearhulk extends CardImpl {
 
     public CataclysmicGearhulk(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT,CardType.CREATURE},"{3}{W}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{3}{W}{W}");
         this.subtype.add(SubType.CONSTRUCT);
         this.power = new MageInt(4);
         this.toughness = new MageInt(5);
@@ -46,7 +46,7 @@ public final class CataclysmicGearhulk extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CataclysmicGearhulkEffect(), false));
     }
 
-    public CataclysmicGearhulk(final CataclysmicGearhulk card) {
+    private CataclysmicGearhulk(final CataclysmicGearhulk card) {
         super(card);
     }
 
@@ -80,8 +80,8 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
 
     public CataclysmicGearhulkEffect() {
         super(Outcome.DestroyPermanent);
-        staticText = "Each player chooses from among the non-land permanents they control an artifact, a creature, an enchantment, and a planeswalker, "
-                + "then sacrifices the rest";
+        staticText = "each player chooses an artifact, a creature, an enchantment, and a planeswalker " +
+                "from among the nonland permanents they control then sacrifices the rest";
     }
 
     public CataclysmicGearhulkEffect(CataclysmicGearhulkEffect effect) {
@@ -100,8 +100,8 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
             Target target3 = new TargetControlledPermanent(1, 1, filterEnchantment, true);
             Target target4 = new TargetControlledPermanent(1, 1, filterPlaneswalker, true);
 
-            if (target1.canChoose(player.getId(), game)) {
-                while (player.canRespond() && !target1.isChosen() && target1.canChoose(player.getId(), game)) {
+            if (target1.canChoose(source.getSourceId(), player.getId(), game)) {
+                while (player.canRespond() && !target1.isChosen() && target1.canChoose(source.getSourceId(), player.getId(), game)) {
                     player.chooseTarget(Outcome.Benefit, target1, source, game);
                 }
                 Permanent artifact = game.getPermanent(target1.getFirstTarget());
@@ -111,8 +111,8 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
                 target1.clearChosen();
             }
 
-            if (target2.canChoose(player.getId(), game)) {
-                while (player.canRespond() && !target2.isChosen() && target2.canChoose(player.getId(), game)) {
+            if (target2.canChoose(source.getSourceId(), player.getId(), game)) {
+                while (player.canRespond() && !target2.isChosen() && target2.canChoose(source.getSourceId(), player.getId(), game)) {
                     player.chooseTarget(Outcome.Benefit, target2, source, game);
                 }
                 Permanent creature = game.getPermanent(target2.getFirstTarget());
@@ -122,8 +122,8 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
                 target2.clearChosen();
             }
 
-            if (target3.canChoose(player.getId(), game)) {
-                while (player.canRespond() && !target3.isChosen() && target3.canChoose(player.getId(), game)) {
+            if (target3.canChoose(source.getSourceId(), player.getId(), game)) {
+                while (player.canRespond() && !target3.isChosen() && target3.canChoose(source.getSourceId(), player.getId(), game)) {
                     player.chooseTarget(Outcome.Benefit, target3, source, game);
                 }
                 Permanent enchantment = game.getPermanent(target3.getFirstTarget());
@@ -133,8 +133,8 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
                 target3.clearChosen();
             }
 
-            if (target4.canChoose(player.getId(), game)) {
-                while (player.canRespond() && !target4.isChosen() && target4.canChoose(player.getId(), game)) {
+            if (target4.canChoose(source.getSourceId(), player.getId(), game)) {
+                while (player.canRespond() && !target4.isChosen() && target4.canChoose(source.getSourceId(), player.getId(), game)) {
                     player.chooseTarget(Outcome.Benefit, target4, source, game);
                 }
                 Permanent planeswalker = game.getPermanent(target4.getFirstTarget());
@@ -148,7 +148,7 @@ class CataclysmicGearhulkEffect extends OneShotEffect {
 
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents()) {
             if (!chosen.contains(permanent) && !permanent.isLand()) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
         return true;

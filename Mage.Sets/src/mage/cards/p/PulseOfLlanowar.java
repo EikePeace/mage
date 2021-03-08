@@ -2,7 +2,7 @@
 package mage.cards.p;
 
 import java.util.UUID;
-import mage.MageObject;
+
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
@@ -18,7 +18,6 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ManaEvent;
 import mage.game.permanent.Permanent;
 
@@ -35,7 +34,7 @@ public final class PulseOfLlanowar extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PulseOfLlanowarReplacementEffect()));
     }
 
-    public PulseOfLlanowar(final PulseOfLlanowar card) {
+    private PulseOfLlanowar(final PulseOfLlanowar card) {
         super(card);
     }
 
@@ -76,21 +75,20 @@ class PulseOfLlanowarReplacementEffect extends ReplacementEffectImpl {
         ManaEvent manaEvent = (ManaEvent) event;
         Mana mana = manaEvent.getMana();
         new AddManaOfAnyColorEffect(mana.count()).apply(game,source);
-        mana.setToMana(new Mana(0,0,0,0,0,0,0,0));
+        mana.setToMana(new Mana(0, 0, 0, 0,0, 0,0,0));
         return true;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        MageObject mageObject = game.getObject(event.getSourceId());
-        if (mageObject != null && mageObject.isLand()) {
-            Permanent land = game.getPermanent(event.getSourceId());
-            return land != null && filter.match(land, game);
+        Permanent permanent = game.getPermanentOrLKIBattlefield(event.getSourceId());
+        if (permanent != null && permanent.isLand()) {
+            return filter.match(permanent, game);
         }
         return false;
     }

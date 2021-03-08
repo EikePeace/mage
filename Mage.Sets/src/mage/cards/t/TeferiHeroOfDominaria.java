@@ -55,7 +55,7 @@ public final class TeferiHeroOfDominaria extends CardImpl {
         this.addAbility(new LoyaltyAbility(new GetEmblemEffect(new TeferiHeroOfDominariaEmblem()), -8));
     }
 
-    public TeferiHeroOfDominaria(final TeferiHeroOfDominaria card) {
+    private TeferiHeroOfDominaria(final TeferiHeroOfDominaria card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class TeferiHeroOfDominariaSecondEffect extends OneShotEffect {
         if (controller != null) {
             Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (permanent != null) {
-                controller.putCardOnTopXOfLibrary(permanent, game, source, 3);
+                controller.putCardOnTopXOfLibrary(permanent, game, source, 3, true);
             }
             return true;
         }

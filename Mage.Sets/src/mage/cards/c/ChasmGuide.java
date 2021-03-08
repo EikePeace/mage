@@ -27,12 +27,12 @@ public final class ChasmGuide extends CardImpl {
         this.power = new MageInt(3);
         this.toughness = new MageInt(2);
 
-        // <i>Rally</i> — Whenever Chasm Guide or another Ally enters the battlefield under your control, creatures you control gain haste until end of turn.
+        // <i>Rally</i> &mdash; Whenever Chasm Guide or another Ally enters the battlefield under your control, creatures you control gain haste until end of turn.
         this.addAbility(new AllyEntersBattlefieldTriggeredAbility(
                 new GainAbilityControlledEffect(HasteAbility.getInstance(), Duration.EndOfTurn, FILTER_PERMANENT_CREATURES), false));
     }
 
-    public ChasmGuide(final ChasmGuide card) {
+    private ChasmGuide(final ChasmGuide card) {
         super(card);
     }
 

@@ -27,7 +27,7 @@ public final class EbonyOwlNetsuke extends CardImpl {
         this.addAbility(new EbonyOwlNetsukeTriggeredAbility());
     }
 
-    public EbonyOwlNetsuke(final EbonyOwlNetsuke card) {
+    private EbonyOwlNetsuke(final EbonyOwlNetsuke card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class EbonyOwlNetsukeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

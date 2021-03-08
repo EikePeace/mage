@@ -3,7 +3,7 @@ package mage.cards.s;
 import mage.abilities.Ability;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveTargetEffect;
+import mage.abilities.effects.common.MillCardsTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -29,7 +29,7 @@ public final class SharedTrauma extends CardImpl {
         this.getSpellAbility().addEffect(new SharedTraumaEffect());
     }
 
-    public SharedTrauma(final SharedTrauma card) {
+    private SharedTrauma(final SharedTrauma card) {
         super(card);
     }
 
@@ -43,7 +43,7 @@ class SharedTraumaEffect extends OneShotEffect {
 
     public SharedTraumaEffect() {
         super(Outcome.Detriment);
-        this.staticText = "<i>Join forces</i> &mdash; Starting with you, each player may pay any amount of mana. Each player puts the top X cards of their library into their graveyard, where X is the total amount of mana paid this way";
+        this.staticText = "<i>Join forces</i> &mdash; Starting with you, each player may pay any amount of mana. Each player mills X cards, where X is the total amount of mana paid this way";
     }
 
     public SharedTraumaEffect(final SharedTraumaEffect effect) {
@@ -72,7 +72,7 @@ class SharedTraumaEffect extends OneShotEffect {
 
             if (xSum > 0) {
                 for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
-                    Effect effect = new PutTopCardOfLibraryIntoGraveTargetEffect(xSum);
+                    Effect effect = new MillCardsTargetEffect(xSum);
                     effect.setTargetPointer(new FixedTarget(playerId));
                     effect.apply(game, source);
                 }

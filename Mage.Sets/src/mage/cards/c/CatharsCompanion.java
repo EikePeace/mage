@@ -27,7 +27,7 @@ public final class CatharsCompanion extends CardImpl {
 
     public CatharsCompanion(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(3);
         this.toughness = new MageInt(1);
 
@@ -35,7 +35,7 @@ public final class CatharsCompanion extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new GainAbilitySourceEffect(IndestructibleAbility.getInstance(), Duration.EndOfTurn), filter, false));
     }
 
-    public CatharsCompanion(final CatharsCompanion card) {
+    private CatharsCompanion(final CatharsCompanion card) {
         super(card);
     }
 

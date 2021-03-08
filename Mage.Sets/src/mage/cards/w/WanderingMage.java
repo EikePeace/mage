@@ -72,7 +72,7 @@ public final class WanderingMage extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WanderingMage(final WanderingMage card) {
+    private WanderingMage(final WanderingMage card) {
         super(card);
     }
 
@@ -93,15 +93,15 @@ class WanderingMageCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         return true;
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Permanent permanent = game.getPermanent(ability.getTargets().get(1).getFirstTarget());
         if (permanent != null) {
-            permanent.addCounters(CounterType.M1M1.createInstance(), ability, game);
+            permanent.addCounters(CounterType.M1M1.createInstance(), controllerId, ability, game);
             this.paid = true;
         }
         return paid;

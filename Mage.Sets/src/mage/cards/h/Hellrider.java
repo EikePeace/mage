@@ -35,7 +35,7 @@ public final class Hellrider extends CardImpl {
         this.addAbility(new HellriderTriggeredAbility());
     }
 
-    public Hellrider(final Hellrider card) {
+    private Hellrider(final Hellrider card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class HellriderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

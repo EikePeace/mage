@@ -26,7 +26,7 @@ public final class Fumigate extends CardImpl {
         this.getSpellAbility().addEffect(new FumigateEffect());
     }
 
-    public Fumigate(final Fumigate card) {
+    private Fumigate(final Fumigate card) {
         super(card);
     }
 
@@ -58,11 +58,11 @@ class FumigateEffect extends OneShotEffect {
         if (controller != null) {
             int destroyedCreature = 0;
             for (Permanent creature : game.getState().getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, controller.getId(), game)) {
-                if (creature.destroy(source.getSourceId(), game, false)) {
+                if (creature.destroy(source, game, false)) {
                     destroyedCreature++;
                 }
             }
-            game.applyEffects();
+            game.getState().processAction(game);
             if (destroyedCreature > 0) {
                 controller.gainLife(destroyedCreature, game, source);
             }

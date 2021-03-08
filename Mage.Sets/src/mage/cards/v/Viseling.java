@@ -32,7 +32,7 @@ public final class Viseling extends CardImpl {
 
     }
 
-    public Viseling(final Viseling card) {
+    private Viseling(final Viseling card) {
         super(card);
     }
 
@@ -46,7 +46,7 @@ class ViselingEffect extends OneShotEffect {
 
     public ViselingEffect() {
         super(Outcome.Damage);
-        this.staticText = "{source} deals X damage to that player, where X is the number of cards in their hand minus 4";
+        this.staticText = "{this} deals X damage to that player, where X is the number of cards in their hand minus 4";
     }
 
     public ViselingEffect(final ViselingEffect effect) {
@@ -64,7 +64,7 @@ class ViselingEffect extends OneShotEffect {
         if (opponent != null) {
             int xValue = opponent.getHand().size() - 4;
             if (xValue > 0) {
-                opponent.damage(xValue, source.getSourceId(), game);
+                opponent.damage(xValue, source.getSourceId(), source, game);
             }
             return true;
         }

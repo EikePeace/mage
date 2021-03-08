@@ -30,7 +30,7 @@ public final class ManaSeism extends CardImpl {
         
     }
 
-    public ManaSeism(final ManaSeism card) {
+    private ManaSeism(final ManaSeism card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ManaSeismEffect extends OneShotEffect {
             for(UUID uuid : sacrificeLand.getTargets()){
                 Permanent land = game.getPermanent(uuid);
                 if(land != null){
-                    land.sacrifice(source.getSourceId(), game);
+                    land.sacrifice(source, game);
                     amount++;
                 }
             }

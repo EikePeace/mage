@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 import mage.filter.predicate.permanent.EnteredThisTurnPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -30,7 +30,7 @@ public final class ForgeOfHeroes extends CardImpl {
 
     static {
         filter.add(CommanderPredicate.instance);
-        filter.add(new EnteredThisTurnPredicate());
+        filter.add(EnteredThisTurnPredicate.instance);
     }
 
     public ForgeOfHeroes(UUID ownerId, CardSetInfo setInfo) {
@@ -48,7 +48,7 @@ public final class ForgeOfHeroes extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ForgeOfHeroes(final ForgeOfHeroes card) {
+    private ForgeOfHeroes(final ForgeOfHeroes card) {
         super(card);
     }
 

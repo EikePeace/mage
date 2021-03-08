@@ -39,7 +39,7 @@ public final class SerratedArrows extends CardImpl {
         effect = new ConditionalOneShotEffect(new SacrificeSourceEffect(), new SourceHasCounterCondition(CounterType.ARROWHEAD, 0, 0),
                 "if there are no arrowhead counters on {this}, sacrifice it");
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, effect, TargetController.YOU, false, false));
-        // {tap}, Remove an arrowhead counter from Serrated Arrows: Put a -1/-1 counter on target creature.
+        // {T}, Remove an arrowhead counter from Serrated Arrows: Put a -1/-1 counter on target creature.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD,
                 new AddCountersTargetEffect(CounterType.M1M1.createInstance()),
                 new TapSourceCost());
@@ -48,7 +48,7 @@ public final class SerratedArrows extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SerratedArrows(final SerratedArrows card) {
+    private SerratedArrows(final SerratedArrows card) {
         super(card);
     }
 

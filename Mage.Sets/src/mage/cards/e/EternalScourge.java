@@ -36,7 +36,7 @@ public final class EternalScourge extends CardImpl {
         this.addAbility(new EternalScourgeAbility());
     }
 
-    public EternalScourge(final EternalScourge card) {
+    private EternalScourge(final EternalScourge card) {
         super(card);
     }
 
@@ -96,7 +96,7 @@ class EternalScourgeAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

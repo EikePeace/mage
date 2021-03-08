@@ -28,7 +28,7 @@ public final class KillingWave extends CardImpl {
         this.getSpellAbility().addEffect(new KillingWaveEffect());
     }
 
-    public KillingWave(final KillingWave card) {
+    private KillingWave(final KillingWave card) {
         super(card);
     }
 
@@ -93,13 +93,13 @@ class KillingWaveEffect extends OneShotEffect {
                 if (lifePaid > 0) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.loseLife(lifePaid, game, false);
+                        player.loseLife(lifePaid, game, source, false);
                     }
                 }
             }
 
             for (Permanent creature : sacrifices) {
-                creature.sacrifice(source.getSourceId(), game);
+                creature.sacrifice(source, game);
             }
         }
         return true;

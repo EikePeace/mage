@@ -1,7 +1,5 @@
-
 package mage.cards.b;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.condition.common.KickedCondition;
 import mage.abilities.costs.common.TapTargetCost;
@@ -24,8 +22,9 @@ import mage.players.Player;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class BloodTribute extends CardImpl {
@@ -41,8 +40,8 @@ public final class BloodTribute extends CardImpl {
         this.addAbility(new KickerAbility(new TapTargetCost(new TargetControlledCreaturePermanent(1, 1, filter, true))));
 
         // Target opponent loses half their life, rounded up.
-        this.getSpellAbility().addTarget(new TargetOpponent());
         this.getSpellAbility().addEffect(new BloodTributeLoseLifeEffect());
+        this.getSpellAbility().addTarget(new TargetOpponent());
 
         // If Blood Tribute was kicked, you gain life equal to the life lost this way.
         Effect effect = new ConditionalOneShotEffect(
@@ -52,7 +51,7 @@ public final class BloodTribute extends CardImpl {
         this.getSpellAbility().addEffect(effect);
     }
 
-    public BloodTribute(final BloodTribute card) {
+    private BloodTribute(final BloodTribute card) {
         super(card);
     }
 
@@ -84,7 +83,7 @@ class BloodTributeLoseLifeEffect extends OneShotEffect {
         if (player != null) {
             Integer amount = (int) Math.ceil(player.getLife() / 2f);
             if (amount > 0) {
-                player.loseLife(amount, game, false);
+                player.loseLife(amount, game, source, false);
                 game.getState().setValue(source.getSourceId().toString() + "_BloodTribute", amount);
                 return true;
             }

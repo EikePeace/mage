@@ -4,7 +4,6 @@ package mage.cards.g;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.keyword.FirstStrikeAbility;
@@ -12,7 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.Game;
-import mage.game.permanent.Permanent;
 
 /**
  *
@@ -35,7 +33,7 @@ public final class GostaDirk extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GostaDirkEffect()));
     }
 
-    public GostaDirk(final GostaDirk card) {
+    private GostaDirk(final GostaDirk card) {
         super(card);
     }
 

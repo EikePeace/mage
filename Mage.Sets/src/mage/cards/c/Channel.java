@@ -14,6 +14,7 @@ import mage.abilities.effects.common.CreateSpecialActionEffect;
 import mage.abilities.effects.common.RemoveSpecialActionEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
+import mage.constants.AbilityType;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
@@ -34,7 +35,7 @@ public final class Channel extends CardImpl {
         this.getSpellAbility().addEffect(new ChannelEffect());
     }
 
-    public Channel(final Channel card) {
+    private Channel(final Channel card) {
         super(card);
     }
 
@@ -75,6 +76,7 @@ class ChannelSpecialAction extends SpecialAction {
 
     ChannelSpecialAction() {
         super();
+        this.abilityType = AbilityType.SPECIAL_MANA_PAYMENT;
         this.addCost(new PayLifeCost(1));
         this.addEffect(new BasicManaEffect(Mana.ColorlessMana(1)));
     }
@@ -108,7 +110,7 @@ class ChannelDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CLEANUP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.CLEANUP_STEP_PRE;
     }
 
     @Override

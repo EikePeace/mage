@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.mana;
 
 import mage.Mana;
 import mage.abilities.Ability;
-import mage.abilities.effects.common.ManaEffect;
 import mage.game.Game;
 import mage.players.Player;
 

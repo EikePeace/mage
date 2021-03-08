@@ -43,7 +43,7 @@ public final class MishraArtificerProdigy extends CardImpl {
         this.addAbility(new MishraArtificerProdigyTriggeredAbility());
     }
 
-    public MishraArtificerProdigy(final MishraArtificerProdigy card) {
+    private MishraArtificerProdigy(final MishraArtificerProdigy card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class MishraArtificerProdigyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

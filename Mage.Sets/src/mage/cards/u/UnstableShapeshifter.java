@@ -16,10 +16,10 @@ import mage.constants.Outcome;
 import mage.constants.SetTargetPointer;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class UnstableShapeshifter extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new UnstableShapeshifterEffect(), filterAnotherCreature, false, SetTargetPointer.PERMANENT, ""));
     }
 
-    public UnstableShapeshifter(final UnstableShapeshifter card) {
+    private UnstableShapeshifter(final UnstableShapeshifter card) {
         super(card);
     }
 
@@ -73,11 +73,11 @@ class UnstableShapeshifterEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
-        Permanent targetCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent targetCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (targetCreature != null && permanent != null) {
-            Permanent blueprintPermanent = game.copyPermanent(Duration.Custom, targetCreature, permanent.getId(), source, new EmptyApplyToPermanent());
+            Permanent blueprintPermanent = game.copyPermanent(Duration.Custom, targetCreature, permanent.getId(), source, new EmptyCopyApplier());
             blueprintPermanent.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD,
-                    new UnstableShapeshifterEffect(), filterAnotherCreature, false, SetTargetPointer.PERMANENT, ""), game);
+                    new UnstableShapeshifterEffect(), filterAnotherCreature, false, SetTargetPointer.PERMANENT, ""), source.getSourceId(), game);
             return true;
         }
         return false;

@@ -17,7 +17,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.util.CardUtil;
 
@@ -44,7 +43,7 @@ public final class GoldnightCastigator extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GoldnightCastigatorDoubleDamageEffect()));
     }
 
-    public GoldnightCastigator(final GoldnightCastigator card) {
+    private GoldnightCastigator(final GoldnightCastigator card) {
         super(card);
     }
 
@@ -73,8 +72,8 @@ class GoldnightCastigatorDoubleDamageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE ||
-                event.getType() == EventType.DAMAGE_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT ||
+                event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
 
@@ -93,14 +92,14 @@ class GoldnightCastigatorDoubleDamageEffect extends ReplacementEffectImpl {
         switch (event.getType()) {
             case DAMAGE_PLAYER:
                 if (event.getTargetId().equals(source.getControllerId())) {
-                    event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+                    event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
                 }
                 break;
-            case DAMAGE_CREATURE:
+            case DAMAGE_PERMANENT:
                 Permanent permanent = game.getPermanent(event.getTargetId());
                 if (permanent != null) {
                     if (permanent.getId().equals(source.getSourceId())) {
-                        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+                        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
                     }
                 }
         }

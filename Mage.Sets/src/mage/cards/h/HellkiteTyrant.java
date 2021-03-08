@@ -63,7 +63,7 @@ public final class HellkiteTyrant extends CardImpl {
 
     }
 
-    public HellkiteTyrant(final HellkiteTyrant card) {
+    private HellkiteTyrant(final HellkiteTyrant card) {
         super(card);
     }
 
@@ -101,7 +101,7 @@ class HellkiteTyrantEffect extends OneShotEffect {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
             ContinuousEffect effect = new HellkiteTyrantControlEffect(source.getControllerId());
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
         }
         return true;
@@ -131,7 +131,7 @@ class HellkiteTyrantControlEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
         if (permanent != null && controllerId != null) {
-            return permanent.changeControllerId(controllerId, game);
+            return permanent.changeControllerId(controllerId, game, source);
         }
         // Permanent is no longer on the battlefield, the effect can be discarded.
         discard();

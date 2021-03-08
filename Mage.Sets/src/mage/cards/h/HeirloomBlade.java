@@ -44,7 +44,7 @@ public final class HeirloomBlade extends CardImpl {
 
     }
 
-    public HeirloomBlade(final HeirloomBlade card) {
+    private HeirloomBlade(final HeirloomBlade card) {
         super(card);
     }
 
@@ -82,8 +82,8 @@ class HeirloomBladeEffect extends OneShotEffect {
                 Cards otherCards = new CardsImpl();
                 for (Card card : controller.getLibrary().getCards(game)) {
                     revealed.add(card);
-                    if (card != null && card.isCreature() && equipped.shareSubtypes(card, game)) {
-                        controller.moveCardToHandWithInfo(card, source.getSourceId(), game, true);
+                    if (card != null && card.isCreature() && equipped.shareCreatureTypes(game, card)) {
+                        controller.moveCardToHandWithInfo(card, source, game, true);
                         break;
                     } else {
                         otherCards.add(card);

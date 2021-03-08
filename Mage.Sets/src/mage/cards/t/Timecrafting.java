@@ -12,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.common.FilterPermanentOrSuspendedCard;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -26,7 +25,7 @@ public final class Timecrafting extends CardImpl {
 
     private static final FilterPermanentOrSuspendedCard filter = new FilterPermanentOrSuspendedCard("permanent with a time counter on it or suspended card");
     static {
-        filter.getPermanentFilter().add(new CounterPredicate(CounterType.TIME));
+        filter.getPermanentFilter().add(CounterType.TIME.getPredicate());
     }
 
     public Timecrafting(UUID ownerId, CardSetInfo setInfo) {
@@ -43,7 +42,7 @@ public final class Timecrafting extends CardImpl {
         this.getSpellAbility().addMode(mode);
     }
 
-    public Timecrafting(final Timecrafting card) {
+    private Timecrafting(final Timecrafting card) {
         super(card);
     }
 
@@ -76,12 +75,12 @@ class TimecraftingRemoveEffect extends OneShotEffect {
             int xValue = source.getManaCostsToPay().getX();
             Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
             if (permanent != null) {
-                permanent.removeCounters(CounterType.TIME.createInstance(xValue), game);
+                permanent.removeCounters(CounterType.TIME.createInstance(xValue), source, game);
             }
             else {
                 Card card = game.getExile().getCard(this.getTargetPointer().getFirst(game, source), game);
                 if (card != null) {
-                    card.removeCounters(CounterType.TIME.createInstance(xValue), game);
+                    card.removeCounters(CounterType.TIME.createInstance(xValue), source, game);
                 }
             }
             return true;
@@ -113,12 +112,12 @@ class TimecraftingAddEffect extends OneShotEffect {
             int xValue = source.getManaCostsToPay().getX();
             Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
             if (permanent != null) {
-                permanent.addCounters(CounterType.TIME.createInstance(xValue), source, game);
+                permanent.addCounters(CounterType.TIME.createInstance(xValue), source.getControllerId(), source, game);
             }
             else {
                 Card card = game.getExile().getCard(this.getTargetPointer().getFirst(game, source), game);
                 if (card != null) {
-                    card.addCounters(CounterType.TIME.createInstance(xValue), source, game);
+                    card.addCounters(CounterType.TIME.createInstance(xValue), source.getControllerId(), source, game);
                 }
             }
             return true;

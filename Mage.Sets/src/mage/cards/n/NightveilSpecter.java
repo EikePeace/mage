@@ -56,7 +56,7 @@ public final class NightveilSpecter extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new NightveilSpecterEffect()));
     }
 
-    public NightveilSpecter(final NightveilSpecter card) {
+    private NightveilSpecter(final NightveilSpecter card) {
         super(card);
     }
 
@@ -119,6 +119,12 @@ class NightveilSpecterEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
+        Card theCard = game.getCard(objectId);
+        if (theCard == null) {
+            return false;
+        }
+        objectId = theCard.getMainCard().getId();// for split cards
+
         if (affectedControllerId.equals(source.getControllerId()) && game.getState().getZone(objectId) == Zone.EXILED) {
             ExileZone zone = game.getExile().getExileZone(CardUtil.getCardExileZoneId(game, source));
             return zone != null && zone.contains(objectId);

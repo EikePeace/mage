@@ -1,8 +1,8 @@
 package mage.cards.o;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -50,7 +50,7 @@ public final class OracleOfBones extends CardImpl {
                 + "you may cast an instant or sorcery card from your hand without paying its mana cost."));
     }
 
-    public OracleOfBones(final OracleOfBones card) {
+    private OracleOfBones(final OracleOfBones card) {
         super(card);
     }
 
@@ -95,7 +95,7 @@ class OracleOfBonesCastEffect extends OneShotEffect {
                     if (controller.chooseTarget(outcome, target, source, game)) {
                         cardToCast = game.getCard(target.getFirstTarget());
                         if (cardToCast != null
-                                && cardToCast.getSpellAbility().canChooseTarget(game)) {
+                                && cardToCast.getSpellAbility().canChooseTarget(game, controller.getId())) {
                             cancel = true;
                         }
                     } else {
@@ -105,7 +105,7 @@ class OracleOfBonesCastEffect extends OneShotEffect {
                 if (cardToCast != null) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), Boolean.TRUE);
                     controller.cast(controller.chooseAbilityForCast(cardToCast, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + cardToCast.getId(), null);
                 }
             }

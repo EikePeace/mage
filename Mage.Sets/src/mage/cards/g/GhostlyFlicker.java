@@ -42,7 +42,7 @@ public final class GhostlyFlicker extends CardImpl {
         this.getSpellAbility().addEffect(new GhostlyFlickerEffect());
     }
 
-    public GhostlyFlicker(final GhostlyFlicker card) {
+    private GhostlyFlicker(final GhostlyFlicker card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class GhostlyFlickerEffect extends OneShotEffect {
                 }
             }
             controller.moveCards(toExile, Zone.EXILED, source, game);
-            game.applyEffects();
+            game.getState().processAction(game);
             Set<Card> toBattlefield = new HashSet<>();
             for (Card card : toExile) {
                 Zone currentZone = game.getState().getZone(card.getId());

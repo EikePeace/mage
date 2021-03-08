@@ -34,7 +34,7 @@ public final class TalarasBane extends CardImpl {
 
     }
 
-    public TalarasBane(final TalarasBane card) {
+    private TalarasBane(final TalarasBane card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class TalarasBaneEffect extends OneShotEffect {
             if (card != null) {
                 int lifeGain = card.getToughness().getValue();
                 you.gainLife(lifeGain, game, source);
-                return targetPlayer.discard(card, source, game);
+                return targetPlayer.discard(card, false, source, game);
             }
         }
         return false;

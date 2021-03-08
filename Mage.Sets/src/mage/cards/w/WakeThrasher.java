@@ -35,7 +35,7 @@ public final class WakeThrasher extends CardImpl {
 
     }
 
-    public WakeThrasher(final WakeThrasher card) {
+    private WakeThrasher(final WakeThrasher card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class BecomesUntappedControlledPermanentTriggeredAbility extends TriggeredAbilit
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UNTAPPED;
+        return event.getType() == GameEvent.EventType.UNTAPPED;
     }
 
     @Override

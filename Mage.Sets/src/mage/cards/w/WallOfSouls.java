@@ -14,9 +14,8 @@ import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
-import mage.game.events.DamagedCreatureEvent;
+import mage.game.events.DamagedEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.target.common.TargetOpponentOrPlaneswalker;
 
 /**
@@ -40,7 +39,7 @@ public final class WallOfSouls extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WallOfSouls(final WallOfSouls card) {
+    private WallOfSouls(final WallOfSouls card) {
         super(card);
     }
 
@@ -67,12 +66,12 @@ class WallOfSoulsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getTargetId().equals(this.sourceId) && ((DamagedCreatureEvent) event).isCombatDamage()) {
+        if (event.getTargetId().equals(this.sourceId) && ((DamagedEvent) event).isCombatDamage()) {
             this.getEffects().get(0).setValue("damage", event.getAmount());
             return true;
         }
@@ -105,7 +104,7 @@ class WallOfSoulsDealDamageEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int amount = (Integer) getValue("damage");
         if (amount > 0) {
-            return game.damagePlayerOrPlaneswalker(source.getFirstTarget(), amount, source.getSourceId(), game, false, true) > 0;
+            return game.damagePlayerOrPlaneswalker(source.getFirstTarget(), amount, source.getSourceId(), source, game, false, true) > 0;
         }
         return false;
     }

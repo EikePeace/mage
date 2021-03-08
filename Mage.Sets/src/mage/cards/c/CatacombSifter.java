@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.EldraziScionToken;
 
 /**
@@ -46,7 +46,7 @@ public final class CatacombSifter extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new ScryEffect(1), false, filter));
     }
 
-    public CatacombSifter(final CatacombSifter card) {
+    private CatacombSifter(final CatacombSifter card) {
         super(card);
     }
 

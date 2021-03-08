@@ -33,7 +33,7 @@ public final class TolarianEntrancer extends CardImpl {
         this.addAbility(new BecomesBlockedByCreatureTriggeredAbility(new CreateDelayedTriggeredAbilityEffect(new TolarianEntrancerDelayedTriggeredAbility()), false));
     }
 
-    public TolarianEntrancer(final TolarianEntrancer card) {
+    private TolarianEntrancer(final TolarianEntrancer card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ public final class TolarianEntrancer extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.END_COMBAT_STEP_POST;
+            return event.getType() == GameEvent.EventType.END_COMBAT_STEP_POST;
         }
 
         @Override

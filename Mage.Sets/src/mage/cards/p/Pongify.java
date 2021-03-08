@@ -29,7 +29,7 @@ public final class Pongify extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public Pongify(final Pongify card) {
+    private Pongify(final Pongify card) {
         super(card);
     }
 
@@ -43,7 +43,7 @@ class PongifyEffect extends OneShotEffect {
 
     public PongifyEffect() {
         super(Outcome.PutCreatureInPlay);
-        this.staticText = "That creature's controller creates a 3/3 green Ape creature token";
+        this.staticText = "Its controller creates a 3/3 green Ape creature token";
     }
 
     public PongifyEffect(final PongifyEffect effect) {
@@ -63,7 +63,7 @@ class PongifyEffect extends OneShotEffect {
             if (permanent != null) {
                 UUID controllerId = permanent.getControllerId();
                 if (controllerId != null) {
-                    new PongifyApeToken().putOntoBattlefield(1, game, source.getSourceId(), controllerId);
+                    new PongifyApeToken().putOntoBattlefield(1, game, source, controllerId);
                     return true;
                 }
             }

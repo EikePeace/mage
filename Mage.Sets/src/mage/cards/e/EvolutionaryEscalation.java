@@ -41,7 +41,7 @@ public final class EvolutionaryEscalation extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EvolutionaryEscalation(final EvolutionaryEscalation card) {
+    private EvolutionaryEscalation(final EvolutionaryEscalation card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class EvolutionaryEscalationEffect extends OneShotEffect {
         for (Target target: source.getTargets()) {
             Permanent targetPermanent = game.getPermanent(target.getFirstTarget());
             if (targetPermanent != null) {
-                targetPermanent.addCounters(counter.copy(), source, game);
+                targetPermanent.addCounters(counter.copy(), source.getControllerId(), source, game);
                 addedCounters = true;
             }
         }

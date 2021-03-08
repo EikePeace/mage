@@ -48,7 +48,7 @@ public final class Mindsparker extends CardImpl {
 
     }
 
-    public Mindsparker(final Mindsparker card) {
+    private Mindsparker(final Mindsparker card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class MindsparkerEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.damage(2, source.getSourceId(), game);
+            targetPlayer.damage(2, source.getSourceId(), source, game);
             return true;
         }
         return false;

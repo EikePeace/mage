@@ -38,7 +38,7 @@ public final class Spitemare extends CardImpl {
 
     }
 
-    public Spitemare(final Spitemare card) {
+    private Spitemare(final Spitemare card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class SpitemareTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override
@@ -103,12 +103,12 @@ class SpitemareEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getFirstTarget());
         if (player != null) {
-            player.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), game);
+            player.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), source, game);
             return true;
         }
         Permanent permanent = game.getPermanent(source.getFirstTarget());
         if (permanent != null) {
-            permanent.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), game, false, true);
+            permanent.damage((Integer) this.getValue("damageAmount"), source.getSourceId(), source, game, false, true);
             return true;
         }
         return false;

@@ -15,7 +15,7 @@ import mage.constants.ColoredManaSymbol;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -46,7 +46,7 @@ public final class GrimHaruspex extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new DrawCardSourceControllerEffect(1), false, filter));
     }
 
-    public GrimHaruspex(final GrimHaruspex card) {
+    private GrimHaruspex(final GrimHaruspex card) {
         super(card);
     }
 

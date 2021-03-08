@@ -29,7 +29,7 @@ public final class AngelicBenediction extends CardImpl {
         this.addAbility(new AngelicBenedictionTriggeredAbility());
     }
 
-    public AngelicBenediction(final AngelicBenediction card) {
+    private AngelicBenediction(final AngelicBenediction card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class AngelicBenedictionTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override

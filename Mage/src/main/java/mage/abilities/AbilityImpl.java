@@ -1,5 +1,10 @@
 package mage.abilities;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import mage.MageIdentifier;
 import mage.MageObject;
 import mage.abilities.costs.*;
 import mage.abilities.costs.common.PayLifeCost;
@@ -8,7 +13,9 @@ import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
 import mage.abilities.effects.OneShotEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.hint.Hint;
+import mage.abilities.icon.CardIcon;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.cards.Card;
 import mage.cards.SplitCard;
@@ -24,15 +31,11 @@ import mage.players.Player;
 import mage.target.Target;
 import mage.target.Targets;
 import mage.target.targetadjustment.TargetAdjuster;
+import mage.util.CardUtil;
 import mage.util.GameLog;
 import mage.util.ThreadLocalStringBuilder;
 import mage.watchers.Watcher;
 import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -51,8 +54,7 @@ public abstract class AbilityImpl implements Ability {
     protected ManaCosts<ManaCost> manaCosts;
     protected ManaCosts<ManaCost> manaCostsToPay;
     protected Costs<Cost> costs;
-    protected Costs<Cost> optionalCosts;
-    protected Modes modes; // access to it by GetModes only (it's can be override by some abilities)
+    protected Modes modes; // access to it by GetModes only (it can be overridden by some abilities)
     protected Zone zone;
     protected String name;
     protected AbilityWord abilityWord;
@@ -63,13 +65,16 @@ public abstract class AbilityImpl implements Ability {
     protected boolean activated = false;
     protected boolean worksFaceDown = false;
     protected int sourceObjectZoneChangeCounter;
-    protected List<Watcher> watchers = new ArrayList<>(); // access to it by GetWatchers only (it's can be override by some abilities)
+    protected List<Watcher> watchers = new ArrayList<>(); // access to it by GetWatchers only (it can be overridden by some abilities)
     protected List<Ability> subAbilities = null;
     protected boolean canFizzle = true;
     protected TargetAdjuster targetAdjuster = null;
     protected CostAdjuster costAdjuster = null;
     protected List<Hint> hints = new ArrayList<>();
+    protected List<CardIcon> icons = new ArrayList<>();
     protected Outcome customOutcome = null; // uses for AI decisions instead effects
+    protected MageIdentifier identifier; // used to identify specific ability (e.g. to match with corresponding watcher)
+    protected String appendToRule = null;
 
     public AbilityImpl(AbilityType abilityType, Zone zone) {
         this.id = UUID.randomUUID();
@@ -79,7 +84,6 @@ public abstract class AbilityImpl implements Ability {
         this.manaCosts = new ManaCostsImpl<>();
         this.manaCostsToPay = new ManaCostsImpl<>();
         this.costs = new CostsImpl<>();
-        this.optionalCosts = new CostsImpl<>();
         this.modes = new Modes();
     }
 
@@ -95,7 +99,6 @@ public abstract class AbilityImpl implements Ability {
         this.manaCosts = ability.manaCosts;
         this.manaCostsToPay = ability.manaCostsToPay.copy();
         this.costs = ability.costs.copy();
-        this.optionalCosts = ability.optionalCosts.copy();
         for (Watcher watcher : ability.getWatchers()) {
             watchers.add(watcher.copy());
         }
@@ -119,7 +122,13 @@ public abstract class AbilityImpl implements Ability {
         for (Hint hint : ability.getHints()) {
             this.hints.add(hint.copy());
         }
+        for (CardIcon icon : ability.getIcons()) {
+            this.icons.add(icon.copy());
+        }
         this.customOutcome = ability.customOutcome;
+        this.identifier = ability.identifier;
+        this.activated = ability.activated;
+        this.appendToRule = ability.appendToRule;
     }
 
     @Override
@@ -133,6 +142,10 @@ public abstract class AbilityImpl implements Ability {
             this.id = UUID.randomUUID();
         }
         getEffects().newId();
+
+        for (Ability sub : getSubAbilities()) {
+            sub.newId();
+        }
     }
 
     @Override
@@ -152,6 +165,9 @@ public abstract class AbilityImpl implements Ability {
         boolean result = true;
         //20100716 - 117.12
         if (checkIfClause(game)) {
+            // Ability has started resolving. Fire event.
+            // Used for abilities counting the number of resolutions like Ashling the Pilgrim.
+            game.fireEvent(new GameEvent(GameEvent.EventType.RESOLVING_ABILITY, this.getOriginalId(), this, this.getControllerId()));
             if (this instanceof TriggeredAbility) {
                 for (UUID modeId : this.getModes().getSelectedModes()) {
                     this.getModes().setActiveMode(modeId);
@@ -167,6 +183,9 @@ public abstract class AbilityImpl implements Ability {
     private boolean resolveMode(Game game) {
         boolean result = true;
         for (Effect effect : getEffects()) {
+            if (game.inCheckPlayableState() && !(effect instanceof ManaEffect)) {
+                continue; // Ignored non mana effects - see GameEvent.TAPPED_FOR_MANA
+            }
             if (effect instanceof OneShotEffect) {
                 boolean effectResult = effect.apply(game, this);
                 result &= effectResult;
@@ -217,21 +236,9 @@ public abstract class AbilityImpl implements Ability {
         }
         game.applyEffects();
 
-        /* 20130201 - 601.2b
-         * If the spell is modal the player announces the mode choice (see rule 700.2).
-         */
-        if (!getModes().choose(game, this)) {
-            return false;
-        }
-
         MageObject sourceObject = getSourceObject(game);
         if (getSourceObjectZoneChangeCounter() == 0) {
             setSourceObjectZoneChangeCounter(game.getState().getZoneChangeCounter(getSourceId()));
-        }
-        if (controller.isTestMode()) {
-            if (!controller.addTargets(this, game)) {
-                return false;
-            }
         }
 
         /* 20130201 - 601.2b
@@ -258,9 +265,6 @@ public abstract class AbilityImpl implements Ability {
             }
         }
 
-        if (getModes().getAdditionalCost() != null) {
-            getModes().getAdditionalCost().addOptionalAdditionalModeCosts(this, game);
-        }
         // 20130201 - 601.2b
         // If the spell has alternative or additional costs that will be paid as it's being cast such
         // as buyback, kicker, or convoke costs (see rules 117.8 and 117.9), the player announces his
@@ -295,14 +299,35 @@ public abstract class AbilityImpl implements Ability {
 
         // For effects from cards like Void Winnower x costs have to be set
         if (this.getAbilityType() == AbilityType.SPELL
-                && game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.CAST_SPELL_LATE, getId(), getSourceId(), getControllerId()), this)) {
+                && game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.CAST_SPELL_LATE, this.getId(), this, getControllerId()), this)) {
             return false;
         }
 
-        handlePhyrexianManaCosts(game, sourceId, controller);
+        handlePhyrexianManaCosts(game, controller);
+
+        /* 20130201 - 601.2b
+         * If the spell is modal the player announces the mode choice (see rule 700.2).
+         */
+        // rules:
+        // You kick a spell as you cast it. You declare whether you're going to pay a kicker cost at the same
+        // time you'd choose a spell's mode, and then you actually pay it at the same time you pay the spell's mana cost.
+        // Kicking a spell is always optional.
+        if (!getModes().choose(game, this)) {
+            return false;
+        }
+
+        // unit tests only: it allows to add targets/choices by two ways:
+        // 1. From cast/activate command params (process it here)
+        // 2. From single addTarget/setChoice, it's a preffered method for tests (process it in normal choose dialogs like human player)
+        if (controller.isTestsMode()) {
+            if (!controller.addTargets(this, game)) {
+                return false;
+            }
+        }
 
         for (UUID modeId : this.getModes().getSelectedModes()) {
             this.getModes().setActiveMode(modeId);
+
             //20121001 - 601.2c
             // 601.2c The player announces their choice of an appropriate player, object, or zone for
             // each target the spell requires. A spell may require some targets only if an alternative or
@@ -323,35 +348,35 @@ public abstract class AbilityImpl implements Ability {
             if (sourceObject != null && this.getAbilityType() != AbilityType.TRIGGERED) { // triggered abilities check this already in playerImpl.triggerAbility
                 sourceObject.adjustTargets(this, game);
             }
+
             if (!getTargets().isEmpty()) {
                 Outcome outcome = getEffects().getOutcome(this);
-                // only activated abilities can be canceled by user (not triggered)
-                if (!getTargets().chooseTargets(outcome, this.controllerId, this, noMana, game, this instanceof ActivatedAbility)) {
+
+                // only activated abilities can be canceled by human user (not triggered)
+                boolean canCancel = this instanceof ActivatedAbility && controller.isHuman();
+                if (!getTargets().chooseTargets(outcome, this.controllerId, this, noMana, game, canCancel)) {
                     // was canceled during targer selection
                     return false;
                 }
             }
         } // end modes
 
-        // TODO: Handle optionalCosts at the same time as already OptionalAdditionalSourceCosts are handled.
-        for (Cost cost : optionalCosts) {
-            if (cost instanceof ManaCost) {
-                cost.clearPaid();
-                if (controller.chooseUse(Outcome.Benefit, "Pay optional cost " + cost.getText() + '?', this, game)) {
-                    manaCostsToPay.add((ManaCost) cost);
-                }
-            }
-        }
-
         // this is a hack to prevent mana abilities with mana costs from causing endless loops - pay other costs first
-        if (this instanceof ActivatedManaAbilityImpl && !costs.pay(this, game, sourceId, controllerId, noMana, null)) {
+        if (this instanceof ActivatedManaAbilityImpl && !costs.pay(this, game, this, controllerId, noMana, null)) {
             logger.debug("activate mana ability failed - non mana costs");
             return false;
         }
 
+        // fused spell contains 3 abilities (fused, left, right)
+        // fused cost added to fused ability, so no need cost modification for other parts
+        boolean needCostModification = true;
+        if (CardUtil.isFusedPartAbility(this, game)) {
+            needCostModification = false;
+        }
+
         //20101001 - 601.2e
-        if (sourceObject != null) {
-            sourceObject.adjustCosts(this, game); // still needed
+        if (needCostModification && sourceObject != null) {
+            sourceObject.adjustCosts(this, game); // still needed for CostAdjuster objects (to handle some types of dynamic costs)
             game.getContinuousEffects().costModification(this, game);
         }
 
@@ -361,12 +386,12 @@ public abstract class AbilityImpl implements Ability {
         }
 
         //20100716 - 601.2f  (noMana is not used here, because mana costs were cleared for this ability before adding additional costs and applying cost modification effects)
-        if (!manaCostsToPay.pay(this, game, sourceId, activatorId, false, null)) {
+        if (!manaCostsToPay.pay(this, game, this, activatorId, false, null)) {
             return false; // cancel during mana payment
         }
 
         //20100716 - 601.2g
-        if (!costs.pay(this, game, sourceId, activatorId, noMana, null)) {
+        if (!costs.pay(this, game, this, activatorId, noMana, null)) {
             logger.debug("activate failed - non mana costs");
             return false;
         }
@@ -414,36 +439,28 @@ public abstract class AbilityImpl implements Ability {
             }
         }
 
-        boolean alternativeCostisUsed = false;
+        boolean alternativeCostUsed = false;
         if (sourceObject != null && !(sourceObject instanceof Permanent)) {
-            Abilities<Ability> abilities = null;
-            if (sourceObject instanceof Card) {
-                abilities = ((Card) sourceObject).getAbilities(game);
-            } else {
-                sourceObject.getAbilities();
-            }
+            // it's important to apply alternative cost first
+            // example: Omniscience gives free mana as alternative, but Entwine ability adds {2} as additional
+            Abilities<Ability> abilities = CardUtil.getAbilities(sourceObject, game);
 
-            if (abilities != null) {
-                for (Ability ability : abilities) {
-                    // if cast for noMana no Alternative costs are allowed
-                    if (canUseAlternativeCost && !noMana && ability instanceof AlternativeSourceCosts) {
-                        AlternativeSourceCosts alternativeSpellCosts = (AlternativeSourceCosts) ability;
-                        if (alternativeSpellCosts.isAvailable(this, game)) {
-                            if (alternativeSpellCosts.askToActivateAlternativeCosts(this, game)) {
-                                // only one alternative costs may be activated
-                                alternativeCostisUsed = true;
-                                break;
-                            }
+            // 1. ALTERNATIVE COSTS
+            for (Ability ability : abilities) {
+                // if cast for noMana no Alternative costs are allowed
+                if (canUseAlternativeCost && !noMana && ability instanceof AlternativeSourceCosts) {
+                    AlternativeSourceCosts alternativeSpellCosts = (AlternativeSourceCosts) ability;
+                    if (alternativeSpellCosts.isAvailable(this, game)) {
+                        if (alternativeSpellCosts.askToActivateAlternativeCosts(this, game)) {
+                            // only one alternative costs may be activated
+                            alternativeCostUsed = true;
+                            break;
                         }
-                    }
-                    if (canUseAdditionalCost && ability instanceof OptionalAdditionalSourceCosts) {
-                        ((OptionalAdditionalSourceCosts) ability).addOptionalAdditionalCosts(this, game);
                     }
                 }
             }
-
             // controller specific alternate spell costs
-            if (canUseAlternativeCost && !noMana && !alternativeCostisUsed) {
+            if (canUseAlternativeCost && !noMana && !alternativeCostUsed) {
                 if (this.getAbilityType() == AbilityType.SPELL
                         // 117.9a Only one alternative cost can be applied to any one spell as it's being cast.
                         // So an alternate spell ability can't be paid with Omniscience
@@ -452,16 +469,23 @@ public abstract class AbilityImpl implements Ability {
                         if (alternativeSourceCosts.isAvailable(this, game)) {
                             if (alternativeSourceCosts.askToActivateAlternativeCosts(this, game)) {
                                 // only one alternative costs may be activated
-                                alternativeCostisUsed = true;
+                                alternativeCostUsed = true;
                                 break;
                             }
                         }
                     }
                 }
             }
+
+            // 2. ADDITIONAL COST
+            for (Ability ability : abilities) {
+                if (canUseAdditionalCost && ability instanceof OptionalAdditionalSourceCosts) {
+                    ((OptionalAdditionalSourceCosts) ability).addOptionalAdditionalCosts(this, game);
+                }
+            }
         }
 
-        return alternativeCostisUsed;
+        return alternativeCostUsed;
     }
 
     /**
@@ -497,7 +521,7 @@ public abstract class AbilityImpl implements Ability {
      * Phyrexian mana symbols, the player announces whether they intend to pay 2
      * life or the corresponding colored mana cost for each of those symbols.
      */
-    private void handlePhyrexianManaCosts(Game game, UUID sourceId, Player controller) {
+    private void handlePhyrexianManaCosts(Game game, Player controller) {
         Iterator<ManaCost> costIterator = manaCostsToPay.iterator();
         while (costIterator.hasNext()) {
             ManaCost cost = costIterator.next();
@@ -505,7 +529,7 @@ public abstract class AbilityImpl implements Ability {
             if (cost instanceof PhyrexianManaCost) {
                 PhyrexianManaCost phyrexianManaCost = (PhyrexianManaCost) cost;
                 PayLifeCost payLifeCost = new PayLifeCost(2);
-                if (payLifeCost.canPay(this, sourceId, controller.getId(), game)
+                if (payLifeCost.canPay(this, this, controller.getId(), game)
                         && controller.chooseUse(Outcome.LoseLife, "Pay 2 life instead of " + phyrexianManaCost.getBaseText() + '?', this, game)) {
                     costIterator.remove();
                     costs.add(payLifeCost);
@@ -516,7 +540,7 @@ public abstract class AbilityImpl implements Ability {
 
     public int handleManaXMultiplier(Game game, int value) {
         // some spells can change X value without new pays (Unbound Flourishing doubles X)
-        GameEvent xEvent = GameEvent.getEvent(GameEvent.EventType.X_MANA_ANNOUNCE, getId(), getSourceId(), getControllerId(), value);
+        GameEvent xEvent = GameEvent.getEvent(GameEvent.EventType.X_MANA_ANNOUNCE, this.getId(), this, getControllerId(), value);
         game.replaceEvent(xEvent, this);
         return xEvent.getAmount();
     }
@@ -665,11 +689,6 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
-    public Costs<Cost> getOptionalCosts() {
-        return optionalCosts;
-    }
-
-    @Override
     public Effects getEffects() {
         return getModes().getMode().getEffects();
     }
@@ -706,7 +725,6 @@ public abstract class AbilityImpl implements Ability {
 
     @Override
     public void addWatcher(Watcher watcher) {
-
         watcher.setSourceId(this.sourceId);
         watcher.setControllerId(this.controllerId);
         getWatchers().add(watcher);
@@ -734,6 +752,10 @@ public abstract class AbilityImpl implements Ability {
     @Override
     public boolean isUsesStack() {
         return usesStack;
+    }
+
+    public void appendToRule(String appendToRule) {
+        this.appendToRule = appendToRule;
     }
 
     @Override
@@ -766,7 +788,7 @@ public abstract class AbilityImpl implements Ability {
             if (ruleStart.length() > 1) {
                 String end = ruleStart.substring(ruleStart.length() - 2).trim();
                 if (end.isEmpty() || end.equals(":") || end.equals(".")) {
-                    rule = ruleStart + Character.toUpperCase(text.charAt(0)) + text.substring(1);
+                    rule = ruleStart + CardUtil.getTextWithFirstCharUpperCase(text);
                 } else {
                     rule = ruleStart + text;
                 }
@@ -778,6 +800,9 @@ public abstract class AbilityImpl implements Ability {
         }
         if (abilityWord != null) {
             rule = "<i>" + abilityWord + "</i> &mdash; " + Character.toUpperCase(rule.charAt(0)) + rule.substring(1);
+        }
+        if (appendToRule != null) {
+            rule = rule.concat(appendToRule);
         }
         return rule;
     }
@@ -791,14 +816,24 @@ public abstract class AbilityImpl implements Ability {
         String replace = rule;
         if (rule != null && source != null && !source.isEmpty()) {
             replace = rule.replace("{this}", source);
-            replace = replace.replace("{source}", source);
         }
         return replace;
     }
 
     @Override
     public void addCost(Cost cost) {
-        if (cost != null) {
+        if (cost == null) {
+            return;
+        }
+
+        if (cost instanceof Costs) {
+            // as list of costs
+            Costs<Cost> list = (Costs<Cost>) cost;
+            for (Cost single : list) {
+                addCost(single);
+            }
+        } else {
+            // as single cost
             if (cost instanceof ManaCost) {
                 this.addManaCost((ManaCost) cost);
             } else {
@@ -812,13 +847,6 @@ public abstract class AbilityImpl implements Ability {
         if (cost != null) {
             this.manaCosts.add(cost);
             this.manaCostsToPay.add(cost);
-        }
-    }
-
-    @Override
-    public void addOptionalCost(Cost cost) {
-        if (cost != null) {
-            this.optionalCosts.add(cost);
         }
     }
 
@@ -845,6 +873,18 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
+    public Targets getAllSelectedTargets() {
+        Targets res = new Targets();
+        for (UUID modeId : this.getModes().getSelectedModes()) {
+            Mode mode = this.getModes().get(modeId);
+            if (mode != null) {
+                res.addAll(mode.getTargets());
+            }
+        }
+        return res;
+    }
+
+    @Override
     public UUID getFirstTarget() {
         return getTargets().getFirstTarget();
     }
@@ -865,24 +905,36 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
-    public boolean canChooseTarget(Game game) {
+    public boolean canChooseTarget(Game game, UUID playerId) {
         if (this instanceof SpellAbility) {
             if (SpellAbilityType.SPLIT_FUSED.equals(((SpellAbility) this).getSpellAbilityType())) {
                 Card card = game.getCard(getSourceId());
                 if (card != null) {
-                    return canChooseTargetAbility(((SplitCard) card).getLeftHalfCard().getSpellAbility(), game, getControllerId())
-                            && canChooseTargetAbility(((SplitCard) card).getRightHalfCard().getSpellAbility(), game, getControllerId());
+                    return canChooseTargetAbility(((SplitCard) card).getLeftHalfCard().getSpellAbility(), game, playerId)
+                            && canChooseTargetAbility(((SplitCard) card).getRightHalfCard().getSpellAbility(), game, playerId);
                 }
                 return false;
             }
         }
-        return canChooseTargetAbility(this, game, getControllerId());
+        return canChooseTargetAbility(this, game, playerId);
     }
 
     private static boolean canChooseTargetAbility(Ability ability, Game game, UUID controllerId) {
         int found = 0;
         for (Mode mode : ability.getModes().values()) {
-            if (mode.getTargets().canChoose(ability.getSourceId(), ability.getControllerId(), game)) {
+            boolean validTargets = true;
+            for (Target target : mode.getTargets()) {
+                UUID abilityControllerId = controllerId;
+                if (target.getTargetController() != null) {
+                    abilityControllerId = target.getTargetController();
+                }
+                if (!target.canChoose(ability.getSourceId(), abilityControllerId, game)) {
+                    validTargets = false;
+                    break;
+                }
+            }
+
+            if (validTargets) {
                 found++;
                 if (ability.getModes().isEachModeMoreThanOnce()) {
                     return true;
@@ -935,6 +987,10 @@ public abstract class AbilityImpl implements Ability {
 
     @Override
     public boolean hasSourceObjectAbility(Game game, MageObject source, GameEvent event) {
+        // if source object have this ability
+        // uses for ability.isInUseableZone
+        // replacement and other continues effects can be without source, but active (must return true)
+
         MageObject object = source;
         // for singleton abilities like Flying we can't rely on abilities' source because it's only once in continuous effects
         // so will use the sourceId of the object itself that came as a parameter if it is not null
@@ -946,16 +1002,10 @@ public abstract class AbilityImpl implements Ability {
         }
         if (object != null) {
             if (object instanceof Permanent) {
-                if (!((Permanent) object).getAbilities(game).contains(this)) {
-                    return false;
-                }
-                return ((Permanent) object).isPhasedIn();
-            } else if (object instanceof Card) {
-                return ((Card) object).getAbilities(game).contains(this);
-            } else if (!object.getAbilities().contains(this)) { // not sure which object it can still be
-                // check if it's an ability that is temporary gained to a card
-                Abilities<Ability> otherAbilities = game.getState().getAllOtherAbilities(this.getSourceId());
-                return otherAbilities != null && otherAbilities.contains(this);
+                return object.hasAbility(this, game) && ((Permanent) object).isPhasedIn();
+            } else {
+                // cards and other objects
+                return object.hasAbility(this, game);
             }
         }
         return true;
@@ -1005,8 +1055,9 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
-    public void setAbilityWord(AbilityWord abilityWord) {
+    public Ability setAbilityWord(AbilityWord abilityWord) {
         this.abilityWord = abilityWord;
+        return this;
     }
 
     @Override
@@ -1115,6 +1166,7 @@ public abstract class AbilityImpl implements Ability {
             String usedVerb = null;
             for (Target target : targets) {
                 if (!target.getTargets().isEmpty()) {
+                    String targetHintInfo = target.getChooseHint() == null ? "" : " (" + target.getChooseHint() + ")";
                     if (!target.isNotTarget()) {
                         if (usedVerb == null || usedVerb.equals(" choosing ")) {
                             usedVerb = " targeting ";
@@ -1125,6 +1177,7 @@ public abstract class AbilityImpl implements Ability {
                         sb.append(usedVerb);
                     }
                     sb.append(target.getTargetedName(game));
+                    sb.append(targetHintInfo);
                 }
             }
         }
@@ -1223,6 +1276,17 @@ public abstract class AbilityImpl implements Ability {
         }
     }
 
+    /**
+     * Dynamic cost modification for ability.<br>
+     * Example: if it need stack related info (like real targets) then must
+     * check two states (game.inCheckPlayableState): <br>
+     * 1. In playable state it must check all possible use cases (e.g. allow to
+     * reduce on any available target and modes) <br>
+     * 2. In real cast state it must check current use case (e.g. real selected
+     * targets and modes)
+     *
+     * @param costAdjuster
+     */
     @Override
     public void setCostAdjuster(CostAdjuster costAdjuster) {
         this.costAdjuster = costAdjuster;
@@ -1252,6 +1316,17 @@ public abstract class AbilityImpl implements Ability {
     }
 
     @Override
+    public List<CardIcon> getIcons() {
+        return this.icons;
+    }
+
+    @Override
+    public Ability addIcon(CardIcon cardIcon) {
+        this.icons.add(cardIcon);
+        return this;
+    }
+
+    @Override
     public Ability addCustomOutcome(Outcome customOutcome) {
         this.customOutcome = customOutcome;
         return this;
@@ -1260,5 +1335,29 @@ public abstract class AbilityImpl implements Ability {
     @Override
     public Outcome getCustomOutcome() {
         return this.customOutcome;
+    }
+
+    @Override
+    public boolean isSameInstance(Ability ability) {
+        // same instance (by mtg rules) = same object, ID or class+text (you can't check class only cause it can be different by params/text)
+        if (ability == null) {
+            return false;
+        }
+
+        return (this == ability)
+                || (this.getId().equals(ability.getId()))
+                || (this.getOriginalId().equals(ability.getOriginalId()))
+                || (this.getClass() == ability.getClass() && this.getRule(true).equals(ability.getRule(true)));
+    }
+
+    @Override
+    public MageIdentifier getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    public AbilityImpl setIdentifier(MageIdentifier identifier) {
+        this.identifier = identifier;
+        return this;
     }
 }

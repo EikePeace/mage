@@ -18,8 +18,8 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterLandCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.FaceDownPredicate;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
@@ -44,7 +44,7 @@ public final class OblivionSower extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OblivionSower(final OblivionSower card) {
+    private OblivionSower(final OblivionSower card) {
         super(card);
     }
 

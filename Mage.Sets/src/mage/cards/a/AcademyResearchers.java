@@ -14,7 +14,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToPermanentId;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -38,7 +38,7 @@ public final class AcademyResearchers extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new AcademyResearchersEffect(), true));
     }
 
-    public AcademyResearchers(final AcademyResearchers card) {
+    private AcademyResearchers(final AcademyResearchers card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class AcademyResearchersEffect extends OneShotEffect {
                 if (auraInHand != null) {
                     game.getState().setValue("attachTo:" + auraInHand.getId(), academyResearchers);
                     controller.moveCards(auraInHand, Zone.BATTLEFIELD, source, game);
-                    if (academyResearchers.addAttachment(auraInHand.getId(), game)) {
+                    if (academyResearchers.addAttachment(auraInHand.getId(), source, game)) {
                         game.informPlayers(controller.getLogName() + " put " + auraInHand.getLogName() + " on the battlefield attached to " + academyResearchers.getLogName() + '.');
                         return true;
                     }

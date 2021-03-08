@@ -46,7 +46,7 @@ public final class AzorsGateway extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AzorsGateway(final AzorsGateway card) {
+    private AzorsGateway(final AzorsGateway card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class AzorsGatewayEffect extends OneShotEffect {
         UUID exileId = CardUtil.getCardExileZoneId(game, source);
         MageObject sourceObject = source.getSourceObject(game);
         if (controller != null && exileId != null && sourceObject != null) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
             TargetCardInHand target = new TargetCardInHand();
             controller.choose(outcome, target, source.getSourceId(), game);
             Card cardToExile = game.getCard(target.getFirstTarget());

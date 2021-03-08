@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 
@@ -52,7 +52,7 @@ public final class CaptainOfTheMists extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CaptainOfTheMists(final CaptainOfTheMists card) {
+    private CaptainOfTheMists(final CaptainOfTheMists card) {
         super(card);
     }
 

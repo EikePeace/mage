@@ -22,7 +22,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.SaprolingBurstToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.util.CardUtil;
 
@@ -45,7 +44,7 @@ public final class SaprolingBurst extends CardImpl {
         this.addAbility(new SaprolingBurstLeavesBattlefieldTriggeredAbility());
     }
 
-    public SaprolingBurst(final SaprolingBurst card) {
+    private SaprolingBurst(final SaprolingBurst card) {
         super(card);
     }
 
@@ -75,7 +74,7 @@ class SaprolingBurstCreateTokenEffect extends OneShotEffect {
     @SuppressWarnings("unchecked")
     public boolean apply(Game game, Ability source) {
         Token token = new SaprolingBurstToken(new MageObjectReference(source.getSourceObject(game), game));
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(1, game, source, source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
             Object object = game.getState().getValue(CardUtil.getCardZoneString("_tokensCreated", source.getSourceId(), game));
@@ -151,7 +150,7 @@ class SaprolingBurstDestroyEffect extends OneShotEffect {
             for (UUID tokenId : tokensCreated) {
                 Permanent token = game.getPermanent(tokenId);
                 if (token != null) {
-                    token.destroy(source.getSourceId(), game, true);
+                    token.destroy(source, game, true);
                 }
             }
         }

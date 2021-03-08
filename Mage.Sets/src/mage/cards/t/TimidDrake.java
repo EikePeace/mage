@@ -12,7 +12,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class TimidDrake extends CardImpl {
         ));
     }
 
-    public TimidDrake(final TimidDrake card) {
+    private TimidDrake(final TimidDrake card) {
         super(card);
     }
 

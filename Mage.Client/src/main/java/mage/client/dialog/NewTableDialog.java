@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * App GUI: create new GAME
+ *
  * @author BetaSteward_at_googlemail.com, JayDi85
  */
 public class NewTableDialog extends MageDialog {
@@ -520,31 +522,31 @@ public class NewTableDialog extends MageDialog {
             return;
         }
         try {
+            // join AI
+            for (TablePlayerPanel player : players) {
+                if (player.getPlayerType() != PlayerType.HUMAN) {
+                    if (!player.joinTable(roomId, table.getTableId())) {
+                        // error message must be send by the server
+                        SessionHandler.removeTable(roomId, table.getTableId());
+                        table = null;
+                        return;
+                    }
+                }
+            }
+
+            // join itself
             if (SessionHandler.joinTable(
                     roomId,
                     table.getTableId(),
                     this.player1Panel.getPlayerName(),
                     PlayerType.HUMAN, 1,
-                    DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile()),
+                    DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile(), true),
                     this.txtPassword.getText())) {
-                for (TablePlayerPanel player : players) {
-                    if (player.getPlayerType() != PlayerType.HUMAN) {
-                        if (!player.joinTable(roomId, table.getTableId())) {
-                            // error message must be send by the server
-                            SessionHandler.removeTable(roomId, table.getTableId());
-                            table = null;
-                            return;
-                        }
-                    }
-                }
+                // all fine, can close create dialog (join dialog will be opened after feedback from server)
                 this.hideDialog();
                 return;
             }
-        } catch (FileNotFoundException ex) {
-            handleError(ex);
-        } catch (IOException ex) {
-            handleError(ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException | IOException ex) {
             handleError(ex);
         }
         // JOptionPane.showMessageDialog(MageFrame.getDesktop(), "Error joining table.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -618,7 +620,7 @@ public class NewTableDialog extends MageDialog {
         options.setMinimumRating((Integer) this.spnMinimumRating.getValue());
         options.setEdhPowerLevel((Integer) this.spnEdhPowerLevel.getValue());
         options.setMullgianType((MulliganType) this.cbMulligan.getSelectedItem());
-        String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
+        String serverAddress = SessionHandler.getSession().getServerHostname().orElse("");
         options.setBannedUsers(IgnoreList.getIgnoredUsers(serverAddress));
 
         return options;
@@ -894,7 +896,7 @@ public class NewTableDialog extends MageDialog {
         this.spnFreeMulligans.setValue(Integer.parseInt(PreferencesDialog.getCachedValue(PreferencesDialog.KEY_NEW_TABLE_NUMBER_OF_FREE_MULLIGANS + versionStr, "0")));
         this.cbMulligan.setSelectedItem(MulliganType.valueByName(PreferencesDialog.getCachedValue(PreferencesDialog.KEY_NEW_TABLE_MULLIGAN_TYPE + versionStr, MulliganType.GAME_DEFAULT.toString())));
 
-        int range = Integer.parseInt(PreferencesDialog.getCachedValue(PreferencesDialog.KEY_NEW_TABLE_RANGE + versionStr, "1"));
+        int range = Integer.parseInt(PreferencesDialog.getCachedValue(PreferencesDialog.KEY_NEW_TABLE_RANGE + versionStr, "0"));
         for (RangeOfInfluence roi : RangeOfInfluence.values()) {
             if (roi.getRange() == range) {
                 this.cbRange.setSelectedItem(roi);

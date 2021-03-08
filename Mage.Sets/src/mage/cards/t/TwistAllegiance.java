@@ -34,7 +34,7 @@ public final class TwistAllegiance extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public TwistAllegiance(final TwistAllegiance card) {
+    private TwistAllegiance(final TwistAllegiance card) {
         super(card);
     }
 
@@ -70,11 +70,11 @@ class TwistAllegianceEffect extends OneShotEffect {
                 if (permanent.isControlledBy(source.getControllerId()) || permanent.isControlledBy(targetOpponent.getId())) {
                     UUID newController = permanent.isControlledBy(source.getControllerId()) ? targetOpponent.getId() : source.getControllerId();
                     ContinuousEffect effect = new GainControlTargetEffect(Duration.EndOfTurn, true, newController);
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(effect, source);
                     permanent.untap(game);
                     effect = new GainAbilityTargetEffect(HasteAbility.getInstance(), Duration.EndOfTurn);
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(effect, source);
                 }
             }

@@ -36,7 +36,7 @@ public final class GracefulReprieve extends CardImpl {
 
     }
 
-    public GracefulReprieve(final GracefulReprieve card) {
+    private GracefulReprieve(final GracefulReprieve card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class GracefulReprieveDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

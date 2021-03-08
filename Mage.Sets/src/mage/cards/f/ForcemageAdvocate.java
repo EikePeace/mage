@@ -12,12 +12,10 @@ import mage.abilities.effects.common.ReturnFromGraveyardToHandTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterCard;
-import mage.filter.StaticFilters;
 import mage.target.common.TargetCardInOpponentsGraveyard;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.SecondTargetPointer;
@@ -49,7 +47,7 @@ public final class ForcemageAdvocate extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ForcemageAdvocate(final ForcemageAdvocate card) {
+    private ForcemageAdvocate(final ForcemageAdvocate card) {
         super(card);
     }
 

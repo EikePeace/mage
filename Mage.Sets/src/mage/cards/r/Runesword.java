@@ -56,7 +56,7 @@ public final class Runesword extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Runesword(final Runesword card) {
+    private Runesword(final Runesword card) {
         super(card);
     }
 
@@ -130,7 +130,7 @@ class RuneswordCantBeRegeneratedEffect extends ContinuousRuleModifyingEffectImpl
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.REGENERATE;
+        return event.getType() == GameEvent.EventType.REGENERATE;
     }
 
     @Override

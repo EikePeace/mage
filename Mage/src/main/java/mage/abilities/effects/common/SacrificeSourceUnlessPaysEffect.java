@@ -11,6 +11,7 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
+import mage.util.CardUtil;
 import mage.util.ManaUtil;
 
 import java.util.Locale;
@@ -65,9 +66,9 @@ public class SacrificeSourceUnlessPaysEffect extends OneShotEffect {
             }
 
             costToPay.clearPaid();
-            if (costToPay.canPay(source, source.getSourceId(), source.getControllerId(), game)
+            if (costToPay.canPay(source, source, source.getControllerId(), game)
                     && player.chooseUse(Outcome.Benefit, message, source, game)
-                    && costToPay.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
+                    && costToPay.pay(source, game, source, source.getControllerId(), false, null)) {
                 game.informPlayers(player.getLogName() + " chooses to pay " + costValueMessage + " to prevent sacrifice effect");
                 return true;
             }
@@ -75,7 +76,7 @@ public class SacrificeSourceUnlessPaysEffect extends OneShotEffect {
             game.informPlayers(player.getLogName() + " chooses not to pay " + costValueMessage + " to prevent sacrifice effect");
             if (source.getSourceObjectZoneChangeCounter() == game.getState().getZoneChangeCounter(source.getSourceId())
                     && game.getState().getZone(source.getSourceId()) == Zone.BATTLEFIELD) {
-                sourcePermanent.sacrifice(source.getSourceId(), game);
+                sourcePermanent.sacrifice(source, game);
             }
             return true;
         }
@@ -96,12 +97,7 @@ public class SacrificeSourceUnlessPaysEffect extends OneShotEffect {
         StringBuilder sb = new StringBuilder("sacrifice {this} unless you ");
         String costText = cost != null ? cost.getText() : "{X}";
 
-        if (costText.toLowerCase(Locale.ENGLISH).startsWith("discard")
-                || costText.toLowerCase(Locale.ENGLISH).startsWith("remove")
-                || costText.toLowerCase(Locale.ENGLISH).startsWith("return")
-                || costText.toLowerCase(Locale.ENGLISH).startsWith("put")
-                || costText.toLowerCase(Locale.ENGLISH).startsWith("exile")
-                || costText.toLowerCase(Locale.ENGLISH).startsWith("sacrifice")) {
+        if (CardUtil.checkCostWords(costText)) {
             sb.append(costText.substring(0, 1).toLowerCase(Locale.ENGLISH));
             sb.append(costText.substring(1));
         } else {

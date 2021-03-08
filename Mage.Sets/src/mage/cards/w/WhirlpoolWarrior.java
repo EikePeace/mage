@@ -45,7 +45,7 @@ public final class WhirlpoolWarrior extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WhirlpoolWarrior(final WhirlpoolWarrior card) {
+    private WhirlpoolWarrior(final WhirlpoolWarrior card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class WhirlpoolWarriorActivatedEffect extends OneShotEffect {
             for (Entry<UUID, Integer> entry : playerCards.entrySet()) {
                 Player player = game.getPlayer(entry.getKey());
                 if (player != null) {
-                    player.drawCards(entry.getValue(), game);
+                    player.drawCards(entry.getValue(), source, game);
                 }
             }
             return true;

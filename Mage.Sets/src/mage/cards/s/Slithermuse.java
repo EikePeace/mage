@@ -37,7 +37,7 @@ public final class Slithermuse extends CardImpl {
         this.addAbility(new EvokeAbility(this, "{3}{U}"));
     }
 
-    public Slithermuse(final Slithermuse card) {
+    private Slithermuse(final Slithermuse card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class SlithermuseEffect extends OneShotEffect {
                     game.informPlayers(permanent.getName() + ": " + player.getLogName() + " has chosen " + chosenPlayer.getLogName());
                     int diff = chosenPlayer.getHand().size() - player.getHand().size();
                     if (diff > 0) {
-                        player.drawCards(diff, game);
+                        player.drawCards(diff, source, game);
                     }
                     return true;
                 }

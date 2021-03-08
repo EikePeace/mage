@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.effects.Effect;
@@ -20,7 +20,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -46,14 +46,14 @@ public final class WhisperwoodElemental extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new ManifestEffect(1), TargetController.YOU, false));
         
         // Sacrifice Whisperwood Elemental: Until end of turn, face-up, nontoken creatures you control gain "When this creature dies, manifest the top card of your library."
-        Ability abilityToGain = new DiesTriggeredAbility(new ManifestEffect(1));
+        Ability abilityToGain = new DiesSourceTriggeredAbility(new ManifestEffect(1));
         Effect effect = new GainAbilityControlledEffect(abilityToGain, Duration.EndOfTurn, filter);
         effect.setText("Until end of turn, face-up, nontoken creatures you control gain \"When this creature dies, manifest the top card of your library.\"");
         this.addAbility(new SimpleActivatedAbility(
                 Zone.ALL, effect, new SacrificeSourceCost()));
     }
 
-    public WhisperwoodElemental(final WhisperwoodElemental card) {
+    private WhisperwoodElemental(final WhisperwoodElemental card) {
         super(card);
     }
 

@@ -17,7 +17,6 @@ import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.GoblinToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 
 /**
@@ -41,7 +40,7 @@ public final class PonybackBrigade extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{2}{R}{W}{B}")));
     }
 
-    public PonybackBrigade(final PonybackBrigade card) {
+    private PonybackBrigade(final PonybackBrigade card) {
         super(card);
     }
 
@@ -74,10 +73,10 @@ class PonybackBrigadeAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getType() == EventType.TURNEDFACEUP && event.getTargetId().equals(this.getSourceId())) {
+        if (event.getType() == GameEvent.EventType.TURNEDFACEUP && event.getTargetId().equals(this.getSourceId())) {
             return true;
         }
-        if (event.getType() == EventType.ENTERS_THE_BATTLEFIELD && event.getTargetId().equals(this.getSourceId())) {
+        if (event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD && event.getTargetId().equals(this.getSourceId())) {
             Permanent sourcePermanent = game.getPermanent(getSourceId());
             if (sourcePermanent != null && !sourcePermanent.isFaceDown(game)) {
                 return true;

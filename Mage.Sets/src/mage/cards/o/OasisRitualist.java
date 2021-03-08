@@ -6,7 +6,7 @@ import mage.MageInt;
 import mage.abilities.costs.common.ExertSourceCost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.mana.AddManaOfAnyColorEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.AnyColorManaAbility;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
@@ -39,7 +39,7 @@ public final class OasisRitualist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OasisRitualist(final OasisRitualist card) {
+    private OasisRitualist(final OasisRitualist card) {
         super(card);
     }
 

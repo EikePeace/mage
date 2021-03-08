@@ -40,7 +40,7 @@ public final class NoosegrafMob extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new NoosegrafMobEffect(), false));
     }
 
-    public NoosegrafMob(final NoosegrafMob card) {
+    private NoosegrafMob(final NoosegrafMob card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class NoosegrafMobEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(source.getSourceId());
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && permanent != null && permanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
-            permanent.removeCounters(CounterType.P1P1.createInstance(), game);
+            permanent.removeCounters(CounterType.P1P1.createInstance(), source, game);
             Effect effect = new CreateTokenEffect(new ZombieToken());
             return effect.apply(game, source);
             }

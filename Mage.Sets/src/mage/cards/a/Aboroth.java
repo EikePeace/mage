@@ -32,7 +32,7 @@ public final class Aboroth extends CardImpl {
         this.addAbility(new CumulativeUpkeepAbility(new AborothCost()));
     }
 
-    public Aboroth(final Aboroth card) {
+    private Aboroth(final Aboroth card) {
         super(card);
     }
 
@@ -49,10 +49,10 @@ class AborothCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        Permanent permanent = game.getPermanent(sourceId);
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
+        Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.addCounters(CounterType.M1M1.createInstance(), ability, game);
+            permanent.addCounters(CounterType.M1M1.createInstance(), controllerId, ability, game);
             this.paid = true;
             return true;
         }
@@ -60,7 +60,7 @@ class AborothCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         return true;
     }
 

@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TappedPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
@@ -49,7 +49,7 @@ public final class BlackOakOfOdunos extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BlackOakOfOdunos(final BlackOakOfOdunos card) {
+    private BlackOakOfOdunos(final BlackOakOfOdunos card) {
         super(card);
     }
 

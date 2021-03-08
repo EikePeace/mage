@@ -27,7 +27,7 @@ public final class DamnablePact extends CardImpl {
 
     }
 
-    public DamnablePact(final DamnablePact card) {
+    private DamnablePact(final DamnablePact card) {
         super(card);
     }
 
@@ -52,8 +52,8 @@ class DamnablePactEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.drawCards(source.getManaCostsToPay().getX(), game);
-            targetPlayer.loseLife(source.getManaCostsToPay().getX(), game, false);
+            targetPlayer.drawCards(source.getManaCostsToPay().getX(), source, game);
+            targetPlayer.loseLife(source.getManaCostsToPay().getX(), game, source, false);
             return true;
         }
         return false;

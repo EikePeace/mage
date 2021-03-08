@@ -28,7 +28,7 @@ public final class SoldeviDigger extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new SoldeviDiggerEffect(), new ManaCostsImpl("{2}")));
     }
 
-    public SoldeviDigger(final SoldeviDigger card) {
+    private SoldeviDigger(final SoldeviDigger card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class SoldeviDiggerEffect extends OneShotEffect {
                 topCard = card;
             }
             if (topCard != null) {
-                return controller.moveCardToLibraryWithInfo(topCard, source.getSourceId(), game, Zone.GRAVEYARD, false, true);
+                return controller.moveCardToLibraryWithInfo(topCard, source, game, Zone.GRAVEYARD, false, true);
             }
             return true;
         }

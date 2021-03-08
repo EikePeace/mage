@@ -16,7 +16,7 @@ import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -47,7 +47,7 @@ public final class GargantuanGorilla extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GargantuanGorilla(final GargantuanGorilla card) {
+    private GargantuanGorilla(final GargantuanGorilla card) {
         super(card);
     }
 
@@ -88,11 +88,11 @@ class GargantuanGorillaSacrificeEffect extends OneShotEffect {
         if (controller != null && sourcePermanent != null) {
             TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
             SacrificeTargetCost cost = new SacrificeTargetCost(target);
-            if (!controller.chooseUse(Outcome.Benefit, "Do you wish to sacrifice a Forest?", source, game)
-                    || !cost.canPay(source, source.getSourceId(), source.getControllerId(), game)
-                    || !cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
-                sourcePermanent.sacrifice(source.getSourceId(), game);
-                controller.damage(7, sourcePermanent.getId(), game);
+            if (!controller.chooseUse(Outcome.Benefit, "Sacrifice a Forest?", source, game)
+                    || !cost.canPay(source, source, source.getControllerId(), game)
+                    || !cost.pay(source, game, source, source.getControllerId(), true)) {
+                sourcePermanent.sacrifice(source, game);
+                controller.damage(7, sourcePermanent.getId(), source, game);
             } else if (cost.isPaid()) {
                 for (Permanent permanent : cost.getPermanents()) {
                     if (filterSnow.match(permanent, game)) {
@@ -127,8 +127,8 @@ class GargantuanGorillaFightEffect extends OneShotEffect {
             // 20110930 - 701.10
             if (creature1 != null && sourcePermanent != null) {
                 if (creature1.isCreature() && sourcePermanent.isCreature()) {
-                    sourcePermanent.damage(creature1.getPower().getValue(), creature1.getId(), game, false, true);
-                    creature1.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), game, false, true);
+                    sourcePermanent.damage(creature1.getPower().getValue(), creature1.getId(), source, game, false, true);
+                    creature1.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), source, game, false, true);
                     return true;
                 }
             }

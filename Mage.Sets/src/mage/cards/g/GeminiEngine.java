@@ -17,7 +17,6 @@ import mage.constants.Outcome;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.GeminiEngineTwinToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
@@ -39,7 +38,7 @@ public final class GeminiEngine extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new GeminiEngineCreateTokenEffect(), false));
     }
 
-    public GeminiEngine(final GeminiEngine card) {
+    private GeminiEngine(final GeminiEngine card) {
         super(card);
     }
 
@@ -78,7 +77,7 @@ class GeminiEngineCreateTokenEffect extends OneShotEffect {
         } else {
             token = new GeminiEngineTwinToken(0, 0);
         }
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId(), false, true);
+        token.putOntoBattlefield(1, game, source, source.getControllerId(), false, true);
         for (UUID tokenId : token.getLastAddedTokenIds()) {
             Permanent tokenPerm = game.getPermanent(tokenId);
             if (tokenPerm != null) {

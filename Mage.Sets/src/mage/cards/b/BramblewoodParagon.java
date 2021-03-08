@@ -13,7 +13,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
@@ -28,7 +27,7 @@ public final class BramblewoodParagon extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("Each creature you control with a +1/+1 counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public BramblewoodParagon(UUID ownerId, CardSetInfo setInfo) {
@@ -50,7 +49,7 @@ public final class BramblewoodParagon extends CardImpl {
 
     }
 
-    public BramblewoodParagon(final BramblewoodParagon card) {
+    private BramblewoodParagon(final BramblewoodParagon card) {
         super(card);
     }
 
@@ -89,7 +88,7 @@ class BramblewoodParagonReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         return false;
     }

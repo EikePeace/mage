@@ -48,7 +48,7 @@ public final class BazaarTrader extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BazaarTrader(final BazaarTrader card) {
+    private BazaarTrader(final BazaarTrader card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class BazaarTraderEffect extends ContinuousEffectImpl {
         Player player = game.getPlayer(source.getFirstTarget());
         Permanent permanent = targetPermanentReference.getPermanent(game);
         if (player != null && permanent != null) {
-            return permanent.changeControllerId(player.getId(), game);            
+            return permanent.changeControllerId(player.getId(), game, source);            
         } else {
             discard();
         }

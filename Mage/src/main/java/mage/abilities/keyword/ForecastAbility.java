@@ -1,20 +1,20 @@
 
 package mage.abilities.keyword;
 
-import java.util.UUID;
-import mage.abilities.common.LimitedTimesPerTurnActivatedAbility;
+import mage.abilities.ActivatedAbilityImpl;
+import mage.abilities.condition.Condition;
+import mage.abilities.condition.common.IsStepCondition;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.RevealSourceFromYourHandCost;
 import mage.abilities.effects.Effect;
 import mage.constants.PhaseStep;
 import mage.constants.Zone;
-import mage.game.Game;
 
 /**
  * 702.56. Forecast 702.56a A forecast ability is a special kind of activated
  * ability that can be activated only from a player's hand. It's written
  * "Forecast -- [Activated ability]."
- *
+ * <p>
  * 702.56b A forecast ability may be activated only during the upkeep step of
  * the card's owner and only once each turn. The controller of the forecast
  * ability reveals the card with that ability from their hand as the ability is
@@ -23,12 +23,15 @@ import mage.game.Game;
  * begins, whichever comes first.
  *
  * @author LevelX2
- *
  */
-public class ForecastAbility extends LimitedTimesPerTurnActivatedAbility {
+public class ForecastAbility extends ActivatedAbilityImpl {
+
+    private static final Condition upkeepCondition = new IsStepCondition(PhaseStep.UPKEEP, true);
 
     public ForecastAbility(Effect effect, Cost cost) {
         super(Zone.HAND, effect, cost);
+        this.maxActivationsPerTurn = 1;
+        this.condition = upkeepCondition;
         this.addCost(new RevealSourceFromYourHandCost());
     }
 
@@ -42,19 +45,7 @@ public class ForecastAbility extends LimitedTimesPerTurnActivatedAbility {
     }
 
     @Override
-    public ActivationStatus canActivate(UUID playerId, Game game) {
-        // May be activated only during the upkeep step of the card's owner
-        // Because it can only be activated from a players hand it should be ok to check here with controllerId instead of card.getOwnerId().
-        if (!game.isActivePlayer(controllerId) || PhaseStep.UPKEEP != game.getStep().getType()) {
-            return ActivationStatus.getFalse();
-        }
-        return super.canActivate(playerId, game);
-    }
-
-    @Override
     public String getRule() {
-        StringBuilder sb = new StringBuilder("<i>Forecast</i> &mdash; ");
-        sb.append(super.getRule()).append(" <i>Activate this ability only during your upkeep.</i>");
-        return sb.toString();
+        return "Forecast &mdash; " + super.getRule() + " <i>(Activate this ability only during your upkeep and only once each turn)</i>";
     }
 }

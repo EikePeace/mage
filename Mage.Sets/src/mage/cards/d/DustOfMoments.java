@@ -19,8 +19,6 @@ import mage.counters.CounterType;
 import mage.filter.Filter;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CardCounterPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -44,7 +42,7 @@ public final class DustOfMoments extends CardImpl {
         this.getSpellAbility().addMode(mode);
     }
 
-    public DustOfMoments(final DustOfMoments card) {
+    private DustOfMoments(final DustOfMoments card) {
         super(card);
     }
 
@@ -67,10 +65,10 @@ public final class DustOfMoments extends CardImpl {
             super(Outcome.Benefit);
             this.counter = new Counter(CounterType.TIME.getName(), 2);
             this.permFilter = new FilterPermanent("permanent and each suspended card");
-            permFilter.add(new CounterPredicate(CounterType.TIME));
+            permFilter.add(CounterType.TIME.getPredicate());
 
             this.exiledFilter = new FilterCard("permanent and each suspended card");
-            exiledFilter.add(new CardCounterPredicate(CounterType.TIME));
+            exiledFilter.add(CounterType.TIME.getPredicate());
             setText();
         }
 
@@ -114,9 +112,9 @@ public final class DustOfMoments extends CardImpl {
                         final Counter existingCounterOfSameType = card.getCounters(game).get(counterName);
                         final int countersToRemove = Math.min(existingCounterOfSameType.getCount(), counter.getCount());
                         final Counter modifiedCounter = new Counter(counterName, countersToRemove);
-                        card.removeCounters(modifiedCounter, game);
+                        card.removeCounters(modifiedCounter, source, game);
                     } else {
-                        card.addCounters(counter, source, game);
+                        card.addCounters(counter, source.getControllerId(), source, game);
                     }
                     if (!game.isSimulation()) {
                         game.informPlayers(sourceObject.getName() + ": " +
@@ -139,9 +137,9 @@ public final class DustOfMoments extends CardImpl {
                         final Counter existingCounterOfSameType = card.getCounters(game).get(counterName);
                         final int countersToRemove = Math.min(existingCounterOfSameType.getCount(), counter.getCount());
                         final Counter modifiedCounter = new Counter(counterName, countersToRemove);
-                        card.removeCounters(modifiedCounter, game);
+                        card.removeCounters(modifiedCounter, source, game);
                     } else {
-                        card.addCounters(counter, source, game);
+                        card.addCounters(counter, source.getControllerId(), source, game);
                     }
                     if (!game.isSimulation()) {
                         game.informPlayers(sourceObject.getName() + ": " +

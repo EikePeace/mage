@@ -12,7 +12,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -31,7 +30,7 @@ public final class DanceOfTheSkywise extends CardImpl {
         this.getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
     }
 
-    public DanceOfTheSkywise(final DanceOfTheSkywise card) {
+    private DanceOfTheSkywise(final DanceOfTheSkywise card) {
         super(card);
     }
 

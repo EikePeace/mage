@@ -35,7 +35,7 @@ public final class BurnFromWithin extends CardImpl {
 
     }
 
-    public BurnFromWithin(final BurnFromWithin card) {
+    private BurnFromWithin(final BurnFromWithin card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class BurnFromWithinEffect extends OneShotEffect {
             int amount = source.getManaCostsToPay().getX();
             if (creature != null) {
                 game.addEffect(new DiesReplacementEffect(new MageObjectReference(creature, game), Duration.EndOfTurn), source);
-                int damageDealt = creature.damage(amount, source.getSourceId(), game, false, true);
+                int damageDealt = creature.damage(amount, source.getSourceId(), source, game, false, true);
                 if (damageDealt > 0) {
                     ContinuousEffect effect = new LoseAbilityTargetEffect(IndestructibleAbility.getInstance(), Duration.EndOfTurn);
                     effect.setTargetPointer(new FixedTarget(creature.getId()));
@@ -79,7 +79,7 @@ class BurnFromWithinEffect extends OneShotEffect {
             }
             Player targetPlayer = game.getPlayer(this.getTargetPointer().getFirst(game, source));
             if (targetPlayer != null) {
-                targetPlayer.damage(amount, source.getSourceId(), game);
+                targetPlayer.damage(amount, source.getSourceId(), source, game);
                 return true;
             }
         }

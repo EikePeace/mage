@@ -1,5 +1,6 @@
 package mage.abilities.effects;
 
+import java.util.*;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.MageSingleton;
@@ -9,8 +10,6 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.players.Player;
 import org.apache.log4j.Logger;
-
-import java.util.*;
 
 /**
  * @param <T>
@@ -66,7 +65,6 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
     }
 
     public void removeEndOfCombatEffects() {
-
         for (Iterator<T> i = this.iterator(); i.hasNext(); ) {
             T entry = i.next();
             if (entry.getDuration() == Duration.EndOfCombat) {
@@ -86,15 +84,6 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
         }
     }
 
-    public void incYourTurnNumPlayed(Game game) {
-        for (Iterator<T> i = this.iterator(); i.hasNext(); ) {
-            T entry = i.next();
-            if (game.isActivePlayer(entry.getStartingController())) {
-                entry.incYourTurnNumPlayed();
-            }
-        }
-    }
-
     private boolean isInactive(T effect, Game game) {
         // ends all inactive effects -- calls on player leave or apply new effect
         if (game.getState().isGameOver()) {
@@ -109,9 +98,8 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
         those objects are exiled. This is not a state-based action. It happens as soon as the player leaves the game.
         If the player who left the game had priority at the time they left, priority passes to the next player in turn
         order who’s still in the game.
-        */
+         */
         // objects removes doing in player.leave() call... effects removes is here
-
         Set<Ability> set = effectAbilityMap.get(effect.getId());
         if (set == null) {
             logger.debug("No abilities for effect found: " + effect.toString());
@@ -132,10 +120,10 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
                 // They neither expire immediately nor last indefinitely.
                 MageObject object = game.getObject(ability.getSourceId());
                 boolean isObjectInGame = ability.getSourceId() == null || object != null; // Commander effects have no sourceId
-                boolean isOwnerLeaveGame = false;
+                boolean hasOwnerLeftGame = false;
                 if (object instanceof Card) {
                     Player owner = game.getPlayer(((Card) object).getOwnerId());
-                    isOwnerLeaveGame = !owner.isInGame();
+                    hasOwnerLeftGame = !owner.isInGame();
                 }
 
                 switch (effect.getDuration()) {
@@ -147,18 +135,20 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
                     case EndOfCombat:
                     case EndOfGame:
                         // if the related source object does no longer exist in game - the effect has to be removed
-                        if (isOwnerLeaveGame || !isObjectInGame) {
+                        if (hasOwnerLeftGame || !isObjectInGame) {
                             it.remove();
                         }
                         break;
                     case OneUse:
-                        if (isOwnerLeaveGame || effect.isUsed()) {
+                        if (hasOwnerLeftGame || effect.isUsed()) {
                             it.remove();
                         }
                         break;
                     case Custom:
-                        // custom effects must process it's own inactive method (override), but can'be missied by devs
-                        if (isOwnerLeaveGame || effect.isInactive(ability, game)) {
+                        // custom effects must process it's own inactive method (override)
+                        // custom effects may not end, if the source permanent of the effect has left the game
+                        // 800.4a (only any effects which give that player control of any objects or players end)
+                        if (effect.isInactive(ability, game)) {
                             it.remove();
                         }
                         break;
@@ -177,7 +167,7 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
                         }
                         break;
                     case UntilSourceLeavesBattlefield:
-                        if (isOwnerLeaveGame || Zone.BATTLEFIELD != game.getState().getZone(ability.getSourceId())) {
+                        if (hasOwnerLeftGame || Zone.BATTLEFIELD != game.getState().getZone(ability.getSourceId())) {
                             it.remove();
                         }
                         break;
@@ -218,20 +208,13 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
         return effectAbilityMap.getOrDefault(effectId, new HashSet<>());
     }
 
-    public void removeEffects(UUID effectIdToRemove, Set<Ability> abilitiesToRemove) {
-        Set<Ability> abilities = effectAbilityMap.get(effectIdToRemove);
-        if (abilitiesToRemove != null && abilities != null) {
-            abilities.removeAll(abilitiesToRemove);
-        }
-        if (abilities == null || abilities.isEmpty()) {
-            for (Iterator<T> iterator = this.iterator(); iterator.hasNext(); ) {
-                ContinuousEffect effect = iterator.next();
-                if (effect.getId().equals(effectIdToRemove)) {
-                    iterator.remove();
-                    break;
-                }
+    public void removeTemporaryEffects() {
+        for (Iterator<T> i = this.iterator(); i.hasNext(); ) {
+            T entry = i.next();
+            if (entry.isTemporary()) {
+                i.remove();
+                effectAbilityMap.remove(entry.getId());
             }
-            effectAbilityMap.remove(effectIdToRemove);
         }
     }
 
@@ -239,5 +222,25 @@ public class ContinuousEffectsList<T extends ContinuousEffect> extends ArrayList
     public void clear() {
         super.clear();
         effectAbilityMap.clear();
+    }
+
+    @Override
+    public boolean contains(Object object) {
+        if (object == null || !(object instanceof ContinuousEffect)) {
+            return false;
+        }
+
+        // search by id
+        ContinuousEffect need = (ContinuousEffect) object;
+        for (Iterator<T> iterator = this.iterator(); iterator.hasNext(); ) {
+            T test = iterator.next();
+            if (need.equals(test)) {
+                return true;
+            }
+            if (need.getId().equals(test.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -34,7 +33,7 @@ public final class GhituEncampment extends CardImpl {
                 new ManaCostsImpl("{1}{R}")));
     }
 
-    public GhituEncampment(final GhituEncampment card) {
+    private GhituEncampment(final GhituEncampment card) {
         super(card);
     }
 

@@ -5,7 +5,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.effects.Effect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -35,7 +35,7 @@ public final class SavageVentmaw extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(effect, false));
     }
 
-    public SavageVentmaw(final SavageVentmaw card) {
+    private SavageVentmaw(final SavageVentmaw card) {
         super(card);
     }
 
@@ -51,7 +51,7 @@ class SavageVentmawManaEffect extends ManaEffect {
 
     public SavageVentmawManaEffect() {
         super();
-        this.mana = new Mana(3, 3, 0, 0, 0, 0, 0, 0);
+        this.mana = new Mana(0, 0, 0, 3, 3, 0, 0, 0);
         this.staticText = "add " + mana.toString() + ". Until end of turn, you don't lose this mana as steps and phases end";
     }
 

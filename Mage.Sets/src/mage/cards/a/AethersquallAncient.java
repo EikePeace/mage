@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class AethersquallAncient extends CardImpl {
         this.addAbility(new ActivateAsSorceryActivatedAbility(Zone.BATTLEFIELD, new ReturnToHandFromBattlefieldAllEffect(filter), new PayEnergyCost(8)));
     }
 
-    public AethersquallAncient(final AethersquallAncient card) {
+    private AethersquallAncient(final AethersquallAncient card) {
         super(card);
     }
 

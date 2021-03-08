@@ -1,9 +1,9 @@
 package mage.cards.k;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -52,7 +52,7 @@ public final class KahoMinamoHistorian extends CardImpl {
         this.addAbility(ability);
     }
 
-    public KahoMinamoHistorian(final KahoMinamoHistorian card) {
+    private KahoMinamoHistorian(final KahoMinamoHistorian card) {
         super(card);
     }
 
@@ -130,13 +130,14 @@ class KahoMinamoHistorianCastEffect extends OneShotEffect {
             filter.add(new ConvertedManaCostPredicate(ComparisonType.EQUAL_TO, source.getManaCostsToPay().getX()));
             TargetCardInExile target = new TargetCardInExile(filter, CardUtil.getCardExileZoneId(game, source));
             Cards cards = game.getExile().getExileZone(CardUtil.getCardExileZoneId(game, source));
-            if (!cards.isEmpty()
+            if (cards != null
+                    && !cards.isEmpty()
                     && controller.choose(Outcome.PlayForFree, cards, target, game)) {
                 Card card = game.getCard(target.getFirstTarget());
                 if (card != null) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                     controller.cast(controller.chooseAbilityForCast(card, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                 }
             }

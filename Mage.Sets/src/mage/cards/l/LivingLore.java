@@ -1,6 +1,7 @@
 package mage.cards.l;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
 import mage.MageObject;
 import mage.MageObjectReference;
@@ -46,7 +47,7 @@ public final class LivingLore extends CardImpl {
         this.addAbility(new DealsCombatDamageTriggeredAbility(new LivingLoreSacrificeEffect(), true));
     }
 
-    public LivingLore(final LivingLore card) {
+    private LivingLore(final LivingLore card) {
         super(card);
     }
 
@@ -169,7 +170,7 @@ class LivingLoreSacrificeEffect extends OneShotEffect {
             if (permanent != null
                     && mageObject != null
                     && new MageObjectReference(permanent, game).refersTo(mageObject, game)) {
-                if (permanent.sacrifice(source.getSourceId(), game)) {
+                if (permanent.sacrifice(source, game)) {
                     UUID exileId = CardUtil.getExileZoneId(game, source.getSourceId(),
                             source.getSourceObjectZoneChangeCounter());
                     if (exileId != null) {
@@ -182,10 +183,10 @@ class LivingLoreSacrificeEffect extends OneShotEffect {
                             }
                         }
                         if (exiledCard != null) {
-                            if (exiledCard.getSpellAbility().canChooseTarget(game)) {
+                            if (exiledCard.getSpellAbility().canChooseTarget(game, controller.getId())) {
                                 game.getState().setValue("PlayFromNotOwnHandZone" + exiledCard.getId(), Boolean.TRUE);
                                 controller.cast(controller.chooseAbilityForCast(exiledCard, game, true),
-                                        game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                        game, true, new ApprovingObject(source, game));
                                 game.getState().setValue("PlayFromNotOwnHandZone" + exiledCard.getId(), null);
                             }
                         }

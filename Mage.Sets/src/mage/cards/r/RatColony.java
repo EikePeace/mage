@@ -15,7 +15,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class RatColony extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new InfoEffect("A deck can have any number of cards named Rat Colony.")));
     }
 
-    public RatColony(final RatColony card) {
+    private RatColony(final RatColony card) {
         super(card);
     }
 

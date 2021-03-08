@@ -15,7 +15,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -53,7 +53,7 @@ public final class MausoleumHarpy extends CardImpl {
 
     }
 
-    public MausoleumHarpy(final MausoleumHarpy card) {
+    private MausoleumHarpy(final MausoleumHarpy card) {
         super(card);
     }
 

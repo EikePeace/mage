@@ -37,7 +37,7 @@ public final class VerdantSunsAvatar extends CardImpl {
         this.addAbility(new VerdantSunsAvatarTriggeredAbility());
     }
 
-    public VerdantSunsAvatar(final VerdantSunsAvatar card) {
+    private VerdantSunsAvatar(final VerdantSunsAvatar card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class VerdantSunsAvatarTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

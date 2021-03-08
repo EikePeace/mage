@@ -1,6 +1,5 @@
 package mage.abilities.effects.common;
 
-import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.constants.Outcome;
@@ -10,16 +9,19 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.CardUtil;
-import org.apache.log4j.Logger;
+
+import java.util.UUID;
 
 /**
+ * Use it for combo with ExileTargetForSourceEffect (exile and return exiled later)
+ *
  * @author BetaSteward_at_googlemail.com
  */
 public class ReturnFromExileForSourceEffect extends OneShotEffect {
 
-    private Zone returnToZone;
-    private boolean tapped;
-    private boolean previousZone;
+    private final Zone returnToZone;
+    private final boolean tapped;
+    private final boolean previousZone;
     private String returnName = "cards";
     private String returnControlName;
 
@@ -78,41 +80,49 @@ public class ReturnFromExileForSourceEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        MageObject sourceObject = source.getSourceObject(game);
-        if (sourceObject != null && controller != null) {
-            Permanent permanentLeftBattlefield = (Permanent) getValue("permanentLeftBattlefield");
-            if (permanentLeftBattlefield == null) {
-                Logger.getLogger(ReturnFromExileForSourceEffect.class).error("Permanent not found: " + sourceObject.getName());
-                return false;
-            }
-            ExileZone exile = game.getExile().getExileZone(CardUtil.getExileZoneId(game, source.getSourceId(), permanentLeftBattlefield.getZoneChangeCounter(game)));
-            if (exile != null) { // null is valid if source left battlefield before enters the battlefield effect resolved
-                if (returnToZone == Zone.BATTLEFIELD) {
-                    controller.moveCards(exile.getCards(game), returnToZone, source, game, false, false, true, null);
-                } else {
-                    controller.moveCards(exile, returnToZone, source, game);
-                }
-            }
-            return true;
+        if (controller == null) {
+            return false;
         }
-        return false;
+
+        // effect uses in two use cases:
+        // * on battlefield
+        // * after leaves the battlefield
+        // so ZCC must be different in different use cases
+
+        UUID exileId;
+        Permanent permanentLeftBattlefield = (Permanent) getValue("permanentLeftBattlefield");
+        if (permanentLeftBattlefield != null) {
+            exileId = CardUtil.getExileZoneId(game, source.getSourceId(), permanentLeftBattlefield.getZoneChangeCounter(game));
+        } else {
+            exileId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
+        }
+
+        ExileZone exile = game.getExile().getExileZone(exileId);
+        if (exile != null) { // null is valid if source left battlefield before enters the battlefield effect resolved
+            if (Zone.BATTLEFIELD.equals(returnToZone)) {
+                controller.moveCards(exile.getCards(game), returnToZone, source, game, false, false, true, null);
+            } else {
+                controller.moveCards(exile, returnToZone, source, game);
+            }
+        }
+        return true;
     }
 
     private void updateText() {
         StringBuilder sb = new StringBuilder();
-        sb.append("return the exiled " + this.returnName + " ");
+        sb.append("return the exiled ").append(this.returnName).append(" ");
         switch (returnToZone) {
             case BATTLEFIELD:
-                sb.append("to the battlefield under " + this.returnControlName + " control");
+                sb.append("to the battlefield under ").append(this.returnControlName).append(" control");
                 if (tapped) {
                     sb.append(" tapped");
                 }
                 break;
             case HAND:
-                sb.append("to " + this.returnControlName + " hand");
+                sb.append("to ").append(this.returnControlName).append(" hand");
                 break;
             case GRAVEYARD:
-                sb.append("to " + this.returnControlName + " graveyard");
+                sb.append("to ").append(this.returnControlName).append(" graveyard");
                 break;
         }
         staticText = sb.toString();

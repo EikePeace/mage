@@ -29,7 +29,7 @@ public final class Corrupt extends CardImpl {
         this.getSpellAbility().addEffect(new CorruptEffect());
     }
 
-    public Corrupt(final Corrupt card) {
+    private Corrupt(final Corrupt card) {
         super(card);
     }
 
@@ -65,11 +65,11 @@ class CorruptEffect extends OneShotEffect {
             int damageDealt = amount;
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
-                damageDealt = permanent.damage(amount, source.getSourceId(), game, false, true);
+                damageDealt = permanent.damage(amount, source.getSourceId(), source, game, false, true);
             } else {
                 Player player = game.getPlayer(source.getFirstTarget());
                 if (player != null) {
-                    damageDealt = player.damage(amount, source.getSourceId(), game);
+                    damageDealt = player.damage(amount, source.getSourceId(), source, game);
                 } else
                     return false;
             }

@@ -11,12 +11,10 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.game.Game;
-import mage.players.Library;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.TargetCard;
 import mage.target.common.TargetOpponent;
-import mage.util.GameLog;
 
 /**
  *
@@ -32,7 +30,7 @@ public final class TruthOrTale extends CardImpl {
         this.getSpellAbility().addEffect(new TruthOrTaleEffect());
     }
 
-    public TruthOrTale(final TruthOrTale card) {
+    private TruthOrTale(final TruthOrTale card) {
         super(card);
     }
 
@@ -109,7 +107,7 @@ class TruthOrTaleEffect extends OneShotEffect {
                     Card finalChosenCard = game.getCard(finalChosenCardTarget.getFirstTarget());
                     if (finalChosenCard != null) {
                         if (!game.isSimulation()) {
-                            game.informPlayers(controller.getName() + " chose to put " + finalChosenCard.getIdName() + " into their hand.");
+                            game.informPlayers(controller.getLogName() + " chose to put " + finalChosenCard.getIdName() + " into their hand.");
                         }
                         cards.remove(finalChosenCard);
                         controller.moveCards(finalChosenCard, Zone.HAND, source, game);

@@ -56,7 +56,7 @@ public final class IllusoryGains extends CardImpl {
                 Zone.BATTLEFIELD, new IllusoryGainsEffect(), filter, false, SetTargetPointer.PERMANENT, "Whenever a creature enters the battlefield under an opponent's control, attach Illusory Gains to that creature."));
     }
 
-    public IllusoryGains(final IllusoryGains card) {
+    private IllusoryGains(final IllusoryGains card) {
         super(card);
     }
 
@@ -86,8 +86,8 @@ class IllusoryGainsEffect extends OneShotEffect {
             if (oldCreature == null) {
                 return false;
             }
-            if (oldCreature.removeAttachment(illusoryGains.getId(), game)) {
-                return opponentCreature.addAttachment(illusoryGains.getId(), game);
+            if (oldCreature.removeAttachment(illusoryGains.getId(), source, game)) {
+                return opponentCreature.addAttachment(illusoryGains.getId(), source, game);
             }
         }
         return false;

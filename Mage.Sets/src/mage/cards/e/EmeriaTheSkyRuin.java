@@ -36,7 +36,7 @@ public final class EmeriaTheSkyRuin extends CardImpl {
         this.addAbility(new WhiteManaAbility());
     }
 
-    public EmeriaTheSkyRuin(final EmeriaTheSkyRuin card) {
+    private EmeriaTheSkyRuin(final EmeriaTheSkyRuin card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class EmeriaTheSkyRuinTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

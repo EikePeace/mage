@@ -29,7 +29,7 @@ public final class BoonReflection extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoonReflectionEffect()));
     }
 
-    public BoonReflection(final BoonReflection card) {
+    private BoonReflection(final BoonReflection card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class BoonReflectionEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAIN_LIFE;
+        return event.getType() == GameEvent.EventType.GAIN_LIFE;
     }
 
     @Override

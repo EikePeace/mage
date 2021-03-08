@@ -10,7 +10,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
 import mage.players.Player;
@@ -37,22 +36,23 @@ public class CommanderStormAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getSourceId().equals(getSourceId())) {
-            StackObject spell = game.getStack().getStackObject(getSourceId());
-            if (spell instanceof Spell) {
-                for (Effect effect : this.getEffects()) {
-                    effect.setValue("StormSpell", spell);
-                    effect.setValue("StormSpellRef", new MageObjectReference(spell.getId(), game));
-                }
-                return true;
-            }
+        if (!event.getSourceId().equals(getSourceId())) {
+            return false;
         }
-        return false;
+        StackObject spell = game.getStack().getStackObject(getSourceId());
+        if (!(spell instanceof Spell)) {
+            return false;
+        }
+        for (Effect effect : this.getEffects()) {
+            effect.setValue("StormSpell", spell);
+            effect.setValue("StormSpellRef", new MageObjectReference(spell.getId(), game));
+        }
+        return true;
     }
 
     @Override
@@ -65,11 +65,11 @@ public class CommanderStormAbility extends TriggeredAbilityImpl {
 
 class CommanderStormEffect extends OneShotEffect {
 
-    public CommanderStormEffect() {
+    CommanderStormEffect() {
         super(Outcome.Copy);
     }
 
-    public CommanderStormEffect(final CommanderStormEffect effect) {
+    private CommanderStormEffect(final CommanderStormEffect effect) {
         super(effect);
     }
 
@@ -79,14 +79,19 @@ class CommanderStormEffect extends OneShotEffect {
         if (spellRef == null) {
             return false;
         }
-        int stormCount = 0;
         Player player = game.getPlayer(source.getControllerId());
         if (player == null) {
             return false;
         }
-        stormCount = game.getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER).stream()
-                .map((commanderId) -> game.getState().getWatcher(CommanderPlaysCountWatcher.class).getPlaysCount(commanderId))
-                .reduce(stormCount, Integer::sum);
+        CommanderPlaysCountWatcher watcher = game.getState().getWatcher(CommanderPlaysCountWatcher.class);
+        if (watcher == null) {
+            return false;
+        }
+        int stormCount = game
+                .getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER, false)
+                .stream()
+                .mapToInt(watcher::getPlaysCount)
+                .sum();
         if (stormCount == 0) {
             return true;
         }
@@ -95,9 +100,7 @@ class CommanderStormEffect extends OneShotEffect {
             return false;
         }
         game.informPlayers(spell.getLogName() + " will be copied " + stormCount + " time" + (stormCount > 1 ? "s" : ""));
-        for (int i = 0; i < stormCount; i++) {
-            spell.createCopyOnStack(game, source, source.getControllerId(), true);
-        }
+        spell.createCopyOnStack(game, source, source.getControllerId(), true, stormCount);
         return true;
     }
 

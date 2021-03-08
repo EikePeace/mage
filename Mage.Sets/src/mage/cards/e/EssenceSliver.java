@@ -38,7 +38,7 @@ public final class EssenceSliver extends CardImpl {
 
     }
 
-    public EssenceSliver(final EssenceSliver card) {
+    private EssenceSliver(final EssenceSliver card) {
         super(card);
     }
 
@@ -65,9 +65,8 @@ class DealsDamageAllTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE
-                || event.getType() == EventType.DAMAGED_PLAYER
-                || event.getType() == EventType.DAMAGED_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

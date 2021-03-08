@@ -42,7 +42,7 @@ public final class BurningCinderFuryOfCrimsonChaosFire extends CardImpl {
                 TargetController.ANY, new BurningCinderFuryOfCrimsonChaosFireCondition(), false), new BurningCinderFuryOfCrimsonChaosFireWatcher());
     }
 
-    public BurningCinderFuryOfCrimsonChaosFire(final BurningCinderFuryOfCrimsonChaosFire card) {
+    private BurningCinderFuryOfCrimsonChaosFire(final BurningCinderFuryOfCrimsonChaosFire card) {
         super(card);
     }
 
@@ -170,7 +170,7 @@ class BurningCinderFuryOfCrimsonChaosFireCreatureGainControlEffect extends Conti
             permanent = game.getPermanent(targetPointer.getFirst(game, source));
         }
         if (permanent != null && controller != null) {
-            return permanent.changeControllerId(controller, game);
+            return permanent.changeControllerId(controller, game, source);
         }
         return false;
     }

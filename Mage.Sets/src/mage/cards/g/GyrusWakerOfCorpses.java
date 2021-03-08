@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.g;
 
 import mage.MageInt;
@@ -63,7 +58,7 @@ public final class GyrusWakerOfCorpses extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GyrusWakerOfCorpses(final GyrusWakerOfCorpses card) {
+    private GyrusWakerOfCorpses(final GyrusWakerOfCorpses card) {
         super(card);
     }
 
@@ -99,7 +94,7 @@ class GyrusWakerOfCorpsesEffect extends OneShotEffect {
         }
         controller.moveCards(card, Zone.EXILED, source, game);
         CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(source.getControllerId(), null, true, 1, true, true);
-        effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+        effect.setTargetPointer(new FixedTarget(card, game));
         effect.apply(game, source);
         for (Permanent addedToken : effect.getAddedPermanent()) {
             Effect exileEffect = new ExileTargetEffect();

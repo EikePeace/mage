@@ -14,6 +14,7 @@ import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.PreventDamageEvent;
+import mage.game.events.PreventedDamageEvent;
 import mage.game.permanent.Permanent;
 
 import java.util.UUID;
@@ -37,7 +38,7 @@ public final class HazeFrog extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new HazeFrogEffect()));
     }
 
-    public HazeFrog(final HazeFrog card) {
+    private HazeFrog(final HazeFrog card) {
         super(card);
     }
 
@@ -70,7 +71,7 @@ class HazeFrogEffect extends PreventionEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        GameEvent preventEvent = new PreventDamageEvent(source.getFirstTarget(), source.getSourceId(), source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
+        GameEvent preventEvent = new PreventDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
         if (!game.replaceEvent(preventEvent)) {
             int damage = event.getAmount();
             Permanent permanent = game.getPermanent(event.getSourceId());
@@ -81,7 +82,7 @@ class HazeFrogEffect extends PreventionEffectImpl {
             message.insert(0, "Damage").append(" has been prevented: ").append(damage);
             event.setAmount(0);
             game.informPlayers(message.toString());
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), damage));
+            game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), damage));
         }
         return false;
     }

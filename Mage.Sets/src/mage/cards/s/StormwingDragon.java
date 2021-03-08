@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class StormwingDragon extends CardImpl {
         this.addAbility(new TurnedFaceUpSourceTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(), filter), false, false));
     }
 
-    public StormwingDragon(final StormwingDragon card) {
+    private StormwingDragon(final StormwingDragon card) {
         super(card);
     }
 

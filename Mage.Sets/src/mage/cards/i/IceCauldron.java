@@ -14,7 +14,7 @@ import mage.abilities.decorator.ConditionalActivatedAbility;
 import mage.abilities.effects.AsThoughEffect;
 import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.Card;
@@ -55,7 +55,7 @@ public final class IceCauldron extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public IceCauldron(final IceCauldron card) {
+    private IceCauldron(final IceCauldron card) {
         super(card);
     }
 
@@ -102,7 +102,7 @@ class IceCauldronExileEffect extends OneShotEffect {
                 chosenCard = controller.getHand().get(target.getFirstTarget(), game);
             }
             if (chosenCard != null) {
-                controller.moveCardToExileWithInfo(chosenCard, source.getSourceId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.HAND, true);
+                controller.moveCardToExileWithInfo(chosenCard, source.getSourceId(), sourcePermanent.getIdName(), source, game, Zone.HAND, true);
                 AsThoughEffect effect = new IceCauldronCastFromExileEffect();
                 effect.setTargetPointer(new FixedTarget(chosenCard.getId()));
                 game.addEffect(effect, source);
@@ -193,7 +193,7 @@ class IceCauldronAddManaEffect extends ManaEffect {
 
     IceCauldronAddManaEffect(IceCauldronAddManaEffect effect) {
         super(effect);
-        storedMana = effect.storedMana.copy();
+        storedMana = effect.storedMana == null ? null : effect.storedMana.copy();
         exiledCardMor = effect.exiledCardMor;
     }
 

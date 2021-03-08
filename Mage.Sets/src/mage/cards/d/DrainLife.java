@@ -10,7 +10,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterMana;
@@ -65,8 +64,7 @@ class DrainLifeEffect extends OneShotEffect {
         super(Outcome.Damage);
         staticText = "{this} deals X damage to any target. You gain life equal to the damage dealt, " +
                 "but not more life than the player's life total before the damage was dealt, " +
-                "the planeswalker's loyalty before the damage was dealt, " +
-                "the Structure's stability before the damage was dealt, or the creature's toughness.";
+                "the planeswalker's loyalty before the damage was dealt, or the creature's toughness.";
     }
 
     private DrainLifeEffect(final DrainLifeEffect effect) {
@@ -76,7 +74,7 @@ class DrainLifeEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         int amount = source.getManaCostsToPay().getX();
-        int lifetogain = Integer.MAX_VALUE;
+        int lifetogain = amount;
         if (amount == 0) {
             return true;
         }
@@ -84,21 +82,19 @@ class DrainLifeEffect extends OneShotEffect {
         if (permanent != null) {
             if (permanent.isCreature()) {
                 lifetogain = Math.min(permanent.getToughness().getValue(), lifetogain);
-            }
-            if (permanent.isPlaneswalker()) {
+            } else if (permanent.isPlaneswalker()) {
                 lifetogain = Math.min(permanent.getCounters(game).getCount(CounterType.LOYALTY), lifetogain);
+            } else {
+                return false;
             }
-            if (permanent.hasSubtype(SubType.STRUCTURE, game)) {
-                lifetogain = Math.min(permanent.getCounters(game).getCount(CounterType.STABILITY), lifetogain);
-            }
-            lifetogain = Math.min(permanent.damage(amount, source.getSourceId(), game), lifetogain);
+            permanent.damage(amount, source.getSourceId(), source, game);
         } else {
             Player player = game.getPlayer(getTargetPointer().getFirst(game, source));
             if (player == null) {
                 return false;
             }
             lifetogain = Math.min(player.getLife(), lifetogain);
-            lifetogain = Math.min(player.damage(amount, source.getSourceId(), game), lifetogain);
+            player.damage(amount, source.getSourceId(), source, game);
         }
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {

@@ -35,7 +35,7 @@ public final class SphinxSovereign extends CardImpl {
         this.addAbility(new BeginningOfYourEndStepTriggeredAbility(new SphinxSovereignEffect(), false));
     }
 
-    public SphinxSovereign(final SphinxSovereign card) {
+    private SphinxSovereign(final SphinxSovereign card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class SphinxSovereignEffect extends OneShotEffect {
                     if (controller.hasOpponent(opponentId, game)) {
                     Player opponent = game.getPlayer(opponentId);
                         if (opponent != null) {
-                            opponent.loseLife(3, game, false);
+                            opponent.loseLife(3, game, source, false);
                         }
                     }
                 }

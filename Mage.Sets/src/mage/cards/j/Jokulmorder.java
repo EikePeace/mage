@@ -55,7 +55,7 @@ public final class Jokulmorder extends CardImpl {
         this.addAbility(new JokulmorderTriggeredAbility());
     }
 
-    public Jokulmorder(final Jokulmorder card) {
+    private Jokulmorder(final Jokulmorder card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class JokulmorderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LAND_PLAYED;
+        return event.getType() == GameEvent.EventType.LAND_PLAYED;
     }
 
     @Override

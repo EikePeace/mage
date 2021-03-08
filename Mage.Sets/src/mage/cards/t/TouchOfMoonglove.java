@@ -16,7 +16,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -46,7 +45,7 @@ public final class TouchOfMoonglove extends CardImpl {
 
     }
 
-    public TouchOfMoonglove(final TouchOfMoonglove card) {
+    private TouchOfMoonglove(final TouchOfMoonglove card) {
         super(card);
     }
 
@@ -74,7 +73,7 @@ class TouchOfMoongloveAddTriggerEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             DelayedTriggeredAbility delayedAbility = new TouchOfMoongloveDelayedTriggeredAbility(new MageObjectReference(permanent, game));
             game.addDelayedTriggeredAbility(delayedAbility, source);
@@ -99,7 +98,7 @@ class TouchOfMoongloveDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

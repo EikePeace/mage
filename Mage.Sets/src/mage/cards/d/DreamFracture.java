@@ -31,7 +31,7 @@ public final class DreamFracture extends CardImpl {
 
     }
 
-    public DreamFracture(final DreamFracture card) {
+    private DreamFracture(final DreamFracture card) {
         super(card);
     }
 
@@ -66,11 +66,11 @@ class DreamFractureEffect extends OneShotEffect {
             controller = game.getPlayer(game.getControllerId(targetId));
         }
         if (targetId != null
-                && game.getStack().counter(targetId, source.getSourceId(), game)) {
+                && game.getStack().counter(targetId, source, game)) {
             countered = true;
         }
         if (controller != null) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
         }
         return countered;
     }

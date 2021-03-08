@@ -23,7 +23,7 @@ public final class CradleToGrave extends CardImpl {
 
     static {
         filter.add(Predicates.not(new ColorPredicate(ObjectColor.BLACK)));
-        filter.add(new EnteredThisTurnPredicate());
+        filter.add(EnteredThisTurnPredicate.instance);
     }
     
     public CradleToGrave(UUID ownerId, CardSetInfo setInfo) {
@@ -34,7 +34,7 @@ public final class CradleToGrave extends CardImpl {
         this.getSpellAbility().addEffect(new DestroyTargetEffect());
     }
 
-    public CradleToGrave(final CradleToGrave card) {
+    private CradleToGrave(final CradleToGrave card) {
         super(card);
     }
 

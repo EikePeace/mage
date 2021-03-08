@@ -43,7 +43,7 @@ public final class PatronOfTheNezumi extends CardImpl {
 
     }
 
-    public PatronOfTheNezumi(final PatronOfTheNezumi card) {
+    private PatronOfTheNezumi(final PatronOfTheNezumi card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class PatronOfTheNezumiTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

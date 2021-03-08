@@ -2,7 +2,6 @@ package mage.cards.m;
 
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.CopyTargetSpellEffect;
 import mage.abilities.effects.common.DoIfCostPaid;
 import mage.cards.CardImpl;
@@ -34,7 +33,7 @@ public final class Mirari extends CardImpl {
 
     }
 
-    public Mirari(final Mirari card) {
+    private Mirari(final Mirari card) {
         super(card);
     }
 
@@ -71,7 +70,7 @@ class MirariTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -79,13 +78,7 @@ class MirariTriggeredAbility extends TriggeredAbilityImpl {
         if (event.getPlayerId().equals(this.getControllerId())) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (isControlledInstantOrSorcery(spell)) {
-                for (Effect effect : getEffects()) {
-                    if (effect instanceof DoIfCostPaid) {
-                        for (Effect execEffect : ((DoIfCostPaid) effect).getExecutingEffects()) {
-                            execEffect.setTargetPointer(new FixedTarget(spell.getId()));
-                        }
-                    }
-                }
+                getEffects().setTargetPointer(new FixedTarget(spell.getId()));
                 return true;
             }
         }

@@ -24,11 +24,11 @@ public final class FatedConflagration extends CardImpl {
         // Fated Conflagration deals 5 damage to target creature or planewalker. If it's your turn, scry 2.
         this.getSpellAbility().addEffect(new DamageTargetEffect(5));
         this.getSpellAbility().addTarget(new TargetCreatureOrPlaneswalker());
-        this.getSpellAbility().addEffect(new ConditionalOneShotEffect(new ScryEffect(2), MyTurnCondition.instance, "If it's your turn, scry 2"));
+        this.getSpellAbility().addEffect(new ConditionalOneShotEffect(new ScryEffect(2, false), MyTurnCondition.instance, "If it's your turn, scry 2"));
         this.getSpellAbility().addHint(MyTurnHint.instance);
     }
 
-    public FatedConflagration(final FatedConflagration card) {
+    private FatedConflagration(final FatedConflagration card) {
         super(card);
     }
 

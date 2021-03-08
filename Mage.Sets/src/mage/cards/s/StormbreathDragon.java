@@ -43,7 +43,7 @@ public final class StormbreathDragon extends CardImpl {
         this.addAbility(new BecomesMonstrousSourceTriggeredAbility(new StormbreathDragonDamageEffect()));
     }
 
-    public StormbreathDragon(final StormbreathDragon card) {
+    private StormbreathDragon(final StormbreathDragon card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class StormbreathDragonDamageEffect extends OneShotEffect {
             if (opponent != null) {
                 int damage = opponent.getHand().size();
                 if (damage > 0) {
-                    opponent.damage(damage, source.getSourceId(), game);
+                    opponent.damage(damage, source.getSourceId(), source, game);
                 }
             }
         }

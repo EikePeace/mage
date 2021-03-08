@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 import java.util.UUID;
@@ -43,12 +43,12 @@ public final class N1Starfighter extends CardImpl {
         // P.S. original card have error with missing target word (another target creature)
         Ability ability = new DealsCombatDamageToAPlayerTriggeredAbility(new DoIfCostPaid(
                 new ExileTargetForSourceEffect(), new ManaCostsImpl("{1}{W/U}")), false);
-        ability.addEffect(new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, true).concatBy(", then"));
+        ability.addEffect(new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false).concatBy(", then"));
         ability.addTarget(new TargetControlledCreaturePermanent(filter));
         this.addAbility(ability);
     }
 
-    public N1Starfighter(final N1Starfighter card) {
+    private N1Starfighter(final N1Starfighter card) {
         super(card);
     }
 

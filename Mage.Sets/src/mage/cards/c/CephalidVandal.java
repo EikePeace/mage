@@ -14,7 +14,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.constants.TargetController;
-import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -40,7 +39,7 @@ public final class CephalidVandal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CephalidVandal(final CephalidVandal card) {
+    private CephalidVandal(final CephalidVandal card) {
         super(card);
     }
 
@@ -54,7 +53,7 @@ class CephalidVandalEffect extends OneShotEffect {
 
     public CephalidVandalEffect() {
         super(Outcome.Neutral);
-        staticText = "Then put the top card of your library into your graveyard for each shred counter on {this}";
+        staticText = "Then mill a card for each shred counter on {this}";
     }
 
     public CephalidVandalEffect(final CephalidVandalEffect effect) {
@@ -72,7 +71,7 @@ class CephalidVandalEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null && controller != null) {
             int amount = permanent.getCounters(game).getCount(CounterType.SHRED);
-            controller.moveCards(controller.getLibrary().getTopCards(game, amount), Zone.GRAVEYARD, source, game);
+            controller.millCards(amount, source, game);
         }
         return true;
     }

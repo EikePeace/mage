@@ -2,7 +2,7 @@ package mage.cards.c;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.CreateTokenEffect;
 import mage.constants.SubType;
 import mage.abilities.keyword.VigilanceAbility;
@@ -29,12 +29,12 @@ public final class ConclaveCavalier extends CardImpl {
         this.addAbility(VigilanceAbility.getInstance());
 
         // When Conclave Cavalier dies, create two green and white 2/2 Elf Knight creature tokens with vigilance.
-        this.addAbility(new DiesTriggeredAbility(
+        this.addAbility(new DiesSourceTriggeredAbility(
                 new CreateTokenEffect(new ElfKnightToken(), 2)
         ));
     }
 
-    public ConclaveCavalier(final ConclaveCavalier card) {
+    private ConclaveCavalier(final ConclaveCavalier card) {
         super(card);
     }
 

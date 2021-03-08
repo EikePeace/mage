@@ -17,7 +17,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 import java.util.UUID;
@@ -33,7 +32,7 @@ public final class BountyHunter extends CardImpl {
 
     static {
         filter.add(Predicates.not(new ColorPredicate(ObjectColor.BLACK)));
-        filter2.add(new CounterPredicate(CounterType.BOUNTY));
+        filter2.add(CounterType.BOUNTY.getPredicate());
     }
 
     public BountyHunter(UUID ownerId, CardSetInfo setInfo) {
@@ -52,7 +51,7 @@ public final class BountyHunter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BountyHunter(final BountyHunter card) {
+    private BountyHunter(final BountyHunter card) {
         super(card);
     }
 

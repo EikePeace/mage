@@ -42,7 +42,7 @@ public final class TeferiMageOfZhalfir extends CardImpl {
 
     }
 
-    public TeferiMageOfZhalfir(final TeferiMageOfZhalfir card) {
+    private TeferiMageOfZhalfir(final TeferiMageOfZhalfir card) {
         super(card);
     }
 
@@ -98,15 +98,12 @@ class TeferiMageOfZhalfirAddFlashEffect extends ContinuousEffectImpl {
                     game.getState().addOtherAbility(card, FlashAbility.getInstance());
                 }
             }
-            // commander in command zone
-            for (UUID commanderId : game.getCommandersIds(controller)) {
-                if (game.getState().getZone(commanderId) == Zone.COMMAND) {
-                    Card card = game.getCard(commanderId);
-                    if (card != null && card.isCreature()) {
+            // cards in command zone
+            game.getCommanderCardsFromCommandZone(controller, CommanderCardType.ANY).stream()
+                    .filter(MageObject::isCreature)
+                    .forEach(card -> {
                         game.getState().addOtherAbility(card, FlashAbility.getInstance());
-                    }
-                }
-            }
+                    });
             return true;
         }
         return false;

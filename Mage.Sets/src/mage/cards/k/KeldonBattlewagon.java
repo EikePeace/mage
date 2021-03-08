@@ -1,7 +1,5 @@
-	
 package mage.cards.k;
 
-import java.util.List;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
@@ -20,9 +18,9 @@ import mage.abilities.keyword.TrampleAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.Predicates;
@@ -39,12 +37,13 @@ import mage.target.targetpointer.FixedTarget;
 public final class KeldonBattlewagon extends CardImpl {
 
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("an untapped creature you control");
+
     static {
         filter.add(Predicates.not(TappedPredicate.instance));
     }
 
     public KeldonBattlewagon(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT,CardType.CREATURE},"{5}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{5}");
         this.subtype.add(SubType.JUGGERNAUT);
         this.power = new MageInt(0);
         this.toughness = new MageInt(3);
@@ -63,7 +62,7 @@ public final class KeldonBattlewagon extends CardImpl {
 
     }
 
-    public KeldonBattlewagon(final KeldonBattlewagon card) {
+    private KeldonBattlewagon(final KeldonBattlewagon card) {
         super(card);
     }
 
@@ -88,15 +87,16 @@ class KeldonBattlewagonCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        if (target.choose(Outcome.Tap, controllerId, sourceId, game)) {
-            for (UUID targetId: target.getTargets()) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
+        if (target.choose(Outcome.Tap, controllerId, source.getSourceId(), game)) {
+            for (UUID targetId : target.getTargets()) {
                 Permanent permanent = game.getPermanent(targetId);
-                if (permanent == null)
+                if (permanent == null) {
                     return false;
-                paid |= permanent.tap(game);
+                }
+                paid |= permanent.tap(source, game);
                 for (Effect effect : ability.getEffects()) {
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                 }
             }
         }
@@ -104,8 +104,8 @@ class KeldonBattlewagonCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return target.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return target.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override
@@ -128,7 +128,7 @@ class KeldonBattlewagonBoostEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent KeldonBattlewagon = game.getPermanent(source.getSourceId());
-        Permanent tappedCreature = game.getPermanentOrLKIBattlefield(this.targetPointer.getFirst(game, source));
+        Permanent tappedCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (tappedCreature != null && KeldonBattlewagon != null) {
             int amount = tappedCreature.getPower().getValue();
             game.addEffect(new BoostSourceEffect(amount, 0, Duration.EndOfTurn), source);

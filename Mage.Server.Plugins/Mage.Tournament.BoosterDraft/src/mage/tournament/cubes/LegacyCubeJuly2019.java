@@ -1,16 +1,15 @@
-
 package mage.tournament.cubes;
 
 import mage.game.draft.DraftCube;
 
 /**
- *
  * @author phulin
  */
 public class LegacyCubeJuly2019 extends DraftCube {
 
     public LegacyCubeJuly2019() {
         super("MTGO Legacy Cube July 2019");
+
         cubeCards.add(new CardIdentity("Abbot of Keral Keep", ""));
         cubeCards.add(new CardIdentity("Abrade", ""));
         cubeCards.add(new CardIdentity("Abrupt Decay", ""));
@@ -295,7 +294,7 @@ public class LegacyCubeJuly2019 extends DraftCube {
         cubeCards.add(new CardIdentity("Kodama's Reach", ""));
         cubeCards.add(new CardIdentity("Kolaghan's Command", ""));
         cubeCards.add(new CardIdentity("Koth of the Hammer", ""));
-        cubeCards.add(new CardIdentity("Kozilek, Butcher of Truths", ""));
+        cubeCards.add(new CardIdentity("Kozilek, Butcher of Truth", ""));
         cubeCards.add(new CardIdentity("Kytheon, Hero of Akros", ""));
         cubeCards.add(new CardIdentity("Land Tax", ""));
         cubeCards.add(new CardIdentity("Languish", ""));

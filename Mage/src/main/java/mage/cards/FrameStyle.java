@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards;
 
 /**
- *
  * @author StravantUser
  */
 public enum FrameStyle {
@@ -31,20 +25,23 @@ public enum FrameStyle {
      */
     MPRP_FULL_ART_BASIC(BorderType.MOD, true),
     /**
+     * Magic Player Online Promos full art cards
+     */
+    MPOP_FULL_ART_BASIC(BorderType.MOD, true),
+    /**
      * Unhinged full art lands
      */
     UNH_FULL_ART_BASIC(BorderType.SPC, true),
     /**
      * Unglued full art lands
      */
-    UGL_FULL_ART_BASIC(BorderType.SPC, true),    
+    UGL_FULL_ART_BASIC(BorderType.SPC, true),
     /**
      * Unstable full art lands
      */
     UST_FULL_ART_BASIC(BorderType.SPC, true);
 
-    
-    
+
     /**
      * General type of card
      */

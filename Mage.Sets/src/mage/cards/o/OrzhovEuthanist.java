@@ -23,7 +23,7 @@ public final class OrzhovEuthanist extends CardImpl {
 
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
 
     public OrzhovEuthanist(UUID ownerId, CardSetInfo setInfo) {
@@ -42,7 +42,7 @@ public final class OrzhovEuthanist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OrzhovEuthanist(final OrzhovEuthanist card) {
+    private OrzhovEuthanist(final OrzhovEuthanist card) {
         super(card);
     }
 

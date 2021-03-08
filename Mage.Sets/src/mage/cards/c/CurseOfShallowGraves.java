@@ -44,7 +44,7 @@ public final class CurseOfShallowGraves extends CardImpl {
         this.addAbility(new CurseOfShallowTriggeredAbility());
     }
 
-    public CurseOfShallowGraves(final CurseOfShallowGraves card) {
+    private CurseOfShallowGraves(final CurseOfShallowGraves card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class CurseOfShallowTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override

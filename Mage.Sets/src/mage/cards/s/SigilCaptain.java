@@ -38,7 +38,7 @@ public final class SigilCaptain extends CardImpl {
         this.addAbility(new SigilCaptainTriggeredAbility());
     }
 
-    public SigilCaptain(final SigilCaptain card) {
+    private SigilCaptain(final SigilCaptain card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class SigilCaptainTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

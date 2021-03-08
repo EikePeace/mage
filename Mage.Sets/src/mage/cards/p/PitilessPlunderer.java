@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.TreasureToken;
 
 /**
@@ -39,7 +39,7 @@ public final class PitilessPlunderer extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new CreateTokenEffect(new TreasureToken()), false, filter));
     }
 
-    public PitilessPlunderer(final PitilessPlunderer card) {
+    private PitilessPlunderer(final PitilessPlunderer card) {
         super(card);
     }
 

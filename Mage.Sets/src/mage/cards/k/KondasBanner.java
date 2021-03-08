@@ -78,7 +78,7 @@ public final class KondasBanner extends CardImpl {
 
     }
 
-    public KondasBanner(final KondasBanner card) {
+    private KondasBanner(final KondasBanner card) {
         super(card);
     }
 
@@ -109,7 +109,7 @@ class KondasBannerTypeBoostEffect extends BoostAllEffect {
             Permanent equipedCreature = game.getPermanent(equipment.getAttachedTo());
             if (equipedCreature != null) {
                 for (Permanent perm : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-                    if (perm.shareSubtypes(equipedCreature, game)) {
+                    if (perm.shareCreatureTypes(game, equipedCreature)) {
                         perm.addPower(power.calculate(game, source, this));
                         perm.addToughness(toughness.calculate(game, source, this));
 

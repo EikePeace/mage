@@ -40,7 +40,7 @@ public final class RiskyMove extends CardImpl {
         this.addAbility(new RiskyMoveTriggeredAbility());
     }
 
-    public RiskyMove(final RiskyMove card) {
+    private RiskyMove(final RiskyMove card) {
         super(card);
     }
 
@@ -151,12 +151,12 @@ class RiskyMoveFlipCoinEffect extends OneShotEffect {
             Target target2 = new TargetOpponent(true);
             
             if (target1.canChoose(source.getSourceId(), controller.getId(), game)) {
-                while (!target1.isChosen() && target1.canChoose(controller.getId(), game) && controller.canRespond()) {
+                while (!target1.isChosen() && target1.canChoose(source.getSourceId(), controller.getId(), game) && controller.canRespond()) {
                     controller.chooseTarget(outcome, target1, source, game);
                 }
             }
             if (target2.canChoose(source.getSourceId(), controller.getId(), game)) {
-                while (!target2.isChosen() && target2.canChoose(controller.getId(), game) && controller.canRespond()) {
+                while (!target2.isChosen() && target2.canChoose(source.getSourceId(), controller.getId(), game) && controller.canRespond()) {
                     controller.chooseTarget(outcome, target2, source, game);
                 }
             }
@@ -165,7 +165,7 @@ class RiskyMoveFlipCoinEffect extends OneShotEffect {
             if (!controller.flipCoin(source, game, true)) {
                 if (permanent != null && chosenOpponent != null) {
                     ContinuousEffect effect = new RiskyMoveCreatureGainControlEffect(Duration.Custom, chosenOpponent.getId());
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     game.addEffect(effect, source);
                     game.informPlayers(chosenOpponent.getLogName() + " has gained control of " + permanent.getLogName());
                     return true;
@@ -202,7 +202,7 @@ class RiskyMoveCreatureGainControlEffect extends ContinuousEffectImpl {
             permanent = game.getPermanent(targetPointer.getFirst(game, source));
         }
         if (permanent != null) {
-            return permanent.changeControllerId(controller, game);
+            return permanent.changeControllerId(controller, game, source);
         }
         return false;
     }

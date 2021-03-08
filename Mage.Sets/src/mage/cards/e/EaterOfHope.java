@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -55,7 +55,7 @@ public final class EaterOfHope extends CardImpl {
         this.addAbility(destroyAbility);
     }
 
-    public EaterOfHope(final EaterOfHope card) {
+    private EaterOfHope(final EaterOfHope card) {
         super(card);
     }
 

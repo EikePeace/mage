@@ -14,7 +14,6 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 import java.util.UUID;
@@ -42,7 +41,7 @@ public final class OashraCultivator extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OashraCultivator(final OashraCultivator card) {
+    private OashraCultivator(final OashraCultivator card) {
         super(card);
     }
 

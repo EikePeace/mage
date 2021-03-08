@@ -52,7 +52,7 @@ public final class Berserk extends CardImpl {
 
     }
 
-    public Berserk(final Berserk card) {
+    private Berserk(final Berserk card) {
         super(card);
     }
 
@@ -164,7 +164,7 @@ class BerserkDelayedDestroyEffect extends OneShotEffect {
             if (permanent != null) {
                 AttackedThisTurnWatcher watcher = game.getState().getWatcher(AttackedThisTurnWatcher.class);
                 if (watcher.getAttackedThisTurnCreatures().contains(new MageObjectReference(permanent, game))) {
-                    return permanent.destroy(source.getSourceId(), game, false);
+                    return permanent.destroy(source, game, false);
                 }
             }
         }

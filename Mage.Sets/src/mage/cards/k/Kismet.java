@@ -30,7 +30,7 @@ public final class Kismet extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new KismetEffect()));
     }
 
-    public Kismet(final Kismet card) {
+    private Kismet(final Kismet card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class KismetEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

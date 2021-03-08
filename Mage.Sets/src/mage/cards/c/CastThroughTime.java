@@ -37,7 +37,7 @@ public final class CastThroughTime extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainReboundEffect()));
     }
 
-    public CastThroughTime(final CastThroughTime card) {
+    private CastThroughTime(final CastThroughTime card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class GainReboundEffect extends ContinuousEffectImpl {
 
     private void addReboundAbility(Card card, Game game) {
         if (CastThroughTime.filter.match(card, game)) {
-            boolean found = card.getAbilities(game).stream().anyMatch(ability -> ability instanceof ReboundAbility);
+            boolean found = card.getAbilities(game).containsClass(ReboundAbility.class);
             if (!found) {
                 Ability ability = new ReboundAbility();
                 game.getState().addOtherAbility(card, ability);

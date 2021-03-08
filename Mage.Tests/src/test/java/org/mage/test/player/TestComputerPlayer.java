@@ -1,22 +1,30 @@
 package org.mage.test.player;
 
-import mage.MageObject;
-import mage.abilities.ActivatedAbility;
-import mage.abilities.SpellAbility;
 import mage.constants.Outcome;
 import mage.constants.RangeOfInfluence;
 import mage.game.Game;
 import mage.player.ai.ComputerPlayer;
 import mage.target.Target;
 
-import java.util.LinkedHashMap;
 import java.util.UUID;
 
 /**
  * @author JayDi85
  */
 
-// mock class to override to override AI logic for test
+/**
+ * Mock class to override AI logic for test, cause PlayerImpl uses inner calls for other methods. If you
+ * want to override that methods for tests then call it here.
+ * <p>
+ * It's a workaround and can be bugged (if you catch overflow error with new method then TestPlayer
+ * class must re-implement full method code without computerPlayer calls).
+ * <p>
+ * Example 1: TestPlayer's code uses outer computerPlayer call to discard but discard's inner code must call choose from TestPlayer
+ * Example 2: TestPlayer's code uses outer computerPlayer call to flipCoin but flipCoin's inner code must call flipCoinResult from TestPlayer
+ * <p>
+ * Don't forget to add new methods in another classes like TestComputerPlayer7 or TestComputerPlayerMonteCarlo
+ */
+
 public class TestComputerPlayer extends ComputerPlayer {
 
     private TestPlayer testPlayerLink;
@@ -30,44 +38,14 @@ public class TestComputerPlayer extends ComputerPlayer {
     }
 
     @Override
-    public SpellAbility chooseSpellAbilityForCast(SpellAbility ability, Game game, boolean noMana) {
-        // copy-paste for TestComputerXXX
-
-        // workaround to cast fused cards in tests by it's NAMES (Wear, Tear, Wear // Tear)
-        // reason: TestPlayer uses outer computerPlayer to cast, not TestPlayer
-        switch (ability.getSpellAbilityType()) {
-            case SPLIT:
-            case SPLIT_FUSED:
-            case SPLIT_AFTERMATH:
-                if (!this.testPlayerLink.getChoices().isEmpty()) {
-                    MageObject object = game.getObject(ability.getSourceId());
-                    if (object != null) {
-                        LinkedHashMap<UUID, ActivatedAbility> useableAbilities = getSpellAbilities(playerId, object, game.getState().getZone(object.getId()), game);
-
-                        // left, right or fused cast
-                        for (String choose : this.testPlayerLink.getChoices()) {
-                            for (ActivatedAbility activatedAbility : useableAbilities.values()) {
-                                if (activatedAbility instanceof SpellAbility) {
-                                    if (((SpellAbility) activatedAbility).getCardName().equals(choose)) {
-                                        return (SpellAbility) activatedAbility;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-        }
-
-        // default implementation by AI
-        return super.chooseSpellAbilityForCast(ability, game, noMana);
+    public boolean choose(Outcome outcome, Target target, UUID sourceId, Game game) {
+        return testPlayerLink.choose(outcome, target, sourceId, game);
     }
 
     @Override
-    public boolean choose(Outcome outcome, Target target, UUID sourceId, Game game) {
-        // copy-paste for TestComputerXXX
-
-        // workaround for discard spells
-        // reason: TestPlayer uses outer computerPlayer to discard but inner code uses choose
-        return testPlayerLink.choose(outcome, target, sourceId, game);
+    public boolean flipCoinResult(Game game) {
+        return testPlayerLink.flipCoinResult(game);
     }
 }
+
+

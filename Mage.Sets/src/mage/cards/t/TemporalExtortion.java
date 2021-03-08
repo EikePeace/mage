@@ -31,7 +31,7 @@ public final class TemporalExtortion extends CardImpl {
         this.getSpellAbility().addEffect(new AddExtraTurnControllerEffect());
     }
 
-    public TemporalExtortion(final TemporalExtortion card) {
+    private TemporalExtortion(final TemporalExtortion card) {
         super(card);
     }
 
@@ -45,7 +45,7 @@ class TemporalExtortionCounterSourceEffect extends OneShotEffect {
 
     public TemporalExtortionCounterSourceEffect() {
         super(Outcome.AIDontUseIt);
-        staticText = "any player may pay half their life, rounded up. If a player does, counter {source}";
+        staticText = "any player may pay half their life, rounded up. If a player does, counter {this}";
     }
 
     public TemporalExtortionCounterSourceEffect(final TemporalExtortionCounterSourceEffect effect) {
@@ -65,11 +65,11 @@ class TemporalExtortionCounterSourceEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.chooseUse(outcome, "Pay half your life, rounded up to counter " + sourceObject.getIdName() + '?', source, game)) {
                     int amount = (int) Math.ceil(player.getLife() / 2f);
-                    player.loseLife(amount, game, false);
+                    player.loseLife(amount, game, source, false);
                     game.informPlayers(player.getLogName() + " pays half their life, rounded up to counter " + sourceObject.getIdName() + '.');
                     Spell spell = game.getStack().getSpell(source.getSourceId());
                     if (spell != null) {
-                        game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                        game.getStack().counter(spell.getId(), source, game);
                     }
                 }
             }

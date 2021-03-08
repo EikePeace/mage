@@ -29,7 +29,7 @@ public final class ReadTheRunes extends CardImpl {
         this.getSpellAbility().addEffect(new ReadTheRunesEffect());
     }
 
-    public ReadTheRunes(final ReadTheRunes card) {
+    private ReadTheRunes(final ReadTheRunes card) {
         super(card);
     }
 
@@ -59,19 +59,19 @@ class ReadTheRunesEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int drawnCards = controller.drawCards(source.getManaCostsToPay().getX(), game);
+            int drawnCards = controller.drawCards(source.getManaCostsToPay().getX(), source, game);
             Target target = new TargetControlledPermanent(0, drawnCards, new FilterControlledPermanent(), true);
             controller.chooseTarget(Outcome.Sacrifice, target, source, game);
             int sacrificedPermanents = 0;
             for (UUID permanentId : target.getTargets()) {
                 Permanent permanent = game.getPermanent(permanentId);
                 if (permanent != null) {
-                    if (permanent.sacrifice(source.getSourceId(), game)) {
+                    if (permanent.sacrifice(source, game)) {
                         sacrificedPermanents++;
                     }
                 }
             }
-            controller.discard(drawnCards - sacrificedPermanents, false, source, game);
+            controller.discard(drawnCards - sacrificedPermanents, false, false, source, game);
             return true;
         }
         return false;

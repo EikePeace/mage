@@ -3,13 +3,12 @@ package mage.cards.s;
 
 import java.util.UUID;
 import mage.abilities.Ability;
-import mage.abilities.common.CantBeCounteredAbility;
+import mage.abilities.common.CantBeCounteredSourceAbility;
 import mage.abilities.effects.common.DestroyAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterCreaturePermanent;
 
 /**
  *
@@ -21,7 +20,7 @@ public final class SupremeVerdict extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{1}{W}{W}{U}");
 
         // Supreme Verdict can't be countered.
-        Ability ability = new CantBeCounteredAbility();
+        Ability ability = new CantBeCounteredSourceAbility();
         ability.setRuleAtTheTop(true);
         this.addAbility(ability);
 
@@ -29,7 +28,7 @@ public final class SupremeVerdict extends CardImpl {
         this.getSpellAbility().addEffect(new DestroyAllEffect(StaticFilters.FILTER_PERMANENT_CREATURES));
     }
 
-    public SupremeVerdict(final SupremeVerdict card) {
+    private SupremeVerdict(final SupremeVerdict card) {
         super(card);
     }
 

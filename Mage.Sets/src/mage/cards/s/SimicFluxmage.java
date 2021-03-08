@@ -45,7 +45,7 @@ public final class SimicFluxmage extends CardImpl {
 
     }
 
-    public SimicFluxmage(final SimicFluxmage card) {
+    private SimicFluxmage(final SimicFluxmage card) {
         super(card);
     }
 
@@ -77,8 +77,8 @@ class MoveCounterFromSourceToTargetEffect extends OneShotEffect {
         if (sourcePermanent != null && sourcePermanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
             Permanent targetPermanent = game.getPermanent(targetPointer.getFirst(game, source));
             if (targetPermanent != null) {
-                sourcePermanent.removeCounters(CounterType.P1P1.createInstance(), game);
-                targetPermanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                sourcePermanent.removeCounters(CounterType.P1P1.createInstance(), source, game);
+                targetPermanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 return true;
             }
         }

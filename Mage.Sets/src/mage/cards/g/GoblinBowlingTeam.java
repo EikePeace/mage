@@ -16,7 +16,6 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.CardUtil;
@@ -38,7 +37,7 @@ public final class GoblinBowlingTeam extends CardImpl {
 
     }
 
-    public GoblinBowlingTeam(final GoblinBowlingTeam card) {
+    private GoblinBowlingTeam(final GoblinBowlingTeam card) {
         super(card);
     }
 
@@ -67,9 +66,8 @@ class GoblinBowlingTeamEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
                 return true;
             default:
                 return false;
@@ -91,16 +89,16 @@ class GoblinBowlingTeamEffect extends ReplacementEffectImpl {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             DamageEvent damageEvent = (DamageEvent) event;
-            if (damageEvent.getType() == EventType.DAMAGE_PLAYER) {
+            if (damageEvent.getType() == GameEvent.EventType.DAMAGE_PLAYER) {
                 Player targetPlayer = game.getPlayer(event.getTargetId());
                 if (targetPlayer != null) {
-                    targetPlayer.damage(CardUtil.addWithOverflowCheck(damageEvent.getAmount(), controller.rollDice(game, 6)), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+                    targetPlayer.damage(CardUtil.overflowInc(damageEvent.getAmount(), controller.rollDice(source, game, 6)), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
                     return true;
                 }
             } else {
                 Permanent targetPermanent = game.getPermanent(event.getTargetId());
                 if (targetPermanent != null) {
-                    targetPermanent.damage(CardUtil.addWithOverflowCheck(damageEvent.getAmount(), controller.rollDice(game, 6)), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+                    targetPermanent.damage(CardUtil.overflowInc(damageEvent.getAmount(), controller.rollDice(source, game, 6)), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
                     return true;
                 }
             }

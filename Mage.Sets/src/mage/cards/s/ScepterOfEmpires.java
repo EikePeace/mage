@@ -29,7 +29,7 @@ public final class ScepterOfEmpires extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScepterOfEmpires(final ScepterOfEmpires card) {
+    private ScepterOfEmpires(final ScepterOfEmpires card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class ScepterOfEmpiresEffect extends OneShotEffect {
             }
         }
         int amount = throne && crown ? 3 : 1;
-        return game.damagePlayerOrPlaneswalker(source.getFirstTarget(), amount, source.getSourceId(), game, false, true) > 0;
+        return game.damagePlayerOrPlaneswalker(source.getFirstTarget(), amount, source.getSourceId(), source, game, false, true) > 0;
     }
 
     @Override

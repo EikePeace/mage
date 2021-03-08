@@ -35,7 +35,7 @@ public final class RummagingWizard extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RummagingWizardLookLibraryEffect(), new ManaCostsImpl("{2}{U}")));
     }
 
-    public RummagingWizard(final RummagingWizard card) {
+    private RummagingWizard(final RummagingWizard card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class RummagingWizardLookLibraryEffect extends OneShotEffect {
                     CardsImpl cards = new CardsImpl();
                     cards.add(card);
                     controller.lookAtCards("Rummaging Wizard", cards, game);
-                    if (controller.chooseUse(Outcome.Neutral, "Do you wish to put the card into your graveyard?", source, game)) {
+                    if (controller.chooseUse(Outcome.Neutral, "Put that card into your graveyard?", source, game)) {
                         return controller.moveCards(card, Zone.GRAVEYARD, source, game);
                     }
 

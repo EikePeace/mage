@@ -30,7 +30,7 @@ public final class PrimitiveEtchings extends CardImpl {
         this.addAbility(new PrimitiveEtchingsAbility());
     }
 
-    public PrimitiveEtchings(final PrimitiveEtchings card) {
+    private PrimitiveEtchings(final PrimitiveEtchings card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class PrimitiveEtchingsAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DREW_CARD;
+        return event.getType() == GameEvent.EventType.DREW_CARD;
     }
 
     @Override

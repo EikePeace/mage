@@ -46,7 +46,7 @@ public final class UlvenwaldMysteries extends CardImpl {
         this.addAbility(new UlvenwaldMysteriesTriggeredAbility());
     }
 
-    public UlvenwaldMysteries(final UlvenwaldMysteries card) {
+    private UlvenwaldMysteries(final UlvenwaldMysteries card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class UlvenwaldMysteriesTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

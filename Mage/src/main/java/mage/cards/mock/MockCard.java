@@ -4,12 +4,13 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCost;
 import mage.abilities.costs.mana.ManaCosts;
-import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.cards.CardImpl;
+import mage.cards.ModalDoubleFacesCard;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,6 +21,7 @@ import java.util.List;
 public class MockCard extends CardImpl {
 
     static public String ADVENTURE_NAME_SEPARATOR = " // ";
+    static public String MODAL_DOUBLE_FACES_NAME_SEPARATOR = " // ";
 
     // Needs to be here, as it is normally calculated from the
     // PlaneswalkerEntersWithLoyaltyAbility of the card... but the MockCard
@@ -27,9 +29,13 @@ public class MockCard extends CardImpl {
     private int startingLoyalty;
 
     // mana cost extra info for multiple mana drawing
-    protected ManaCosts<ManaCost> manaCostLeft;
-    protected ManaCosts<ManaCost> manaCostRight;
+    // warning, don't use ManaCost objects here due too much memory consumptions
+    protected List<String> manaCostLeftStr;
+    protected List<String> manaCostRightStr;
+    protected List<String> manaCostStr;
     protected String adventureSpellName;
+    protected boolean isModalDoubleFacesCard;
+    protected int convertedManaCost;
 
     public MockCard(CardInfo card) {
         super(null, card.getName());
@@ -44,16 +50,17 @@ public class MockCard extends CardImpl {
 
         this.usesVariousArt = card.usesVariousArt();
 
-        this.manaCostLeft = new ManaCostsImpl(join(card.getManaCosts(CardInfo.ManaCostSide.LEFT)));
-        this.manaCostRight = new ManaCostsImpl(join(card.getManaCosts(CardInfo.ManaCostSide.RIGHT)));
-        this.manaCost = new ManaCostsImpl(join(card.getManaCosts(CardInfo.ManaCostSide.ALL)));
+        //this.manaCost = new ManaCostsImpl(join(card.getManaCosts(CardInfo.ManaCostSide.ALL)));
+        this.manaCostLeftStr = card.getManaCosts(CardInfo.ManaCostSide.LEFT);
+        this.manaCostRightStr = card.getManaCosts(CardInfo.ManaCostSide.RIGHT);
+        this.manaCostStr = card.getManaCosts(CardInfo.ManaCostSide.ALL);
+        this.convertedManaCost = card.getConvertedManaCost();
 
         this.color = card.getColor();
 
         this.frameColor = card.getFrameColor();
         this.frameStyle = card.getFrameStyle();
 
-        this.splitCard = card.isSplitCard();
         this.flipCard = card.isFlipCard();
 
         this.transformable = card.isDoubleFaced();
@@ -66,10 +73,16 @@ public class MockCard extends CardImpl {
             this.adventureSpellName = card.getAdventureSpellName();
         }
 
+        if (card.isModalDoubleFacesCard()) {
+            ModalDoubleFacesCard mdfCard = (ModalDoubleFacesCard) card.getCard();
+            CardInfo mdfSecondSide = new CardInfo(mdfCard.getRightHalfCard());
+            this.secondSideCard = new MockCard(mdfSecondSide);
+            this.isModalDoubleFacesCard = true;
+        }
+
         if (this.isPlaneswalker()) {
             String startingLoyaltyString = card.getStartingLoyalty();
             if (startingLoyaltyString.isEmpty()) {
-                //Logger.getLogger(MockCard.class).warn("Planeswalker `" + this.name + "` has empty starting loyalty.");
             } else {
                 try {
                     this.startingLoyalty = Integer.parseInt(startingLoyaltyString);
@@ -87,6 +100,14 @@ public class MockCard extends CardImpl {
 
     public MockCard(final MockCard card) {
         super(card);
+
+        this.startingLoyalty = card.startingLoyalty;
+        this.manaCostLeftStr = new ArrayList<>(card.manaCostLeftStr);
+        this.manaCostRightStr = new ArrayList<>(card.manaCostRightStr);
+        this.manaCostStr = new ArrayList<>(card.manaCostStr);
+        this.adventureSpellName = card.adventureSpellName;
+        this.isModalDoubleFacesCard = card.isModalDoubleFacesCard;
+        this.convertedManaCost = card.convertedManaCost;
     }
 
     @Override
@@ -101,24 +122,42 @@ public class MockCard extends CardImpl {
 
     @Override
     public ManaCosts<ManaCost> getManaCost() {
-        return manaCost;
+        // only split half cards can store mana cost in objects list instead strings (memory optimization)
+        // see https://github.com/magefree/mage/issues/7515
+        throw new IllegalArgumentException("Unsupport method call: getManaCost in " + this.getClass().getCanonicalName());
     }
 
-    public ManaCosts<ManaCost> getManaCost(CardInfo.ManaCostSide manaCostSide) {
+    @Override
+    public List<String> getManaCostSymbols() {
+        return getManaCostStr(CardInfo.ManaCostSide.ALL);
+    }
+
+    @Override
+    public int getConvertedManaCost() {
+        return this.convertedManaCost;
+    }
+
+    public List<String> getManaCostStr(CardInfo.ManaCostSide manaCostSide) {
         switch (manaCostSide) {
             case LEFT:
-                return manaCostLeft;
+                return manaCostLeftStr;
             case RIGHT:
-                return manaCostRight;
+                return manaCostRightStr;
             default:
             case ALL:
-                return manaCost;
+                return manaCostStr;
         }
     }
 
     public String getFullName(boolean showSecondName) {
+        if (!showSecondName) {
+            return getName();
+        }
+
         if (adventureSpellName != null) {
             return getName() + ADVENTURE_NAME_SEPARATOR + adventureSpellName;
+        } else if (isModalDoubleFacesCard) {
+            return getName() + MODAL_DOUBLE_FACES_NAME_SEPARATOR + this.secondSideCard.getName();
         } else {
             return getName();
         }
@@ -134,15 +173,13 @@ public class MockCard extends CardImpl {
         }
     }
 
-    private String join(List<String> strings) {
-        StringBuilder sb = new StringBuilder();
-        for (String string : strings) {
-            sb.append(string);
-        }
-        return sb.toString();
-    }
-
     private Ability textAbilityFromString(final String text) {
         return new MockAbility(text);
+    }
+
+    @Override
+    public boolean isTransformable() {
+        // must enable toggle mode in deck editor (switch between card sides);
+        return super.isTransformable() || this.isModalDoubleFacesCard;
     }
 }

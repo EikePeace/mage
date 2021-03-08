@@ -39,7 +39,7 @@ public final class SummoningTrap extends CardImpl {
         this.getSpellAbility().addEffect(new SummoningTrapEffect());
     }
 
-    public SummoningTrap(final SummoningTrap card) {
+    private SummoningTrap(final SummoningTrap card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SummoningTrapWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.COUNTERED) {
+        if (event.getType() == GameEvent.EventType.COUNTERED) {
             StackObject counteredSpell = game.getStack().getStackObject(event.getTargetId());
             if (counteredSpell == null) {
                 counteredSpell = (StackObject) game.getLastKnownInformation(event.getTargetId(), Zone.STACK);

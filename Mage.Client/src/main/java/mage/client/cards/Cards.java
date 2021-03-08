@@ -1,42 +1,39 @@
-
-
- /*
-  * Cards.java
-  *
-  * Created on Dec 18, 2009, 10:40:12 AM
-  */
  package mage.client.cards;
 
+ import mage.abilities.icon.CardIconRenderSettings;
  import mage.cards.MageCard;
  import mage.client.dialog.PreferencesDialog;
+ import mage.client.plugins.adapters.MageActionCallback;
  import mage.client.plugins.impl.Plugins;
  import mage.client.util.CardsViewUtil;
  import mage.client.util.ClientDefaultSettings;
  import mage.client.util.GUISizeHelper;
+ import mage.constants.Zone;
+ import mage.util.DebugUtil;
  import mage.view.*;
  import org.apache.log4j.Logger;
- import org.mage.card.arcane.CardPanel;
 
+ import javax.swing.*;
  import javax.swing.border.Border;
  import javax.swing.border.EmptyBorder;
  import java.awt.*;
  import java.util.*;
- import java.util.Map.Entry;
 
  /**
-  * @author BetaSteward_at_googlemail.com
+  * Panel for stack and hand zones
+  *
+  * @author BetaSteward_at_googlemail.com, JayDi85
   */
  public class Cards extends javax.swing.JPanel {
 
-     private static final Logger LOGGER = Logger.getLogger(Cards.class);
+     private static final Logger logger = Logger.getLogger(Cards.class);
      private static final Border EMPTY_BORDER = new EmptyBorder(0, 0, 0, 0);
 
      private final Map<UUID, MageCard> cards = new LinkedHashMap<>();
      private boolean dontDisplayTapped = false;
-     private static final int GAP_X = 5; // needed for marking cards with coloured fram (e.g. on hand)
-     private String zone;
-
-     private int minOffsetY = 0;
+     private Zone zone;
+     private int lastLoadedCardsCount = 0;
+     private final JScrollPane parentScrollPane;
 
      /**
       * Defines whether component should be visible whenever there is no objects
@@ -50,23 +47,37 @@
       * Creates new form Cards
       */
      public Cards() {
-         this(false);
+         this(false, null);
      }
 
-     public Cards(boolean skipAddingScrollPane) {
+     /**
+      *
+      * @param skipAddingScrollPane use parent scrolls instead own
+      * @param parentScrollPane
+      */
+     public Cards(boolean skipAddingScrollPane, JScrollPane parentScrollPane) {
          initComponents(skipAddingScrollPane);
          setOpaque(false);
-         //cardArea.setOpaque(false);
          setBackgroundColor(new Color(0, 0, 0, 100));
+
+         // scrollpane can be own or from parent
+         this.parentScrollPane = parentScrollPane;
          if (!skipAddingScrollPane) {
              jScrollPane1.setOpaque(false);
              jScrollPane1.getViewport().setOpaque(false);
              jScrollPane1.setBorder(EMPTY_BORDER);
          }
+
          if (Plugins.instance.isCardPluginLoaded()) {
              cardArea.setLayout(null);
          }
          cardArea.setBorder(EMPTY_BORDER);
+
+         if (DebugUtil.GUI_GAME_DRAW_HAND_AND_STACK_BORDER) {
+             setBorder(BorderFactory.createLineBorder(Color.green));
+             cardArea.setBorder(BorderFactory.createLineBorder(Color.yellow));
+         }
+
          setGUISize();
      }
 
@@ -88,6 +99,7 @@
          if (jScrollPane1 != null) {
              jScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(GUISizeHelper.scrollBarSize, 0));
              jScrollPane1.getHorizontalScrollBar().setPreferredSize(new Dimension(0, GUISizeHelper.scrollBarSize));
+             jScrollPane1.getHorizontalScrollBar().setUnitIncrement(GUISizeHelper.getCardsScrollbarUnitInc(getCardDimension().width));
          }
      }
 
@@ -122,29 +134,30 @@
      public boolean loadCards(CardsView cardsView, BigCard bigCard, UUID gameId, boolean revertOrder) {
          boolean changed = false;
 
-         // remove objects no longer on the stack from display
-         for (Iterator<Entry<UUID, MageCard>> i = cards.entrySet().iterator(); i.hasNext(); ) {
-             Entry<UUID, MageCard> entry = i.next();
-             if (!cardsView.containsKey(entry.getKey())) {
-                 removeCard(entry.getKey());
-                 i.remove();
-                 changed = true;
-             }
+         // auto-move scrollbars to the end of the list
+         boolean moveScrollbar;
+         if (zone == Zone.HAND) {
+             // hand moves on new cards only
+             moveScrollbar = lastLoadedCardsCount != 0 && cardsView.size() > lastLoadedCardsCount;
+         } else {
+             // stack moves on any changes (e.g. show current stack object)
+             moveScrollbar = cardsView.size() != lastLoadedCardsCount;
          }
+         this.lastLoadedCardsCount = cardsView.size();
+
+         // remove objects no longer to display
+         changed = removeOutdatedCards(cardsView);
 
          // Workaround for bug leaving display of objects on the stack (issue #213 https://github.com/magefree/mage/issues/213)
          if (cardsView.isEmpty() && countCards() > 0) {
              // problem happens with transformable cards
-             LOGGER.fatal("Card object on the cards panel was not removed");
+             logger.fatal("Card object on the cards panel was not removed");
              for (Component comp : cardArea.getComponents()) {
-                 if (comp instanceof Card) {
-                     Card card = (Card) comp;
-                     LOGGER.fatal("Card name:" + card.getName() + " type:" + card.getType(null));
-                 } else if (comp instanceof MageCard) {
+                 if (comp instanceof MageCard) {
                      MageCard mageCard = (MageCard) comp;
-                     LOGGER.fatal("MageCard name:" + mageCard.getName() + " toolTiptext:" + mageCard.getToolTipText());
+                     logger.fatal("MageCard name:" + mageCard.getName() + " toolTiptext:" + mageCard.getToolTipText());
                  } else {
-                     LOGGER.fatal("Unknown object:" + comp.getName() + " className:" + comp.getClass().getName());
+                     logger.fatal("Unknown object:" + comp.getName() + " className:" + comp.getClass().getName());
                  }
                  cardArea.remove(comp);
              }
@@ -168,8 +181,12 @@
                  }
              }
              if (card instanceof StackAbilityView) {
+                 // replace ability by original card
                  CardView tmp = ((StackAbilityView) card).getSourceCard();
                  tmp.overrideRules(card.getRules());
+                 tmp.setChoosable(card.isChoosable());
+                 tmp.setPlayableStats(card.getPlayableStats().copy());
+                 tmp.setSelected(card.isSelected());
                  tmp.setIsAbility(true);
                  tmp.overrideTargets(card.getTargets());
                  tmp.overrideId(card.getId());
@@ -197,11 +214,28 @@
          this.revalidate();
          this.repaint();
 
+         // auto-scroll (must use it at the end)
+         if (changed && moveScrollbar) {
+             SwingUtilities.invokeLater(() -> {
+                 if (jScrollPane1 != null) {
+                     jScrollPane1.getHorizontalScrollBar().setValue(jScrollPane1.getHorizontalScrollBar().getMaximum());
+                 }
+                 if (parentScrollPane != null) {
+                     parentScrollPane.getHorizontalScrollBar().setValue(parentScrollPane.getHorizontalScrollBar().getMaximum());
+                 }
+             });
+         }
+
          return changed;
      }
 
      public void sizeCards(Dimension cardDimension) {
-         cardArea.setPreferredSize(new Dimension((int) ((cards.size()) * (cardDimension.getWidth() + GAP_X)) + 20, (int) (cardDimension.getHeight()) + 20));
+         cardArea.setPreferredSize(new Dimension(
+                 (int) ((cards.size()) * (cardDimension.getWidth() + MageActionCallback.getHandOrStackBetweenGapX(zone)))
+                         + MageActionCallback.getHandOrStackMargins(zone).getWidth(),
+                 (int) (cardDimension.getHeight())
+                         + MageActionCallback.getHandOrStackMargins(zone).getHeight()
+                 ));
          cardArea.revalidate();
          cardArea.repaint();
      }
@@ -220,7 +254,7 @@
      public void setCardDimension(Dimension dimension) {
          this.cardDimension = dimension;
          for (Component component : cardArea.getComponents()) {
-             if (component instanceof CardPanel) {
+             if (component instanceof MageCard) {
                  component.setBounds(0, 0, dimension.width, dimension.height);
              }
          }
@@ -228,39 +262,53 @@
      }
 
      private void addCard(CardView card, BigCard bigCard, UUID gameId) {
-         MageCard mageCard = Plugins.instance.getMageCard(card, bigCard, getCardDimension(), gameId, true, true, PreferencesDialog.getRenderMode(), true);
+         MageCard mageCard = Plugins.instance.getMageCard(card, bigCard, new CardIconRenderSettings(), getCardDimension(), gameId, true, true, PreferencesDialog.getRenderMode(), true);
+         mageCard.setCardContainerRef(cardArea);
+         mageCard.update(card);
          if (zone != null) {
              mageCard.setZone(zone);
          }
          cards.put(card.getId(), mageCard);
          cardArea.add(mageCard);
          definePosition(mageCard);
-         mageCard.setCardAreaRef(cardArea);
      }
 
-     private void definePosition(MageCard card) {
-         int dx = 0;
-         for (Component comp : cardArea.getComponents()) {
-             if (!comp.equals(card)) {
-                 dx = Math.max(dx, (int) comp.getLocation().getX());
+     private void definePosition(MageCard newCard) {
+         int dx = MageActionCallback.getHandOrStackMargins(zone).getLeft(); // starting position
+
+         // search last card's position
+         for (Component currentComp : cardArea.getComponents()) {
+             if (!currentComp.equals(newCard) && currentComp instanceof MageCard) {
+                 MageCard currentCard = (MageCard) currentComp;
+                 dx = Math.max(dx, currentCard.getCardLocation().getCardX());
              }
          }
-         dx += ((CardPanel) card).getCardWidth() + GAP_X;
-         card.setLocation(dx, (int) card.getLocation().getY());
+
+         // Y position sets here one time only (all sorting and drag manipulations works with X)
+         // add card to the end
+         dx += newCard.getCardLocation().getCardWidth() + MageActionCallback.getHandOrStackBetweenGapX(newCard.getZone());
+         newCard.setCardLocation(dx, MageActionCallback.getHandOrStackMargins(newCard.getZone()).getTop());
      }
 
-     private void removeCard(UUID cardId) {
+     private boolean removeOutdatedCards(CardsView cardsView) {
+         boolean changed = false;
+
+         // links to components
+         cards.keySet().removeIf(id -> !cardsView.containsKey(id));
+
+         // components
          for (Component comp : cardArea.getComponents()) {
-             if (comp instanceof Card) {
-                 if (((Card) comp).getCardId().equals(cardId)) {
+             if (comp instanceof MageCard) {
+                 if (!cards.containsValue(comp)) {
                      cardArea.remove(comp);
+                     changed = true;
                  }
-             } else if (comp instanceof MageCard) {
-                 if (((MageCard) comp).getOriginal().getId().equals(cardId)) {
-                     cardArea.remove(comp);
-                 }
+             } else {
+                 logger.error("Unknown card conponent in cards panel to remove: " + comp);
              }
          }
+
+         return changed;
      }
 
      private int countCards() {
@@ -296,10 +344,6 @@
      private javax.swing.JScrollPane jScrollPane1;
      // End of variables declaration//GEN-END:variables
 
-     public void setDontDisplayTapped(boolean dontDisplayTapped) {
-         this.dontDisplayTapped = dontDisplayTapped;
-     }
-
      public void setHScrollSpeed(int unitIncrement) {
          if (jScrollPane1 != null) {
              jScrollPane1.getHorizontalScrollBar().setUnitIncrement(unitIncrement);
@@ -313,28 +357,29 @@
      }
 
      private void layoutCards() {
-         java.util.List<CardPanel> cardsToLayout = new ArrayList<>();
          // get all the card panels
+         java.util.List<MageCard> cardsToLayout = new ArrayList<>();
          for (Component component : cardArea.getComponents()) {
-             if (component instanceof CardPanel) {
-                 cardsToLayout.add((CardPanel) component);
+             if (component instanceof MageCard) {
+                 cardsToLayout.add((MageCard) component);
              }
          }
+
+         // WARNING, must be same sort code as MageActionCallback->sortLayout (if not then hand cards will be messed after drag)
+
          // sort the cards
-         cardsToLayout.sort((cp1, cp2) -> Integer.valueOf(cp1.getLocation().x).compareTo(cp2.getLocation().x));
-         // relocate the cards
-         int dx = 0;
-         for (Component component : cardsToLayout) {
-             component.setLocation(dx, Math.max(component.getLocation().y, minOffsetY));
-             dx += ((CardPanel) component).getCardWidth() + GAP_X;
+         cardsToLayout.sort(Comparator.comparingInt(cp -> cp.getCardLocation().getCardX()));
+
+         // relocate the cards (support only horizontal style: hand and stack panels)
+         // TODO: add shrinking of cards list for too big amount (cards will be overlapped, use MageActionCallback.HAND_CARDS_BETWEEN_GAP_X to control it)
+         int dx = MageActionCallback.getHandOrStackBetweenGapX(zone); // starting position
+         for (MageCard component : cardsToLayout) {
+             component.setCardLocation(dx, component.getCardLocation().getCardY());
+             dx += component.getCardLocation().getCardWidth() + MageActionCallback.getHandOrStackBetweenGapX(zone);
          }
      }
 
-     public void setZone(String zone) {
+     public void setZone(Zone zone) {
          this.zone = zone;
-     }
-
-     public void setMinOffsetY(int minOffsetY) {
-         this.minOffsetY = minOffsetY;
      }
  }

@@ -12,7 +12,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
@@ -39,7 +38,7 @@ public final class LivingTerrain extends CardImpl {
                 new TreefolkToken(), "Enchanted land is a 5/6 green Treefolk creature that's still a land", Duration.WhileOnBattlefield, BecomesCreatureAttachedEffect.LoseType.COLOR)));
     }
 
-    public LivingTerrain(final LivingTerrain card) {
+    private LivingTerrain(final LivingTerrain card) {
         super(card);
     }
 

@@ -44,7 +44,7 @@ public final class OozeGarden extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OozeGarden(final OozeGarden card) {
+    private OozeGarden(final OozeGarden card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class OozeGardenCreateTokenEffect extends OneShotEffect {
         }
         Token token = new OozeToken(value);
         token.getAbilities().newId(); // neccessary if token has ability like DevourAbility()
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(1, game, source, source.getControllerId());
         return true;
     }
 }

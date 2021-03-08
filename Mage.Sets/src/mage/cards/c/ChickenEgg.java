@@ -35,7 +35,7 @@ public final class ChickenEgg extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new ChickenEggEffect(), TargetController.YOU, false));
     }
 
-    public ChickenEgg(final ChickenEgg card) {
+    private ChickenEgg(final ChickenEgg card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class ChickenEggEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int result = controller.rollDice(game, 6);
+            int result = controller.rollDice(source, game, 6);
             if (result == 6) {
                 new SacrificeSourceEffect().apply(game, source);
                 return (new CreateTokenEffect(new GiantBirdToken(), 1)).apply(game, source);

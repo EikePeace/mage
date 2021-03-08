@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class HowlpackWolf extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new CantBlockUnlessYouControlSourceEffect(filter)));
     }
 
-    public HowlpackWolf(final HowlpackWolf card) {
+    private HowlpackWolf(final HowlpackWolf card) {
         super(card);
     }
 

@@ -39,7 +39,7 @@ public final class CausticWasps extends CardImpl {
         this.addAbility(new CausticWaspsTriggeredAbility());
     }
 
-    public CausticWasps(final CausticWasps card) {
+    private CausticWasps(final CausticWasps card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class CausticWaspsTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -7,7 +7,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.condition.Condition;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.abilities.mana.builder.ConditionalManaBuilder;
 import mage.cards.CardImpl;
@@ -41,7 +41,7 @@ public final class VedalkenEngineer extends CardImpl {
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new VedalkenEngineerEffect(2, new VedalkenEngineerManaBuilder()), new TapSourceCost()));
     }
 
-    public VedalkenEngineer(final VedalkenEngineer card) {
+    private VedalkenEngineer(final VedalkenEngineer card) {
         super(card);
     }
 

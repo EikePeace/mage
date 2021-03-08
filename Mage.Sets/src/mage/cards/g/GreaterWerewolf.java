@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
-import mage.counters.BoostCounter;
+import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.permanent.BlockedByIdPredicate;
@@ -38,7 +38,7 @@ public final class GreaterWerewolf extends CardImpl {
         this.addAbility(new EndOfCombatTriggeredAbility(new GreaterWerewolfEffect(), false));
     }
 
-    public GreaterWerewolf(final GreaterWerewolf card) {
+    private GreaterWerewolf(final GreaterWerewolf card) {
         super(card);
     }
 
@@ -71,8 +71,8 @@ class GreaterWerewolfEffect extends OneShotEffect {
             FilterCreaturePermanent filter = new FilterCreaturePermanent();
             filter.add(Predicates.or(new BlockedByIdPredicate(sourcePermanent.getId()), new BlockingAttackerIdPredicate(sourcePermanent.getId())));
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, game)) {
-                Effect effect = new AddCountersTargetEffect(new BoostCounter(0, -2), Outcome.UnboostCreature);
-                effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                Effect effect = new AddCountersTargetEffect(CounterType.M0M2.createInstance(), Outcome.UnboostCreature);
+                effect.setTargetPointer(new FixedTarget(permanent, game));
                 effect.apply(game, source);
             }
             return true;

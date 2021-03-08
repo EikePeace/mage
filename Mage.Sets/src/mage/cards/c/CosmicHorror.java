@@ -38,7 +38,7 @@ public final class CosmicHorror extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new CosmicHorrorEffect(new ManaCostsImpl("{3}{B}{B}{B}")), TargetController.YOU, false));
     }
 
-    public CosmicHorror(final CosmicHorror card) {
+    private CosmicHorror(final CosmicHorror card) {
         super(card);
     }
 
@@ -74,12 +74,12 @@ class CosmicHorrorEffect extends OneShotEffect {
             }
             if (controller.chooseUse(Outcome.Benefit, sb.toString(), source, game)) {
                 cost.clearPaid();
-                if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
+                if (cost.pay(source, game, source, source.getControllerId(), false, null)) {
                     return true;
                 }
             }
-            if (cosmicHorror.destroy(source.getSourceId(), game, false)) {
-                controller.damage(7, source.getSourceId(), game);
+            if (cosmicHorror.destroy(source, game, false)) {
+                controller.damage(7, source.getSourceId(), source, game);
                 return true;
             }
         }

@@ -56,7 +56,7 @@ public final class AshenmoorLiege extends CardImpl {
 
     }
 
-    public AshenmoorLiege(final AshenmoorLiege card) {
+    private AshenmoorLiege(final AshenmoorLiege card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class AshenmoorLiegeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

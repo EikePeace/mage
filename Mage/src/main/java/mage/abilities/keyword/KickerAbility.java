@@ -1,21 +1,21 @@
 package mage.abilities.keyword;
 
+import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.StaticAbility;
 import mage.abilities.costs.*;
 import mage.abilities.costs.mana.ManaCostsImpl;
-import mage.constants.AbilityType;
+import mage.cards.Card;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.stack.Spell;
 import mage.players.Player;
+import mage.util.CardUtil;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -45,13 +45,15 @@ import java.util.concurrent.ConcurrentHashMap;
  * Otherwise, the spell is cast as if it did not have those targets. See rule
  * 601.2c.
  *
- * @author LevelX2
+ * @author LevelX2, JayDi85
  */
 public class KickerAbility extends StaticAbility implements OptionalAdditionalSourceCosts {
 
     protected static final String KICKER_KEYWORD = "Kicker";
-    protected static final String KICKER_REMINDER_MANA = "You may pay an additional {cost} as you cast this spell.";
-    protected static final String KICKER_REMINDER_COST = "You may {cost} in addition to any other costs as you cast this spell.";
+    protected static final String KICKER_REMINDER_MANA = "You may pay an additional "
+            + "{cost} as you cast this spell.";
+    protected static final String KICKER_REMINDER_COST = "You may {cost} in addition "
+            + "to any other costs as you cast this spell.";
 
     protected Map<String, Integer> activations = new ConcurrentHashMap<>(); // zoneChangeCounter, activations
 
@@ -80,7 +82,7 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
     public KickerAbility(final KickerAbility ability) {
         super(ability);
         for (OptionalAdditionalCost cost : ability.kickerCosts) {
-            this.kickerCosts.add((OptionalAdditionalCost) cost.copy());
+            this.kickerCosts.add(cost.copy());
         }
         this.keywordText = ability.keywordText;
         this.reminderText = ability.reminderText;
@@ -93,13 +95,15 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
     }
 
     public final OptionalAdditionalCost addKickerCost(String manaString) {
-        OptionalAdditionalCost kickerCost = new OptionalAdditionalCostImpl(keywordText, reminderText, new ManaCostsImpl(manaString));
+        OptionalAdditionalCost kickerCost = new OptionalAdditionalCostImpl(
+                keywordText, reminderText, new ManaCostsImpl(manaString));
         kickerCosts.add(kickerCost);
         return kickerCost;
     }
 
     public final OptionalAdditionalCost addKickerCost(Cost cost) {
-        OptionalAdditionalCost kickerCost = new OptionalAdditionalCostImpl(keywordText, "-", reminderText, cost);
+        OptionalAdditionalCost kickerCost = new OptionalAdditionalCostImpl(
+                keywordText, "-", reminderText, cost);
         kickerCosts.add(kickerCost);
         return kickerCost;
     }
@@ -111,32 +115,70 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
         String key = getActivationKey(source, "", game);
         for (Iterator<String> iterator = activations.keySet().iterator(); iterator.hasNext(); ) {
             String activationKey = iterator.next();
-            if (activationKey.startsWith(key) && activations.get(activationKey) > 0) {
+            if (activationKey.startsWith(key)
+                    && activations.get(activationKey) > 0) {
                 activations.put(key, 0);
             }
         }
     }
 
-    public int getKickedCounter(Game game, Ability source) {
-        String key = getActivationKey(source, "", game);
-        return activations.getOrDefault(key, 0);
-    }
+    private int getKickedCounterStrict(Game game, Ability source, String needKickerCost) {
+        String key;
+        if (needKickerCost.isEmpty()) {
+            // need all kickers
+            key = getActivationKey(source, "", game);
+        } else {
+            // need only cost related kickers
+            key = getActivationKey(source, needKickerCost, game);
+        }
 
-    public boolean isKicked(Game game, Ability source, String costText) {
-        String key = getActivationKey(source, costText, game);
+        int totalActivations = 0;
         if (kickerCosts.size() > 1) {
             for (String activationKey : activations.keySet()) {
                 if (activationKey.startsWith(key) && activations.get(activationKey) > 0) {
-                    return true;
+                    totalActivations += activations.get(activationKey);
                 }
             }
         } else {
-            if (activations.containsKey(key)) {
-                return activations.get(key) > 0;
-
+            if (activations.containsKey(key) && activations.get(key) > 0) {
+                totalActivations += activations.get(key);
             }
         }
-        return false;
+        return totalActivations;
+    }
+
+    /**
+     * Return total kicker activations (kicker + multikicker)
+     *
+     * @param game
+     * @param source
+     * @return
+     */
+    public int getKickedCounter(Game game, Ability source) {
+        return getKickedCounterStrict(game, source, "");
+    }
+
+    /**
+     * If spell was kicked
+     *
+     * @param game
+     * @param source
+     * @return
+     */
+    public boolean isKicked(Game game, Ability source) {
+        return isKicked(game, source, "");
+    }
+
+    /**
+     * If spell was kicked by specific kicker cost
+     *
+     * @param game
+     * @param source
+     * @param needKickerCost use cost.getText(true)
+     * @return
+     */
+    public boolean isKicked(Game game, Ability source, String needKickerCost) {
+        return getKickedCounterStrict(game, source, needKickerCost) > 0;
     }
 
     public List<OptionalAdditionalCost> getKickerCosts() {
@@ -150,27 +192,47 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
             amount += activations.get(key);
         }
         activations.put(key, amount);
-        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.KICKED, source.getSourceId(), source.getSourceId(), source.getControllerId()));
+        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.KICKED, source.getSourceId(), source, source.getControllerId()));
+    }
+
+    /**
+     * Return activation zcc key for searching spell's settings in source object
+     *
+     * @param source
+     * @param game
+     * @return
+     */
+    public static String getActivationKey(Ability source, Game game) {
+        // Kicker activates in STACK zone so all zcc must be from "stack moment"
+        // Use cases:
+        // * resolving spell have same zcc (example: check kicker status in sorcery/instant);
+        // * copied spell have same zcc as source spell (see Spell.copySpell and zcc sync);
+        // * creature/token from resolved spell have +1 zcc after moved to battlefield (example: check kicker status in ETB triggers/effects);
+
+        // find object info from the source ability (it can be a permanent or a spell on stack, on the moment of trigger/resolve)
+        MageObject sourceObject = source.getSourceObject(game);
+        Zone sourceObjectZone = game.getState().getZone(sourceObject.getId());
+        int zcc = CardUtil.getActualSourceObjectZoneChangeCounter(game, source);
+
+        // find "stack moment" zcc:
+        // * permanent cards enters from STACK to BATTLEFIELD (+1 zcc)
+        // * permanent tokens enters from OUTSIDE to BATTLEFIELD (+1 zcc, see prepare code in TokenImpl.putOntoBattlefieldHelper)
+        // * spells and copied spells resolves on STACK (zcc not changes)
+        if (sourceObjectZone != Zone.STACK) {
+            --zcc;
+        }
+
+        return zcc + "";
     }
 
     private String getActivationKey(Ability source, String costText, Game game) {
-        int zcc = 0;
-        if (source.getAbilityType() == AbilityType.TRIGGERED) {
-            zcc = source.getSourceObjectZoneChangeCounter();
-        }
-        if (zcc == 0) {
-            zcc = game.getState().getZoneChangeCounter(source.getSourceId());
-        }
-        if (zcc > 0 && (source.getAbilityType() == AbilityType.TRIGGERED)) {
-            --zcc;
-        }
-        return zcc + ((kickerCosts.size() > 1) ? costText : "");
+        return getActivationKey(source, game) + ((kickerCosts.size() > 1) ? costText : "");
     }
 
     @Override
     public void addOptionalAdditionalCosts(Ability ability, Game game) {
         if (ability instanceof SpellAbility) {
-            Player player = game.getPlayer(controllerId);
+            Player player = game.getPlayer(ability.getControllerId());
             if (player != null) {
                 this.resetKicker(game, ability);
                 for (OptionalAdditionalCost kickerCost : kickerCosts) {
@@ -178,19 +240,21 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
                     while (player.canRespond() && again) {
                         String times = "";
                         if (kickerCost.isRepeatable()) {
-                            int activatedCount = getKickedCounter(game, ability);
+                            int activatedCount = getKickedCounterStrict(game, ability, kickerCost.getText(true));
                             times = (activatedCount + 1) + (activatedCount == 0 ? " time " : " times ");
                         }
                         // TODO: add AI support to find max number of possible activations (from available mana)
                         //  canPay checks only single mana available, not total mana usage
-                        if (kickerCost.canPay(ability, sourceId, controllerId, game)
-                                && player.chooseUse(/*Outcome.Benefit*/Outcome.AIDontUseIt, "Pay " + times + kickerCost.getText(false) + " ?", ability, game)) {
+                        if (kickerCost.canPay(ability, this, ability.getControllerId(), game)
+                                && player.chooseUse(/*Outcome.Benefit*/Outcome.AIDontUseIt,
+                                "Pay " + times + kickerCost.getText(false) + " ?", ability, game)) {
                             this.activateKicker(kickerCost, ability, game);
                             if (kickerCost instanceof Costs) {
                                 for (Iterator itKickerCost = ((Costs) kickerCost).iterator(); itKickerCost.hasNext(); ) {
                                     Object kickerCostObject = itKickerCost.next();
-                                    if ((kickerCostObject instanceof Costs) || (kickerCostObject instanceof CostsImpl)) {
-                                        for (@SuppressWarnings("unchecked") Iterator<Cost> itDetails = ((Costs) kickerCostObject).iterator(); itDetails.hasNext(); ) {
+                                    if ((kickerCostObject instanceof Costs)) {
+                                        for (@SuppressWarnings("unchecked") Iterator<Cost> itDetails
+                                             = ((Costs) kickerCostObject).iterator(); itDetails.hasNext(); ) {
                                             addKickerCostsToAbility(itDetails.next(), ability, game);
                                         }
                                     } else {
@@ -237,7 +301,7 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
             sb.append(' ').append(remarkText);
         }
 
-        return sb.toString();
+        return sb.toString().replace(" .", ".");
     }
 
     @Override
@@ -251,5 +315,45 @@ public class KickerAbility extends StaticAbility implements OptionalAdditionalSo
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Find spell's kicked stats. Must be used on stack only, e.g. for SPELL_CAST events
+     *
+     * @param game
+     * @param spellId
+     * @return
+     */
+    public static int getSpellKickedCount(Game game, UUID spellId) {
+        int count = 0;
+        Spell spell = game.getSpellOrLKIStack(spellId);
+        if (spell != null) {
+            for (Ability ability : spell.getAbilities(game)) {
+                if (ability instanceof KickerAbility) {
+                    count += ((KickerAbility) ability).getKickedCounter(game, spell.getSpellAbility());
+                }
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Find source object's kicked stats. Can be used in any places, e.g. in ETB effects
+     *
+     * @param game
+     * @param abilityToCheck
+     * @return
+     */
+    public static int getSourceObjectKickedCount(Game game, Ability abilityToCheck) {
+        MageObject sourceObject = abilityToCheck.getSourceObject(game);
+        int count = 0;
+        if (sourceObject instanceof Card) {
+            for (Ability ability : ((Card) sourceObject).getAbilities(game)) {
+                if (ability instanceof KickerAbility) {
+                    count += ((KickerAbility) ability).getKickedCounter(game, abilityToCheck);
+                }
+            }
+        }
+        return count;
     }
 }

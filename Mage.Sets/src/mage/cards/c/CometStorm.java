@@ -33,7 +33,7 @@ public final class CometStorm extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(CometStormAdjuster.instance);
     }
 
-    public CometStorm(final CometStorm card) {
+    private CometStorm(final CometStorm card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class CometStormEffect extends OneShotEffect {
 
     public CometStormEffect() {
         super(Outcome.Damage);
-        staticText = "Choose any target, then choose another target for each time Comet Storm was kicked. Comet Storm deals X damage to each of them";
+        staticText = "Choose any target, then choose another target for each time this spell was kicked. {this} deals X damage to each of them";
     }
 
     public CometStormEffect(final CometStormEffect effect) {
@@ -74,10 +74,10 @@ class CometStormEffect extends OneShotEffect {
                 Permanent permanent = game.getPermanent(uuid);
                 Player player = game.getPlayer(uuid);
                 if (permanent != null) {
-                    permanent.damage(damage, source.getSourceId(), game, false, true);
+                    permanent.damage(damage, source.getSourceId(), source, game, false, true);
                 }
                 if (player != null) {
-                    player.damage(damage, source.getSourceId(), game);
+                    player.damage(damage, source.getSourceId(), source, game);
                 }
             }
             return true;

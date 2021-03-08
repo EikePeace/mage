@@ -25,7 +25,7 @@ public final class AinokGuide extends CardImpl {
 
     public AinokGuide(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.SCOUT);
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
@@ -42,7 +42,7 @@ public final class AinokGuide extends CardImpl {
 
     }
 
-    public AinokGuide(final AinokGuide card) {
+    private AinokGuide(final AinokGuide card) {
         super(card);
     }
 

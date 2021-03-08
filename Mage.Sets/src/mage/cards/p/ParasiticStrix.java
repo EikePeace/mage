@@ -39,7 +39,7 @@ public final class ParasiticStrix extends CardImpl {
         this.addAbility(new ParasiticStrixTriggeredAbility());
     }
 
-    public ParasiticStrix(final ParasiticStrix card) {
+    private ParasiticStrix(final ParasiticStrix card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ParasiticStrixTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

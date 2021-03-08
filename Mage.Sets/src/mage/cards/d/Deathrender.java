@@ -39,7 +39,7 @@ public final class Deathrender extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public Deathrender(final Deathrender card) {
+    private Deathrender(final Deathrender card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class DeathrenderEffect extends OneShotEffect {
                 Card creatureInHand = game.getCard(target.getFirstTarget());
                 if (creatureInHand != null) {
                     if (controller.moveCards(creatureInHand, Zone.BATTLEFIELD, source, game)) {
-                        game.getPermanent(creatureInHand.getId()).addAttachment(sourcePermanent.getId(), game);
+                        game.getPermanent(creatureInHand.getId()).addAttachment(sourcePermanent.getId(), source, game);
                     }
                 }
             }

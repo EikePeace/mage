@@ -15,6 +15,7 @@ import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.PreventDamageEvent;
+import mage.game.events.PreventedDamageEvent;
 import mage.game.permanent.Permanent;
 
 import java.util.UUID;
@@ -42,7 +43,7 @@ public final class Vigor extends CardImpl {
         this.addAbility(new PutIntoGraveFromAnywhereSourceTriggeredAbility(new ShuffleIntoLibrarySourceEffect()));
     }
 
-    public Vigor(final Vigor card) {
+    private Vigor(final Vigor card) {
         super(card);
     }
 
@@ -65,15 +66,15 @@ class VigorReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        GameEvent preventEvent = new PreventDamageEvent(source.getFirstTarget(), source.getSourceId(), source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
+        GameEvent preventEvent = new PreventDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
         if (!game.replaceEvent(preventEvent)) {
             int preventedDamage = event.getAmount();
             event.setAmount(0);
             Permanent permanent = game.getPermanent(event.getTargetId());
             if (permanent != null) {
-                permanent.addCounters(CounterType.P1P1.createInstance(preventedDamage), source, game);
+                permanent.addCounters(CounterType.P1P1.createInstance(preventedDamage), source.getControllerId(), source, game);
             }
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), preventedDamage));
+            game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), preventedDamage));
             return true;
         }
         return false;
@@ -81,12 +82,15 @@ class VigorReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        return event.getPlayerId().equals(source.getControllerId())
+        Permanent permanent = game.getPermanent(event.getTargetId());
+        return permanent != null
+                && permanent.isCreature()
+                && permanent.isControlledBy(source.getControllerId())
                 && !event.getTargetId().equals(source.getSourceId());
     }
 

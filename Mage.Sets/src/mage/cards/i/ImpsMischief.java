@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -39,7 +39,7 @@ public final class ImpsMischief extends CardImpl {
         
     }
 
-    public ImpsMischief(final ImpsMischief card) {
+    private ImpsMischief(final ImpsMischief card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ImpsMischiefLoseLifeEffect extends OneShotEffect {
         if (spell != null) {
             Player player = game.getPlayer(source.getControllerId());
             if (player != null) {
-                player.loseLife(spell.getConvertedManaCost(), game, false);
+                player.loseLife(spell.getConvertedManaCost(), game, source, false);
                 return true;
             }            
         }        

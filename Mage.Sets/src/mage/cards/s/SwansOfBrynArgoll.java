@@ -46,7 +46,7 @@ public final class SwansOfBrynArgoll extends CardImpl {
 
     }
 
-    public SwansOfBrynArgoll(final SwansOfBrynArgoll card) {
+    private SwansOfBrynArgoll(final SwansOfBrynArgoll card) {
         super(card);
     }
 
@@ -80,21 +80,24 @@ class SwansOfBrynArgollEffect extends PreventionEffectImpl {
                 if (spell != null) {
                     Player controllerOfSpell = game.getPlayer(spell.getControllerId());
                     if(controllerOfSpell != null) {
-                        controllerOfSpell.drawCards(preventionEffectData.getPreventedDamage(), game);
+                        // original event is not a draw event, so skip it in params
+                        controllerOfSpell.drawCards(preventionEffectData.getPreventedDamage(), source, game);
                         passed = true;
                     }
                 }
                 if (permanent != null) {
                     Player controllerOfPermanent = game.getPlayer(permanent.getControllerId());
                     if(controllerOfPermanent != null) {
-                        controllerOfPermanent.drawCards(preventionEffectData.getPreventedDamage(), game);
+                        // original event is not a draw event, so skip it in params
+                        controllerOfPermanent.drawCards(preventionEffectData.getPreventedDamage(), source, game);
                         passed = true;
                     }
                 }
                 if (emblem != null) {
                     Player controllerOfEmblem = game.getPlayer(emblem.getControllerId());
                     if(controllerOfEmblem != null) {
-                        controllerOfEmblem.drawCards(preventionEffectData.getPreventedDamage(), game);
+                        // original event is not a draw event, so skip it in params
+                        controllerOfEmblem.drawCards(preventionEffectData.getPreventedDamage(), source, game);
                     }
                     passed = true;
                 }
@@ -104,7 +107,8 @@ class SwansOfBrynArgollEffect extends PreventionEffectImpl {
                     if (cardSource != null) {
                         Player owner = game.getPlayer(cardSource.getOwnerId());
                         if (owner != null) {
-                            owner.drawCards(preventionEffectData.getPreventedDamage(), game);
+                            // original event is not a draw event, so skip it in params
+                            owner.drawCards(preventionEffectData.getPreventedDamage(), source, game);
                         }
                     }
                 }
@@ -115,7 +119,7 @@ class SwansOfBrynArgollEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE
+        return event.getType() == EventType.DAMAGE_PERMANENT
                 && event.getTargetId().equals(source.getSourceId());
     }
 

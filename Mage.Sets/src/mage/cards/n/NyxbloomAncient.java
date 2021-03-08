@@ -12,6 +12,7 @@ import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ManaEvent;
+import mage.util.CardUtil;
 
 import java.util.UUID;
 
@@ -64,22 +65,22 @@ class NyxbloomAncientReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Mana mana = ((ManaEvent) event).getMana();
         if (mana.getBlack() > 0) {
-            mana.set(ManaType.BLACK, mana.getBlack() * 3);
+            mana.set(ManaType.BLACK, CardUtil.overflowMultiply(mana.getBlack(), 3));
         }
         if (mana.getBlue() > 0) {
-            mana.set(ManaType.BLUE, mana.getBlue() * 3);
+            mana.set(ManaType.BLUE, CardUtil.overflowMultiply(mana.getBlue(), 3));
         }
         if (mana.getWhite() > 0) {
-            mana.set(ManaType.WHITE, mana.getWhite() * 3);
+            mana.set(ManaType.WHITE, CardUtil.overflowMultiply(mana.getWhite(), 3));
         }
         if (mana.getGreen() > 0) {
-            mana.set(ManaType.GREEN, mana.getGreen() * 3);
+            mana.set(ManaType.GREEN, CardUtil.overflowMultiply(mana.getGreen(), 3));
         }
         if (mana.getRed() > 0) {
-            mana.set(ManaType.RED, mana.getRed() * 3);
+            mana.set(ManaType.RED, CardUtil.overflowMultiply(mana.getRed(), 3));
         }
         if (mana.getColorless() > 0) {
-            mana.set(ManaType.COLORLESS, mana.getColorless() * 3);
+            mana.set(ManaType.COLORLESS, CardUtil.overflowMultiply(mana.getColorless(), 3));
         }
         return false;
     }

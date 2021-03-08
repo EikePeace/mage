@@ -85,7 +85,7 @@ class RayamiFirstOfTheFallenEffect extends ContinuousEffectImpl {
                             || ability instanceof DoubleStrikeAbility
                             || ability instanceof DeathtouchAbility
                             || ability instanceof HasteAbility
-                            || ability instanceof HexproofAbility
+                            || ability instanceof HexproofBaseAbility
                             || ability instanceof IndestructibleAbility
                             || ability instanceof LifelinkAbility
                             || ability instanceof MenaceAbility
@@ -130,7 +130,7 @@ class RayamiFirstOfTheFallenReplacementEffect extends ReplacementEffectImpl {
         }
         controller.moveCards(permanent, Zone.EXILED, source, game);
         Card card = game.getCard(permanent.getId());
-        card.addCounters(CounterType.BLOOD.createInstance(), source, game);
+        card.addCounters(CounterType.BLOOD.createInstance(), source.getControllerId(), source, game);
         return true;
     }
 

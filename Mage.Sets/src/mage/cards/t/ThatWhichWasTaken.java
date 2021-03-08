@@ -19,8 +19,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 
@@ -36,7 +35,7 @@ public final class ThatWhichWasTaken extends CardImpl {
 
     static {
         filter.add(AnotherPredicate.instance);
-        filterIndestructible.add(new CounterPredicate(CounterType.DIVINITY));
+        filterIndestructible.add(CounterType.DIVINITY.getPredicate());
     }
 
     public ThatWhichWasTaken(UUID ownerId, CardSetInfo setInfo) {
@@ -57,7 +56,7 @@ public final class ThatWhichWasTaken extends CardImpl {
 
     }
 
-    public ThatWhichWasTaken(final ThatWhichWasTaken card) {
+    private ThatWhichWasTaken(final ThatWhichWasTaken card) {
         super(card);
     }
 

@@ -51,7 +51,7 @@ public final class Purgatory extends CardImpl {
             false));
     }
 
-    public Purgatory(final Purgatory card) {
+    private Purgatory(final Purgatory card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class PurgatoryTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -96,7 +96,7 @@ class PurgatoryTriggeredAbility extends TriggeredAbilityImpl {
                         && permanent.isCreature()
                         && permanent.isOwnedBy(controller.getId())) {
         
-                    this.getEffects().get(0).setTargetPointer(new FixedTarget(permanent.getId()));
+                    this.getEffects().get(0).setTargetPointer(new FixedTarget(permanent, game));
                     return true;
                 }
             }

@@ -42,7 +42,7 @@ public final class UrzasScienceFairProject extends CardImpl {
         this.addAbility(ability);
     }
 
-    public UrzasScienceFairProject(final UrzasScienceFairProject card) {
+    private UrzasScienceFairProject(final UrzasScienceFairProject card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class UrzasScienceFairProjectEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
 
             Effect effect = null;
             // 1 - -2/-2 until end of turn.

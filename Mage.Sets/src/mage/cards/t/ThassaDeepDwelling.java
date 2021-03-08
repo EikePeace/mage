@@ -21,7 +21,7 @@ import mage.constants.TargetController;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 import java.util.UUID;
@@ -59,7 +59,7 @@ public final class ThassaDeepDwelling extends CardImpl {
                 new ExileTargetForSourceEffect(),
                 TargetController.YOU, false
         );
-        ability.addEffect(new ReturnToBattlefieldUnderYourControlTargetEffect(true).concatBy(", then"));
+        ability.addEffect(new ReturnToBattlefieldUnderYourControlTargetEffect().concatBy(", then"));
         ability.addTarget(new TargetPermanent(
                 0, 1, filterOther, false
         ));

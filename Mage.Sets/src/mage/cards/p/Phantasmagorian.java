@@ -42,7 +42,7 @@ public final class Phantasmagorian extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.GRAVEYARD, new ReturnSourceFromGraveyardToHandEffect(), new DiscardTargetCost(new TargetCardInHand(3, 3, new FilterCard("three cards")))));
     }
 
-    public Phantasmagorian(final Phantasmagorian card) {
+    private Phantasmagorian(final Phantasmagorian card) {
         super(card);
     }
 
@@ -76,13 +76,13 @@ class CounterSourceEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 cost.clearPaid();
                 if (player != null
-                 && cost.canPay(source, source.getSourceId(), player.getId(), game)
+                 && cost.canPay(source, source, player.getId(), game)
                         && player.chooseUse(outcome, "Discard three cards to counter " + sourceObject.getIdName() + '?', source, game)) {
-                    if (cost.pay(source, game, source.getSourceId(), playerId, false, null)) {
+                    if (cost.pay(source, game, source, playerId, false, null)) {
                         game.informPlayers(player.getLogName() + " discards 3 cards to counter " + sourceObject.getIdName() + '.');
                         Spell spell = game.getStack().getSpell(source.getSourceId());
                         if (spell != null) {
-                            game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                            game.getStack().counter(spell.getId(), source, game);
                         }
                     }
                 }
@@ -97,6 +97,6 @@ class CounterSourceEffect extends OneShotEffect {
         if (staticText != null && !staticText.isEmpty()) {
             return staticText;
         }
-        return "any player may discard three cards. If a player does, counter {source}";
+        return "any player may discard three cards. If a player does, counter {this}";
     }
 }

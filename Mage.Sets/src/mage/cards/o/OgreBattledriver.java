@@ -17,7 +17,7 @@ import mage.constants.SetTargetPointer;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -49,7 +49,7 @@ public final class OgreBattledriver extends CardImpl {
         
     }
 
-    public OgreBattledriver(final OgreBattledriver card) {
+    private OgreBattledriver(final OgreBattledriver card) {
         super(card);
     }
 

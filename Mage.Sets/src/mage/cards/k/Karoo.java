@@ -42,11 +42,11 @@ public final class Karoo extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SacrificeSourceUnlessPaysEffect(new ReturnToHandChosenControlledPermanentCost(new TargetControlledPermanent(filter)))));
 
         // {tap}: Add {C}{W}.
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 1, 0, 0, 0, 1), new TapSourceCost()));
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 0, 0, 0, 0, 0, 1), new TapSourceCost()));
 
     }
 
-    public Karoo(final Karoo card) {
+    private Karoo(final Karoo card) {
         super(card);
     }
 

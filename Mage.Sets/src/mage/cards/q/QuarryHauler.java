@@ -38,7 +38,7 @@ public final class QuarryHauler extends CardImpl {
         this.addAbility(ability);
     }
 
-    public QuarryHauler(final QuarryHauler card) {
+    private QuarryHauler(final QuarryHauler card) {
         super(card);
     }
 
@@ -82,13 +82,13 @@ class QuarryHaulerEffect extends OneShotEffect {
                         } else {
                             counterToAdd = new Counter(counter.getName());
                         }
-                        permanent.addCounters(counterToAdd, source, game);
+                        permanent.addCounters(counterToAdd, source.getControllerId(), source, game);
                     } else {
                         counterType = CounterType.findByName(counter.getName());
                         if (counterType != null) {
-                            permanent.removeCounters(counterType.createInstance(), game);
+                            permanent.removeCounters(counterType.createInstance(), source, game);
                         } else {
-                            permanent.removeCounters(counter.getName(), 1, game);
+                            permanent.removeCounters(counter.getName(), 1, source, game);
                         }
                     }
                 }

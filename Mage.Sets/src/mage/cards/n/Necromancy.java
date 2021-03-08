@@ -1,7 +1,6 @@
 
 package mage.cards.n;
 
-import java.util.UUID;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -29,8 +28,9 @@ import mage.target.Target;
 import mage.target.common.TargetCardInGraveyard;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class Necromancy extends CardImpl {
@@ -54,7 +54,7 @@ public final class Necromancy extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new NecromancyLeavesBattlefieldTriggeredEffect(), false));
     }
 
-    public Necromancy(final Necromancy card) {
+    private Necromancy(final Necromancy card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class NecromancyReAttachEffect extends OneShotEffect {
             controller.moveCards(cardInGraveyard, Zone.BATTLEFIELD, source, game);
             Permanent enchantedCreature = game.getPermanent(cardInGraveyard.getId());
             if (enchantedCreature != null) {
-                enchantedCreature.addAttachment(enchantment.getId(), game);
+                enchantedCreature.addAttachment(enchantment.getId(), source, game);
                 FilterCreaturePermanent filter = new FilterCreaturePermanent("enchant creature put onto the battlefield with " + enchantment.getIdName());
                 filter.add(new PermanentIdPredicate(cardInGraveyard.getId()));
                 Target target = new TargetCreaturePermanent(filter);
@@ -127,7 +127,7 @@ class NecromancyLeavesBattlefieldTriggeredEffect extends OneShotEffect {
             if (sourcePermanent.getAttachedTo() != null) {
                 Permanent attachedTo = game.getPermanent(sourcePermanent.getAttachedTo());
                 if (attachedTo != null && attachedTo.getZoneChangeCounter(game) == sourcePermanent.getAttachedToZoneChangeCounter()) {
-                    attachedTo.sacrifice(source.getSourceId(), game);
+                    attachedTo.sacrifice(source, game);
                 }
             }
             return true;
@@ -175,18 +175,12 @@ class NecromancyChangeAbilityEffect extends ContinuousEffectImpl implements Sour
         if (permanent != null) {
             switch (layer) {
                 case TypeChangingEffects_4:
-                    if (sublayer == SubLayer.NA) {
-                        if (!permanent.hasSubtype(SubType.AURA, game)) {
-                            permanent.getSubtype(game).add(SubType.AURA);
-                        }
-                    }
+                    permanent.addSubType(game, SubType.AURA);
                     break;
                 case AbilityAddingRemovingEffects_6:
-                    if (sublayer == SubLayer.NA) {
-                        permanent.addAbility(newAbility, source.getSourceId(), game);
-                        permanent.getSpellAbility().getTargets().clear();
-                        permanent.getSpellAbility().getTargets().add(target);
-                    }
+                    permanent.addAbility(newAbility, source.getSourceId(), game);
+                    permanent.getSpellAbility().getTargets().clear();
+                    permanent.getSpellAbility().getTargets().add(target);
             }
             return true;
         }

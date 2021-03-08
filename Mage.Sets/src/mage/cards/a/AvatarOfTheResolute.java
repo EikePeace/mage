@@ -15,8 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -27,7 +26,7 @@ public final class AvatarOfTheResolute extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("other creature you control with a +1/+1 counter on it");
     
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
         filter.add(AnotherPredicate.instance);
     }
 
@@ -50,7 +49,7 @@ public final class AvatarOfTheResolute extends CardImpl {
         
     }
 
-    public AvatarOfTheResolute(final AvatarOfTheResolute card) {
+    private AvatarOfTheResolute(final AvatarOfTheResolute card) {
         super(card);
     }
 

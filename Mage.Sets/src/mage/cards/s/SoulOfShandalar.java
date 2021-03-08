@@ -55,7 +55,7 @@ public final class SoulOfShandalar extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SoulOfShandalar(final SoulOfShandalar card) {
+    private SoulOfShandalar(final SoulOfShandalar card) {
         super(card);
     }
 
@@ -84,10 +84,10 @@ class SoulOfShandalarEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        game.damagePlayerOrPlaneswalker(source.getTargets().get(0).getFirstTarget(), 3, source.getSourceId(), game, false, true);
+        game.damagePlayerOrPlaneswalker(source.getTargets().get(0).getFirstTarget(), 3, source.getSourceId(), source, game, false, true);
         Permanent creature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (creature != null) {
-            creature.damage(3, source.getSourceId(), game, false, true);
+            creature.damage(3, source.getSourceId(), source, game, false, true);
         }
         return true;
     }

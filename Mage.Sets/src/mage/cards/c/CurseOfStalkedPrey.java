@@ -46,7 +46,7 @@ public final class CurseOfStalkedPrey extends CardImpl {
 
     }
 
-    public CurseOfStalkedPrey(final CurseOfStalkedPrey card) {
+    private CurseOfStalkedPrey(final CurseOfStalkedPrey card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class CurseOfStalkedPreyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

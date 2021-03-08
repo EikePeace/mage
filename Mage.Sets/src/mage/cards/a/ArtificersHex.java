@@ -42,7 +42,7 @@ public final class ArtificersHex extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new ArtificersHexEffect(), TargetController.YOU, false, true));
     }
 
-    public ArtificersHex(final ArtificersHex card) {
+    private ArtificersHex(final ArtificersHex card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class ArtificersHexEffect extends OneShotEffect {
             if (equipment != null && equipment.getAttachedTo() != null) {
                 Permanent creature = game.getPermanent(equipment.getAttachedTo());
                 if (creature != null && creature.isCreature()) {
-                    return creature.destroy(source.getSourceId(), game, false);
+                    return creature.destroy(source, game, false);
                 }
             }
         }

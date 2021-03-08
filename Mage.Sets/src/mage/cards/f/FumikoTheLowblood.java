@@ -33,7 +33,7 @@ public final class FumikoTheLowblood extends CardImpl {
         this.toughness = new MageInt(2);
 
         // Fumiko the Lowblood has bushido X, where X is the number of attacking creatures.
-        this.addAbility(new BushidoAbility(new AttackingCreatureCount("the number of attacking creatures")));
+        this.addAbility(new BushidoAbility(new AttackingCreatureCount("the number of attacking creatures.")));
 
         // Creatures your opponents control attack each turn if able.
         FilterCreaturePermanent filter = new FilterCreaturePermanent("Creatures your opponents control");
@@ -42,7 +42,7 @@ public final class FumikoTheLowblood extends CardImpl {
 
     }
 
-    public FumikoTheLowblood(final FumikoTheLowblood card) {
+    private FumikoTheLowblood(final FumikoTheLowblood card) {
         super(card);
     }
 

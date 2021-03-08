@@ -6,7 +6,7 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.condition.Condition;
-import mage.abilities.condition.common.CastFromHandSourceCondition;
+import mage.abilities.condition.common.CastFromHandSourcePermanentCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
 import mage.abilities.effects.common.DestroyAllEffect;
 import mage.abilities.keyword.FlyingAbility;
@@ -16,7 +16,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.watchers.common.CastFromHandWatcher;
 
@@ -49,7 +49,7 @@ public final class DeathbringerRegent extends CardImpl {
                 new CastFromHandWatcher());
     }
 
-    public DeathbringerRegent(final DeathbringerRegent card) {
+    private DeathbringerRegent(final DeathbringerRegent card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class DeathbringerRegentCondition implements Condition {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        return CastFromHandSourceCondition.instance.apply(game, source)
+        return CastFromHandSourcePermanentCondition.instance.apply(game, source)
                 && game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, game).size() >= 6;
     }
 }

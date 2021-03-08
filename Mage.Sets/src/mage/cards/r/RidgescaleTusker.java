@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class RidgescaleTusker extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(1), filter)));
     }
 
-    public RidgescaleTusker(final RidgescaleTusker card) {
+    private RidgescaleTusker(final RidgescaleTusker card) {
         super(card);
     }
 

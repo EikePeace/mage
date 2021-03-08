@@ -13,7 +13,7 @@ import mage.cards.Cards;
 import mage.cards.CardsImpl;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -37,7 +37,7 @@ public final class KeeperOfTheLens extends CardImpl {
         this.addAbility(new KeeperOfTheLensLookFaceDownAbility());
     }
 
-    public KeeperOfTheLens(final KeeperOfTheLens card) {
+    private KeeperOfTheLens(final KeeperOfTheLens card) {
         super(card);
     }
 

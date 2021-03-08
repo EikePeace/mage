@@ -47,7 +47,7 @@ public final class GriftersBlade extends CardImpl {
 
     }
 
-    public GriftersBlade(final GriftersBlade card) {
+    private GriftersBlade(final GriftersBlade card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class GriftersBladeChooseCreatureEffect extends OneShotEffect {
             if (controller.choose(this.outcome, target, source.getSourceId(), game)) {
                 Permanent attachToCreature = game.getPermanent(target.getFirstTarget());
                 if (attachToCreature != null) {
-                    attachToCreature.addAttachment(mageObject.getId(), game);
+                    attachToCreature.addAttachment(mageObject.getId(), source, game);
                 }
             }
             return true;

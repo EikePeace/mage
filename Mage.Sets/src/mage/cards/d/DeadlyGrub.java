@@ -4,7 +4,7 @@ package mage.cards.d;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.condition.common.LastTimeCounterRemovedCondition;
 import mage.abilities.decorator.ConditionalInterveningIfTriggeredAbility;
@@ -17,7 +17,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
-import mage.game.permanent.token.DeadlyGrubToken;
+import mage.game.permanent.token.DeadlyGrubInsectToken;
 
 /**
  *
@@ -37,12 +37,13 @@ public final class DeadlyGrub extends CardImpl {
         this.addAbility(ability);
         this.addAbility(new VanishingUpkeepAbility(3));
         this.addAbility(new VanishingSacrificeAbility());
+
         // When Deadly Grub dies, if it had no time counters on it, create a 6/1 green Insect creature token with shroud.
-        this.addAbility(new ConditionalInterveningIfTriggeredAbility(new DiesTriggeredAbility(new CreateTokenEffect(new DeadlyGrubToken(), 1)),
+        this.addAbility(new ConditionalInterveningIfTriggeredAbility(new DiesSourceTriggeredAbility(new CreateTokenEffect(new DeadlyGrubInsectToken(), 1)),
                 LastTimeCounterRemovedCondition.instance, "When {this} dies, if it had no time counters on it, create a 6/1 green Insect creature token with shroud."));
     }
 
-    public DeadlyGrub(final DeadlyGrub card) {
+    private DeadlyGrub(final DeadlyGrub card) {
         super(card);
     }
 

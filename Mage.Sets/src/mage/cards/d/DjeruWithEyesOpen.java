@@ -56,7 +56,7 @@ public final class DjeruWithEyesOpen extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new DjeruWithEyesOpenPreventEffect()));
     }
 
-    public DjeruWithEyesOpen(final DjeruWithEyesOpen card) {
+    private DjeruWithEyesOpen(final DjeruWithEyesOpen card) {
         super(card);
     }
 
@@ -84,9 +84,9 @@ class DjeruWithEyesOpenPreventEffect extends PreventionEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.isControlledBy(source.getControllerId())) {
+            if (permanent != null && permanent.isPlaneswalker() && permanent.isControlledBy(source.getControllerId())) {
                 return super.applies(event, source, game);
             }
         }

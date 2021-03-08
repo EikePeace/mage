@@ -19,7 +19,7 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -53,7 +53,7 @@ public final class PrimordialMist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PrimordialMist(final PrimordialMist card) {
+    private PrimordialMist(final PrimordialMist card) {
         super(card);
     }
 
@@ -83,24 +83,24 @@ class PrimordialMistCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return target.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return target.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
-            if (target.choose(Outcome.Exile, controllerId, sourceId, game)) {
-                Card card = game.getCard(sourceId);
+            if (target.choose(Outcome.Exile, controllerId, source.getSourceId(), game)) {
+                Card card = game.getCard(source.getSourceId());
                 if (card != null) {
-                    Permanent sourcePermanent = game.getPermanent(sourceId);
+                    Permanent sourcePermanent = game.getPermanent(source.getSourceId());
                     if (sourcePermanent != null) {
                         Permanent targetPermanent = game.getPermanent(target.getFirstTarget());
                         Card targetCard = game.getCard(target.getFirstTarget());
                         if (targetPermanent != null && targetCard != null) {
                             String exileName = sourcePermanent.getIdName() + " <this card may be played the turn it was exiled>";
-                            controller.moveCardsToExile(targetPermanent, ability, game, true, sourceId, exileName);
+                            controller.moveCardsToExile(targetPermanent, source, game, true, source.getSourceId(), exileName);
                             targetPermanent.setFaceDown(false, game);
                             ContinuousEffect effect = new PrimordialMistCastFromExileEffect();
                             effect.setTargetPointer(new FixedTarget(targetCard.getId(), targetCard.getZoneChangeCounter(game)));

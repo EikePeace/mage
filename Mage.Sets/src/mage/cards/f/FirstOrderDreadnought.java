@@ -12,7 +12,6 @@ import mage.constants.SubType;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.filter.common.FilterCreaturePermanent;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -38,7 +37,7 @@ public final class FirstOrderDreadnought extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FirstOrderDreadnought(final FirstOrderDreadnought card) {
+    private FirstOrderDreadnought(final FirstOrderDreadnought card) {
         super(card);
     }
 

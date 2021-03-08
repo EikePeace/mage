@@ -54,7 +54,7 @@ public final class ConsumingFerocity extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new ConsumingFerocityEffect(), TargetController.YOU, false));
     }
 
-    public ConsumingFerocity(final ConsumingFerocity card) {
+    private ConsumingFerocity(final ConsumingFerocity card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class ConsumingFerocityEffect extends OneShotEffect {
             if (creature.getCounters(game).getCount(CounterType.P1P0) > 2) {
                 Player player = game.getPlayer(creature.getControllerId());
                 if (player != null) {
-                    player.damage(creature.getPower().getValue(), creature.getId(), game);
+                    player.damage(creature.getPower().getValue(), creature.getId(), source, game);
                 }
                 effect = new DestroyTargetEffect(true);
                 effect.setTargetPointer(new FixedTarget(creature, game));

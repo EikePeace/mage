@@ -4,7 +4,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.common.ChoosePlayerEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -35,7 +35,7 @@ public final class SpectralSearchlight extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SpectralSearchlight(final SpectralSearchlight card) {
+    private SpectralSearchlight(final SpectralSearchlight card) {
         super(card);
     }
 

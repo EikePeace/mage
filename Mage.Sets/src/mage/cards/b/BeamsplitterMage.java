@@ -15,6 +15,8 @@ import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
+import mage.game.events.CopiedStackObjectEvent;
+import mage.game.events.CopyStackObjectEvent;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
@@ -42,7 +44,7 @@ public final class BeamsplitterMage extends CardImpl {
         this.addAbility(new BeamsplitterMageTriggeredAbility());
     }
 
-    public BeamsplitterMage(final BeamsplitterMage card) {
+    private BeamsplitterMage(final BeamsplitterMage card) {
         super(card);
     }
 
@@ -165,7 +167,13 @@ class BeamsplitterMageEffect extends OneShotEffect {
                 if (creature == null) {
                     return false;
                 }
-                Spell copy = spell.copySpell(source.getControllerId());
+                // TODO: add support if multiple copies? See Twinning Staff
+                GameEvent gameEvent = new CopyStackObjectEvent(source, spell, source.getControllerId(), 1);
+                if (game.replaceEvent(gameEvent)) {
+                    return false;
+                }
+                Spell copy = spell.copySpell(game, source, source.getControllerId());
+                copy.setZone(Zone.STACK, game);
                 game.getStack().push(copy);
                 setTarget:
                 for (UUID modeId : copy.getSpellAbility().getModes().getSelectedModes()) {
@@ -180,7 +188,7 @@ class BeamsplitterMageEffect extends OneShotEffect {
                         }
                     }
                 }
-                game.fireEvent(new GameEvent(GameEvent.EventType.COPIED_STACKOBJECT, copy.getId(), spell.getId(), source.getControllerId()));
+                game.fireEvent(new CopiedStackObjectEvent(spell, copy, source.getControllerId()));
                 String activateMessage = copy.getActivatedMessage(game);
                 if (activateMessage.startsWith(" casts ")) {
                     activateMessage = activateMessage.substring(6);

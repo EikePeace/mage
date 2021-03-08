@@ -46,7 +46,7 @@ public final class WheelOfSunAndMoon extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new WheelOfSunAndMoonEffect()));
     }
 
-    public WheelOfSunAndMoon(final WheelOfSunAndMoon card) {
+    private WheelOfSunAndMoon(final WheelOfSunAndMoon card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class WheelOfSunAndMoonEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

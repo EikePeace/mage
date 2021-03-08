@@ -17,7 +17,7 @@ import mage.constants.ColoredManaSymbol;
 import mage.constants.Zone;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.target.TargetSpell;
 
 /**
@@ -48,7 +48,7 @@ public final class HydromorphGull extends CardImpl {
         this.addAbility(ability);
     }
 
-    public HydromorphGull(final HydromorphGull card) {
+    private HydromorphGull(final HydromorphGull card) {
         super(card);
     }
 

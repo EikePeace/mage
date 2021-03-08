@@ -45,7 +45,7 @@ public final class ChronicFlooding extends CardImpl {
         this.addAbility(new ChronicFloodingAbility());
     }
  
-    public ChronicFlooding(final ChronicFlooding card) {
+    private ChronicFlooding(final ChronicFlooding card) {
         super(card);
     }
  
@@ -66,7 +66,7 @@ class ChronicFloodingAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED;
+        return event.getType() == GameEvent.EventType.TAPPED;
     }
  
     @Override
@@ -91,6 +91,6 @@ class ChronicFloodingAbility extends TriggeredAbilityImpl {
  
     @Override
     public String getRule() {
-        return "Whenever enchanted land becomes tapped, its controller puts the top three cards of their library into their graveyard.";
+        return "Whenever enchanted land becomes tapped, its controller mills three cards.";
     }
 }

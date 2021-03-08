@@ -37,7 +37,7 @@ public final class MagneticTheft extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public MagneticTheft(final MagneticTheft card) {
+    private MagneticTheft(final MagneticTheft card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class EquipEffect extends OneShotEffect {
         Permanent equipment = game.getPermanent(source.getFirstTarget());
         Permanent creature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (creature != null && equipment != null) {
-            return creature.addAttachment(equipment.getId(), game);
+            return creature.addAttachment(equipment.getId(), source, game);
         }
         return false;
     }

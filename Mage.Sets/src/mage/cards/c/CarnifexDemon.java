@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -56,7 +56,7 @@ public final class CarnifexDemon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CarnifexDemon(final CarnifexDemon card) {
+    private CarnifexDemon(final CarnifexDemon card) {
         super(card);
     }
 

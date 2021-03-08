@@ -17,7 +17,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -51,7 +51,7 @@ public final class AurochsHerd extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(value, StaticValue.get(0), Duration.EndOfTurn, true), false));
     }
 
-    public AurochsHerd(final AurochsHerd card) {
+    private AurochsHerd(final AurochsHerd card) {
         super(card);
     }
 

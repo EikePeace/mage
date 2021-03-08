@@ -18,7 +18,6 @@ import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
 
@@ -45,7 +44,7 @@ public final class OonasBlackguard extends CardImpl {
 
     }
 
-    public OonasBlackguard(final OonasBlackguard card) {
+    private OonasBlackguard(final OonasBlackguard card) {
         super(card);
     }
 
@@ -68,7 +67,7 @@ class OonasBlackguardReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
@@ -92,7 +91,7 @@ class OonasBlackguardReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         return false;
     }
@@ -120,7 +119,7 @@ class OonasBlackguardTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

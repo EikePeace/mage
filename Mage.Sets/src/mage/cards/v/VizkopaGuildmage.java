@@ -58,7 +58,7 @@ public final class VizkopaGuildmage extends CardImpl {
 
     }
 
-    public VizkopaGuildmage(final VizkopaGuildmage card) {
+    private VizkopaGuildmage(final VizkopaGuildmage card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class VizkopaGuildmageDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAINED_LIFE;
+        return event.getType() == GameEvent.EventType.GAINED_LIFE;
     }
 
     @Override
@@ -126,7 +126,7 @@ class OpponentsLoseLifeEffect extends OneShotEffect {
             for (UUID opponentId : game.getOpponents(source.getControllerId())) {
                 Player opponent = game.getPlayer(opponentId);
                 if (opponent != null) {
-                    opponent.loseLife(amountLifeGained, game, false);
+                    opponent.loseLife(amountLifeGained, game, source, false);
                 }
             }
         }

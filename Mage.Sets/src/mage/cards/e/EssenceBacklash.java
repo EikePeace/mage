@@ -27,7 +27,7 @@ public final class EssenceBacklash extends CardImpl {
         this.getSpellAbility().addEffect(new EssenceBacklashEffect());
     }
 
-    public EssenceBacklash(final EssenceBacklash card) {
+    private EssenceBacklash(final EssenceBacklash card) {
         super(card);
     }
 
@@ -41,7 +41,7 @@ class EssenceBacklashEffect extends OneShotEffect {
 
     public EssenceBacklashEffect() {
         super(Outcome.Damage);
-        staticText = "Counter target creature spell. Essence Backlash deals damage equal to that spell's power to its controller";
+        staticText = "Counter target creature spell. {this} deals damage equal to that spell's power to its controller";
     }
 
     public EssenceBacklashEffect(final EssenceBacklashEffect effect) {
@@ -60,9 +60,9 @@ class EssenceBacklashEffect extends OneShotEffect {
         if (spell != null) {
             Player spellController = game.getPlayer(spell.getControllerId());
 
-            result = game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            result = game.getStack().counter(source.getFirstTarget(), source, game);
             if (spellController != null) {
-                spellController.damage(spell.getPower().getValue(), source.getSourceId(), game);
+                spellController.damage(spell.getPower().getValue(), source.getSourceId(), source, game);
             }
         }
         return result;

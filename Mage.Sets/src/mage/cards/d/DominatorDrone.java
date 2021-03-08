@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -54,7 +54,7 @@ public final class DominatorDrone extends CardImpl {
 
     }
 
-    public DominatorDrone(final DominatorDrone card) {
+    private DominatorDrone(final DominatorDrone card) {
         super(card);
     }
 

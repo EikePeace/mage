@@ -27,7 +27,6 @@ import mage.filter.predicate.mageobject.ColorlessPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
-import mage.game.permanent.Permanent;
 import mage.game.permanent.token.UginTheIneffableToken;
 import mage.players.Player;
 import mage.target.TargetPermanent;
@@ -118,7 +117,7 @@ class UginTheIneffableEffect extends OneShotEffect {
         // exile and look
         UUID exileZoneId = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
         if (player.moveCardsToExile(card, source, game, false, exileZoneId, sourceObject.getIdName() + " (" + player.getName() + ")")) {
-            card.turnFaceDown(game, source.getControllerId());
+            card.turnFaceDown(source, game, source.getControllerId());
             player.lookAtCards(player.getName() + " - " + card.getIdName() + " - " + CardUtil.sdf.format(System.currentTimeMillis()), card, game);
         }
 

@@ -16,7 +16,7 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterBySubtypeCard;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -57,7 +57,7 @@ public final class ForerunnerOfTheHeralds extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ForerunnerOfTheHeralds(final ForerunnerOfTheHeralds card) {
+    private ForerunnerOfTheHeralds(final ForerunnerOfTheHeralds card) {
         super(card);
     }
 

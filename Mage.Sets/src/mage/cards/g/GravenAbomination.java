@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterCard;
-import mage.filter.predicate.permanent.DefendingPlayerOwnsCardPredicate;
+import mage.filter.predicate.card.DefendingPlayerOwnsCardPredicate;
 import mage.target.common.TargetCardInGraveyard;
 
 import java.util.UUID;
@@ -24,7 +24,7 @@ public final class GravenAbomination extends CardImpl {
     private static final FilterCard filter = new FilterCard("card from defending player's graveyard");
 
     static {
-        filter.add(new DefendingPlayerOwnsCardPredicate());
+        filter.add(DefendingPlayerOwnsCardPredicate.instance);
     }
 
     public GravenAbomination(UUID ownerId, CardSetInfo setInfo) {
@@ -40,7 +40,7 @@ public final class GravenAbomination extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GravenAbomination(final GravenAbomination card) {
+    private GravenAbomination(final GravenAbomination card) {
         super(card);
     }
 

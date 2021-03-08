@@ -1,7 +1,7 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.SpellCastControllerTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -50,7 +50,7 @@ public final class SpellweaverVolute extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new SpellweaverVoluteEffect(), filterSpell, false));
     }
 
-    public SpellweaverVolute(final SpellweaverVolute card) {
+    private SpellweaverVolute(final SpellweaverVolute card) {
         super(card);
     }
 
@@ -90,13 +90,13 @@ class SpellweaverVoluteEffect extends OneShotEffect {
                             && controller.chooseUse(Outcome.Copy, "Create a copy of " + enchantedCard.getName() + '?', source, game)) {
                         Card copiedCard = game.copyCard(enchantedCard, source, source.getControllerId());
                         if (copiedCard != null) {
-                            ownerEnchanted.getGraveyard().add(copiedCard);
+                            controller.getGraveyard().add(copiedCard);
                             game.getState().setZone(copiedCard.getId(), Zone.GRAVEYARD);
                             if (controller.chooseUse(Outcome.PlayForFree, "Cast the copied card without paying mana cost?", source, game)) {
                                 if (copiedCard.getSpellAbility() != null) {
                                     game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), Boolean.TRUE);
                                     controller.cast(controller.chooseAbilityForCast(copiedCard, game, true),
-                                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                            game, true, new ApprovingObject(source, game));
                                     game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), null);
                                 }
                                 if (controller.moveCards(enchantedCard, Zone.EXILED, source, game)) {
@@ -108,7 +108,7 @@ class SpellweaverVoluteEffect extends OneShotEffect {
                                         Card newAuraTarget = game.getCard(auraTarget.getFirstTarget());
                                         if (newAuraTarget != null) {
                                             if (enchantedCard.getId().equals(newAuraTarget.getId())) {
-                                            } else if (newAuraTarget.addAttachment(sourcePermanent.getId(), game)) {
+                                            } else if (newAuraTarget.addAttachment(sourcePermanent.getId(), source, game)) {
                                                 game.informPlayers(sourcePermanent.getLogName() + " was attached to " + newAuraTarget.getLogName());
                                             }
                                         }

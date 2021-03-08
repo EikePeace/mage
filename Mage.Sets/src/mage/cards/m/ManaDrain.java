@@ -33,7 +33,7 @@ public final class ManaDrain extends CardImpl {
         this.getSpellAbility().addEffect(new ManaDrainCounterEffect());
     }
 
-    public ManaDrain(final ManaDrain card) {
+    private ManaDrain(final ManaDrain card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class ManaDrainCounterEffect extends OneShotEffect {
 
     public ManaDrainCounterEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Counter target spell. At the beginning of your next main phase, add X mana of {C}, where X is that spell's converted mana cost";
+        this.staticText = "Counter target spell. At the beginning of your next main phase, add an amount of {C} equal to that spell's converted mana cost";
     }
 
     public ManaDrainCounterEffect(final ManaDrainCounterEffect effect) {
@@ -63,7 +63,7 @@ class ManaDrainCounterEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Spell spell = game.getStack().getSpell(getTargetPointer().getFirst(game, source));
         if (spell != null) {
-            game.getStack().counter(getTargetPointer().getFirst(game, source), source.getSourceId(), game);
+            game.getStack().counter(getTargetPointer().getFirst(game, source), source, game);
             // mana gets added also if counter is not successful
             int cmc = spell.getConvertedManaCost();
             Effect effect = new AddManaToManaPoolTargetControllerEffect(Mana.ColorlessMana(cmc), "your");

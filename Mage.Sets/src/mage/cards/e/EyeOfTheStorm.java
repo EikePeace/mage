@@ -1,6 +1,6 @@
 package mage.cards.e;
 
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.effects.Effect;
@@ -35,7 +35,7 @@ public final class EyeOfTheStorm extends CardImpl {
         this.addAbility(new EyeOfTheStormAbility());
     }
 
-    public EyeOfTheStorm(final EyeOfTheStorm card) {
+    private EyeOfTheStorm(final EyeOfTheStorm card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class EyeOfTheStormAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -127,9 +127,12 @@ class EyeOfTheStormEffect1 extends OneShotEffect {
                     // Check if owner of card is still in game
                     card = game.getCard(uuid);
                     if (card != null && game.getPlayer(card.getOwnerId()) != null) {
-                        if (card.isSplitCard()) {
+                        if (card instanceof SplitCard) {
                             copiedCards.add(((SplitCard) card).getLeftHalfCard());
                             copiedCards.add(((SplitCard) card).getRightHalfCard());
+                        } else if (card instanceof ModalDoubleFacesCard) {
+                            copiedCards.add(((ModalDoubleFacesCard) card).getLeftHalfCard());
+                            copiedCards.add(((ModalDoubleFacesCard) card).getRightHalfCard());
                         } else {
                             copiedCards.add(card);
                         }
@@ -137,7 +140,7 @@ class EyeOfTheStormEffect1 extends OneShotEffect {
                 }
 
                 boolean continueCasting = true;
-                while (spellController.isInGame() && continueCasting) {
+                while (spellController.canRespond() && continueCasting) {
                     continueCasting = copiedCards.size() > 1 && spellController.chooseUse(outcome, "Cast one of the copied cards without paying its mana cost?", source, game);
 
                     Card cardToCopy;
@@ -152,7 +155,7 @@ class EyeOfTheStormEffect1 extends OneShotEffect {
                     if (cardToCopy != null) {
                         Card copy = game.copyCard(cardToCopy, source, source.getControllerId());
                         if (spellController.chooseUse(outcome, "Cast " + copy.getIdName() + " without paying mana cost?", source, game)) {
-                            spellController.cast(copy.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            spellController.cast(copy.getSpellAbility(), game, true, new ApprovingObject(source, game));
                         }
                     }
                 }

@@ -40,7 +40,7 @@ public final class TourachsChant extends CardImpl {
                 "Whenever a player puts a Forest onto the battlefield, {this} deals 3 damage to that player unless they put a -1/-1 counter on a creature they control."));
     }
 
-    public TourachsChant(final TourachsChant card) {
+    private TourachsChant(final TourachsChant card) {
         super(card);
     }
 
@@ -78,12 +78,12 @@ class TourachsChantEffect extends OneShotEffect {
                     && player.choose(Outcome.UnboostCreature, target, source.getSourceId(), game)) {
                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                 if (permanent != null) {
-                    permanent.addCounters(CounterType.M1M1.createInstance(), source, game);
+                    permanent.addCounters(CounterType.M1M1.createInstance(), player.getId(), source, game);
                     paid = true;
                 }
             }
             if (!paid) {
-                player.damage(3, source.getSourceId(), game);
+                player.damage(3, source.getSourceId(), source, game);
             }
             return true;
         }

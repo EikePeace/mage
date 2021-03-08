@@ -19,7 +19,6 @@ import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.watchers.Watcher;
@@ -43,7 +42,7 @@ public final class GuildmagesForum extends CardImpl {
         this.addAbility(ability, new GuildmagesForumWatcher(ability));
     }
 
-    public GuildmagesForum(final GuildmagesForum card) {
+    private GuildmagesForum(final GuildmagesForum card) {
         super(card);
     }
 
@@ -64,7 +63,7 @@ class GuildmagesForumWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.MANA_PAID) {
+        if (event.getType() == GameEvent.EventType.MANA_PAID) {
             MageObject target = game.getObject(event.getTargetId());
             if (event.getSourceId() != null
                     && event.getSourceId().equals(this.getSourceId())
@@ -115,7 +114,7 @@ class GuildmagesForumEntersBattlefieldEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent target = ((EntersTheBattlefieldEvent) event).getTarget();
         if (target != null) {
-            target.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            target.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         return false;
     }

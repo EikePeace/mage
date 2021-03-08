@@ -1,5 +1,7 @@
 package mage.game.combat;
 
+import java.io.Serializable;
+import java.util.*;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.RequirementEffect;
@@ -21,6 +23,9 @@ import mage.filter.predicate.mageobject.NamePredicate;
 import mage.filter.predicate.permanent.AttackingSameNotBandedPredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
+import mage.game.events.AttackerDeclaredEvent;
+import mage.game.events.DeclareAttackerEvent;
+import mage.game.events.DeclareBlockerEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
@@ -32,9 +37,6 @@ import mage.util.CardUtil;
 import mage.util.Copyable;
 import mage.util.trace.TraceUtil;
 import org.apache.log4j.Logger;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -273,22 +275,26 @@ public class Combat implements Serializable, Copyable<Combat> {
                     Permanent attackingPermanent = game.getPermanent(attacker);
                     if (attackingPermanent != null) {
                         attackingPermanent.setTapped(false);
-                        attackingPermanent.tap(true, game); // to tap with event finally here is needed to prevent abusing of Vampire Envoy like cards
+                        attackingPermanent.tap(true, null, game); // to tap with event finally here is needed to prevent abusing of Vampire Envoy like cards
                     }
                 }
                 handleBanding(attacker, game);
                 // This can only be used to modify the event, the attack can't be replaced here
-                game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.ATTACKER_DECLARED, group.defenderId, attacker, attackingPlayerId));
-                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.ATTACKER_DECLARED, group.defenderId, attacker, attackingPlayerId));
+                game.replaceEvent(new AttackerDeclaredEvent(group.defenderId, attacker, attackingPlayerId));
+                game.addSimultaneousEvent(new AttackerDeclaredEvent(group.defenderId, attacker, attackingPlayerId));
             }
         }
         attackersTappedByAttack.clear();
 
-        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.DECLARED_ATTACKERS, attackingPlayerId, attackingPlayerId));
+        game.addSimultaneousEvent(GameEvent.getEvent(GameEvent.EventType.DECLARED_ATTACKERS, attackingPlayerId, attackingPlayerId));
         if (!game.isSimulation()) {
             Player player = game.getPlayer(attackingPlayerId);
             if (player != null) {
-                game.informPlayers(player.getLogName() + " attacks with " + groups.size() + (groups.size() == 1 ? " creature" : " creatures"));
+                if (groups.size() > 0) {
+                    game.informPlayers(player.getLogName() + " attacks with " + groups.size() + (groups.size() == 1 ? " creature" : " creatures"));
+                } else {
+                    game.informPlayers(player.getLogName() + " skip attack");
+                }
             }
         }
     }
@@ -306,7 +312,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                 || getAttackers().size() <= 1) {
             return;
         }
-        boolean canBand = attacker.getAbilities().containsKey(BandingAbility.getInstance().getId());
+        boolean canBand = attacker.hasAbility(BandingAbility.getInstance(), game);
         List<Ability> bandsWithOther = new ArrayList<>();
         for (Ability ability : attacker.getAbilities()) {
             if (ability.getClass().equals(BandsWithOtherAbility.class)) {
@@ -346,8 +352,8 @@ public class Combat implements Serializable, Copyable<Combat> {
             if (game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.DECLARING_ATTACKERS, attackingPlayerId, attackingPlayerId))
                     || (!canBand && !canBandWithOther)
                     || !player.chooseUse(Outcome.Benefit,
-                    "Do you wish to " + (isBanded ? "band " + attacker.getLogName()
-                            + " with another " : "form a band with " + attacker.getLogName() + " and an ")
+                             (isBanded ? "Band " + attacker.getLogName()
+                                    + " with another " : "Form a band with " + attacker.getLogName() + " and an ")
                             + "attacking creature?", null, game)) {
                 break;
             }
@@ -390,7 +396,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                         permanent.addBandedCard(creatureId);
                         attacker.addBandedCard(targetId);
                         if (canBand) {
-                            if (!permanent.getAbilities().containsKey(BandingAbility.getInstance().getId())) {
+                            if (!permanent.hasAbility(BandingAbility.getInstance(), game)) {
                                 filter.add(new AbilityPredicate(BandingAbility.class));
                                 canBandWithOther = false;
                             }
@@ -412,7 +418,8 @@ public class Combat implements Serializable, Copyable<Combat> {
         if (!isBanded) {
             return;
         }
-        StringBuilder sb = new StringBuilder(player.getLogName()).append(" formed a band with ").append((attacker.getBandedCards().size() + 1) + " creatures: ");
+        StringBuilder sb = new StringBuilder(player.getLogName()).append(" formed a band with ")
+                .append(attacker.getBandedCards().size()).append(1).append(" creatures: ");
         sb.append(attacker.getLogName());
         for (UUID id : attacker.getBandedCards()) {
             sb.append(", ");
@@ -433,7 +440,8 @@ public class Combat implements Serializable, Copyable<Combat> {
             // check if a creature has to attack
             for (Map.Entry<RequirementEffect, Set<Ability>> entry : game.getContinuousEffects().getApplicableRequirementEffects(creature, false, game).entrySet()) {
                 RequirementEffect effect = entry.getKey();
-                if (effect.mustAttack(game)) {
+                if (effect.mustAttack(game)
+                        && checkAttackRestrictions(player, game)) { // needed for Goad Effect
                     mustAttack = true;
                     for (Ability ability : entry.getValue()) {
                         UUID defenderId = effect.mustAttackDefender(ability, game);
@@ -451,8 +459,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                 Set<UUID> defendersCostlessAttackable = new HashSet<>(defenders);
                 for (UUID defenderId : defenders) {
                     if (game.getContinuousEffects().checkIfThereArePayCostToAttackBlockEffects(
-                            GameEvent.getEvent(GameEvent.EventType.DECLARE_ATTACKER,
-                                    defenderId, creature.getId(), creature.getControllerId()), game)) {
+                            new DeclareAttackerEvent(defenderId, creature.getId(), creature.getControllerId()), game)) {
                         defendersCostlessAttackable.remove(defenderId);
                         defendersForcedToAttack.remove(defenderId);
                     }
@@ -549,13 +556,13 @@ public class Combat implements Serializable, Copyable<Combat> {
 
     public void selectBlockers(Game game) {
         if (!game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.DECLARING_BLOCKERS, attackingPlayerId, attackingPlayerId))) {
-            game.getCombat().selectBlockers(null, game);
+            game.getCombat().selectBlockers(null, null, game);
         }
         for (UUID attackingCreatureID : game.getCombat().getAttackers()) {
             Permanent permanent = game.getPermanent(attackingCreatureID);
             CombatGroup group = game.getCombat().findGroup(attackingCreatureID);
             if (permanent != null && group != null && !group.getBlocked()) {
-                game.fireEvent(GameEvent.getEvent(EventType.UNBLOCKED_ATTACKER, attackingCreatureID, attackingPlayerId));
+                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.UNBLOCKED_ATTACKER, attackingCreatureID, attackingPlayerId));
             }
         }
     }
@@ -564,10 +571,10 @@ public class Combat implements Serializable, Copyable<Combat> {
      * Handle the blocker selection process
      *
      * @param blockController player that controls how to block, if null the
-     *                        defender is the controller
+     * defender is the controller
      * @param game
      */
-    public void selectBlockers(Player blockController, Game game) {
+    public void selectBlockers(Player blockController, Ability source, Game game) {
         Player attacker = game.getPlayer(attackingPlayerId);
         //20101001 - 509.1c
         game.getCombat().retrieveMustBlockAttackerRequirements(attacker, game);
@@ -582,7 +589,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                     controller = blockController;
                 }
                 while (choose) {
-                    controller.selectBlockers(game, defenderId);
+                    controller.selectBlockers(source, game, defenderId);
                     if (game.isPaused() || game.checkIfGameIsOver() || game.executingRollback()) {
                         return;
                     }
@@ -612,7 +619,7 @@ public class Combat implements Serializable, Copyable<Combat> {
      * Add info about attacker blocked by blocker to the game log
      */
     private void logBlockerInfo(Player defender, Game game) {
-        boolean shownDefendingPlayer = game.getPlayers().size() < 3; // only two players no ned to sow the attacked player
+        boolean shownDefendingPlayer = game.getPlayers().size() < 3; // only two players no need to saw the attacked player
         for (CombatGroup group : game.getCombat().getGroups()) {
             if (group.defendingPlayerId.equals(defender.getId())) {
                 if (!shownDefendingPlayer) {
@@ -718,7 +725,7 @@ public class Combat implements Serializable, Copyable<Combat> {
                             }
                             // check if the possible blocker has to pay cost to block, if so don't force
                             if (game.getContinuousEffects().checkIfThereArePayCostToAttackBlockEffects(
-                                    GameEvent.getEvent(GameEvent.EventType.DECLARE_BLOCKER, attackingCreatureId, possibleBlocker.getId(), possibleBlocker.getControllerId()), game)) {
+                                    new DeclareBlockerEvent(attackingCreatureId, possibleBlocker.getId(), possibleBlocker.getControllerId()), game)) {
                                 // has cost to block to pay so remove this attacker
                                 continue;
                             }
@@ -743,15 +750,15 @@ public class Combat implements Serializable, Copyable<Combat> {
     }
 
     /**
-     * 509.1c The defending player checks each creature they control to
-     * see whether it's affected by any requirements (effects that say a
-     * creature must block, or that it must block if some condition is met). If
-     * the number of requirements that are being obeyed is fewer than the
-     * maximum possible number of requirements that could be obeyed without
-     * disobeying any restrictions, the declaration of blockers is illegal. If a
-     * creature can't block unless a player pays a cost, that player is not
-     * required to pay that cost, even if blocking with that creature would
-     * increase the number of requirements being obeyed.
+     * 509.1c The defending player checks each creature they control to see
+     * whether it's affected by any requirements (effects that say a creature
+     * must block, or that it must block if some condition is met). If the
+     * number of requirements that are being obeyed is fewer than the maximum
+     * possible number of requirements that could be obeyed without disobeying
+     * any restrictions, the declaration of blockers is illegal. If a creature
+     * can't block unless a player pays a cost, that player is not required to
+     * pay that cost, even if blocking with that creature would increase the
+     * number of requirements being obeyed.
      * <p>
      * <p>
      * Example: A player controls one creature that "blocks if able" and another
@@ -1233,25 +1240,28 @@ public class Combat implements Serializable, Copyable<Combat> {
         Player attackingPlayer = game.getPlayer(attackingPlayerId);
         if (attackingPlayer != null) {
             PlayerList players;
+            Player opponent;
             switch (game.getAttackOption()) {
                 case LEFT:
                     players = game.getState().getPlayerList(attackingPlayerId);
-                    while (attackingPlayer.isInGame()) {
-                        Player opponent = players.getNext(game, false);
+                    opponent = players.getNext(game, false);
+                    while (opponent != null && attackingPlayer.isInGame()) {
                         if (attackingPlayer.hasOpponent(opponent.getId(), game)) {
                             attackablePlayers.add(opponent.getId());
                             break;
                         }
+                        opponent = players.getNext(game, false);
                     }
                     break;
                 case RIGHT:
                     players = game.getState().getPlayerList(attackingPlayerId);
-                    while (attackingPlayer.isInGame()) {
-                        Player opponent = players.getPrevious(game);
+                    opponent = players.getPrevious(game);
+                    while (opponent != null && attackingPlayer.isInGame()) {
                         if (attackingPlayer.hasOpponent(opponent.getId(), game)) {
                             attackablePlayers.add(opponent.getId());
                             break;
                         }
+                        opponent = players.getPrevious(game);
                     }
                     break;
                 case MULTIPLE:
@@ -1287,9 +1297,10 @@ public class Combat implements Serializable, Copyable<Combat> {
     public boolean declareAttacker(UUID creatureId, UUID defenderId, UUID playerId, Game game) {
         Permanent attacker = game.getPermanent(creatureId);
         if (attacker != null) {
-            if (!game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.DECLARE_ATTACKER, defenderId, creatureId, playerId))) {
+            if (!game.replaceEvent(new DeclareAttackerEvent(defenderId, creatureId, playerId))) {
                 if (addAttackerToCombat(creatureId, defenderId, game)) {
-                    if (!attacker.getAbilities().containsKey(VigilanceAbility.getInstance().getId()) && !attacker.getAbilities().containsKey(JohanVigilanceAbility.getInstance().getId())) {
+                    if (!attacker.hasAbility(VigilanceAbility.getInstance(), game)
+                            && !attacker.hasAbility(JohanVigilanceAbility.getInstance(), game)) {
                         if (!attacker.isTapped()) {
                             attacker.setTapped(true);
                             attackersTappedByAttack.add(attacker.getId());
@@ -1377,7 +1388,7 @@ public class Combat implements Serializable, Copyable<Combat> {
      * @param playerId
      * @param game
      * @param solveBanding check whether also add creatures banded with
-     *                     attackerId
+     * attackerId
      */
     public void addBlockingGroup(UUID blockerId, UUID attackerId, UUID playerId, Game game, boolean solveBanding) {
         Permanent blocker = game.getPermanent(blockerId);

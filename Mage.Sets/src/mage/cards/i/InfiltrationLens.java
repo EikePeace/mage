@@ -35,7 +35,7 @@ public final class InfiltrationLens extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(1)));
     }
 
-    public InfiltrationLens(final InfiltrationLens card) {
+    private InfiltrationLens(final InfiltrationLens card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class EquippedBecomesBlockedTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CREATURE_BLOCKED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

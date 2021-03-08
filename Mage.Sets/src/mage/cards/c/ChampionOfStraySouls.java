@@ -18,7 +18,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.targetadjustment.TargetAdjuster;
@@ -65,7 +65,7 @@ public final class ChampionOfStraySouls extends CardImpl {
                 new ManaCostsImpl("{5}{B}{B}")));
     }
 
-    public ChampionOfStraySouls(final ChampionOfStraySouls card) {
+    private ChampionOfStraySouls(final ChampionOfStraySouls card) {
         super(card);
     }
 

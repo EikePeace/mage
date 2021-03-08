@@ -8,7 +8,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -17,7 +17,7 @@ import mage.target.common.TargetCreaturePermanent;
  */
 public final class BreakOpen extends CardImpl {
 
-    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("Face-down creature an opponent controls");
+    private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("face-down creature an opponent controls");
 
     static {
         filter.add(FaceDownPredicate.instance);
@@ -32,7 +32,7 @@ public final class BreakOpen extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public BreakOpen(final BreakOpen card) {
+    private BreakOpen(final BreakOpen card) {
         super(card);
     }
 

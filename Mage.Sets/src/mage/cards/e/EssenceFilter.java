@@ -9,7 +9,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.filter.StaticFilters;
 import mage.filter.common.FilterEnchantmentPermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
@@ -30,7 +29,7 @@ public final class EssenceFilter extends CardImpl {
         this.getSpellAbility().addEffect(new EssenceFilterEffect());
     }
 
-    public EssenceFilter(final EssenceFilter card) {
+    private EssenceFilter(final EssenceFilter card) {
         super(card);
     }
 
@@ -68,11 +67,11 @@ class EssenceFilterEffect extends OneShotEffect {
         if (controller != null) {
             if (controller.chooseUse(outcome, "Destroy all enchantments? (otherwise all nonwhite enchantments are destroyed)", source, game)) {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(new FilterEnchantmentPermanent(), controller.getId(), source.getSourceId(), game)) {
-                    permanent.destroy(source.getSourceId(), game, false);
+                    permanent.destroy(source, game, false);
                 }
             } else {
                 for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, controller.getId(), source.getSourceId(), game)) {
-                    permanent.destroy(source.getSourceId(), game, false);
+                    permanent.destroy(source, game, false);
                 }
             }
             return true;

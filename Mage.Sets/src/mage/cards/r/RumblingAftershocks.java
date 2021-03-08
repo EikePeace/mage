@@ -13,9 +13,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
-import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 
@@ -43,7 +41,7 @@ public final class RumblingAftershocks extends CardImpl {
 
     }
 
-    public RumblingAftershocks(final RumblingAftershocks card) {
+    private RumblingAftershocks(final RumblingAftershocks card) {
         super(card);
     }
 
@@ -70,23 +68,15 @@ class RumblingAftershocksTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        Spell spell = game.getStack().getSpell(event.getTargetId());
-        if (spell != null && spell.isControlledBy(controllerId)) {
-            int damageAmount = 0;
-            for (Ability ability : spell.getAbilities()) {
-                if (ability instanceof KickerAbility) {
-                    damageAmount += ((KickerAbility) ability).getKickedCounter(game, spell.getSpellAbility());
-                }
-            }
-            if (damageAmount > 0) {
-                this.getEffects().get(0).setValue("damageAmount", damageAmount);
-                return true;
-            }
+        int kickedCount = KickerAbility.getSpellKickedCount(game, event.getTargetId());
+        if (kickedCount > 0) {
+            this.getEffects().get(0).setValue("damageAmount", kickedCount);
+            return true;
         }
         return false;
     }
@@ -120,12 +110,12 @@ class RumblingAftershocksDealDamageEffect extends OneShotEffect {
         if (player != null && damageAmount > 0) {
             Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
             if (targetPlayer != null) {
-                targetPlayer.damage(damageAmount, source.getSourceId(), game);
+                targetPlayer.damage(damageAmount, source.getSourceId(), source, game);
                 return true;
             }
             Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
             if (permanent != null) {
-                permanent.damage(damageAmount, source.getSourceId(), game, false, true);
+                permanent.damage(damageAmount, source.getSourceId(), source, game, false, true);
                 return true;
             }
         }

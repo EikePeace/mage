@@ -7,7 +7,9 @@ import mage.abilities.condition.Condition;
 import mage.abilities.condition.common.SourceIsSpellCondition;
 import mage.abilities.costs.AlternativeCostSourceAbility;
 import mage.abilities.effects.ContinuousEffectImpl;
+import mage.cards.AdventureCardSpell;
 import mage.cards.Card;
+import mage.cards.ModalDoubleFacesCardHalf;
 import mage.cards.SplitCardHalf;
 import mage.constants.*;
 import mage.filter.FilterCard;
@@ -20,26 +22,33 @@ import java.util.UUID;
 
 public class CastFromHandWithoutPayingManaCostEffect extends ContinuousEffectImpl {
 
-    private final FilterCard filter;
-    private final boolean fromHand;
+    private final AlternativeCostSourceAbility alternativeCastingCostAbility;
 
     public CastFromHandWithoutPayingManaCostEffect() {
         this(StaticFilters.FILTER_CARDS_NON_LAND, true);
     }
 
     public CastFromHandWithoutPayingManaCostEffect(FilterCard filter, boolean fromHand) {
-        super(Duration.WhileOnBattlefield, Outcome.Detriment);
-        this.filter = filter;
-        this.fromHand = fromHand;
-        staticText = "You may cast " + filter.getMessage()
+        this(filter, fromHand, Duration.WhileOnBattlefield);
+    }
+
+    public CastFromHandWithoutPayingManaCostEffect(FilterCard filter, boolean fromHand, Duration duration) {
+        super(duration, Outcome.Detriment);
+        Condition condition;
+        if (fromHand) {
+            condition = new CompoundCondition(SourceIsSpellCondition.instance, IsBeingCastFromHandCondition.instance);
+        } else {
+            condition = SourceIsSpellCondition.instance;
+        }
+        this.alternativeCastingCostAbility = new AlternativeCostSourceAbility(null, condition, null, filter, true);
+        this.staticText = "You may cast " + filter.getMessage()
                 + (fromHand ? " from your hand" : "")
                 + " without paying their mana costs";
     }
 
     private CastFromHandWithoutPayingManaCostEffect(final CastFromHandWithoutPayingManaCostEffect effect) {
         super(effect);
-        this.filter = effect.filter;
-        this.fromHand = effect.fromHand;
+        this.alternativeCastingCostAbility = effect.alternativeCastingCostAbility;
     }
 
     @Override
@@ -48,20 +57,18 @@ public class CastFromHandWithoutPayingManaCostEffect extends ContinuousEffectImp
     }
 
     @Override
+    public void init(Ability source, Game game, UUID activePlayerId) {
+        super.init(source, game, activePlayerId);
+        alternativeCastingCostAbility.setSourceId(source.getSourceId());
+    }
+
+    @Override
     public boolean apply(Layer layer, SubLayer sublayer, Ability source, Game game) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller == null) {
             return false;
         }
-        Condition condition;
-        if (fromHand) {
-            condition = new CompoundCondition(SourceIsSpellCondition.instance, IsBeingCastFromHandCondition.instance);
-        } else {
-            condition = SourceIsSpellCondition.instance;
-        }
-        controller.getAlternativeSourceCosts().add(new AlternativeCostSourceAbility(
-                null, condition, null, filter, true
-        ));
+        controller.getAlternativeSourceCosts().add(alternativeCastingCostAbility);
         return true;
     }
 
@@ -82,13 +89,13 @@ enum IsBeingCastFromHandCondition implements Condition {
     @Override
     public boolean apply(Game game, Ability source) {
         MageObject object = game.getObject(source.getSourceId());
-        if (object instanceof SplitCardHalf) {
-            UUID splitCardId = ((Card) object).getMainCard().getId();
-            object = game.getObject(splitCardId);
+        if (object instanceof SplitCardHalf || object instanceof AdventureCardSpell || object instanceof ModalDoubleFacesCardHalf) {
+            UUID mainCardId = ((Card) object).getMainCard().getId();
+            object = game.getObject(mainCardId);
         }
         if (object instanceof Spell) { // needed to check if it can be cast by alternate cost
             Spell spell = (Spell) object;
-            return spell.getFromZone() == Zone.HAND;
+            return Zone.HAND.equals(spell.getFromZone());
         }
         if (object instanceof Card) { // needed for the check what's playable
             Card card = (Card) object;

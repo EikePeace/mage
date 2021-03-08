@@ -29,7 +29,7 @@ public final class WoodenSphere extends CardImpl {
         this.addAbility(new WoodenSphereAbility());
     }
 
-    public WoodenSphere(final WoodenSphere card) {
+    private WoodenSphere(final WoodenSphere card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class WoodenSphereAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

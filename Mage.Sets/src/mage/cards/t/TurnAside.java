@@ -9,7 +9,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.FilterSpell;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.target.TargetSpell;
 
 
@@ -32,7 +32,7 @@ public final class TurnAside extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter));
     }
 
-    public TurnAside(final TurnAside card) {
+    private TurnAside(final TurnAside card) {
         super(card);
     }
 

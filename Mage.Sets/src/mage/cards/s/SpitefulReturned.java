@@ -44,7 +44,7 @@ public final class SpitefulReturned extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEnchantedEffect(1, 1, Duration.WhileOnBattlefield)));
     }
 
-    public SpitefulReturned(final SpitefulReturned card) {
+    private SpitefulReturned(final SpitefulReturned card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class SpitefulReturnedTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package mage.abilities.common;
 
 import mage.MageObject;
@@ -9,7 +8,6 @@ import mage.filter.common.FilterCreaturePermanent;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
-import mage.game.permanent.Permanent;
 
 /**
  * @author noxx
@@ -17,6 +15,7 @@ import mage.game.permanent.Permanent;
 public class DiesThisOrAnotherCreatureTriggeredAbility extends TriggeredAbilityImpl {
 
     protected FilterCreaturePermanent filter;
+    private boolean applyFilterOnSource = false;
 
     public DiesThisOrAnotherCreatureTriggeredAbility(Effect effect, boolean optional) {
         this(effect, optional, new FilterCreaturePermanent());
@@ -30,6 +29,12 @@ public class DiesThisOrAnotherCreatureTriggeredAbility extends TriggeredAbilityI
     public DiesThisOrAnotherCreatureTriggeredAbility(DiesThisOrAnotherCreatureTriggeredAbility ability) {
         super(ability);
         this.filter = ability.filter;
+        this.applyFilterOnSource = ability.applyFilterOnSource;
+    }
+
+    public DiesThisOrAnotherCreatureTriggeredAbility setApplyFilterOnSource(boolean applyFilterOnSource) {
+        this.applyFilterOnSource = applyFilterOnSource;
+        return this;
     }
 
     @Override
@@ -43,32 +48,11 @@ public class DiesThisOrAnotherCreatureTriggeredAbility extends TriggeredAbilityI
     }
 
     @Override
-    public boolean isInUseableZone(Game game, MageObject source, GameEvent event) {
-        Permanent sourcePermanent = null;
-        if (game.getState().getZone(getSourceId()) == Zone.BATTLEFIELD) {
-            sourcePermanent = game.getPermanent(getSourceId());
-        } else {
-            if (game.getShortLivingLKI(getSourceId(), Zone.BATTLEFIELD)) {
-                sourcePermanent = (Permanent) game.getLastKnownInformation(getSourceId(), Zone.BATTLEFIELD);
-            }
-        }
-        if (sourcePermanent == null) {
-            return false;
-        }
-        return hasSourceObjectAbility(game, sourcePermanent, event);
-    }
-
-    @Override
     public boolean checkTrigger(GameEvent event, Game game) {
         ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
-
-        if (game.getPermanentOrLKIBattlefield(getSourceId()) == null) {
-            return false;
-        }
-
         if (zEvent.isDiesEvent()) {
             if (zEvent.getTarget() != null) {
-                if (zEvent.getTarget().getId().equals(this.getSourceId())) {
+                if (!applyFilterOnSource && zEvent.getTarget().getId().equals(this.getSourceId())) {
                     return true;
                 } else {
                     if (filter.match(zEvent.getTarget(), getSourceId(), getControllerId(), game)) {
@@ -78,6 +62,11 @@ public class DiesThisOrAnotherCreatureTriggeredAbility extends TriggeredAbilityI
             }
         }
         return false;
+    }
+    
+    @Override
+    public boolean isInUseableZone(Game game, MageObject source, GameEvent event) {
+        return TriggeredAbilityImpl.isInUseableZoneDiesTrigger(this, event, game);
     }
 
     @Override

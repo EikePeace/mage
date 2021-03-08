@@ -35,10 +35,10 @@ public final class MessengerJays extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
         // <i>Council's dilemma &mdash; When Messenger Jays enters the battlefield, starting with you, each player votes for feather or quill. Put a +1/+1 counter on Messenger Jays for each feather vote and draw a card for each quill vote. For each card drawn this way, discard a card.
-        this.addAbility(new EntersBattlefieldTriggeredAbility(new MessengerJaysDilemmaEffect(), false, "<i>Council's dilemma</i> — "));
+        this.addAbility(new EntersBattlefieldTriggeredAbility(new MessengerJaysDilemmaEffect(), false, "<i>Council's dilemma</i> &mdash; "));
     }
 
-    public MessengerJays(final MessengerJays card) {
+    private MessengerJays(final MessengerJays card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class MessengerJaysDilemmaEffect extends CouncilsDilemmaVoteEffect {
         //Feathers Votes
         //If feathers received zero votes or the permanent is no longer on the battlefield, do not attempt to put P1P1 counter on it.
         if (voteOneCount > 0 && permanent != null)
-            permanent.addCounters(CounterType.P1P1.createInstance(voteOneCount), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(voteOneCount), source.getControllerId(), source, game);
 
         //Quill Votes
         //Only let the controller loot the appropriate amount of cards if it was voted for.

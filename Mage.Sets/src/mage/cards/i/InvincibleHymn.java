@@ -25,7 +25,7 @@ public final class InvincibleHymn extends CardImpl {
         this.getSpellAbility().addEffect(new InvincibleHymnEffect());
     }
 
-    public InvincibleHymn(final InvincibleHymn card) {
+    private InvincibleHymn(final InvincibleHymn card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class InvincibleHymnEffect extends OneShotEffect {
                 player.gainLife(newValue - oldValue, game, source);
             }
             if (oldValue - newValue > 0) {
-                player.loseLife(oldValue - newValue, game, false);
+                player.loseLife(oldValue - newValue, game, source, false);
             }
             return true;
         }

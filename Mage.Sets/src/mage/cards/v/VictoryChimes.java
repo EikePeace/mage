@@ -5,7 +5,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.effects.common.ChoosePlayerEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.effects.common.continuous.UntapSourceDuringEachOtherPlayersUntapStepEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
@@ -38,7 +38,7 @@ public final class VictoryChimes extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VictoryChimes(final VictoryChimes card) {
+    private VictoryChimes(final VictoryChimes card) {
         super(card);
     }
 

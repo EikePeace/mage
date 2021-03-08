@@ -13,7 +13,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -26,14 +25,14 @@ public final class AinokBondKin extends CardImpl {
     static {
         filter.add(CardType.CREATURE.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     static final String rule = "Each creature you control with a +1/+1 counter on it has first strike";
 
     public AinokBondKin(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{1}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.SOLDIER);
 
         this.power = new MageInt(2);
@@ -47,7 +46,7 @@ public final class AinokBondKin extends CardImpl {
 
     }
 
-    public AinokBondKin(final AinokBondKin card) {
+    private AinokBondKin(final AinokBondKin card) {
         super(card);
     }
 

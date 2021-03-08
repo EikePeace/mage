@@ -31,7 +31,7 @@ public final class UnifyingTheory extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new UnifyingTheoryEffect() , new FilterSpell("a spell"), false, SetTargetPointer.PLAYER));
     }
 
-    public UnifyingTheory(final UnifyingTheory card) {
+    private UnifyingTheory(final UnifyingTheory card) {
         super(card);
     }
 
@@ -63,8 +63,8 @@ class UnifyingTheoryEffect extends OneShotEffect {
         if (caster != null) {
             if (caster.chooseUse(Outcome.DrawCard, "Pay {2} to draw a card?", source, game)) {
                 Cost cost = new ManaCostsImpl("{2}");
-                if (cost.pay(source, game, source.getSourceId(), caster.getId(), false, null)) {
-                    caster.drawCards(1, game);
+                if (cost.pay(source, game, source, caster.getId(), false, null)) {
+                    caster.drawCards(1, source, game);
                 }
             }
             return true;

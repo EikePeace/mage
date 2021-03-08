@@ -39,7 +39,7 @@ public final class DoorOfDestinies extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostCreatureEffectEffect()));
     }
 
-    public DoorOfDestinies(final DoorOfDestinies card) {
+    private DoorOfDestinies(final DoorOfDestinies card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class AddCounterAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override
@@ -85,7 +85,7 @@ class AddCounterAbility extends TriggeredAbilityImpl {
 
     @Override
     public String getRule() {
-        return "Whenever you cast a spell of the chosen type, put a charge counter on {source}";
+        return "Whenever you cast a spell of the chosen type, put a charge counter on {this}";
     }
 }
 

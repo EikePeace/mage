@@ -1,4 +1,3 @@
-
 package mage.cards.m;
 
 import mage.MageInt;
@@ -18,28 +17,27 @@ import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.stack.Spell;
 import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class MelekIzzetParagon extends CardImpl {
 
-    private static final FilterCard filter = new FilterCard("instant or sorcery card");
+    private static final FilterCard filter = new FilterCard("cast instant or sorcery spells");
 
     static {
         filter.add(Predicates.or(
                 CardType.INSTANT.getPredicate(),
-                CardType.SORCERY.getPredicate()));
+                CardType.SORCERY.getPredicate()
+        ));
     }
 
     public MelekIzzetParagon(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{4}{U}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{4}{U}{R}");
         addSuperType(SuperType.LEGENDARY);
         this.subtype.add(SubType.WEIRD);
         this.subtype.add(SubType.WIZARD);
@@ -50,14 +48,14 @@ public final class MelekIzzetParagon extends CardImpl {
         // Play with the top card of your library revealed.
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayWithTheTopCardRevealedEffect()));
 
-        // You may cast the top card of your library if it's an instant or sorcery card.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayTheTopCardEffect(filter)));
+        // You may cast instant and sorcery spells from the top of your library.
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayTheTopCardEffect(filter, false)));
 
         // Whenever you cast an instant or sorcery spell from your library, copy it. You may choose new targets for the copy.
         this.addAbility(new MelekIzzetParagonTriggeredAbility());
     }
 
-    public MelekIzzetParagon(final MelekIzzetParagon card) {
+    private MelekIzzetParagon(final MelekIzzetParagon card) {
         super(card);
     }
 
@@ -84,7 +82,7 @@ class MelekIzzetParagonTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

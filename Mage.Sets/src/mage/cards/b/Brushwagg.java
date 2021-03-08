@@ -3,7 +3,7 @@ package mage.cards.b;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.BlocksOrBecomesBlockedTriggeredAbility;
+import mage.abilities.common.BlocksOrBecomesBlockedSourceTriggeredAbility;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -24,10 +24,10 @@ public final class Brushwagg extends CardImpl {
         this.toughness = new MageInt(2);
 
         // Whenever Brushwagg blocks or becomes blocked, it gets -2/+2 until end of turn.
-        this.addAbility(new BlocksOrBecomesBlockedTriggeredAbility(new BoostSourceEffect(-2, 2, Duration.EndOfTurn), false));
+        this.addAbility(new BlocksOrBecomesBlockedSourceTriggeredAbility(new BoostSourceEffect(-2, 2, Duration.EndOfTurn), false));
     }
 
-    public Brushwagg(final Brushwagg card) {
+    private Brushwagg(final Brushwagg card) {
         super(card);
     }
 

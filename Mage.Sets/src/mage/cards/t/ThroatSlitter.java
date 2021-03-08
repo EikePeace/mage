@@ -44,7 +44,7 @@ public final class ThroatSlitter extends CardImpl {
         this.addAbility(new ThroatSlitterTriggeredAbility());
     }
 
-    public ThroatSlitter(final ThroatSlitter card) {
+    private ThroatSlitter(final ThroatSlitter card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class ThroatSlitterTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

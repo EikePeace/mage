@@ -46,7 +46,7 @@ public final class WickedAkuba extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WickedAkuba(final WickedAkuba card) {
+    private WickedAkuba(final WickedAkuba card) {
         super(card);
     }
 
@@ -70,6 +70,6 @@ class WickedAkubaPredicate implements ObjectSourcePlayerPredicate<ObjectSourcePl
 
     @Override
     public String toString() {
-        return "(Player dealt damage by {source} this turn)";
+        return "(Player dealt damage by {this} this turn)";
     }
 }

@@ -36,7 +36,7 @@ public final class ColdEyedSelkie extends CardImpl {
 
     }
 
-    public ColdEyedSelkie(final ColdEyedSelkie card) {
+    private ColdEyedSelkie(final ColdEyedSelkie card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ColdEyeSelkieEffect extends OneShotEffect {
         if (amount > 0) {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
-                controller.drawCards(amount, game);
+                controller.drawCards(amount, source, game);
                 return true;
             }
         }

@@ -15,7 +15,6 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.SoldierToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 
 /**
@@ -32,7 +31,7 @@ public final class ThroneOfEmpires extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ThroneOfEmpires(final ThroneOfEmpires card) {
+    private ThroneOfEmpires(final ThroneOfEmpires card) {
         super(card);
     }
 
@@ -67,7 +66,7 @@ class ThroneOfEmpiresEffect extends OneShotEffect {
         }
         Token soldier = new SoldierToken();
         int count = scepter && crown ? 5 : 1;
-        soldier.putOntoBattlefield(count, game, source.getSourceId(), source.getControllerId());
+        soldier.putOntoBattlefield(count, game, source, source.getControllerId());
         return false;
     }
 

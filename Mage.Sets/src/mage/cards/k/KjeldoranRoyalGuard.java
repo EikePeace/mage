@@ -40,7 +40,7 @@ public final class KjeldoranRoyalGuard extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new KjeldoranRoyalGuardEffect(), new TapSourceCost()));
     }
 
-    public KjeldoranRoyalGuard(final KjeldoranRoyalGuard card) {
+    private KjeldoranRoyalGuard(final KjeldoranRoyalGuard card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class KjeldoranRoyalGuardEffect extends ReplacementEffectImpl {
     
     KjeldoranRoyalGuardEffect() {
         super(Duration.EndOfTurn, Outcome.RedirectDamage);
-        staticText = "All combat damage that would be dealt to you by unblocked creatures this turn is dealt to {source} instead";
+        staticText = "All combat damage that would be dealt to you by unblocked creatures this turn is dealt to {this} instead";
     }
 
     KjeldoranRoyalGuardEffect(final KjeldoranRoyalGuardEffect effect) {
@@ -70,9 +70,9 @@ class KjeldoranRoyalGuardEffect extends ReplacementEffectImpl {
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         DamagePlayerEvent damageEvent = (DamagePlayerEvent) event;
-        Permanent p = game.getPermanent(source.getSourceId());
-        if (p != null) {
-            p.damage(damageEvent.getAmount(), event.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable());
+        Permanent permanent = game.getPermanent(source.getSourceId());
+        if (permanent != null) {
+            permanent.damage(damageEvent.getAmount(), event.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable());
         }
         return true;
     }

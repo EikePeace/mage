@@ -15,7 +15,7 @@ import mage.constants.Duration;
 import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.DamagedPlayerThisTurnPredicate;
+import mage.filter.predicate.other.DamagedPlayerThisTurnPredicate;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -49,7 +49,7 @@ public final class SpearOfHeliod extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SpearOfHeliod(final SpearOfHeliod card) {
+    private SpearOfHeliod(final SpearOfHeliod card) {
         super(card);
     }
 

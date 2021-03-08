@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.permanent.token.SpiritWhiteToken;
 
 /**
@@ -48,7 +48,7 @@ public final class DrogskolCavalry extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new CreateTokenEffect(new SpiritWhiteToken()), new ManaCostsImpl("{3}{W}")));
     }
 
-    public DrogskolCavalry(final DrogskolCavalry card) {
+    private DrogskolCavalry(final DrogskolCavalry card) {
         super(card);
     }
 

@@ -14,7 +14,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class NessianWildsRavager extends CardImpl {
                 "When {this} enters the battlefield, if its tribute wasn't paid, you may have {this} fight another target creature."));
     }
 
-    public NessianWildsRavager(final NessianWildsRavager card) {
+    private NessianWildsRavager(final NessianWildsRavager card) {
         super(card);
     }
 

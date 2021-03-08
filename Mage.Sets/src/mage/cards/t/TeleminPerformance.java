@@ -30,7 +30,7 @@ public final class TeleminPerformance extends CardImpl {
 
     }
 
-    public TeleminPerformance(final TeleminPerformance card) {
+    private TeleminPerformance(final TeleminPerformance card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class TeleminPerformanceEffect extends OneShotEffect {
                 opponent.revealCards(source, reveal, game);
                 opponent.moveCards(nonCreatures, Zone.GRAVEYARD, source, game);
                 if (creature != null) {
-                    game.applyEffects();
+                    game.getState().processAction(game);
                     controller.moveCards(creature, Zone.BATTLEFIELD, source, game);
                 }
             }

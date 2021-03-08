@@ -33,7 +33,7 @@ public final class Overblaze extends CardImpl {
         this.addAbility(new SpliceOntoArcaneAbility("{2}{R}{R}"));
     }
 
-    public Overblaze(final Overblaze card) {
+    private Overblaze(final Overblaze card) {
         super(card);
     }
 
@@ -61,9 +61,8 @@ class OverblazeEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER
-                || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT
+                || event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override
@@ -78,7 +77,7 @@ class OverblazeEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 

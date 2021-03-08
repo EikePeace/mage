@@ -18,7 +18,6 @@ import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.MyrToken;
-import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public final class GenesisChamber extends CardImpl {
                         + "that creature's controller creates a 1/1 colorless Myr artifact creature token"));
     }
 
-    public GenesisChamber(final GenesisChamber card) {
+    private GenesisChamber(final GenesisChamber card) {
         super(card);
     }
 
@@ -92,10 +91,10 @@ class GenesisChamberEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             MyrToken token = new MyrToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), permanent.getControllerId());
+            token.putOntoBattlefield(1, game, source, permanent.getControllerId());
         }
         return true;
     }

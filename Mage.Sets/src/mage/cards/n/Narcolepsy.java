@@ -41,7 +41,7 @@ public final class Narcolepsy extends CardImpl {
         this.addAbility(new NarcolepsyTriggeredAbility());
     }
 
-    public Narcolepsy(final Narcolepsy card) {
+    private Narcolepsy(final Narcolepsy card) {
         super(card);
     }
 
@@ -100,7 +100,7 @@ class NarcolepsyEffect extends OneShotEffect {
         if (narcolepsy != null) {
             Permanent enchanted = game.getPermanent(narcolepsy.getAttachedTo());
             if (enchanted != null) {
-                enchanted.tap(game);
+                enchanted.tap(source, game);
                 return true;
             }
         }

@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  * @author LevelX2
@@ -34,7 +33,7 @@ public final class RakdosKeyrune extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new RakdosKeyruneToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{B}{R}")));
     }
 
-    public RakdosKeyrune(final RakdosKeyrune card) {
+    private RakdosKeyrune(final RakdosKeyrune card) {
         super(card);
     }
 

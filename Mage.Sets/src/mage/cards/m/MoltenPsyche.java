@@ -3,12 +3,10 @@ package mage.cards.m;
 import mage.abilities.Ability;
 import mage.abilities.condition.common.MetalcraftCondition;
 import mage.abilities.effects.OneShotEffect;
+import mage.abilities.hint.common.MetalcraftHint;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Outcome;
-import mage.constants.WatcherScope;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.players.Player;
@@ -31,9 +29,11 @@ public final class MoltenPsyche extends CardImpl {
         // <i>Metalcraft</i> &mdash; If you control three or more artifacts, Molten Psyche deals damage to each opponent equal to the number of cards that player has drawn this turn.
         this.getSpellAbility().addEffect(new MoltenPsycheEffect());
         this.getSpellAbility().addWatcher(new MoltenPsycheWatcher());
+        this.getSpellAbility().setAbilityWord(AbilityWord.METALCRAFT);
+        this.getSpellAbility().addHint(MetalcraftHint.instance);
     }
 
-    public MoltenPsyche(final MoltenPsyche card) {
+    private MoltenPsyche(final MoltenPsyche card) {
         super(card);
     }
 
@@ -73,12 +73,12 @@ class MoltenPsycheEffect extends OneShotEffect {
                 }
             }
 
-            game.applyEffects(); // so effects from creatures that were on the battlefield won't trigger from draw action
+            game.getState().processAction(game); // so effects from creatures that were on the battlefield won't trigger from draw action
 
             for (UUID playerId : cardsToDraw.keySet()) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
-                    player.drawCards(cardsToDraw.get(playerId), game);
+                    player.drawCards(cardsToDraw.get(playerId), source, game);
                 }
             }
             if (MetalcraftCondition.instance.apply(game, source)) {
@@ -87,7 +87,7 @@ class MoltenPsycheEffect extends OneShotEffect {
                     if (game.isOpponent(controller, playerId)) {
                         Player player = game.getPlayer(playerId);
                         if (player != null && watcher != null) {
-                            player.damage(watcher.getDraws(playerId), source.getSourceId(), game);
+                            player.damage(watcher.getDraws(playerId), source.getSourceId(), source, game);
                         }
                     }
                 }

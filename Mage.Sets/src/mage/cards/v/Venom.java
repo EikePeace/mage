@@ -48,7 +48,7 @@ public final class Venom extends CardImpl {
         this.addAbility(new VenomTriggeredAbility(effect));
     }
 
-    public Venom(final Venom card) {
+    private Venom(final Venom card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class VenomTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

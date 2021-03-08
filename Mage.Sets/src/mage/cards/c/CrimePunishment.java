@@ -39,7 +39,7 @@ public final class CrimePunishment extends SplitCard {
 
     }
 
-    public CrimePunishment(final CrimePunishment card) {
+    private CrimePunishment(final CrimePunishment card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class PunishmentEffect extends OneShotEffect {
                     && (permanent.isArtifact()
                     || permanent.isCreature()
                     || permanent.isEnchantment())) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
         }
         return true;

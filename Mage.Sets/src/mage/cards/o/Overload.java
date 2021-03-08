@@ -32,7 +32,7 @@ public final class Overload extends CardImpl {
         this.getSpellAbility().addTarget(new TargetArtifactPermanent());
     }
 
-    public Overload(final Overload card) {
+    private Overload(final Overload card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class OverloadEffect extends OneShotEffect {
             if (targetArtifact != null) {
                 int cmc = targetArtifact.getConvertedManaCost();
                 if (cmc <= 2 || (KickedCondition.instance.apply(game, source) && cmc <= 5)) {
-                    targetArtifact.destroy(source.getSourceId(), game, false);
+                    targetArtifact.destroy(source, game, false);
                 }
             }
             return true;

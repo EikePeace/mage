@@ -29,7 +29,7 @@ public final class PowerstoneMinefield extends CardImpl {
         this.addAbility(new PowerstoneMinefieldTriggeredAbility());
     }
 
-    public PowerstoneMinefield(final PowerstoneMinefield card) {
+    private PowerstoneMinefield(final PowerstoneMinefield card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class PowerstoneMinefieldTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED || event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED || event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

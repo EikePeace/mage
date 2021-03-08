@@ -35,7 +35,7 @@ public final class TitaniasChosen extends CardImpl {
 		this.addAbility(new TitaniasChosenAbility());
     }
 
-    public TitaniasChosen(final TitaniasChosen card) {
+    private TitaniasChosen(final TitaniasChosen card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class TitaniasChosenAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

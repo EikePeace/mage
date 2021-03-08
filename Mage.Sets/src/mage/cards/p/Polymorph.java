@@ -36,7 +36,7 @@ public final class Polymorph extends CardImpl {
         this.getSpellAbility().addEffect(new PolymorphEffect());
     }
 
-    public Polymorph(final Polymorph card) {
+    private Polymorph(final Polymorph card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class PolymorphEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {

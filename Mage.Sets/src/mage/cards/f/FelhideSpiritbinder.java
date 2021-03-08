@@ -18,7 +18,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -45,12 +45,12 @@ public final class FelhideSpiritbinder extends CardImpl {
         this.toughness = new MageInt(4);
 
         // <i>Inspired</i> &mdash; Whenever Felhide Spiritbinder becomes untapped, you may pay {1}{R}. If you do, create a token that's a copy of another target creature except it's an enchantment in addition to its other types. It gains haste. Exile it at the beginning of the next end step.
-        Ability ability = new InspiredAbility(new DoIfCostPaid(new FelhideSpiritbinderEffect(), new ManaCostsImpl("{1}{R}"), "Use effect of {source}?"));
+        Ability ability = new InspiredAbility(new DoIfCostPaid(new FelhideSpiritbinderEffect(), new ManaCostsImpl("{1}{R}"), "Use effect of {this}?"));
         ability.addTarget(new TargetCreaturePermanent(filter));
         this.addAbility(ability);
     }
 
-    public FelhideSpiritbinder(final FelhideSpiritbinder card) {
+    private FelhideSpiritbinder(final FelhideSpiritbinder card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class FelhideSpiritbinderEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(null, CardType.ENCHANTMENT, true);
             effect.setTargetPointer(getTargetPointer());

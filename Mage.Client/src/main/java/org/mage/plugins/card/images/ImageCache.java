@@ -13,6 +13,7 @@ import net.java.truevfs.access.TFileOutputStream;
 import org.apache.log4j.Logger;
 import org.mage.plugins.card.dl.sources.DirectLinksForDownload;
 import org.mage.plugins.card.utils.CardImageUtils;
+import org.mage.plugins.card.utils.impl.ImageManagerImpl;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,14 +46,18 @@ public final class ImageCache {
 
     private static final SoftValuesLoadingCache<String, BufferedImage> IMAGE_CACHE;
     private static final SoftValuesLoadingCache<String, BufferedImage> FACE_IMAGE_CACHE;
+    private static final SoftValuesLoadingCache<String, BufferedImage> CARD_ICONS_CACHE;
 
     /**
-     * Common pattern for keys. Format: "<cardname>#<setname>#<collectorID>"
+     * Common pattern for keys. See ImageCache.getKey for structure info
      */
     private static final Pattern KEY_PATTERN = Pattern.compile("(.*)#(.*)#(.*)#(.*)#(.*)#(.*)");
+    private static final Pattern CARD_ICON_KEY_PATTERN = Pattern.compile("(.*)#(.*)");
 
     static {
-        // softValues() = Specifies that each value (not key) stored in the map should be wrapped in a SoftReference (by default, strong references are used). Softly-referenced objects will be garbage-collected in a globally least-recently-used manner, in response to memory demand.
+        // softValues() = Specifies that each value (not key) stored in the map should be wrapped in a SoftReference
+        // (by default, strong references are used). Softly-referenced objects will be garbage-collected in a
+        // globally least-recently-used manner, in response to memory demand.
         IMAGE_CACHE = SoftValuesLoadingCache.from(new Function<String, BufferedImage>() {
             @Override
             public BufferedImage apply(String key) {
@@ -84,13 +89,21 @@ public final class ImageCache {
 
                         boolean cardback = false;
                         String path;
-                        if (collectorId.isEmpty() || "0".equals(collectorId)) {
+                        if (collectorId.isEmpty() || "0".equals(collectorId) || !tokenDescriptor.isEmpty()) { // tokenDescriptor for embalm ability
                             info.setToken(true);
                             path = CardImageUtils.generateTokenImagePath(info);
                             if (path == null) {
                                 cardback = true;
-                                // TODO: replace empty token by other default card, not cardback
-                                path = CardImageUtils.buildImagePathToDefault(DirectLinksForDownload.cardbackFilename);
+                                // try token image from card
+                                CardDownloadData newInfo = new CardDownloadData(info);
+                                newInfo.setToken(false);
+                                path = CardImageUtils.buildImagePathToCard(newInfo);
+                                TFile tokenFile = getTFile(path);
+                                if (tokenFile == null || !tokenFile.exists()) {
+                                    // token empty token image
+                                    // TODO: replace empty token by other default card, not cardback
+                                    path = CardImageUtils.buildImagePathToDefault(DirectLinksForDownload.cardbackFilename);
+                                }
                             }
                         } else {
                             path = CardImageUtils.buildImagePathToCard(info);
@@ -211,10 +224,33 @@ public final class ImageCache {
                 }
             }
         });
+
+        CARD_ICONS_CACHE = SoftValuesLoadingCache.from(key -> {
+            try {
+                Matcher m = CARD_ICON_KEY_PATTERN.matcher(key);
+
+                if (m.matches()) {
+                    int cardSize = Integer.parseInt(m.group(1));
+                    String resourceName = m.group(2);
+                    BufferedImage image = ImageManagerImpl.instance.getCardIcon(resourceName, cardSize);
+                    return image;
+                } else {
+                    throw new RuntimeException("Wrong card icons image key format: " + key);
+                }
+            } catch (Exception ex) {
+                if (ex instanceof ComputationException) {
+                    throw (ComputationException) ex;
+                } else {
+                    throw new ComputationException(ex);
+                }
+            }
+        });
     }
 
     public static void clearCache() {
         IMAGE_CACHE.invalidateAll();
+        FACE_IMAGE_CACHE.invalidateAll();
+        CARD_ICONS_CACHE.invalidateAll();
     }
 
     public static String getFilePath(CardView card, int width) {
@@ -245,12 +281,20 @@ public final class ImageCache {
             CardDownloadData info = new CardDownloadData(name, set, collectorId, usesVariousArt, type, tokenSetCode, tokenDescriptor);
 
             String path;
-            if (collectorId.isEmpty() || "0".equals(collectorId)) {
+            if (collectorId.isEmpty() || "0".equals(collectorId) || !tokenDescriptor.isEmpty()) { // tokenDescriptor for embalm ability
                 info.setToken(true);
-                path = CardImageUtils.generateFullTokenImagePath(info);
+                path = CardImageUtils.generateTokenImagePath(info);
                 if (path == null) {
-                    // TODO: replace empty token by other default card, not cardback
-                    path = CardImageUtils.buildImagePathToDefault(DirectLinksForDownload.cardbackFilename);
+                    // try token image from card
+                    CardDownloadData newInfo = new CardDownloadData(info);
+                    newInfo.setToken(false);
+                    path = CardImageUtils.buildImagePathToCard(newInfo);
+                    TFile tokenFile = getTFile(path);
+                    if (tokenFile == null || !tokenFile.exists()) {
+                        // token empty token image
+                        // TODO: replace empty token by other default card, not cardback
+                        path = CardImageUtils.buildImagePathToDefault(DirectLinksForDownload.cardbackFilename);
+                    }
                 }
             } else {
                 path = CardImageUtils.buildImagePathToCard(info);
@@ -319,7 +363,7 @@ public final class ImageCache {
             BufferedImage cornerImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 
             // corner
-            float ROUNDED_CORNER_SIZE = 0.11f; // see CardPanelComponentImpl
+            float ROUNDED_CORNER_SIZE = 0.11f; // see CardPanelRenderModeImage
             int cornerSizeBorder = Math.max(4, Math.round(image.getWidth() * ROUNDED_CORNER_SIZE));
 
             // corner mask
@@ -378,11 +422,12 @@ public final class ImageCache {
         return getImage(getKey(card, card.getName(), ""));
     }
 
-    //    public static BufferedImage getImageFaceOriginal(CardView card) {
-//        return getFaceImage(getFaceKey(card, card.getName(), card.getExpansionSetCode()));
-//    }
     public static BufferedImage getImageOriginalAlternateName(CardView card) {
         return getImage(getKey(card, card.getAlternateName(), ""));
+    }
+
+    public static BufferedImage getCardIconImage(String resourceName, int iconSize) {
+        return getCardIconImage(getCardIconKey(resourceName, iconSize));
     }
 
     /**
@@ -416,6 +461,18 @@ public final class ImageCache {
         }
     }
 
+    private static BufferedImage getCardIconImage(String key) {
+        try {
+            return CARD_ICONS_CACHE.getOrNull(key);
+        } catch (ComputationException ex) {
+            if (ex.getCause() instanceof NullPointerException) {
+                return null;
+            }
+            LOGGER.error(ex, ex);
+            return null;
+        }
+    }
+
     /**
      * Returns the Image corresponding to the key only if it already exists in
      * the cache.
@@ -428,11 +485,14 @@ public final class ImageCache {
      * Returns the map key for a card, without any suffixes for the image size.
      */
     private static String getKey(CardView card, String name, String suffix) {
-        return name + '#' + card.getExpansionSetCode() + '#' + card.getType() + '#' + card.getCardNumber() + '#'
-                + (card.getTokenSetCode() == null ? "" : card.getTokenSetCode())
+        return name
+                + '#' + card.getExpansionSetCode()
+                + '#' + card.getType()
+                + '#' + card.getCardNumber()
+                + '#' + (card.getTokenSetCode() == null ? "" : card.getTokenSetCode())
                 + suffix
                 + (card.getUsesVariousArt() ? "#usesVariousArt" : "")
-                + (card.getTokenDescriptor() != null ? '#' + card.getTokenDescriptor() : "#");
+                + '#' + (card.getTokenDescriptor() != null ? card.getTokenDescriptor() : "");
     }
 
     /**
@@ -442,13 +502,9 @@ public final class ImageCache {
         return name + '#' + set + "####";
     }
 
-//    /**
-//     * Returns the map key for the flip image of a card, without any suffixes for the image size.
-//     */
-//    private static String getKeyAlternateName(CardView card, String alternateName) {
-//        return alternateName + "#" + card.getExpansionSetCode() + "#" +card.getType()+ "#" + card.getCardNumber() + "#"
-//                + (card.getTokenSetCode() == null ? "":card.getTokenSetCode());
-//    }
+    private static String getCardIconKey(String resourceName, int size) {
+        return size + "#" + resourceName;
+    }
 
     /**
      * Load image from file

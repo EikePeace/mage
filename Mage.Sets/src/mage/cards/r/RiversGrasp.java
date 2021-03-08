@@ -50,7 +50,7 @@ public final class RiversGrasp extends CardImpl {
         this.getSpellAbility().addWatcher(new ManaSpentToCastWatcher());
     }
 
-    public RiversGrasp(final RiversGrasp card) {
+    private RiversGrasp(final RiversGrasp card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class RiversGraspEffect extends OneShotEffect {
                 TargetCard target = new TargetCard(Zone.HAND, StaticFilters.FILTER_CARD_A_NON_LAND);
                 if (controller.choose(Outcome.Benefit, player.getHand(), target, game)) {
                     Card card = player.getHand().get(target.getFirstTarget(), game);
-                    return player.discard(card, source, game);
+                    return player.discard(card, false, source, game);
 
                 }
             }

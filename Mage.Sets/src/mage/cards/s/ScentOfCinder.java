@@ -30,7 +30,7 @@ public final class ScentOfCinder extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public ScentOfCinder(final ScentOfCinder card) {
+    private ScentOfCinder(final ScentOfCinder card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ScentOfCinderEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         RevealTargetFromHandCost cost = new RevealTargetFromHandCost(new TargetCardInHand(0, Integer.MAX_VALUE, filter));
-        if (!cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
+        if (!cost.pay(source, game, source, source.getControllerId(), true)) {
             return false;
         }
         int xValue = cost.getNumberRevealedCards();

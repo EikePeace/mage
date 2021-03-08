@@ -33,7 +33,7 @@ public final class MurderOfCrows extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new MurderOfCrowsEffect(), false, true));
     }
 
-    public MurderOfCrows(final MurderOfCrows card) {
+    private MurderOfCrows(final MurderOfCrows card) {
         super(card);
     }
 
@@ -62,9 +62,9 @@ class MurderOfCrowsEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
-        if (player != null && player.chooseUse(Outcome.DrawCard, "Do you wish to draw a card? If you do, discard a card.", source, game)) {
-            if (player.drawCards(1, game) > 0) {
-                player.discard(1, false, source, game);
+        if (player != null && player.chooseUse(Outcome.DrawCard, "Draw a card? If you do, discard a card.", source, game)) {
+            if (player.drawCards(1, source, game) > 0) {
+                player.discard(1, false, false, source, game);
             }
             return true;
         }

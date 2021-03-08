@@ -47,7 +47,7 @@ public final class Heroism extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new HeroismEffect(), new SacrificeTargetCost(new TargetControlledCreaturePermanent(1, 1, filter, true))));
     }
 
-    public Heroism(final Heroism card) {
+    private Heroism(final Heroism card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class HeroismEffect extends OneShotEffect {
                 String message = "Pay " + cost.getText() + "? If you don't, " + permanent.getLogName() + "'s combat damage will be prevented this turn.";
                 if (player != null) {
                     if (player.chooseUse(Outcome.Neutral, message, source, game)) {
-                        if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                        if (cost.pay(source, game, source, player.getId(), false, null)) {
                             game.informPlayers(player.getLogName() + " paid " + cost.getText() + " for " + permanent.getLogName());
 
                         } else {
@@ -107,7 +107,7 @@ class HeroismEffect extends OneShotEffect {
 
             for (Permanent permanent : permanentsToPrevent) {
                 ContinuousEffect effect = new PreventDamageByTargetEffect(Duration.EndOfTurn, Integer.MAX_VALUE, true);
-                effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                effect.setTargetPointer(new FixedTarget(permanent, game));
                 game.addEffect(effect, source);
             }
             return true;

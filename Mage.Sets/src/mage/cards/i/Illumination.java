@@ -41,7 +41,7 @@ public final class Illumination extends CardImpl {
         this.getSpellAbility().addEffect(new IlluminationEffect());
     }
 
-    public Illumination(final Illumination card) {
+    private Illumination(final Illumination card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class IlluminationEffect extends OneShotEffect {
             controller = game.getPlayer(game.getControllerId(targetId));
         }
         if (targetId != null
-                && game.getStack().counter(targetId, source.getSourceId(), game)) {
+                && game.getStack().counter(targetId, source, game)) {
             countered = true;
         }
         if (controller != null) {

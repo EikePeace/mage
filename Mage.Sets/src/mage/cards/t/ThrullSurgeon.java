@@ -41,7 +41,7 @@ public final class ThrullSurgeon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ThrullSurgeon(final ThrullSurgeon card) {
+    private ThrullSurgeon(final ThrullSurgeon card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ThrullSurgeonEffect extends OneShotEffect {
             target.setNotTarget(true);
             if (you.choose(Outcome.Benefit, targetPlayer.getHand(), target, game)) {
                 Card card = targetPlayer.getHand().get(target.getFirstTarget(), game);
-                return targetPlayer.discard(card, source, game);
+                return targetPlayer.discard(card, false, source, game);
 
             }
 

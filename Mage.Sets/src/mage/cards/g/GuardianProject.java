@@ -15,13 +15,12 @@ import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
@@ -145,7 +144,7 @@ class GuardianProjectEffect extends OneShotEffect {
         if (GuardianProjectTriggeredAbility.checkCondition(
                 mor.getPermanentOrLKIBattlefield(game), source.getControllerId(), game)
         ) {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
             return true;
         }
         return false;

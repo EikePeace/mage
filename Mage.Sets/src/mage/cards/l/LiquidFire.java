@@ -35,7 +35,7 @@ public final class LiquidFire extends CardImpl {
 
     }
 
-    public LiquidFire(final LiquidFire card) {
+    private LiquidFire(final LiquidFire card) {
         super(card);
     }
 
@@ -64,10 +64,10 @@ public final class LiquidFire extends CardImpl {
             int creatureDamage = choiceValue.calculate(game, source, this);
             int playerDamage = 5 - creatureDamage;
             if (target != null) {
-                target.damage(creatureDamage, source.getSourceId(), game);
+                target.damage(creatureDamage, source.getSourceId(), source, game);
                 Player controller = game.getPlayer(target.getControllerId());
                 if (controller != null) {
-                    controller.damage(playerDamage, source.getSourceId(), game);
+                    controller.damage(playerDamage, source.getSourceId(), source, game);
                 }
                 return true;
             }

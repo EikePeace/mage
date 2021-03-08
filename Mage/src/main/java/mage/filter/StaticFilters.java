@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.filter;
 
 import mage.constants.CardType;
@@ -12,8 +7,9 @@ import mage.constants.TargetController;
 import mage.filter.common.*;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
+import mage.filter.predicate.mageobject.AnotherPredicate;
+import mage.filter.predicate.mageobject.KickedSpellPredicate;
 import mage.filter.predicate.mageobject.MulticoloredPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
@@ -95,6 +91,12 @@ public final class StaticFilters {
         FILTER_CARD_CREATURE_A.setLockedFilter(true);
     }
 
+    public static final FilterCreatureCard FILTER_CARD_CREATURE_YOUR_HAND = new FilterCreatureCard("a creature card from your hand");
+
+    static {
+        FILTER_CARD_CREATURE_YOUR_HAND.setLockedFilter(true);
+    }
+
     public static final FilterCreatureCard FILTER_CARD_CREATURE_YOUR_GRAVEYARD = new FilterCreatureCard("creature card from your graveyard");
 
     static {
@@ -137,6 +139,12 @@ public final class StaticFilters {
         FILTER_CARD_LAND.setLockedFilter(true);
     }
 
+    public static final FilterLandCard FILTER_CARD_LANDS = new FilterLandCard("land cards");
+
+    static {
+        FILTER_CARD_LANDS.setLockedFilter(true);
+    }
+
     public static final FilterLandCard FILTER_CARD_LAND_A = new FilterLandCard("a land card");
 
     static {
@@ -147,6 +155,12 @@ public final class StaticFilters {
 
     static {
         FILTER_CARD_BASIC_LAND.setLockedFilter(true);
+    }
+
+    public static final FilterBasicLandCard FILTER_CARD_BASIC_LANDS = new FilterBasicLandCard("basic land cards");
+
+    static {
+        FILTER_CARD_BASIC_LANDS.setLockedFilter(true);
     }
 
     public static final FilterBasicLandCard FILTER_CARD_BASIC_LAND_A = new FilterBasicLandCard("a basic land card");
@@ -185,10 +199,22 @@ public final class StaticFilters {
         FILTER_CARD_INSTANT_AND_SORCERY.setLockedFilter(true);
     }
 
+    public static final FilterPermanentCard FILTER_CARD_PERMANENT = new FilterPermanentCard("permanent card");
+
+    static {
+        FILTER_CARD_PERMANENT.setLockedFilter(true);
+    }
+
     public static final FilterPermanent FILTER_PERMANENT = new FilterPermanent();
 
     static {
         FILTER_PERMANENT.setLockedFilter(true);
+    }
+
+    public static final FilterPermanent FILTER_PERMANENT_A = new FilterPermanent("a permanent");
+
+    static {
+        FILTER_PERMANENT_A.setLockedFilter(true);
     }
 
     public static final FilterPermanent FILTER_PERMANENTS = new FilterPermanent("permanents");
@@ -201,6 +227,12 @@ public final class StaticFilters {
 
     static {
         FILTER_PERMANENT_ARTIFACT.setLockedFilter(true);
+    }
+
+    public static final FilterArtifactPermanent FILTER_PERMANENT_ARTIFACTS = new FilterArtifactPermanent("artifacts");
+
+    static {
+        FILTER_PERMANENT_ARTIFACTS.setLockedFilter(true);
     }
 
     public static final FilterArtifactPermanent FILTER_PERMANENT_ARTIFACT_AN = new FilterArtifactPermanent("an artifact");
@@ -301,6 +333,12 @@ public final class StaticFilters {
         FILTER_CONTROLLED_PERMANENT_LANDS.setLockedFilter(true);
     }
 
+    public static final FilterControlledPermanent FILTER_CONTROLLED_PERMANENT_PLANESWALKER = new FilterControlledPlaneswalkerPermanent("planeswalker you control");
+
+    static {
+        FILTER_CONTROLLED_PERMANENT_PLANESWALKER.setLockedFilter(true);
+    }
+
     public static final FilterPermanent FILTER_OPPONENTS_PERMANENT = new FilterPermanent("permanent an opponent controls");
 
     static {
@@ -332,6 +370,13 @@ public final class StaticFilters {
                 CardType.CREATURE.getPredicate()
         ));
         FILTER_OPPONENTS_PERMANENT_ARTIFACT_OR_CREATURE.setLockedFilter(true);
+    }
+
+    public static final FilterCreaturePermanent FILTER_CREATURE_YOU_DONT_CONTROL = new FilterCreaturePermanent("creature you don't control");
+
+    static {
+        FILTER_CREATURE_YOU_DONT_CONTROL.add(TargetController.NOT_YOU.getControllerPredicate());
+        FILTER_CREATURE_YOU_DONT_CONTROL.setLockedFilter(true);
     }
 
     public static final FilterControlledCreaturePermanent FILTER_CONTROLLED_CREATURE = new FilterControlledCreaturePermanent();
@@ -422,8 +467,22 @@ public final class StaticFilters {
 
     static {
         FILTER_PERMANENT_CREATURE_OR_PLANESWALKER_A.add(
-                Predicates.or(CardType.CREATURE.getPredicate(), CardType.PLANESWALKER.getPredicate()));
+                Predicates.or(
+                        CardType.CREATURE.getPredicate(),
+                        CardType.PLANESWALKER.getPredicate()
+                ));
         FILTER_PERMANENT_CREATURE_OR_PLANESWALKER_A.setLockedFilter(true);
+    }
+
+    public static final FilterPermanent FILTER_PERMANENT_CREATURE_OR_PLANESWALKER = new FilterPermanent("creature or planeswalker");
+
+    static {
+        FILTER_PERMANENT_CREATURE_OR_PLANESWALKER.add(
+                Predicates.or(
+                        CardType.CREATURE.getPredicate(),
+                        CardType.PLANESWALKER.getPredicate()
+                ));
+        FILTER_PERMANENT_CREATURE_OR_PLANESWALKER.setLockedFilter(true);
     }
 
     public static final FilterCreaturePermanent FILTER_PERMANENT_A_CREATURE = new FilterCreaturePermanent("a creature");
@@ -494,7 +553,7 @@ public final class StaticFilters {
         FILTER_PERMANENTS_NON_LAND.setLockedFilter(true);
     }
 
-    public static final FilterStackObject FILTER_SPELL_OR_ABILITY_OPPONENTS = new FilterStackObject("spell or ability and opponent controls");
+    public static final FilterStackObject FILTER_SPELL_OR_ABILITY_OPPONENTS = new FilterStackObject("a spell or ability an opponent controls");
 
     static {
         FILTER_SPELL_OR_ABILITY_OPPONENTS.add(TargetController.OPPONENT.getControllerPredicate());
@@ -505,6 +564,12 @@ public final class StaticFilters {
 
     static {
         FILTER_SPELL_OR_ABILITY.setLockedFilter(true);
+    }
+
+    public static final FilterStackObject FILTER_SPELL_OR_ABILITY_A = new FilterStackObject("a spell or ability");
+
+    static {
+        FILTER_SPELL_OR_ABILITY_A.setLockedFilter(true);
     }
 
     public static final FilterCreatureSpell FILTER_SPELL_A_CREATURE = new FilterCreatureSpell("a creature spell");
@@ -580,6 +645,24 @@ public final class StaticFilters {
         FILTER_SPELLS_INSTANT_OR_SORCERY.setLockedFilter(true);
     }
 
+    public static final FilterSpell FILTER_SPELL_INSTANT_SORCERY_WIZARD = new FilterSpell("an instant, sorcery, or Wizard spell");
+
+    static {
+        FILTER_SPELL_INSTANT_SORCERY_WIZARD.add(Predicates.or(
+                CardType.INSTANT.getPredicate(),
+                CardType.SORCERY.getPredicate(),
+                SubType.WIZARD.getPredicate()
+        ));
+        FILTER_SPELL_INSTANT_SORCERY_WIZARD.setLockedFilter(true);
+    }
+
+    public static final FilterSpell FILTER_SPELL_KICKED_A = new FilterSpell("a kicked spell");
+
+    static {
+        FILTER_SPELL_KICKED_A.add(KickedSpellPredicate.instance);
+        FILTER_SPELL_KICKED_A.setLockedFilter(true);
+    }
+
     public static final FilterCreaturePermanent FILTER_CREATURE_TOKENS = new FilterCreaturePermanent("creature tokens");
 
     static {
@@ -602,13 +685,7 @@ public final class StaticFilters {
         FILTER_PERMANENT_AURA.setLockedFilter(true);
     }
 
-    public static final FilterPermanent FILTER_PERMANENT_EQUIPMENT = new FilterPermanent();
-
-    static {
-        FILTER_PERMANENT_EQUIPMENT.add(CardType.ARTIFACT.getPredicate());
-        FILTER_PERMANENT_EQUIPMENT.add(SubType.EQUIPMENT.getPredicate());
-        FILTER_PERMANENT_EQUIPMENT.setLockedFilter(true);
-    }
+    public static final FilterPermanent FILTER_PERMANENT_EQUIPMENT = new FilterEquipmentPermanent();
 
     public static final FilterPermanent FILTER_PERMANENT_FORTIFICATION = new FilterPermanent();
 

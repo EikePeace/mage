@@ -43,7 +43,7 @@ public final class PorphyryNodes extends CardImpl {
         
     }
 
-    public PorphyryNodes(final PorphyryNodes card) {
+    private PorphyryNodes(final PorphyryNodes card) {
         super(card);
     }
 
@@ -101,7 +101,7 @@ class PorphyryNodesEffect extends OneShotEffect {
             }
             if (permanentToDestroy != null) {
                 game.informPlayers(sourcePermanent.getName() + " chosen creature: " + permanentToDestroy.getName());
-                return permanentToDestroy.destroy(source.getSourceId(), game, true);
+                return permanentToDestroy.destroy(source, game, true);
             }
             return true;
         }

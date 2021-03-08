@@ -11,6 +11,7 @@ import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.events.PreventDamageEvent;
+import mage.game.events.PreventedDamageEvent;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -29,7 +30,7 @@ public final class TestOfFaith extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public TestOfFaith(final TestOfFaith card) {
+    private TestOfFaith(final TestOfFaith card) {
         super(card);
     }
 
@@ -65,20 +66,20 @@ class TestOfFaithPreventDamageTargetEffect extends PreventionEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        GameEvent preventEvent = new PreventDamageEvent(source.getFirstTarget(), source.getSourceId(), source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
+        GameEvent preventEvent = new PreventDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), event.getAmount(), ((DamageEvent) event).isCombatDamage());
         if (!game.replaceEvent(preventEvent)) {
             int prevented = 0;
             if (event.getAmount() >= this.amount) {
                 int damage = amount;
                 event.setAmount(event.getAmount() - amount);
                 this.used = true;
-                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), damage));
+                game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), damage));
                 prevented = damage;
             } else {
                 int damage = event.getAmount();
                 event.setAmount(0);
                 amount -= damage;
-                game.fireEvent(GameEvent.getEvent(GameEvent.EventType.PREVENTED_DAMAGE, source.getFirstTarget(), source.getSourceId(), source.getControllerId(), damage));
+                game.fireEvent(new PreventedDamageEvent(event.getTargetId(), source.getSourceId(), source, source.getControllerId(), damage));
                 prevented = damage;
             }
 
@@ -86,7 +87,7 @@ class TestOfFaithPreventDamageTargetEffect extends PreventionEffectImpl {
             if (prevented > 0) {
                 Permanent targetPermanent = game.getPermanent(source.getTargets().getFirstTarget());
                 if (targetPermanent != null) {
-                    targetPermanent.addCounters(CounterType.P1P1.createInstance(prevented), source, game);
+                    targetPermanent.addCounters(CounterType.P1P1.createInstance(prevented), source.getControllerId(), source, game);
                     game.informPlayers("Test of Faith: Prevented " + prevented + " damage ");
                     game.informPlayers("Test of Faith: Adding " + prevented + " +1/+1 counters to " + targetPermanent.getName());
                 }

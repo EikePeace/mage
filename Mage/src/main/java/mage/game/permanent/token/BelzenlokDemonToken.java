@@ -13,7 +13,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -95,7 +95,7 @@ class BelzenlokDemonTokenEffect extends OneShotEffect {
         } else {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
-                controller.damage(6, source.getSourceId(), game);
+                controller.damage(6, source.getSourceId(), source, game);
             }
         }
         return true;

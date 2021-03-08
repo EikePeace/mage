@@ -4,7 +4,7 @@ package mage.cards.b;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.keyword.DeathtouchAbility;
 import mage.cards.Card;
@@ -36,13 +36,13 @@ public final class BitterheartWitch extends CardImpl {
         this.addAbility(DeathtouchAbility.getInstance());
 
         // When Bitterheart Witch dies, you may search your library for a Curse card, put it onto the battlefield attached to target player, then shuffle your library.
-        Ability ability = new DiesTriggeredAbility(new BitterheartWitchEffect(), true);
+        Ability ability = new DiesSourceTriggeredAbility(new BitterheartWitchEffect(), true);
         ability.addTarget(new TargetPlayer());
         this.addAbility(ability);
 
     }
 
-    public BitterheartWitch(final BitterheartWitch card) {
+    private BitterheartWitch(final BitterheartWitch card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class BitterheartWitchEffect extends OneShotEffect {
                 if (card != null) {
                     game.getState().setValue("attachTo:" + card.getId(), targetPlayer.getId());
                     if (controller.moveCards(card, Zone.BATTLEFIELD, source, game)) {
-                        targetPlayer.addAttachment(card.getId(), game);
+                        targetPlayer.addAttachment(card.getId(), source, game);
                     }
                 }
             }

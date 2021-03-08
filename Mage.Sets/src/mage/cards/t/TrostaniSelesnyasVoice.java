@@ -49,7 +49,7 @@ public final class TrostaniSelesnyasVoice extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TrostaniSelesnyasVoice(final TrostaniSelesnyasVoice card) {
+    private TrostaniSelesnyasVoice(final TrostaniSelesnyasVoice card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class TrostaniSelesnyasVoiceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

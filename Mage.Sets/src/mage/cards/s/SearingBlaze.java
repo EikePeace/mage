@@ -38,7 +38,7 @@ public final class SearingBlaze extends CardImpl {
         this.getSpellAbility().addWatcher(new LandfallWatcher());
     }
 
-    public SearingBlaze(final SearingBlaze card) {
+    private SearingBlaze(final SearingBlaze card) {
         super(card);
     }
 
@@ -73,9 +73,9 @@ class SearingBlazeEffect extends OneShotEffect {
         if (watcher != null && watcher.landPlayed(source.getControllerId())) {
             damage = 3;
         }
-        game.damagePlayerOrPlaneswalker(source.getTargets().get(0).getFirstTarget(), damage, source.getSourceId(), game, false, true);
+        game.damagePlayerOrPlaneswalker(source.getTargets().get(0).getFirstTarget(), damage, source.getSourceId(), source, game, false, true);
         if (creature != null) {
-            creature.damage(damage, source.getSourceId(), game, false, true);
+            creature.damage(damage, source.getSourceId(), source, game, false, true);
         }
         return true;
     }

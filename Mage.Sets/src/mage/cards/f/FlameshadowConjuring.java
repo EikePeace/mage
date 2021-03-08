@@ -49,7 +49,7 @@ public final class FlameshadowConjuring extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FlameshadowConjuring(final FlameshadowConjuring card) {
+    private FlameshadowConjuring(final FlameshadowConjuring card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class FlameshadowConjuringEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = ((FixedTarget) getTargetPointer()).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(null, null, true);
             effect.setTargetPointer(getTargetPointer());

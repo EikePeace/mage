@@ -37,7 +37,7 @@ public final class RotfeasterMaggot extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RotfeasterMaggot(final RotfeasterMaggot card) {
+    private RotfeasterMaggot(final RotfeasterMaggot card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class RotfeasterMaggotExileEffect extends OneShotEffect {
             Card targetCard = game.getCard(getTargetPointer().getFirst(game, source));
             if (targetCard != null) {
                 if (game.getState().getZone(targetCard.getId()) == Zone.GRAVEYARD) {
-                    controller.moveCardToExileWithInfo(targetCard, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                    controller.moveCardToExileWithInfo(targetCard, null, "", source, game, Zone.GRAVEYARD, true);
                 }
                 controller.gainLife(targetCard.getToughness().getValue(), game, source);
                 return true;

@@ -39,7 +39,7 @@ public final class LoneRevenant extends CardImpl {
         this.addAbility(new LoneRevenantTriggeredAbility());
     }
 
-    public LoneRevenant(final LoneRevenant card) {
+    private LoneRevenant(final LoneRevenant card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class LoneRevenantTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

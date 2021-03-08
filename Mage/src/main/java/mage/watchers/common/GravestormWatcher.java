@@ -2,7 +2,6 @@
 package mage.watchers.common;
 
 import mage.constants.WatcherScope;
-import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
@@ -24,7 +23,7 @@ public class GravestormWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.ZONE_CHANGE) {
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE) {
             ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
             if (zEvent.isDiesEvent()) {
                 gravestormCount++;

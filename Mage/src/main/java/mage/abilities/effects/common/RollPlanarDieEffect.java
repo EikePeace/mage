@@ -1,7 +1,5 @@
 package mage.abilities.effects.common;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
@@ -18,8 +16,11 @@ import mage.players.Player;
 import mage.target.Target;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author spjspj
  */
 public class RollPlanarDieEffect extends OneShotEffect {
@@ -60,7 +61,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         MageObject mageObject = game.getObject(source.getSourceId());
         if (controller != null && mageObject != null) {
-            PlanarDieRoll planarRoll = controller.rollPlanarDie(game);
+            PlanarDieRoll planarRoll = controller.rollPlanarDie(source, game);
             if (planarRoll == PlanarDieRoll.CHAOS_ROLL && chaosEffects != null && chaosTargets != null) {
                 for (int i = 0; i < chaosTargets.size(); i++) {
                     Target target = chaosTargets.get(i);
@@ -77,7 +78,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
                     }
                     boolean done = false;
                     while (controller.canRespond() && effect != null && !done) {
-                        if (target != null && !target.isChosen() && target.canChoose(controller.getId(), game)) {
+                        if (target != null && !target.isChosen() && target.canChoose(source.getSourceId(), controller.getId(), game)) {
                             controller.chooseTarget(Outcome.Benefit, target, source, game);
                             source.addTarget(target);
                         }
@@ -98,8 +99,8 @@ public class RollPlanarDieEffect extends OneShotEffect {
                 // Steps: 1) Remove the last plane and set its effects to discarded
                 for (CommandObject cobject : game.getState().getCommand()) {
                     if (cobject instanceof Plane) {
-                        if (((Plane) cobject).getAbilities() != null) {
-                            for (Ability ability : ((Plane) cobject).getAbilities()) {
+                        if (cobject.getAbilities() != null) {
+                            for (Ability ability : cobject.getAbilities()) {
                                 for (Effect effect : ability.getEffects()) {
                                     if (effect instanceof ContinuousEffect) {
                                         ((ContinuousEffect) effect).discard();
@@ -107,7 +108,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
                                 }
                             }
                         }
-                        game.getState().removeTriggersOfSourceId(((Plane) cobject).getId());
+                        game.getState().removeTriggersOfSourceId(cobject.getId());
                         game.getState().getCommand().remove(cobject);
                         break;
                     }
@@ -123,7 +124,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
 
                 boolean foundNextPlane = false;
                 while (!foundNextPlane) {
-                    Plane plane = Plane.getRandomPlane();
+                    Plane plane = Plane.createRandomPlane();
                     try {
                         if (plane != null && !planesVisited.contains(plane.getName())) {
                             foundNextPlane = true;
@@ -150,7 +151,7 @@ public class RollPlanarDieEffect extends OneShotEffect {
             if (effect != null) {
                 try {
                     String emode = effect.getText(mode);
-                    emode = emode.substring(0, 1).toLowerCase() + emode.substring(1);
+                    emode = emode.substring(0, 1).toLowerCase(Locale.ENGLISH) + emode.substring(1);
                     sb.append(emode);
                 } catch (Exception e) {
                     sb.append("perform the CHAOS action");

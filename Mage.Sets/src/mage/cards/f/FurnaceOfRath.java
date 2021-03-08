@@ -29,7 +29,7 @@ public final class FurnaceOfRath extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new FurnaceOfRathEffect()));
     }
 
-    public FurnaceOfRath(final FurnaceOfRath card) {
+    private FurnaceOfRath(final FurnaceOfRath card) {
         super(card);
     }
 
@@ -59,10 +59,7 @@ class FurnaceOfRathEffect extends ReplacementEffectImpl {
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
             case DAMAGE_PLAYER:
-                return true;
-            case DAMAGE_CREATURE:
-                return true;
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
                 return true;
         }
         return false;
@@ -75,7 +72,7 @@ class FurnaceOfRathEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

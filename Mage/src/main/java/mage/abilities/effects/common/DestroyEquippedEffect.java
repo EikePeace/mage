@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.effects.common;
 
 import java.util.UUID;
@@ -42,7 +37,7 @@ public class DestroyEquippedEffect extends OneShotEffect {
                 permanent = game.getPermanent(equipment.getAttachedTo());
             }
             if (permanent != null) {
-                return permanent.destroy(source.getSourceId(), game, false);
+                return permanent.destroy(source, game, false);
             }
         }
         return false;

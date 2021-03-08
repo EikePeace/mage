@@ -31,7 +31,7 @@ public final class CallToHeel extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public CallToHeel(final CallToHeel card) {
+    private CallToHeel(final CallToHeel card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class CallToHeelEffect extends OneShotEffect {
         if (permanent != null) {
             Player controller = game.getPlayer(permanent.getControllerId());
             if (controller != null) {
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
                 return true;
             }
         }

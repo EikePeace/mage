@@ -41,7 +41,7 @@ public final class KamiOfTheHonoredDead extends CardImpl {
         this.addAbility(new SoulshiftAbility(6));
     }
 
-    public KamiOfTheHonoredDead(final KamiOfTheHonoredDead card) {
+    private KamiOfTheHonoredDead(final KamiOfTheHonoredDead card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class KamiOfTheHonoredDeadTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

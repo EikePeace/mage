@@ -34,7 +34,7 @@ public final class MidnightRitual extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(MidnightRitualAdjuster.instance);
     }
 
-    public MidnightRitual(final MidnightRitual card) {
+    private MidnightRitual(final MidnightRitual card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class MidnightRitualEffect extends OneShotEffect {
             Cards cardsToExile = new CardsImpl(getTargetPointer().getTargets(game, source));
             controller.moveCards(cardsToExile, Zone.EXILED, source, game);
             if (!cardsToExile.isEmpty()) {
-                new ZombieToken().putOntoBattlefield(cardsToExile.size(), game, source.getSourceId(), controller.getId());
+                new ZombieToken().putOntoBattlefield(cardsToExile.size(), game, source, controller.getId());
             }
             return true;
         }

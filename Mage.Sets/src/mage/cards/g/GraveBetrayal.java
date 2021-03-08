@@ -19,7 +19,6 @@ import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -40,7 +39,7 @@ public final class GraveBetrayal extends CardImpl {
         this.addAbility(new GraveBetrayalTriggeredAbility());
     }
 
-    public GraveBetrayal(final GraveBetrayal card) {
+    private GraveBetrayal(final GraveBetrayal card) {
         super(card);
     }
 
@@ -67,7 +66,7 @@ class GraveBetrayalTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -79,7 +78,7 @@ class GraveBetrayalTriggeredAbility extends TriggeredAbilityImpl {
                 Card card = (Card) game.getObject(permanent.getId());
                 if (card != null) {
                     Effect effect = new GraveBetrayalEffect();
-                    effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+                    effect.setTargetPointer(new FixedTarget(card, game));
                     DelayedTriggeredAbility delayedAbility = new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect);
                     game.addDelayedTriggeredAbility(delayedAbility, this);
                     return true;
@@ -158,7 +157,7 @@ class GraveBetrayalReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
             ContinuousEffect effect = new BecomesBlackZombieAdditionEffect();
             effect.setTargetPointer(new FixedTarget(creature.getId(), creature.getZoneChangeCounter(game) + 1));
             game.addEffect(effect, source);

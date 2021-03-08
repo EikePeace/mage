@@ -38,12 +38,12 @@ public final class WhisperBloodLiturgist extends CardImpl {
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new ReturnFromGraveyardToBattlefieldTargetEffect()
                 .setText("Return target creature card from your graveyard to the battlefield"),
                  new TapSourceCost());
-        ability.addCost(new SacrificeTargetCost(new TargetControlledCreaturePermanent(2, 2, new FilterControlledCreaturePermanent("two creature"), true)));
+        ability.addCost(new SacrificeTargetCost(new TargetControlledCreaturePermanent(2, 2, new FilterControlledCreaturePermanent("creatures"), true)));
         ability.addTarget(new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD));
         this.addAbility(ability);
     }
 
-    public WhisperBloodLiturgist(final WhisperBloodLiturgist card) {
+    private WhisperBloodLiturgist(final WhisperBloodLiturgist card) {
         super(card);
     }
 

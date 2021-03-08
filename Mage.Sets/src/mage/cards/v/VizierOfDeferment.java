@@ -1,4 +1,3 @@
-
 package mage.cards.v;
 
 import mage.MageInt;
@@ -49,7 +48,7 @@ public final class VizierOfDeferment extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VizierOfDeferment(final VizierOfDeferment card) {
+    private VizierOfDeferment(final VizierOfDeferment card) {
         super(card);
     }
 
@@ -88,8 +87,8 @@ class VizierOfDefermentEffect extends OneShotEffect {
         if (controller != null
                 && attackedOrBlocked
                 && sourcePermanent != null) {
-            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourcePermanent.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                 effect.setText("Return that card to the battlefield under its owner's control at the beginning of the next end step");
                 effect.setTargetPointer(new FixedTarget(source.getFirstTarget(), game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);

@@ -29,7 +29,7 @@ public final class WhirlpoolWhelm extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public WhirlpoolWhelm(final WhirlpoolWhelm card) {
+    private WhirlpoolWhelm(final WhirlpoolWhelm card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class WhirlpoolWhelmEffect extends OneShotEffect {
                 topOfLibrary = controller.chooseUse(outcome, "Put " + creature.getLogName() + " to top of libraray instead?", source, game);
             }
             if (topOfLibrary) {
-                controller.moveCardToLibraryWithInfo(creature, source.getSourceId(), game, Zone.BATTLEFIELD, true, true);
+                controller.moveCardToLibraryWithInfo(creature, source, game, Zone.BATTLEFIELD, true, true);
             } else {
                 controller.moveCards(creature, Zone.HAND, source, game);
             }

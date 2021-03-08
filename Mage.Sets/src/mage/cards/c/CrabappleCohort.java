@@ -17,7 +17,7 @@ import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -51,7 +51,7 @@ public final class CrabappleCohort extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public CrabappleCohort(final CrabappleCohort card) {
+    private CrabappleCohort(final CrabappleCohort card) {
         super(card);
     }
 

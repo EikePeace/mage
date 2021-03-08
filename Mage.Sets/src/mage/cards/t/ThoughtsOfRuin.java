@@ -33,7 +33,7 @@ public final class ThoughtsOfRuin extends CardImpl {
 
     }
 
-    public ThoughtsOfRuin(final ThoughtsOfRuin card) {
+    private ThoughtsOfRuin(final ThoughtsOfRuin card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ class ThoughtsOfRuinEffect extends OneShotEffect {
                 }
                 // sacrifice all lands
                 for (Permanent permanent :permanentsToSacrifice) {
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                 }
             }
         }

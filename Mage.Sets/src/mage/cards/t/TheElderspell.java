@@ -70,7 +70,7 @@ class TheElderspellEffect extends OneShotEffect {
         int count = 0;
         for (UUID permId : source.getTargets().get(0).getTargets()) {
             Permanent permanent = game.getPermanent(permId);
-            if (permanent != null && permanent.destroy(source.getSourceId(), game, false)) {
+            if (permanent != null && permanent.destroy(source, game, false)) {
                 count++;
             }
         }
@@ -82,6 +82,6 @@ class TheElderspellEffect extends OneShotEffect {
         if (permanent == null) {
             return false;
         }
-        return permanent.addCounters(CounterType.LOYALTY.createInstance(2 * count), source, game);
+        return permanent.addCounters(CounterType.LOYALTY.createInstance(2 * count), source.getControllerId(), source, game);
     }
 }

@@ -47,7 +47,7 @@ public final class CrovaxTheCursed extends CardImpl {
 
     }
 
-    public CrovaxTheCursed(final CrovaxTheCursed card) {
+    private CrovaxTheCursed(final CrovaxTheCursed card) {
         super(card);
     }
 
@@ -82,12 +82,12 @@ class CrovaxTheCursedEffect extends OneShotEffect {
             if (creatures > 0 && controller.chooseUse(outcome, "Sacrifice a creature?", source, game)) {
                 if (new SacrificeControllerEffect(StaticFilters.FILTER_PERMANENT_CREATURES, 1, "").apply(game, source)) {
                     if (sourceObject != null) {
-                        sourceObject.addCounters(CounterType.P1P1.createInstance(), source, game);
+                        sourceObject.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                         game.informPlayers(controller.getLogName() + " puts a +1/+1 counter on " + sourceObject.getName());
                     }
                 }
             } else if (sourceObject != null && sourceObject.getCounters(game).containsKey(CounterType.P1P1)) {
-                sourceObject.removeCounters(CounterType.P1P1.getName(), 1, game);
+                sourceObject.removeCounters(CounterType.P1P1.getName(), 1, source, game);
                 game.informPlayers(controller.getLogName() + " removes a +1/+1 counter from " + sourceObject.getName());
             }
             return true;

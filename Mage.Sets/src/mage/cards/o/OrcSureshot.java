@@ -15,7 +15,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -46,7 +46,7 @@ public final class OrcSureshot extends CardImpl {
         
     }
 
-    public OrcSureshot(final OrcSureshot card) {
+    private OrcSureshot(final OrcSureshot card) {
         super(card);
     }
 

@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -34,7 +34,7 @@ public final class CinderGiant extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new DamageAllEffect(2, filter), TargetController.YOU, false));
     }
 
-    public CinderGiant(final CinderGiant card) {
+    private CinderGiant(final CinderGiant card) {
         super(card);
     }
 

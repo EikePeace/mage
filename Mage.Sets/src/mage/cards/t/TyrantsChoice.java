@@ -9,7 +9,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.filter.common.FilterControlledCreaturePermanent;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.players.Player;
 
@@ -26,7 +26,7 @@ public final class TyrantsChoice extends CardImpl {
         this.getSpellAbility().addEffect(new TyrantsChoiceEffect());
     }
 
-    public TyrantsChoice(final TyrantsChoice card) {
+    private TyrantsChoice(final TyrantsChoice card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class TyrantsChoiceEffect extends OneShotEffect {
                 }
             }
             if (deathCount > tortureCount) {
-                new SacrificeOpponentsEffect(new FilterControlledCreaturePermanent("a creature")).apply(game, source);
+                new SacrificeOpponentsEffect(StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT).apply(game, source);
             } else {
                 new TyrantsChoiceLoseLifeEffect().apply(game, source);
             }
@@ -95,7 +95,7 @@ class TyrantsChoiceLoseLifeEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
-            game.getPlayer(opponentId).loseLife(4, game, false);
+            game.getPlayer(opponentId).loseLife(4, game, source, false);
         }
         return true;
     }

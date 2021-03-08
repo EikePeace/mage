@@ -29,7 +29,7 @@ public final class BiomanticMastery extends CardImpl {
 
     }
 
-    public BiomanticMastery(final BiomanticMastery card) {
+    private BiomanticMastery(final BiomanticMastery card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class BiomanticMasteryEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int creatures = game.getBattlefield().countAll(StaticFilters.FILTER_PERMANENT_CREATURE, playerId, game);
-                    controller.drawCards(creatures, game);
+                    controller.drawCards(creatures, source, game);
                 }
             }
             return true;

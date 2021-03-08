@@ -1,3 +1,4 @@
+#TODO: some sets (TOK:code) don't have tokens but recorded here - must be fixed and removed (from that file and from tokens)
 #Generate|TOK:TPR|Goblin||
 #Generate|TOK:TPR|Pegasus||
 #Generate|TOK:TPR|Rat||
@@ -12,8 +13,8 @@
 #|Generate|TOK:CHK|Dragon Spirit||
 #|Generate|TOK:FNMP|Centaur||
 #|Generate|TOK:FNMP|Wurm||
-#|Generate|TOK:GPX|Elephant||
-#|Generate|TOK:GPX|Germ||
+#|Generate|TOK:PGPX|Elephant||
+#|Generate|TOK:PGPX|Germ||
 #|Generate|TOK:GRC|Bird||
 #|Generate|TOK:GRC|Golem||
 #|Generate|TOK:GRC|Human||
@@ -23,28 +24,25 @@
 #|Generate|TOK:JR|Faerie Rogue||
 #|Generate|TOK:JR|Soldier||
 #|Generate|TOK:JR|Squirrel||
-#|Generate|TOK:MBP:Beast||
-#|Generate|TOK:MBP|Cat||
-#|Generate|TOK:MBP|Dragon||
-#|Generate|TOK:MBP|Elephant||
-#|Generate|TOK:MBP|Goblin||
-#|Generate|TOK:MBP|Zombie||
-#|Generate|TOK:MGDC|Centaur||
-#|Generate|TOK:MGDC|Knight||
-#|Generate|TOK:MGDC|Rhino||
-#|Generate|TOK:MGDC|Sliver||
+#|Generate|TOK:PMEI|Beast||
+#|Generate|TOK:PMEI|Cat||
+#|Generate|TOK:PMEI|Dragon||
+#|Generate|TOK:PMEI|Elephant||
+#|Generate|TOK:PMEI|Goblin||
+#|Generate|TOK:PMEI|Zombie||
 #|Generate|TOK:MLP|Thopter||
-#|Generate|TOK:PTC|Angel||
-#|Generate|TOK:PTC|Avatar||
-#|Generate|TOK:PTC|Beast||
-#|Generate|TOK:PTC|Dragon||
-#|Generate|TOK:PTC|Elemental||
-#|Generate|TOK:PTC|Harpy||
-#|Generate|TOK:PTC|Hippo||
-#|Generate|TOK:PTC|Soldier||
-#|Generate|TOK:PTC|Wolf||
-#|Generate|TOK:PTC|Wurm||
-#|Generate|TOK:WMCQ|Angel||
+#|Generate|TOK:PPRE|Angel||
+#|Generate|TOK:PPRE|Avatar||
+#|Generate|TOK:PPRE|Beast||
+#|Generate|TOK:PPRE|Dragon||
+#|Generate|TOK:PPRE|Elemental||
+#|Generate|TOK:PPRE|Harpy||
+#|Generate|TOK:PPRE|Hippo||
+#|Generate|TOK:PPRE|Soldier||
+#|Generate|TOK:PPRE|Wolf||
+#|Generate|TOK:PPRE|Wurm||
+
+# Emblems
 |Generate|EMBLEM!:BFZ|Emblem Gideon|||GideonAllyOfZendikarEmblem|
 |Generate|EMBLEM!:BFZ|Emblem Kiora|||KioraMasterOfTheDepthsEmblem|
 |Generate|EMBLEM!:BFZ|Emblem Nixilis|||ObNixilisReignitedEmblem|
@@ -101,12 +99,21 @@
 |Generate|EMBLEM:DOM|Teferi, Hero of Dominaria||Emblem Teferi|TeferiHeroOfDominariaEmblem|
 |Generate|EMBLEM:AER|Tezzeret the Schemer||Emblem Tezzeret|TezzeretTheSchemerEmblem|
 |Generate|EMBLEM:ELD|Garruk, Cursed Huntsman||Emblem Garruk|GarrukCursedHuntsmanEmblem|
-|Generate|PLANE:PCA|Plane - Academy At Tolaria West|||AcademyAtTolariaWestPlane|
+|Generate|EMBLEM:IKO|Narset Of The Ancient Way||Emblem Narset|NarsetOfTheAncientWayEmblem|
+|Generate|EMBLEM:M21|Basri Ket||Emblem Basri|BasriKetEmblem|
+|Generate|EMBLEM:M21|Garruk, Unleashed||Emblem Garruk|GarrukUnleashedEmblem|
+|Generate|EMBLEM:M21|Liliana, Waker of the Dead||Emblem Liliana|LilianaWakerOfTheDeadEmblem|
+|Generate|EMBLEM:KHM|Kaya the Inexorable||Emblem Kaya|KayaTheInexorableEmblem|
+|Generate|EMBLEM:KHM|Tibalt Cosmic Imposter||Emblem Tibalt|TibaltCosmicImposterEmblem|
+|Generate|EMBLEM:KHM|Tyvar Kell||Emblem Tyvar|TyvarKellEmblem|
+
+# Planes
+|Generate|PLANE:PCA|Plane - Academy at Tolaria West|||AcademyAtTolariaWestPlane|
 |Generate|PLANE:PCA|Plane - Agyrem|||AgyremPlane|
 |Generate|PLANE:PCA|Plane - Akoum|||AkoumPlane|
 |Generate|PLANE:PCA|Plane - Astral Arena|||AstralArenaPlane|
 |Generate|PLANE:PCA|Plane - Bant|||BantPlane|
-|Generate|PLANE:PCA|Plane - Edge Of Malacol|||EdgeOfMalacolPlane|
+|Generate|PLANE:PCA|Plane - Edge of Malacol|||EdgeOfMalacolPlane|
 |Generate|PLANE:PCA|Plane - Feeding Grounds|||FeedingGroundsPlane|
 |Generate|PLANE:PCA|Plane - Fields of Summer|||FieldsOfSummerPlane|
 |Generate|PLANE:PCA|Plane - Hedron Fields of Agadeem|||HedronFieldsOfAgadeemPlane|
@@ -120,6 +127,8 @@
 |Generate|PLANE:PCA|Plane - Truga Jungle|||TrugaJunglePlane|
 |Generate|PLANE:PCA|Plane - Turri Island|||TurriIslandPlane|
 |Generate|PLANE:PCA|Plane - Undercity Reaches|||UndercityReachesPlane|
+|Generate|PLANE:PCA|Plane - The Zephyr Maze|||TheZephyrMazePlane|
+|Generate|PLANE:PCA|Plane - Trail of the Mage-Rings|||TrailOfTheMageRingsPlane|
 |Generate|TOK:ANA|Goblin|||GoblinToken|
 |Generate|TOK:ANA|Spirit|||SpiritWhiteToken|
 |Generate|TOK:PCA|Eldrazi|||EldraziAnnihilatorToken|
@@ -151,7 +160,7 @@
 |Generate|TOK:5ED|Serf|||SerfToken|
 |Generate|TOK:5ED|Snake|||SerpentGeneratorSnakeToken|
 |Generate|TOK:5ED|Thrull|||BreedingPitBlackInsectToken|
-|Generate|TOK:6ED|Cat|||WaitingInTheWeedsCatToken|
+|Generate|TOK:6ED|Cat|||GreenCatToken|
 |Generate|TOK:6ED|Citizen|||CitizenToken|
 |Generate|TOK:6ED|Djinn|||DjinnToken|
 |Generate|TOK:6ED|Goblin|||GoblinToken|
@@ -165,30 +174,34 @@
 |Generate|TOK:AER|Etherium Cell|||EtheriumCellToken|
 |Generate|TOK:AER|Gremlin|||GremlinToken|
 |Generate|TOK:AER|Ragavan|||RagavanToken|
+
+# AKH
 |Generate|TOK:AKH|Beast|||BeastToken3|
 |Generate|TOK:AKH|Cat|||CatToken2|
 |Generate|TOK:AKH|Drake|||DrakeToken|
 |Generate|TOK:AKH|Hippo|||HippoToken2|
+|Generate|TOK:AKH|Insect|||NestOfScarabsBlackInsectToken|
 |Generate|TOK:AKH|Snake|||DeathtouchSnakeToken|
 |Generate|TOK:AKH|Warrior|||WarriorVigilantToken|
-|Generate|TOK:AKH|Wurm|||WurmToken3|
-|Generate|TOK:AKH|Zombie|||ZombieToken
+|Generate|TOK:AKH|Wurm|||Wurm55Token|
+|Generate|TOK:AKH|Zombie|||ZombieToken|
 #TOK:AKH - some tokens from real cards (see Embalm ability)
-#|Generate|TOK:AKH|Angel of Sanctions||
-#|Generate|TOK:AKH|Anointer Priest||
-#|Generate|TOK:AKH|Aven Initiate||
-#|Generate|TOK:AKH|Aven Wind Guide||
-#|Generate|TOK:AKH|Glyph Keeper||
-#|Generate|TOK:AKH|Heart-Piercer Manticore||
-#|Generate|TOK:AKH|Honored Hydra||
-#|Generate|TOK:AKH|Labyrinth Guardian||
-#|Generate|TOK:AKH|Oketra's Attendant||
-#|Generate|TOK:AKH|Sacred Cat||
-#|Generate|TOK:AKH|Tah-Crop Skirmisher||
-#|Generate|TOK:AKH|Temmet, Vizier of Naktamun||
-#|Generate|TOK:AKH|Trueheart Duelist||
-#|Generate|TOK:AKH|Unwavering Initiate||
-#|Generate|TOK:AKH|Vizier of Many Faces||
+|Generate|TOK:AKH|Angel of Sanctions||
+|Generate|TOK:AKH|Anointer Priest||
+|Generate|TOK:AKH|Aven Initiate||
+|Generate|TOK:AKH|Aven Wind Guide||
+|Generate|TOK:AKH|Glyph Keeper||
+|Generate|TOK:AKH|Heart-Piercer Manticore||
+|Generate|TOK:AKH|Honored Hydra||
+|Generate|TOK:AKH|Labyrinth Guardian||
+|Generate|TOK:AKH|Oketra's Attendant||
+|Generate|TOK:AKH|Sacred Cat||
+|Generate|TOK:AKH|Tah-Crop Skirmisher||
+|Generate|TOK:AKH|Temmet, Vizier of Naktamun||
+|Generate|TOK:AKH|Trueheart Duelist||
+|Generate|TOK:AKH|Unwavering Initiate||
+|Generate|TOK:AKH|Vizier of Many Faces||
+
 |Generate|TOK:ALA|Beast|||GodSireBeastToken|
 |Generate|TOK:ALA|Dragon|||DragonToken|
 |Generate|TOK:ALA|Goblin|||GoblinTokenWithHaste|
@@ -230,7 +243,6 @@
 |Generate|TOK:ATQ|Assembly-Worker|||AssemblyWorkerToken|
 |Generate|TOK:ATQ|Tetravite|||TetraviteToken|
 |Generate|TOK:AVR|Angel|||AngelToken|
-|Generate|TOK:AVR|Angel|||AngelTombToken|
 |Generate|TOK:AVR|Demon|||DemonToken|
 |Generate|TOK:AVR|Human|1||HumanToken|
 |Generate|TOK:AVR|Human|2||RedHumanToken|
@@ -262,16 +274,16 @@
 |Generate|TOK:BOK|Spirit|||AnotherSpiritToken|
 |Generate|TOK:BOK|Spirit|||SpiritToken|
 |Generate|TOK:C13|Assembly-Worker|||AssembleWorkerToken|
-|Generate|TOK:C13|Beast|||BeastToken2|
-|Generate|TOK:C13|Beast|||CarnivoreToken|
-|Generate|TOK:C13|Beast|||OneDozenEyesBeastToken|
-|Generate|TOK:C13|Beast|||SpawningGroundsBeastToken|
+|Generate|TOK:C13|Beast|1||BeastToken2|
+|Generate|TOK:C13|Beast|2||CarnivoreToken|
+|Generate|TOK:C13|Beast|3||OneDozenEyesBeastToken|
+|Generate|TOK:C13|Beast|4||SpawningGroundsBeastToken|
 |Generate|TOK:C13|Drake|||LeafdrakeRoostDrakeToken|
-|Generate|TOK:C13|Elemental|||SeedGuardianToken|
-|Generate|TOK:C13|Elemental|||WalkerOfTheGroveToken|
-|Generate|TOK:C13|Elemental|||YoungPyromancerElementalToken|
+|Generate|TOK:C13|Elemental|1||SeedGuardianToken|
+|Generate|TOK:C13|Elemental|2||WalkerOfTheGroveToken|
+|Generate|TOK:C13|Elemental|3||RedElementalToken|
 |Generate|TOK:C13|Elephant|||ElephantToken|
-|Generate|TOK:C13|Elf Warrior|||ElfToken|
+|Generate|TOK:C13|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:C13|Goat|||GoatToken|
 |Generate|TOK:C13|Graveborn|||SekKuarDeathkeeperGravebornToken|
 |Generate|TOK:C13|Insect|||InsectToken|
@@ -294,9 +306,8 @@
 |Generate|TOK:C14|Demon|2||ReignOfThePitToken|
 |Generate|TOK:C14|Elemental|||TitaniaProtectorOfArgothElementalToken|
 |Generate|TOK:C14|Elephant|||ElephantToken|
-|Generate|TOK:C14|Elf Druid|||FreyaliseLlanowarsFuryToken|
-|Generate|TOK:C14|Elf Druid|||LlanowarElvesToken|
-|Generate|TOK:C14|Elf Warrior|||ElfToken|
+|Generate|TOK:C14|Elf Druid|||ElfDruidToken|
+|Generate|TOK:C14|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:C14|Equipment|||NahiriTheLithomancerEquipmentToken|
 |Generate|TOK:C14|Fish|||ReefWormFishToken|
 |Generate|TOK:C14|Gargoyle|||GargoyleToken|
@@ -316,8 +327,8 @@
 |Generate|TOK:C14|Treefolk|||SylvanOfferingTreefolkToken|
 |Generate|TOK:C14|Whale|||ReefWormWhaleToken|
 |Generate|TOK:C14|Wolf|||WolfToken|
-|Generate|TOK:C14|Wurm|1||Wurm1Token|
-|Generate|TOK:C14|Wurm|2||Wurm2Token|
+|Generate|TOK:C14|Wurm|1||WurmWithDeathtouchToken|
+|Generate|TOK:C14|Wurm|2||WurmWithLifelinkToken|
 |Generate|TOK:C14|Zombie|1||ZombieToken|
 |Generate|TOK:C14|Zombie|2||StitcherGeralfZombieToken|
 |Generate|TOK:C15|Angel|||AngelToken|
@@ -348,7 +359,7 @@
 |Generate|TOK:C16|Beast||
 |Generate|TOK:C16|Bird|1|
 |Generate|TOK:C16|Bird|2|
-|Generate|TOK:C16|Elemental||
+|Generate|TOK:C16|Elemental|||WhiteElementalToken|
 |Generate|TOK:C16|Elf Warrior||
 |Generate|TOK:C16|Germ||
 |Generate|TOK:C16|Goat||
@@ -366,7 +377,7 @@
 |Generate|TOK:C16|Worm||
 |Generate|TOK:C16|Zombie||
 |Generate|TOK:C17|Bat||
-|Generate|TOK:C17|Cat||
+|Generate|TOK:C17|Cat|||CatToken|
 |Generate|TOK:C17|Cat Dragon|||WasitoraCatDragonToken|
 |Generate|TOK:C17|Cat Warrior||
 |Generate|TOK:C17|Dragon|1||DragonToken|
@@ -381,7 +392,7 @@
 |Generate|TOK:C18|Cat|||CatToken|
 |Generate|TOK:C18|Cat Warrior|||CatWarriorToken|
 |Generate|TOK:C18|Clue|||ClueArtifactToken|
-|Generate|TOK:C18|Construct|1||RetrofitterFoundryToken|
+|Generate|TOK:C18|Construct|1||Construct4Token|
 |Generate|TOK:C18|Construct|2||StoneTrapIdolToken|
 |Generate|TOK:C18|Dragon|||DragonEggDragonToken|
 |Generate|TOK:C18|Dragon Egg|||NestingDragonToken|
@@ -433,30 +444,28 @@
 |Generate|TOK:CMA|Drake|||LeafdrakeRoostDrakeToken|
 |Generate|TOK:CMA|Elemental|||TitaniaProtectorOfArgothElementalToken|
 |Generate|TOK:CMA|Elephant|||ElephantToken|
-|Generate|TOK:C14|Elf Druid|||FreyaliseLlanowarsFuryToken|
-|Generate|TOK:C14|Elf Druid|||LlanowarElvesToken|
+|Generate|TOK:C14|Elf Druid|||ElfDruidToken|
 |Generate|TOK:CMA|Elf Warrior||
 |Generate|TOK:CMA|Gargoyle|||GargoyleToken|
-|Generate|TOK:CMA|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:CMA|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:CMA|Knight|||KnightToken|
 |Generate|TOK:CMA|Saproling|||SaprolingToken|
 |Generate|TOK:CMA|Spirit|||SpiritWhiteToken|
 |Generate|TOK:CMA|Treefolk|||SylvanOfferingTreefolkToken|
 |Generate|TOK:CMA|Wolf|||WolfToken|
 |Generate|TOK:CMA|Zombie|||ZombieToken|
-|Generate|TOK:CMD|Beast|||BeastToken2|
-|Generate|TOK:CMD|Beast|||BeastToken|
+|Generate|TOK:CMD|Beast|1||BeastToken2|
+|Generate|TOK:CMD|Beast|2||BeastToken|
 |Generate|TOK:CMD|Dragon|||DragonToken2|
 |Generate|TOK:CMD|Eldrazi Spawn|||EldraziSpawnToken|
 |Generate|TOK:CMD|Elemental|||CallTheSkyBreakerElementalToken|
 |Generate|TOK:CMD|Elephant|||ElephantToken|
 |Generate|TOK:CMD|Insect|||InsectToken|
-|Generate|TOK:CMD|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:CMD|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:CMD|Pegasus|||PegasusToken|
 |Generate|TOK:CMD|Saproling|||SaprolingToken|
 |Generate|TOK:CMD|Snake|||SnakeToken|
 |Generate|TOK:CMD|Soldier|||SoldierToken|
-|Generate|TOK:CMD|Spider|||PenumbraSpiderToken|
 |Generate|TOK:CMD|Spirit|||SpiritWhiteToken|
 |Generate|TOK:CMD|Squirrel|||SquirrelToken|
 |Generate|TOK:CMD|Triskelavite|||TriskelaviteToken|
@@ -502,18 +511,18 @@
 |Generate|TOK:DD3C|Beast|1|
 |Generate|TOK:DD3C|Beast|2|
 |Generate|TOK:DD3C|Elephant||
-|Generate|TOK:DD3DVD|Demon|||ReignOfThePitToken|
-|Generate|TOK:DD3DVD|Spirit|||SpiritWhiteToken|
-|Generate|TOK:DD3DVD|Thrull|||BreedingPitBlackInsectToken|
+|Generate|TOK:DVD|Demon|||ReignOfThePitToken|
+|Generate|TOK:DVD|Spirit|||SpiritWhiteToken|
+|Generate|TOK:DVD|Thrull|||BreedingPitBlackInsectToken|
 |Generate|TOK:DD3D|Elemental Shaman||
-|Generate|TOK:DD3EVG|Elf Warrior|||ElfToken|
-|Generate|TOK:DD3EVG|Goblin|||GoblinToken|
-|Generate|TOK:DD3GVL|Ape|||PongifyApeToken|
-|Generate|TOK:DD3GVL|Bat|||BatToken|
-|Generate|TOK:DD3GVL|Beast|||BeastToken2|
-|Generate|TOK:DD3GVL|Beast|||BeastToken|
-|Generate|TOK:DD3GVL|Elephant|||ElephantToken|
-|Generate|TOK:DD3JVC|Elemental Shaman|||ElementalShamanToken|
+|Generate|TOK:EVG|Elf Warrior|||ElfWarriorToken|
+|Generate|TOK:EVG|Goblin|||GoblinToken|
+|Generate|TOK:GVL|Ape|||PongifyApeToken|
+|Generate|TOK:GVL|Bat|||BatToken|
+|Generate|TOK:GVL|Beast|1||BeastToken2|
+|Generate|TOK:GVL|Beast|2||BeastToken|
+|Generate|TOK:GVL|Elephant|||ElephantToken|
+|Generate|TOK:JVC|Elemental Shaman|||ElementalShamanToken|
 |Generate|TOK:DDC|Demon|||ReignOfThePitToken|
 |Generate|TOK:DDC|Spirit|||SpiritWhiteToken|
 |Generate|TOK:DDC|Thrull|||BreedingPitBlackInsectToken|
@@ -564,11 +573,11 @@
 |Generate|TOK:DGM|Rhino|||RhinoToken|
 |Generate|TOK:DGM|Soldier|||SoldierTokenWithHaste|
 |Generate|TOK:DGM|Spirit|||TeysaEnvoyOfGhostsToken|
-|Generate|TOK:DGM|Wurm|||WurmToken2|
-|Generate|TOK:DGM|Wurm|||WurmToken3|
+|Generate|TOK:DGM|Wurm|1||WurmWithTrampleToken|
+|Generate|TOK:DGM|Wurm|2||Wurm55Token|
 |Generate|TOK:DIS|Bird|||DovescapeToken|
 |Generate|TOK:DIS|Drake|||LeafdrakeRoostDrakeToken|
-|Generate|TOK:DIS|Elemental|||ElementalToken|
+|Generate|TOK:DIS|Elemental|||ResearchDevelopmentToken|
 |Generate|TOK:DIS|Goblin|||RakdosGuildmageGoblinToken|
 |Generate|TOK:DIS|Saproling|||SaprolingToken|
 |Generate|TOK:DIS|Snake|||PatagiaViperSnakeToken|
@@ -616,10 +625,10 @@
 |Generate|TOK:EMA|Beast|||CarnivoreToken|
 |Generate|TOK:EMA|Carnivore||
 |Generate|TOK:EMA|Dragon|||DragonEggDragonToken|
-|Generate|TOK:EMA|Elemental|1||YoungPyromancerElementalToken|
+|Generate|TOK:EMA|Elemental|1||RedElementalToken|
 |Generate|TOK:EMA|Elemental|2||CallTheSkyBreakerElementalToken|
 |Generate|TOK:EMA|Elephant|||ElephantToken|
-|Generate|TOK:EMA|Elf Warrior|||ElfToken|
+|Generate|TOK:EMA|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:EMA|Goblin Soldier|||GoblinTrenchesToken|
 |Generate|TOK:EMA|Goblin|||GoblinToken|
 |Generate|TOK:EMA|Serf|||SerfToken|
@@ -648,12 +657,12 @@
 |Generate|TOK:EVE|Elemental|||CallTheSkyBreakerElementalToken|
 |Generate|TOK:EVE|Goat|||GoatToken|
 |Generate|TOK:EVE|Goblin Soldier|||GoblinTrenchesToken|
-|Generate|TOK:EVE|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:EVE|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:EVE|Spirit|||BeckonApparitionToken|
 |Generate|TOK:EVE|Wolf|||WolfToken|
 |Generate|TOK:EVE|Worm|||WormHarvestToken|
-|Generate|TOK:EVG|Elemental||
-|Generate|TOK:EVG|Elf Warrior|||ElfToken|
+|Generate|TOK:EVG|Elemental|||VoiceOfTheWoodsElementalToken|
+|Generate|TOK:EVG|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:EVG|Goblin|||GoblinToken|
 |Generate|TOK:EXO|Pegasus|||PegasusToken|
 |Generate|TOK:EXO|Thopter|||ThopterColorlessToken|
@@ -669,18 +678,6 @@
 |Generate|TOK:FRF|Monk|||MonasteryMentorToken|
 |Generate|TOK:FRF|Spirit|||SpiritWhiteToken|
 |Generate|TOK:FRF|Warrior|||MarduStrikeLeaderWarriorToken|
-|Generate|TOK:FUT|Elemental|||SparkElementalToken|
-|Generate|TOK:FUT|Elf Druid|||FreyaliseLlanowarsFuryToken|
-|Generate|TOK:FUT|Elf Druid|||LlanowarElvesToken|
-|Generate|TOK:FUT|Giant|||GiantToken|
-|Generate|TOK:FUT|Kithkin Soldier|||KithkinToken|
-|Generate|TOK:FUT|Saproling|||SaprolingToken|
-|Generate|TOK:FUT|Sliver|||SliversmithToken|
-|Generate|TOK:FUT|Soldier|||SoldierToken|
-|Generate|TOK:FUT|Wurm|||WurmCallingWurmToken|
-|Generate|TOK:FUT|Zombie Goblin|||FesteringGoblinToken|
-|Generate|TOK:FUT|Zombie|||ZombieToken|
-|Generate|TOK:FUT|Faerie|||CloudSpriteToken|
 |Generate|TOK:GPT|Bat|||BatToken|
 |Generate|TOK:GPT|Pegasus|||PegasusToken|
 |Generate|TOK:GPT|Sand|||DuneBroodNephilimToken|
@@ -698,7 +695,6 @@
 |Generate|TOK:GTC|Soldier|1||SoldierToken|
 |Generate|TOK:GTC|Soldier|2||SoldierTokenWithHaste|
 |Generate|TOK:GTC|Spirit|||TeysaEnvoyOfGhostsToken|
-|Generate|TOK:H09|Sliver|||SliversmithToken|
 |Generate|TOK:H17|Dragon|||DragonTokenGold|
 |Generate|TOK:HML|Plant Wall|||KelpToken|
 |Generate|TOK:HML|Serf|||SerfToken|
@@ -781,18 +777,15 @@
 |Generate|TOK:LEG|Demon|||MinorDemonToken|
 |Generate|TOK:LEG|Sand Warrior|||HazezonTamarSandWarriorToken|
 |Generate|TOK:LEG|Snake|||SerpentGeneratorSnakeToken|
-|Generate|TOK:LGN|Bear|||BearToken|
-|Generate|TOK:LGN|Goblin|||GoblinToken|
-|Generate|TOK:LGN|Insect|||InsectToken|
-|Generate|TOK:LGN|Sliver|||SliversmithToken|
+# LGN don't have tokens, from wiki: A Sliver token for Brood Sliver and a Goblin token for Warbreak Trumpeter were featured as a Magic Player Reward.
 |Generate|TOK:LRW|Avatar|||AvatarToken|
 |Generate|TOK:LRW|Beast|||BeastToken|
 |Generate|TOK:LRW|Elemental Shaman|||ElementalShamanToken|
-|Generate|TOK:LRW|Elemental|||WalkerOfTheGroveToken|
-|Generate|TOK:LRW|Elemental|||WhiteElementalToken|
-|Generate|TOK:LRW|Elf Warrior|||ElfToken|
+|Generate|TOK:LRW|Elemental|1||WalkerOfTheGroveToken|
+|Generate|TOK:LRW|Elemental|2||WhiteElementalToken|
+|Generate|TOK:LRW|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:LRW|Goblin Rogue|||GoblinRogueToken|
-|Generate|TOK:LRW|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:LRW|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:LRW|Merfolk Wizard||
 |Generate|TOK:LRW|Shapeshifter|||CribSwapShapeshifterWhiteToken|
 |Generate|TOK:LRW|Wolf|||WolfToken|
@@ -831,8 +824,8 @@
 |Generate|TOK:M14|Beast|||BeastToken|
 |Generate|TOK:M14|Cat|||CatToken|
 |Generate|TOK:M14|Dragon|||DragonEggDragonToken|
-|Generate|TOK:M14|Elemental|1||YoungPyromancerElementalToken|
-|Generate|TOK:M14|Elemental|2||YoungPyromancerElementalToken|
+|Generate|TOK:M14|Elemental|1||RedElementalToken|
+|Generate|TOK:M14|Elemental|2||RedElementalToken|
 |Generate|TOK:M14|Goat|||GoatToken|
 |Generate|TOK:M14|Saproling|||SaprolingToken|
 |Generate|TOK:M14|Sliver||
@@ -906,7 +899,7 @@
 |Generate|TOK:MM3|Bird||
 |Generate|TOK:MM3|Centaur||
 |Generate|TOK:MM3|Dragon||
-|Generate|TOK:MM3|Elemental||
+|Generate|TOK:MM3|Elemental|||VoiceOfResurgenceToken|
 |Generate|TOK:MM3|Elephant||
 |Generate|TOK:MM3|Giant Warrior||
 |Generate|TOK:MM3|Goblin Warrior||
@@ -928,7 +921,7 @@
 |Generate|TOK:MMA|Goblin Rogue|||GoblinRogueToken|
 |Generate|TOK:MMA|Goblin|||GoblinToken|
 |Generate|TOK:MMA|Illusion|||MelokuTheCloudedMirrorToken|
-|Generate|TOK:MMA|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:MMA|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:MMA|Saproling|||SaprolingToken|
 |Generate|TOK:MMA|Soldier|||SoldierToken|
 |Generate|TOK:MMA|Spider|||PenumbraSpiderToken|
@@ -944,16 +937,16 @@
 |Generate|TOK:MMQ|Spirit|||SpiritWhiteToken|
 |Generate|TOK:MMQ|Zombie|||ZombieToken|
 |Generate|TOK:MOR|Elemental|||WalkerOfTheGroveToken|
-|Generate|TOK:MOR|Elf Warrior|||ElfToken|
+|Generate|TOK:MOR|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:MOR|Faerie Rogue|||FaerieRogueToken|
 |Generate|TOK:MOR|Giant Warrior|||GiantWarriorToken|
 |Generate|TOK:MOR|Goblin Rogue|||GoblinRogueToken|
-|Generate|TOK:MOR|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:MOR|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:MOR|Treefolk Shaman|||TreefolkShamanToken|
 |Generate|TOK:MOR|Wolf|||WolfToken|
 |Generate|TOK:MRD|Beast|||OneDozenEyesBeastToken|
 |Generate|TOK:MRD|Demon|||ReignOfThePitToken|
-|Generate|TOK:MRD|Elemental|||ElementalToken|
+|Generate|TOK:MRD|Elemental|||ElementalTokenWithHaste|
 |Generate|TOK:MRD|Insect|||InsectToken|
 |Generate|TOK:MRD|Myr|||MyrToken|
 |Generate|TOK:MRD|Pentavite|||PentaviteToken|
@@ -962,8 +955,8 @@
 |Generate|TOK:MRD|Spirit|||SpiritWhiteToken|
 |Generate|TOK:NEM|Angel|||AngelToken|
 |Generate|TOK:NEM|Goblin|||GoblinToken|
-|Generate|TOK:NEM|Saproling|||SaprolingBurstToken|
-|Generate|TOK:NEM|Saproling|||SaprolingToken|
+|Generate|TOK:NEM|Saproling|1||SaprolingBurstToken|
+|Generate|TOK:NEM|Saproling|2||SaprolingToken|
 |Generate|TOK:NPH|Beast|||BeastToken|
 |Generate|TOK:NPH|Germ|||GermToken|
 |Generate|TOK:NPH|Goblin|||GoblinTokenWithHaste|
@@ -987,7 +980,7 @@
 |Generate|TOK:OGW|Eldrazi Scion|5||EldraziScionToken|
 |Generate|TOK:OGW|Eldrazi Scion|6||EldraziScionToken|
 |Generate|TOK:OGW|Elemental|1||SeedGuardianToken|
-|Generate|TOK:OGW|Elemental|2||ElementalToken|
+|Generate|TOK:OGW|Elemental|2||ElementalTokenWithHaste|
 |Generate|TOK:OGW|Knight Ally|||KnightAllyToken|
 |Generate|TOK:OGW|Kor Ally|||KorAllyToken|
 |Generate|TOK:OGW|Octopus|||OctopusToken|
@@ -1000,11 +993,10 @@
 |Generate|TOK:ONS|Soldier|||SoldierToken|
 |Generate|TOK:ONS|Zombie|||ZombieToken|
 |Generate|TOK:ORI|Angel|||AngelToken|
-|Generate|TOK:ORI|Angel|||AngelTombToken|
 |Generate|TOK:ORI|Ashaya, the Awoken World|||NissaSageAnimistToken|
 |Generate|TOK:ORI|Demon|||DemonToken|
 |Generate|TOK:ORI|Elemental|||ZendikarsRoilElementalToken|
-|Generate|TOK:ORI|Elf Warrior|||ElfToken|
+|Generate|TOK:ORI|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:ORI|Goblin|||GoblinToken|
 |Generate|TOK:ORI|Knight|||KnightToken|
 |Generate|TOK:ORI|Soldier|||SoldierToken|
@@ -1027,7 +1019,7 @@
 |Generate|TOK:PCY|Squirrel|||SquirrelToken|
 |Generate|TOK:PLC|Ape|||PongifyApeToken|
 |Generate|TOK:PLC|Cat Warrior|||CatWarriorToken|
-|Generate|TOK:PLC|Insect|||DeadlyGrubToken|
+|Generate|TOK:PLC|Insect|||DeadlyGrubInsectToken|
 |Generate|TOK:PLC|Knight|||RiftmarkedKnightToken|
 |Generate|TOK:PLC|Saproling|||SaprolingToken|
 |Generate|TOK:PLC|Soldier|||SoldierToken|
@@ -1060,29 +1052,29 @@
 |Generate|TOK:RTR|Bird|||BirdToken|
 |Generate|TOK:RTR|Centaur|||CentaurToken|
 |Generate|TOK:RTR|Dragon|||UtvaraHellkiteDragonToken|
-|Generate|TOK:RTR|Elemental||
+|Generate|TOK:RTR|Elemental|||GreenAndWhiteElementalToken|
 |Generate|TOK:RTR|Goblin|||GoblinToken|
 |Generate|TOK:RTR|Knight|||KnightToken|
 |Generate|TOK:RTR|Ooze|||MysticGenesisOozeToken|
 |Generate|TOK:RTR|Rhino|||RhinoToken|
 |Generate|TOK:RTR|Saproling|||SaprolingToken|
 |Generate|TOK:RTR|Soldier|||SoldierToken|
-|Generate|TOK:RTR|Wurm|||WurmToken2|
+|Generate|TOK:RTR|Wurm|||WurmWithTrampleToken|
 |Generate|TOK:SCG|Angel|||AngelToken|
 |Generate|TOK:SCG|Beast|||BeastToken2|
 |Generate|TOK:SCG|Dragon|||DragonToken2|
 |Generate|TOK:SCG|Goblin|||GoblinToken|
 |Generate|TOK:SCG|Soldier|||SoldierToken|
 |Generate|TOK:SHM|Elemental|1||DinOfTheFireherdToken|
-|Generate|TOK:SHM|Elemental|2||YoungPyromancerElementalToken|
+|Generate|TOK:SHM|Elemental|2||RedElementalToken|
 |Generate|TOK:SHM|Elf Warrior|1|
 |Generate|TOK:SHM|Elf Warrior|2|
-|Generate|TOK:SHM|Elf Warrior|||ElfToken|
-|Generate|TOK:SHM|Elf Warrior|||RhysTheRedeemedToken|
+|Generate|TOK:SHM|Elf Warrior|1||ElfWarriorToken|
+|Generate|TOK:SHM|Elf Warrior|2||RhysTheRedeemedToken|
 |Generate|TOK:SHM|Faerie Rogue|||OonaQueenFaerieToken|
 |Generate|TOK:SHM|Giant Warrior|||GiantBaitingGiantWarriorToken|
 |Generate|TOK:SHM|Goblin Warrior|||WortTheRaidmotherToken|
-|Generate|TOK:SHM|Kithkin Soldier|||KithkinToken|
+|Generate|TOK:SHM|Kithkin Soldier|||KithkinSoldierToken|
 |Generate|TOK:SHM|Rat|||RatToken|
 |Generate|TOK:SHM|Spider|||SpiderToken|
 |Generate|TOK:SHM|Spirit|||SpiritWhiteToken|
@@ -1103,7 +1095,7 @@
 |Generate|TOK:SOI|Vampire Knight|||VampireKnightToken|
 |Generate|TOK:SOI|Wolf|||WolfToken|
 |Generate|TOK:SOI|Zombie|||ZombieToken|
-|Generate|TOK:SOK|Elemental|||ElementalToken|
+|Generate|TOK:SOK|Elemental|||ElementalTokenWithHaste|
 |Generate|TOK:SOK|Snake|||SnakeToken|
 |Generate|TOK:SOK|Spirit|||SpiritToken|
 |Generate|TOK:SOK|Urami|||UramiToken|
@@ -1115,14 +1107,8 @@
 |Generate|TOK:SOM|Myr|||MyrToken|
 |Generate|TOK:SOM|Soldier|||SoldierToken|
 |Generate|TOK:SOM|Wolf|||WolfToken|
-|Generate|TOK:SOM|Wurm|1||Wurm1Token|
-|Generate|TOK:SOM|Wurm|2||Wurm2Token|
-|Generate|TOK:STH|Goblin|||GoblinToken|
-|Generate|TOK:STH|Insect|||HornetToken|
-|Generate|TOK:STH|Insect|||WaspToken|
-|Generate|TOK:STH|Rat|||RatToken|
-|Generate|TOK:STH|Sliver|||SliversmithToken|
-|Generate|TOK:STH|Spike|||SpikeToken|
+|Generate|TOK:SOM|Wurm|1||WurmWithDeathtouchToken|
+|Generate|TOK:SOM|Wurm|2||WurmWithLifelinkToken|
 |Generate|TOK:SWS|Ewok|||EwokToken|
 |Generate|TOK:SWS|B-Wing|||RebelStarshipToken|
 |Generate|TOK:SWS|Hunter|||HunterToken|
@@ -1134,33 +1120,23 @@
 |Generate|TOK:SWS|Tusken Raider|||TuskenRaiderToken|
 |Generate|TOK:SWS|Droid|||DroidToken|
 |Generate|TOK:THS|Bird|||SwanSongBirdToken|
-|Generate|TOK:THS|Boar|||CurseOfTheSwineBoarToken|
+|Generate|TOK:THS|Boar|||Boar2Token|
 |Generate|TOK:THS|Cleric|||HeliodGodOfTheSunToken|
 |Generate|TOK:THS|Elemental|||MasterOfWavesElementalToken|
 |Generate|TOK:THS|Golem|||HammerOfPurphorosGolemToken|
 |Generate|TOK:THS|Harpy|||AbhorrentOverlordHarpyToken|
 |Generate|TOK:THS|Satyr|||XenagosSatyrToken|
-|Generate|TOK:THS|Soldier|||AkroanSoldierToken|
 |Generate|TOK:THS|Soldier|1||SoldierToken|
 |Generate|TOK:THS|Soldier|2||SoldierToken|
+|Generate|TOK:THS|Soldier|3||AkroanSoldierToken|
 |Generate|TOK:TMP|Beast|||CarnivoreToken|
-|Generate|TOK:TMP|Hound|||HoundToken|
+|Generate|TOK:TMP|Dog|||GreenDogToken|
 |Generate|TOK:TMP|Pegasus|||PegasusToken|
 |Generate|TOK:TMP|Reflection|||ReflectionToken|
 |Generate|TOK:TMP|Saproling|||SaprolingToken|
 |Generate|TOK:TMP|Spirit|||SpiritWhiteToken|
 |Generate|TOK:TMP|Zombie|||ZombieToken|
 |Generate|TOK:TOR|Squirrel|||SquirrelToken|
-|Generate|TOK:TPR|Goblin|||GoblinToken|
-|Generate|TOK:TPR|Pegasus|||PegasusToken|
-|Generate|TOK:TPR|Rat|||RatToken|
-|Generate|TOK:TPR|Reflection|||ReflectionToken|
-|Generate|TOK:TPR|Saproling|||SaprolingToken|
-|Generate|TOK:TPR|Sliver|||SliversmithToken|
-|Generate|TOK:TPR|Spike|||SpikeToken|
-|Generate|TOK:TPR|Spirit|||SpiritWhiteToken|
-|Generate|TOK:TPR|Thopter|||ThopterColorlessToken|
-|Generate|TOK:TPR|Zombie|||ZombieToken|
 |Generate|TOK:TSP|Assembly-Worker|||AssembleWorkerToken|
 |Generate|TOK:TSP|Bat|||SengirNosferatuBatToken|
 |Generate|TOK:TSP|Citizen|||CitizenToken|
@@ -1205,14 +1181,14 @@
 |Generate|TOK:VMA|Goblin|||GoblinToken|
 |Generate|TOK:VMA|Insect|||InsectToken|
 |Generate|TOK:VMA|Reflection|||ReflectionToken|
-|Generate|TOK:VMA|Saproling|||SaprolingBurstToken|
-|Generate|TOK:VMA|Saproling|||SaprolingToken|
+|Generate|TOK:VMA|Saproling|1||SaprolingBurstToken|
+|Generate|TOK:VMA|Saproling|2||SaprolingToken|
 |Generate|TOK:VMA|Soldier|||SoldierToken|
 |Generate|TOK:VMA|Spirit|||SpiritWhiteToken|
 |Generate|TOK:VMA|Squirrel|||SquirrelToken|
 |Generate|TOK:VMA|Thopter|||ThopterColorlessToken|
-|Generate|TOK:VMA|Wurm|||PenumbraWurmToken|
-|Generate|TOK:VMA|Wurm|||WurmToken|
+|Generate|TOK:VMA|Wurm|1||PenumbraWurmToken|
+|Generate|TOK:VMA|Wurm|2||WurmToken|
 |Generate|TOK:VMA|Zombie|||ZombieToken|
 |Generate|TOK:WTH|Squirrel|||SquirrelToken|
 |Generate|TOK:WWK|Construct|||StoneTrapIdolToken|
@@ -1236,8 +1212,8 @@
 |Generate|TOK:ZEN|Angel|||AngelToken|
 |Generate|TOK:ZEN|Beast|||BeastToken2|
 |Generate|TOK:ZEN|Bird|||BirdToken|
-|Generate|TOK:ZEN|Elemental||
-|Generate|TOK:ZEN|Elemental|||ZektarShrineElementalToken|
+|Generate|TOK:ZEN|Elemental|1||RedElementalWithTrampleAndHaste|
+|Generate|TOK:ZEN|Elemental|2||RedElementalWithTrampleAndHaste|
 |Generate|TOK:ZEN|Illusion|||IllusionToken|
 |Generate|TOK:ZEN|Kor Soldier|||KorSoldierToken|
 |Generate|TOK:ZEN|Merfolk||
@@ -1266,6 +1242,7 @@
 |Generate|TOK:GRN|Soldier|||SoldierLifelinkToken|
 |Generate|TOK:WAR|Angel|||AngelVigilanceToken|
 |Generate|TOK:WAR|Assassin|||AssassinToken2|
+|Generate|TOK:WAR|Citizen|||PlanewideCelebrationToken|
 |Generate|TOK:WAR|Devil|||DevilToken|
 |Generate|TOK:WAR|Dragon|||DragonToken|
 |Generate|TOK:WAR|Goblin|||GoblinToken|
@@ -1286,7 +1263,7 @@
 |Generate|TOK:MH1|Bear|||BearToken|
 |Generate|TOK:MH1|Bird|||BirdToken|
 |Generate|TOK:MH1|Construct|||KarnConstructToken|
-|Generate|TOK:MH1|Elemental|1||YoungPyromancerElementalToken|
+|Generate|TOK:MH1|Elemental|1||RedElementalToken|
 |Generate|TOK:MH1|Elemental|2||AkoumStonewakerElementalToken|
 |Generate|TOK:MH1|Elephant|||ElephantToken|
 |Generate|TOK:MH1|Goblin|||GoblinToken|
@@ -1307,7 +1284,7 @@
 |Generate|TOK:M19|Cat|||CatToken2|
 |Generate|TOK:M19|Dragon|1||DragonEggDragonToken|
 |Generate|TOK:M19|Dragon|2||DragonToken2|
-|Generate|TOK:M19|Elf Warrior|||ElfToken|
+|Generate|TOK:M19|Elf Warrior|||ElfWarriorToken|
 |Generate|TOK:M19|Goblin|||GoblinToken|
 |Generate|TOK:M19|Knight|||KnightToken|
 |Generate|TOK:M19|Ox|||OxToken|
@@ -1316,7 +1293,7 @@
 |Generate|TOK:M19|Zombie|||ZombieToken|
 |Generate|TOK:M20|Ajani's Pridemate|||AjanisPridemateToken|
 |Generate|TOK:M20|Demon|||DemonToken|
-|Generate|TOK:M20|Elemental|||YoungPyromancerElementalToken|
+|Generate|TOK:M20|Elemental|||RedElementalToken|
 |Generate|TOK:M20|Elemental Bird|||MuYanlingSkyDancerToken|
 |Generate|TOK:M20|Golem|||GolemToken|
 |Generate|TOK:M20|Soldier|||SoldierToken|
@@ -1324,6 +1301,8 @@
 |Generate|TOK:M20|Treasure|||TreasureToken|
 |Generate|TOK:M20|Wolf|||WolfToken|
 |Generate|TOK:M20|Zombie|||ZombieToken|
+
+# ELD
 |Generate|TOK:ELD|Bear|||BearToken|
 |Generate|TOK:ELD|Boar|||WolfsQuarryToken|
 |Generate|TOK:ELD|Dwarf|||DwarfToken|
@@ -1342,6 +1321,8 @@
 |Generate|TOK:ELD|Mouse|||MouseToken|
 |Generate|TOK:ELD|Rat|||RatToken|
 |Generate|TOK:ELD|Wolf|||GarrukCursedHuntsmanToken|
+
+# THB
 |Generate|TOK:THB|Goat|||GoatToken|
 |Generate|TOK:THB|Human Soldier|||HumanSoldierToken|
 |Generate|TOK:THB|Pegasus|||PegasusToken2|
@@ -1354,5 +1335,164 @@
 |Generate|TOK:THB|Spider|||SpiderToken|
 |Generate|TOK:THB|Wolf|||WolfToken|
 |Generate|TOK:THB|Nightmare|||AshiokNightmareMuseToken|
-|Generate|TOK:THB|GoldToken|||Gold|
-|Generate|TOK:THB|ArtifactWallToken|||Wall|
+|Generate|TOK:THB|Gold|||GoldToken|
+|Generate|TOK:THB|Wall|||ArtifactWallToken|
+
+# IKO
+|Generate|TOK:IKO|Beast|||BeastToken|
+|Generate|TOK:IKO|Cat Bird|||CatBirdToken|
+|Generate|TOK:IKO|Cat|||CatToken2|
+|Generate|TOK:IKO|Dinosaur Beast|||DinosaurBeastToken|
+|Generate|TOK:IKO|Dinosaur|||DinosaurHasteToken|
+|Generate|TOK:IKO|Feather|||FeatherToken|
+|Generate|TOK:IKO|Human Soldier|1||HumanSoldierToken|
+|Generate|TOK:IKO|Human Soldier|2||HumanSoldierToken|
+|Generate|TOK:IKO|Human Soldier|3||HumanSoldierToken|
+|Generate|TOK:IKO|Kraken|||KrakenToken|
+|Generate|TOK:IKO|Shark|||SharkToken|
+
+# C20
+|Generate|TOK:C20|Angel|||AngelToken|
+|Generate|TOK:C20|Beast|||BeastToken2|
+|Generate|TOK:C20|Bird|||BirdToken|
+|Generate|TOK:C20|Bird Illusion|||BirdIllusionToken|
+|Generate|TOK:C20|Dinosaur Cat|||DinosaurCatToken|
+|Generate|TOK:C20|Drake|||DrakeToken|
+|Generate|TOK:C20|Elemental|1||ElementalTokenWithHaste|
+|Generate|TOK:C20|Elemental|2||WhiteElementalToken|
+|Generate|TOK:C20|Goblin Warrior|||GoblinWarriorToken|
+|Generate|TOK:C20|Human|||HumanToken|
+|Generate|TOK:C20|Hydra|||ZaxaraTheExemplaryHydraToken|
+|Generate|TOK:C20|Insect|1||HornetQueenInsectToken|
+|Generate|TOK:C20|Insect|2||TheLocustGodInsectToken|
+|Generate|TOK:C20|Saproling|||SaprolingToken|
+|Generate|TOK:C20|Snake|||SnakeToken|
+|Generate|TOK:C20|Soldier|||SoldierToken|
+|Generate|TOK:C20|Spirit|||SpiritWhiteToken|
+|Generate|TOK:C20|Treasure|||TreasureToken|
+|Generate|TOK:C20|Zombie|||ZombieToken|
+
+# M21
+|Generate|TOK:M21|Angel|||AngelToken|
+|Generate|TOK:M21|Beast|||BeastToken|
+|Generate|TOK:M21|Bird|||BirdToken|
+|Generate|TOK:M21|Cat|1||GreenCatToken|
+|Generate|TOK:M21|Cat|2||GreenCat2Token|
+|Generate|TOK:M21|Construct|||Construct4Token|
+|Generate|TOK:M21|Demon|||DemonToken|
+|Generate|TOK:M21|Dog|||WhiteDogToken|
+|Generate|TOK:M21|Goblin Wizard|||GoblinWizardToken|
+|Generate|TOK:M21|Griffin|||GriffinToken|
+|Generate|TOK:M21|Knight|||KnightToken|
+|Generate|TOK:M21|Pirate|||PursuedWhaleToken|
+|Generate|TOK:M21|Saproling|||SaprolingToken|
+|Generate|TOK:M21|Soldier|||SoldierToken|
+|Generate|TOK:M21|Treasure|||TreasureToken|
+|Generate|TOK:M21|Weird|||WeirdToken2|
+|Generate|TOK:M21|Zombie|||ZombieToken|
+
+# JMP
+# Jumpstart uses tokens and emblems from M21 set,
+# TODO: check scryfall for JMP tokens after set's release
+|Generate|TOK:JMP|Unicorn|||UnicornToken|
+
+# ZNR
+|Generate|TOK:ZNR|Angel Warrior|||AngelWarriorToken|
+|Generate|TOK:ZNR|Cat|||CatToken3|
+|Generate|TOK:ZNR|Cat Beast|||CatBeastToken|
+|Generate|TOK:ZNR|Construct|||ConstructToken|
+|Generate|TOK:ZNR|Goblin Construct|||RelicRobberToken|
+|Generate|TOK:ZNR|Drake|||DrakeToken|
+|Generate|TOK:ZNR|Hydra|||GrakmawSkyclaveRavagerHydraToken|
+|Generate|TOK:ZNR|Illusion|||CustomIllusionToken|
+|Generate|TOK:ZNR|Insect|||InsectToken|
+|Generate|TOK:ZNR|Kor Warrior|||KorWarriorToken|
+|Generate|TOK:ZNR|Plant|||PlantToken|
+
+# ZNC
+|Generate|TOK:ZNC|Bird|||BirdToken|
+|Generate|TOK:ZNC|Beast|||BeastToken2|
+|Generate|TOK:ZNC|Elemental|1||OmnathElementalToken|
+|Generate|TOK:ZNC|Elemental|2||ZendikarsRoilElementalToken|
+|Generate|TOK:ZNC|Faerie Rogue|||FaerieRogueToken|
+#
+# OonaQueenFaerieRogueToken is FaerieRogueToken with additional blue color, but ZNC contains only one token - so don't use normal token for it
+#|Generate|TOK:ZNC|Faerie Rogue|||OonaQueenFaerieRogueToken|
+# Germ token uses in chest and antology, but scryfall put it here
+#|Generate|TOK:ZNC|Germ|||GermToken|
+#
+|Generate|TOK:ZNC|Goblin Rogue|||GoblinRogueToken|
+|Generate|TOK:ZNC|Kor Ally|||KorAllyToken|
+|Generate|TOK:ZNC|Rat|||RatToken|
+|Generate|TOK:ZNC|Saproling|||SaprolingToken|
+|Generate|TOK:ZNC|Thopter|||ThopterColorlessToken|
+
+# CMR
+|Generate|TOK:CMR|Angel|||AngelToken|
+|Generate|TOK:CMR|Beast|1||BeastToken|
+|Generate|TOK:CMR|Beast|2||BeastToken2|
+|Generate|TOK:CMR|Cat|||CatToken|
+|Generate|TOK:CMR|Dragon|||DragonEggDragonToken|
+|Generate|TOK:CMR|Elephant|||ElephantToken|
+|Generate|TOK:CMR|Elf Warrior|||ElfWarriorToken|
+|Generate|TOK:CMR|Golem|||GolemToken|
+|Generate|TOK:CMR|Horror|||PhyrexianRebirthHorrorToken|
+|Generate|TOK:CMR|Illusion|||MelokuTheCloudedMirrorToken|
+|Generate|TOK:CMR|Plant|||PlantToken|
+|Generate|TOK:CMR|Rock|||RockToken|
+|Generate|TOK:CMR|Salamander Warrior|||SalamnderWarriorToken|
+|Generate|TOK:CMR|Saproling|||SaprolingToken|
+|Generate|TOK:CMR|Soldier|1||SoldierToken|
+|Generate|TOK:CMR|Soldier|2||SoldierToken|
+|Generate|TOK:CMR|Spirit|||SpiritWhiteToken|
+|Generate|TOK:CMR|Thrull|||BreedingPitThrullToken|
+|Generate|TOK:CMR|Treasure|||TreasureToken|
+|Generate|TOK:CMR|Zombie|||ZombieToken|
+
+# KHM
+|Generate|TOK:KHM|Angel Warrior|||AngelWarriorVigilanceToken|
+|Generate|TOK:KHM|Bear|||BearToken|
+|Generate|TOK:KHM|Bird|||OwlToken|
+|Generate|TOK:KHM|Cat|||GreenCat2Token|
+|Generate|TOK:KHM|Demon Berserker|||DemonBerserkerToken|
+|Generate|TOK:KHM|Dragon|||DragonToken2|
+|Generate|TOK:KHM|Dwarf Berserker|||DwarfBerserkerToken|
+|Generate|TOK:KHM|Elf Warrior|||ElfWarriorToken|
+|Generate|TOK:KHM|Giant Wizard|||GiantWizardToken|
+|Generate|TOK:KHM|Human Warrior|||HumanWarriorToken|
+|Generate|TOK:KHM|Icy Manalith|||IcyManalithToken|
+|Generate|TOK:KHM|Koma's Coil|||KomasCoilToken|
+|Generate|TOK:KHM|Replicated Ring|||ReplicatedRingToken|
+|Generate|TOK:KHM|Shapeshifter|||ShapeshifterBlueToken|
+|Generate|TOK:KHM|Shard|||ShardToken|
+|Generate|TOK:KHM|Spirit|||SpiritWhiteToken|
+|Generate|TOK:KHM|Treasure|||TreasureToken|
+|Generate|TOK:KHM|Troll Warrior|||TrollWarriorToken|
+|Generate|TOK:KHM|Zombie Berserker|||ZombieBerserkerToken|
+
+# KHC
+|Generate|TOK:KHC|Bird|||BirdToken|
+|Generate|TOK:KHC|Boar|||Boar2Token|
+|Generate|TOK:KHC|Elemental|||VoiceOfTheWoodsElementalToken|
+|Generate|TOK:KHC|Kithkin Soldier|||KithkinSoldierToken|
+|Generate|TOK:KHC|Pegasus|||PegasusToken|
+|Generate|TOK:KHC|Servo|||ServoToken|
+|Generate|TOK:KHC|Soldier|||SoldierToken|
+|Generate|TOK:KHC|Thopter|||ThopterColorlessToken|
+
+# TSR
+|Generate|TOK:TSR|Ape|||PongifyApeToken|
+|Generate|TOK:TSR|Assembly-Worker|||AssemblyWorkerToken|
+|Generate|TOK:TSR|Bat|||SengirNosferatuBatToken|
+|Generate|TOK:TSR|Cloud Sprite|||CloudSpriteToken|
+|Generate|TOK:TSR|Giant|||GiantToken|
+|Generate|TOK:TSR|Goblin|||GoblinToken|
+|Generate|TOK:TSR|Griffin|||GriffinToken|
+|Generate|TOK:TSR|Insect|||DeadlyGrubInsectToken|
+|Generate|TOK:TSR|Knight|||RiftmarkedKnightToken|
+|Generate|TOK:TSR|Kobolds of Kher Keep|||KherKeepKoboldToken|
+|Generate|TOK:TSR|Llanowar Elves|||LlanowarElvesToken|
+|Generate|TOK:TSR|Metallic Sliver|||MetallicSliverToken|
+|Generate|TOK:TSR|Saproling|||SaprolingToken|
+|Generate|TOK:TSR|Soldier|||SoldierToken|
+|Generate|TOK:TSR|Spider|||PenumbraSpiderToken|

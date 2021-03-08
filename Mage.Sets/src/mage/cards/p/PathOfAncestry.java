@@ -1,27 +1,23 @@
 package mage.cards.p;
 
-import mage.MageObject;
 import mage.abilities.Ability;
-import mage.abilities.TriggeredAbilityImpl;
+import mage.abilities.DelayedTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTappedAbility;
-import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.CreateDelayedTriggeredAbilityEffect;
 import mage.abilities.effects.keyword.ScryEffect;
-import mage.abilities.keyword.ChangelingAbility;
 import mage.abilities.mana.CommanderColorIdentityManaAbility;
+import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.SubTypeSet;
-import mage.constants.Zone;
+import mage.constants.CommanderCardType;
+import mage.constants.Duration;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.players.Player;
 
-import java.util.Iterator;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -35,15 +31,13 @@ public final class PathOfAncestry extends CardImpl {
         // Path of Ancestry enters the battlefield tapped.
         this.addAbility(new EntersBattlefieldTappedAbility());
 
-        // T: Add one mana of any color in your commander's color identity.
+        // {T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1.
         Ability ability = new CommanderColorIdentityManaAbility();
+        ability.addEffect(new CreateDelayedTriggeredAbilityEffect(new PathOfAncestryTriggeredAbility()));
         this.addAbility(ability);
-
-        // When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1.
-        this.addAbility(new PathOfAncestryTriggeredAbility(new ScryEffect(1)));
     }
 
-    public PathOfAncestry(final PathOfAncestry card) {
+    private PathOfAncestry(final PathOfAncestry card) {
         super(card);
     }
 
@@ -53,13 +47,13 @@ public final class PathOfAncestry extends CardImpl {
     }
 }
 
-class PathOfAncestryTriggeredAbility extends TriggeredAbilityImpl {
+class PathOfAncestryTriggeredAbility extends DelayedTriggeredAbility {
 
-    public PathOfAncestryTriggeredAbility(Effect effect) {
-        super(Zone.ALL, effect, true);
+    PathOfAncestryTriggeredAbility() {
+        super(new ScryEffect(1), Duration.Custom, true, false);
     }
 
-    public PathOfAncestryTriggeredAbility(final PathOfAncestryTriggeredAbility ability) {
+    private PathOfAncestryTriggeredAbility(final PathOfAncestryTriggeredAbility ability) {
         super(ability);
     }
 
@@ -75,61 +69,56 @@ class PathOfAncestryTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (getSourceId().equals(event.getSourceId())) {
-            Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(getSourceId());
-            if (sourcePermanent != null) {
-                boolean found = false;
-                for (Ability ability : sourcePermanent.getAbilities()) {
-                    if (ability instanceof CommanderColorIdentityManaAbility && ability.getOriginalId().toString().equals(event.getData())) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found) {
-                    Spell spell = game.getStack().getSpell(event.getTargetId());
-                    if (spell != null && spell.isCreature()) {
-                        Player controller = game.getPlayer(getControllerId());
-                        Set<UUID> commanders = game.getCommandersIds(controller);
-                        if (controller != null && commanders != null && !commanders.isEmpty()) {
-                            if (spell.getAbilities().contains(ChangelingAbility.getInstance())) {
-                                for (UUID cmdr : commanders) {
-                                    MageObject commander = game.getObject(cmdr);
-                                    if (commander != null) {
-                                        if (commander.getAbilities().contains(ChangelingAbility.getInstance())) {
-                                            return true;
-                                        }
-                                        Iterator<SubType> cmdrSubs = commander.getSubtype(game).iterator();
-                                        while (cmdrSubs.hasNext()) {
-                                            SubType sType = cmdrSubs.next();
-                                            if (sType.getSubTypeSet() == SubTypeSet.CreatureType) {
-                                                return true;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            Iterator<SubType> spellSubs = spell.getSubtype(game).iterator();
-                            while (spellSubs.hasNext()) {
-                                SubType sType = spellSubs.next();
-                                if (sType.getSubTypeSet() == SubTypeSet.CreatureType) {
-                                    for (UUID cmdr : commanders) {
-                                        MageObject commander = game.getObject(cmdr);
-                                        if (commander != null && (commander.hasSubtype(sType, game) || commander.getAbilities().contains(ChangelingAbility.getInstance()))) {
-                                            return true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        if (!getSourceId().equals(event.getSourceId())) {
+            return false;
+        }
+        Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(getSourceId());
+        if (sourcePermanent == null
+                || sourcePermanent
+                .getAbilities(game)
+                .stream()
+                .filter(CommanderColorIdentityManaAbility.class::isInstance)
+                .map(Ability::getOriginalId)
+                .map(UUID::toString)
+                .noneMatch(event.getData()::equals)) {
+            return false;
+        }
+        Spell spell = game.getStack().getSpell(event.getTargetId());
+        if (spell == null) {
+            return false;
+        }
+        Player player = game.getPlayer(getControllerId());
+        if (player == null) {
+            return false;
+        }
+
+        // share creature type with commander
+        for (Card commander : game.getCommanderCardsFromAnyZones(player, CommanderCardType.COMMANDER_OR_OATHBREAKER)) {
+            if (spell.getCard().shareCreatureTypes(game, commander)) {
+                return true;
             }
         }
         return false;
     }
 
     @Override
+    public boolean isInactive(Game game) {
+        if (super.isInactive(game)) {
+            return true;
+        }
+
+        // must remove effect on empty mana pool to fix accumulate bug
+        Player player = game.getPlayer(this.getControllerId());
+        if (player == null) {
+            return true;
+        }
+
+        // if no mana in pool then it can be discarded
+        return player.getManaPool().getManaItems().stream().noneMatch(m -> m.getSourceId().equals(getSourceId()));
+    }
+
+    @Override
     public String getRule() {
-        return "When that mana is used to cast a creature spell that shares a creature type with your commander, " + super.getRule();
+        return "When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1.";
     }
 }

@@ -36,7 +36,7 @@ public final class GrenzosRuffians extends CardImpl {
         this.addAbility(new DealsDamageToOpponentTriggeredAbility(new GrenzosRuffiansEffect(), false, true, true));
     }
 
-    public GrenzosRuffians(final GrenzosRuffians card) {
+    private GrenzosRuffians(final GrenzosRuffians card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class GrenzosRuffiansEffect extends OneShotEffect {
                 if (!Objects.equals(playerId, damagedOpponent)) {
                     Player opponent = game.getPlayer(playerId);
                     if (opponent != null) {
-                        int dealtDamage = opponent.damage(amount, source.getSourceId(), game);
+                        int dealtDamage = opponent.damage(amount, source.getSourceId(), source, game);
                         game.informPlayers(object.getLogName() + " deals " + dealtDamage + " damage to " + opponent.getLogName());
                     }
                 }

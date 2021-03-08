@@ -27,7 +27,7 @@ public final class IronMaiden extends CardImpl {
         this.addAbility(ability);
     }
 
-    public IronMaiden(final IronMaiden card) {
+    private IronMaiden(final IronMaiden card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class IronMaidenEffect extends OneShotEffect {
         if (player != null) {
             int amount = player.getHand().size() - 4;
             if (amount > 0) {
-                player.damage(amount, source.getSourceId(), game);
+                player.damage(amount, source.getSourceId(), source, game);
                 return true;
             }
         }

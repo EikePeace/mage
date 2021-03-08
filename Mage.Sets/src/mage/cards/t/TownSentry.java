@@ -3,7 +3,7 @@ package mage.cards.t;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.BlocksTriggeredAbility;
+import mage.abilities.common.BlocksSourceTriggeredAbility;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -25,10 +25,10 @@ public final class TownSentry extends CardImpl {
         this.toughness = new MageInt(2);
 
         // Whenever Town Sentry blocks, it gets +0/+2 until end of turn.
-        this.addAbility(new BlocksTriggeredAbility(new BoostSourceEffect(0, 2, Duration.EndOfTurn), false));
+        this.addAbility(new BlocksSourceTriggeredAbility(new BoostSourceEffect(0, 2, Duration.EndOfTurn), false));
     }
 
-    public TownSentry(final TownSentry card) {
+    private TownSentry(final TownSentry card) {
         super(card);
     }
 

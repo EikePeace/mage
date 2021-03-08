@@ -14,7 +14,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -41,7 +41,7 @@ public final class Fettergeist extends CardImpl {
 
     }
 
-    public Fettergeist(final Fettergeist card) {
+    private Fettergeist(final Fettergeist card) {
         super(card);
     }
 
@@ -77,11 +77,11 @@ class FettergeistUnlessPaysEffect extends OneShotEffect {
             int count = amount.calculate(game, source, this);
             if (player.chooseUse(Outcome.Benefit, "Pay {" + count + "}?  Or " + permanent.getName() + " will be sacrificed.", source, game)) {
                 Cost cost = ManaUtil.createManaCost(count, false);
-                if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false)) {
+                if (cost.pay(source, game, source, source.getControllerId(), false)) {
                     return true;
                 }
             }
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
             return true;
         }
         return false;

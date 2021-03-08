@@ -35,7 +35,7 @@ public final class ImpulsiveWager extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponentsCreaturePermanent());
     }
 
-    public ImpulsiveWager(final ImpulsiveWager card) {
+    private ImpulsiveWager(final ImpulsiveWager card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ImpulsiveWagerEffect extends OneShotEffect {
                     effect.setTargetPointer(getTargetPointer());
                     effect.apply(game, source);
                 } else {
-                    player.drawCards(2, game);
+                    player.drawCards(2, source, game);
                 }
 
             }

@@ -43,7 +43,7 @@ public final class VeteranBodyguard extends CardImpl {
         )));
     }
 
-    public VeteranBodyguard(final VeteranBodyguard card) {
+    private VeteranBodyguard(final VeteranBodyguard card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class VeteranBodyguardEffect extends PreventionEffectImpl {
 
     VeteranBodyguardEffect() {
         super(Duration.WhileOnBattlefield);
-        staticText = "all combat damage that would be dealt to you by unblocked creatures is dealt to {source} instead";
+        staticText = "all combat damage that would be dealt to you by unblocked creatures is dealt to {this} instead";
     }
 
     VeteranBodyguardEffect(final VeteranBodyguardEffect effect) {
@@ -75,7 +75,7 @@ class VeteranBodyguardEffect extends PreventionEffectImpl {
         DamagePlayerEvent damageEvent = (DamagePlayerEvent) event;
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            permanent.damage(damageEvent.getAmount(), event.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable());
+            permanent.damage(damageEvent.getAmount(), event.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable());
             return true;
         }
         return false;

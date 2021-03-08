@@ -36,7 +36,7 @@ public final class DeclarationInStone extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public DeclarationInStone(final DeclarationInStone card) {
+    private DeclarationInStone(final DeclarationInStone card) {
         super(card);
     }
 
@@ -88,9 +88,9 @@ class DeclarationInStoneEffect extends OneShotEffect {
                     }
                 }
                 controller.moveCards(cardsToExile, Zone.EXILED, source, game);
-                game.applyEffects();
+                game.getState().processAction(game);
                 if (nonTokenCount > 0) {
-                    new ClueArtifactToken().putOntoBattlefield(nonTokenCount, game, source.getSourceId(), targetPermanent.getControllerId(), false, false);
+                    new ClueArtifactToken().putOntoBattlefield(nonTokenCount, game, source, targetPermanent.getControllerId(), false, false);
                 }
                 return true;
             }

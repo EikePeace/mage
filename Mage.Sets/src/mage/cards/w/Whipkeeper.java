@@ -37,7 +37,7 @@ public final class Whipkeeper extends CardImpl {
         
     }
 
-    public Whipkeeper(final Whipkeeper card) {
+    private Whipkeeper(final Whipkeeper card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class WhipkeeperEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent creature = game.getPermanent(source.getFirstTarget());
         if (creature != null) {
-            creature.damage(creature.getDamage(), source.getSourceId(), game, false, true);
+            creature.damage(creature.getDamage(), source.getSourceId(), source, game, false, true);
             return true;
         }
         return false;

@@ -25,14 +25,14 @@ import java.util.*;
 public class OathbreakerFreeForAll extends GameCommanderImpl {
 
     private int numPlayers;
-    private Map<UUID, Set<UUID>> playerSignatureSpells = new HashMap<>();
-    private Map<UUID, Set<UUID>> playerOathbreakers = new HashMap<>();
+    private final Map<UUID, Set<UUID>> playerSignatureSpells = new HashMap<>();
+    private final Map<UUID, Set<UUID>> playerOathbreakers = new HashMap<>();
 
     private static final String COMMANDER_NAME_OATHBREAKER = "Oathbreaker";
     private static final String COMMANDER_NAME_SIGNATURE_SPELL = "Signature Spell";
 
     public OathbreakerFreeForAll(MultiplayerAttackOption attackOption, RangeOfInfluence range, Mulligan mulligan, int startLife) {
-        super(attackOption, range, mulligan, startLife);
+        super(attackOption, range, mulligan, startLife, 100);
         this.startingPlayerSkipsDraw = false;
     }
 
@@ -60,7 +60,7 @@ public class OathbreakerFreeForAll extends GameCommanderImpl {
 
         // basic commmander restrict (oathbreaker may ask to move, signature force to move)
         commanderAbility.addEffect(new CommanderReplacementEffect(commander.getId(), alsoHand, alsoLibrary, isSignatureSpell, getCommanderTypeName(commander)));
-        commanderAbility.addEffect(new CommanderCostModification(commander.getId()));
+        commanderAbility.addEffect(new CommanderCostModification(commander));
 
         // signature spell restrict (spell can be casted on player's commander on battlefield)
         if (isSignatureSpell) {
@@ -117,24 +117,25 @@ public class OathbreakerFreeForAll extends GameCommanderImpl {
     }
 
     @Override
-    public Set<UUID> getCommandersIds(Player player, CommanderCardType commanderCardType) {
+    public Set<UUID> getCommandersIds(Player player, CommanderCardType commanderCardType, boolean returnAllCardParts) {
         Set<UUID> res = new HashSet<>();
         if (player != null) {
             Set<UUID> commanders = this.playerOathbreakers.getOrDefault(player.getId(), new HashSet<>());
             Set<UUID> spells = this.playerSignatureSpells.getOrDefault(player.getId(), new HashSet<>());
-            for (UUID id : player.getCommandersIds()) {
+            for (UUID commanderId : super.getCommandersIds(player, commanderCardType, returnAllCardParts)) {
                 switch (commanderCardType) {
                     case ANY:
-                        res.add(id);
+                        res.add(commanderId);
                         break;
                     case COMMANDER_OR_OATHBREAKER:
-                        if (commanders.contains(id)) {
-                            res.add(id);
+                        if (commanders.contains(commanderId)) {
+                            res.add(commanderId);
                         }
                         break;
                     case SIGNATURE_SPELL:
-                        if (spells.contains(id)) {
-                            res.add(id);
+                        // TODO: doesn't filter mdf cards with different sides (creature + spell)
+                        if (spells.contains(commanderId)) {
+                            res.add(commanderId);
                         }
                         break;
                     default:
@@ -142,6 +143,6 @@ public class OathbreakerFreeForAll extends GameCommanderImpl {
                 }
             }
         }
-        return res;
+        return super.filterCommandersBySearchZone(res, returnAllCardParts);
     }
 }

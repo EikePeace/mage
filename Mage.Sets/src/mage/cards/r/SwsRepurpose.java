@@ -17,9 +17,9 @@ import mage.target.targetpointer.SecondTargetPointer;
  *
  * @author Styxo
  */
-public final class SwsRepurpose extends CardImpl {
+public final class Repurpose extends CardImpl {
 
-    public SwsRepurpose(UUID ownerId, CardSetInfo setInfo) {
+    public Repurpose(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{B}{B}");
 
         // Destroy target creature.
@@ -34,12 +34,12 @@ public final class SwsRepurpose extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(0, 1, StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD));
     }
 
-    public SwsRepurpose(final SwsRepurpose card) {
+    private Repurpose(final Repurpose card) {
         super(card);
     }
 
     @Override
-    public SwsRepurpose copy() {
-        return new SwsRepurpose(this);
+    public Repurpose copy() {
+        return new Repurpose(this);
     }
 }

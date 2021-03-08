@@ -28,7 +28,7 @@ public final class GazeOfAdamaro extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public GazeOfAdamaro(final GazeOfAdamaro card) {
+    private GazeOfAdamaro(final GazeOfAdamaro card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class GazeOfAdamaroEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.damage(targetPlayer.getHand().size(), source.getSourceId(), game);
+            targetPlayer.damage(targetPlayer.getHand().size(), source.getSourceId(), source, game);
             return true;
         }
         return false;

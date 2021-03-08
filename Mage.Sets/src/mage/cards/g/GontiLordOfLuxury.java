@@ -50,10 +50,9 @@ public final class GontiLordOfLuxury extends CardImpl {
         Ability ability = new EntersBattlefieldTriggeredAbility(new GontiLordOfLuxuryEffect());
         ability.addTarget(new TargetOpponent());
         this.addAbility(ability);
-        this.addAbility(new SimpleStaticAbility(Zone.ALL, new GontiLordOfLuxuryLookEffect()));
     }
 
-    public GontiLordOfLuxury(final GontiLordOfLuxury card) {
+    private GontiLordOfLuxury(final GontiLordOfLuxury card) {
         super(card);
     }
 
@@ -67,10 +66,10 @@ class GontiLordOfLuxuryEffect extends OneShotEffect {
 
     public GontiLordOfLuxuryEffect() {
         super(Outcome.Benefit);
-        this.staticText = "look at the top four cards of target opponent's library, exile one of them face down, then put the rest on the bottom of that library in a random order. For as long as that card remains exiled, you may look at it, you may cast it, and you may spend mana as though it were mana of any type to cast it";
+        this.staticText = "look at the top four cards of target opponent's library, exile one of them face down, then put the rest on the bottom of that library in a random order. You may look at and cast that card for as long as it remains exiled, and you may spend mana as though it were mana of any type to cast that spell";
     }
 
-    public GontiLordOfLuxuryEffect(final GontiLordOfLuxuryEffect effect) {
+    private GontiLordOfLuxuryEffect(final GontiLordOfLuxuryEffect effect) {
         super(effect);
     }
 
@@ -111,6 +110,10 @@ class GontiLordOfLuxuryEffect extends OneShotEffect {
                         effect = new GontiLordOfLuxurySpendAnyManaEffect();
                         effect.setTargetPointer(new FixedTarget(card.getId(), game));
                         game.addEffect(effect, source);
+                        // For as long as that card remains exiled, you may look at it
+                        effect = new GontiLordOfLuxuryLookEffect(controller.getId());
+                        effect.setTargetPointer(new FixedTarget(card.getId(), game));
+                        game.addEffect(effect, source);
                     }
                 }
             }
@@ -131,7 +134,7 @@ class GontiLordOfLuxuryCastFromExileEffect extends AsThoughEffectImpl {
         staticText = "You may cast that card for as long as it remains exiled, and you may spend mana as though it were mana of any color to cast that spell";
     }
 
-    public GontiLordOfLuxuryCastFromExileEffect(final GontiLordOfLuxuryCastFromExileEffect effect) {
+    private GontiLordOfLuxuryCastFromExileEffect(final GontiLordOfLuxuryCastFromExileEffect effect) {
         super(effect);
     }
 
@@ -149,13 +152,20 @@ class GontiLordOfLuxuryCastFromExileEffect extends AsThoughEffectImpl {
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
         UUID targetId = getTargetPointer().getFirst(game, source);
         if (targetId == null) {
-            this.discard();
-        } else if (objectId.equals(targetId)
+            this.discard(); // card is no longer in the origin zone, effect can be discarded
+            return false;
+        }
+        Card theCard = game.getCard(objectId);
+        if (theCard == null || theCard.isLand()) {
+            return false;
+        }
+        objectId = theCard.getMainCard().getId(); // for split cards
+
+        if (objectId.equals(targetId)
                 && affectedControllerId.equals(source.getControllerId())) {
             Card card = game.getCard(objectId);
             // TODO: Allow to cast Zoetic Cavern face down
-            return card != null
-                    && !card.isLand();
+            return card != null;
         }
         return false;
     }
@@ -168,7 +178,7 @@ class GontiLordOfLuxurySpendAnyManaEffect extends AsThoughEffectImpl implements 
         staticText = "you may spend mana as though it were mana of any color to cast it";
     }
 
-    public GontiLordOfLuxurySpendAnyManaEffect(final GontiLordOfLuxurySpendAnyManaEffect effect) {
+    private GontiLordOfLuxurySpendAnyManaEffect(final GontiLordOfLuxurySpendAnyManaEffect effect) {
         super(effect);
     }
 
@@ -188,17 +198,13 @@ class GontiLordOfLuxurySpendAnyManaEffect extends AsThoughEffectImpl implements 
         if (theCard == null) {
             return false;
         }
-        Card mainCard = theCard.getMainCard();
-        if (mainCard == null) {
-            return false;
-        }
-        objectId = mainCard.getId(); // for split cards
+        objectId = theCard.getMainCard().getId(); // for split cards
         if (objectId.equals(((FixedTarget) getTargetPointer()).getTarget())
                 && game.getState().getZoneChangeCounter(objectId) <= ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1) {
             // if the card moved from exile to spell the zone change counter is increased by 1 (effect must applies before and on stack, use isCheckPlayableMode?)
-            return affectedControllerId.equals(source.getControllerId());
+            return source.isControlledBy(affectedControllerId);
         } else if (((FixedTarget) getTargetPointer()).getTarget().equals(objectId)) {
-            // object has moved zone so effect can be discarted
+            // object has moved zone so effect can be discarded
             this.discard();
         }
         return false;
@@ -212,13 +218,17 @@ class GontiLordOfLuxurySpendAnyManaEffect extends AsThoughEffectImpl implements 
 
 class GontiLordOfLuxuryLookEffect extends AsThoughEffectImpl {
 
-    public GontiLordOfLuxuryLookEffect() {
+    private final UUID authorizedPlayerId;
+
+    public GontiLordOfLuxuryLookEffect(UUID authorizedPlayerId) {
         super(AsThoughEffectType.LOOK_AT_FACE_DOWN, Duration.EndOfGame, Outcome.Benefit);
+        this.authorizedPlayerId = authorizedPlayerId;
         staticText = "You may look at the cards exiled with {this}";
     }
 
-    public GontiLordOfLuxuryLookEffect(final GontiLordOfLuxuryLookEffect effect) {
+    private GontiLordOfLuxuryLookEffect(final GontiLordOfLuxuryLookEffect effect) {
         super(effect);
+        this.authorizedPlayerId = effect.authorizedPlayerId;
     }
 
     @Override
@@ -233,39 +243,11 @@ class GontiLordOfLuxuryLookEffect extends AsThoughEffectImpl {
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        Card theCard = game.getCard(objectId);
-        if (theCard == null) {
-            return false;
+        UUID cardId = getTargetPointer().getFirst(game, source);
+        if (cardId == null) {
+            this.discard(); // card is no longer in the origin zone, effect can be discarded
         }
-        Card mainCard = theCard.getMainCard();
-        if (mainCard == null) {
-            return false;
-        }
-        objectId = mainCard.getId(); // for split cards
-        if (affectedControllerId.equals(source.getControllerId())
-                && game.getState().getZone(objectId) == Zone.EXILED) {
-            Player controller = game.getPlayer(source.getControllerId());
-            MageObject sourceObject = source.getSourceObject(game);
-            if (controller != null
-                    && sourceObject != null) {
-                Card card = game.getCard(objectId);
-                if (card != null
-                        && card.isFaceDown(game)) {
-                    Set<UUID> exileZones = (Set<UUID>) game.getState().getValue(
-                            GontiLordOfLuxury.VALUE_PREFIX + source.getSourceId().toString());
-                    if (exileZones != null) {
-                        for (ExileZone exileZone : game.getExile().getExileZones()) {
-                            if (exileZone.contains(objectId)) {
-                                if (!exileZones.contains(exileZone.getId())) {
-                                    return false;
-                                }
-                            }
-                        }
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return affectedControllerId.equals(authorizedPlayerId)
+                && objectId.equals(cardId);
     }
 }

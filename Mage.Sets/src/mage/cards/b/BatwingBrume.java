@@ -46,7 +46,7 @@ public final class BatwingBrume extends CardImpl {
 
     }
 
-    public BatwingBrume(final BatwingBrume card) {
+    private BatwingBrume(final BatwingBrume card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class BatwingBrumeEffect extends OneShotEffect {
                 if (amount > 0) {
                     Player player = game.getPlayer(playerId);
                     if (player != null) {
-                        player.loseLife(amount, game, false);
+                        player.loseLife(amount, game, source, false);
                     }
                 }
             }

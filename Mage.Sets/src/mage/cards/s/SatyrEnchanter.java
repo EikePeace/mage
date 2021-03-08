@@ -32,11 +32,11 @@ public final class SatyrEnchanter extends CardImpl {
 
         // Whenever you cast an enchantment spell, draw a card.
         this.addAbility(new SpellCastControllerTriggeredAbility(
-                new DrawCardSourceControllerEffect(1), filter, true
+                new DrawCardSourceControllerEffect(1), filter, false
         ));
     }
 
-    public SatyrEnchanter(final SatyrEnchanter card) {
+    private SatyrEnchanter(final SatyrEnchanter card) {
         super(card);
     }
 

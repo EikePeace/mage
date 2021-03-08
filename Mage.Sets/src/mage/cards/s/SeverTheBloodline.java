@@ -37,7 +37,7 @@ public final class SeverTheBloodline extends CardImpl {
         this.addAbility(new FlashbackAbility(new ManaCostsImpl("{5}{B}{B}"), TimingRule.SORCERY));
     }
 
-    public SeverTheBloodline(final SeverTheBloodline card) {
+    private SeverTheBloodline(final SeverTheBloodline card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SeverTheBloodlineEffect extends OneShotEffect {
                 filter.add(new NamePredicate(targetPermanent.getName()));
             }
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-                controller.moveCardToExileWithInfo(permanent, null, "", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                controller.moveCardToExileWithInfo(permanent, null, "", source, game, Zone.BATTLEFIELD, true);
             }
             return true;
         }

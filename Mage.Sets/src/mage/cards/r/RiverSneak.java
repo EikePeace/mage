@@ -14,7 +14,7 @@ import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class RiverSneak extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 1, Duration.EndOfTurn), filter, false, null, true));
     }
 
-    public RiverSneak(final RiverSneak card) {
+    private RiverSneak(final RiverSneak card) {
         super(card);
     }
 

@@ -13,7 +13,7 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.permanent.token.SekKuarDeathkeeperGravebornToken;
 
@@ -44,7 +44,7 @@ public final class SekKuarDeathkeeper extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new CreateTokenEffect(new SekKuarDeathkeeperGravebornToken()), false, filter));
     }
 
-    public SekKuarDeathkeeper(final SekKuarDeathkeeper card) {
+    private SekKuarDeathkeeper(final SekKuarDeathkeeper card) {
         super(card);
     }
 

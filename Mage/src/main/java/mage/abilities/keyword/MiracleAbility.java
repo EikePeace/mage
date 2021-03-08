@@ -1,7 +1,6 @@
-
 package mage.abilities.keyword;
 
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.TriggeredAbilityImpl;
@@ -100,11 +99,9 @@ public class MiracleAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getSourceId().equals(getSourceId())) {
+        if (event.getTargetId().equals(this.getSourceId())) {
             // Refer to the card at the zone it is now (hand)
-            FixedTarget fixedTarget = new FixedTarget(event.getSourceId());
-            fixedTarget.init(game, this);
-            getEffects().get(0).setTargetPointer(fixedTarget);
+            getEffects().setTargetPointer(new FixedTarget(game.getCard(event.getTargetId()), game));
             return true;
         }
         return false;
@@ -147,7 +144,7 @@ class MiracleEffect extends OneShotEffect {
             // replace with the new cost
             costRef.clear();
             costRef.add(miracleCosts);
-            controller.cast(abilityToCast, game, false, new MageObjectReference(source.getSourceObject(game), game));
+            controller.cast(abilityToCast, game, false, new ApprovingObject(source, game));
             return true;
         }
         return false;

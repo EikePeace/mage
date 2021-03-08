@@ -37,7 +37,7 @@ public final class SparkMage extends CardImpl {
         this.addAbility(new SparkMageTriggeredAbility());
     }
 
-    public SparkMage(final SparkMage card) {
+    private SparkMage(final SparkMage card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class SparkMageTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

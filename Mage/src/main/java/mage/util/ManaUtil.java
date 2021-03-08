@@ -3,16 +3,22 @@ package mage.util;
 import mage.MageObject;
 import mage.Mana;
 import mage.ManaSymbol;
+import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.costs.Cost;
+import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.*;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.ManacostVariableValue;
 import mage.abilities.effects.Effect;
 import mage.abilities.mana.*;
+import mage.cards.AdventureCard;
 import mage.cards.Card;
+import mage.cards.ModalDoubleFacesCard;
+import mage.cards.SplitCard;
 import mage.choices.Choice;
 import mage.constants.ColoredManaSymbol;
+import mage.constants.ManaType;
 import mage.filter.FilterMana;
 import mage.game.Game;
 import mage.players.Player;
@@ -20,9 +26,15 @@ import mage.players.Player;
 import java.util.*;
 
 /**
- * @author noxx
+ * @author noxx, JayDi85
  */
 public final class ManaUtil {
+
+    private static final String regexBlack = ".*\\x7b.{0,2}B.{0,2}\\x7d.*";
+    private static final String regexBlue = ".*\\x7b.{0,2}U.{0,2}\\x7d.*";
+    private static final String regexRed = ".*\\x7b.{0,2}R.{0,2}\\x7d.*";
+    private static final String regexGreen = ".*\\x7b.{0,2}G.{0,2}\\x7d.*";
+    private static final String regexWhite = ".*\\x7b.{0,2}W.{0,2}\\x7d.*";
 
     private ManaUtil() {
     }
@@ -373,7 +385,12 @@ public final class ManaUtil {
         if (countColorfull == 0) { // seems there is no colorful mana we can use
             // try to pay {1}
             if (mana.getGeneric() > 0) {
-                // use any (lets choose first)
+                // choose first without addional costs if all have addional costs take the first
+                for (ActivatedManaAbilityImpl manaAbility : useableAbilities.values()) {
+                    if (manaAbility.getCosts().size() == 1 && manaAbility.getCosts().get(0).getClass().equals(TapSourceCost.class)) {
+                        return replace(useableAbilities, manaAbility);
+                    }
+                }
                 return replace(useableAbilities, useableAbilities.values().iterator().next());
             }
 
@@ -398,7 +415,7 @@ public final class ManaUtil {
     }
 
     /**
-     * This activates the special button inthe feedback panel of the client if
+     * This activates the special button in the feedback panel of the client if
      * there exists special ways to pay the mana (e.g. Delve, Convoke)
      *
      * @param source ability the mana costs have to be paid for
@@ -499,7 +516,135 @@ public final class ManaUtil {
     }
 
     /**
-     * all ability/effect code with "= new GenericManaCost" must be replaced by createManaCost call
+     * Find full card's color identity (from mana cost and rules)
+     *
+     * @param cardColor       color indicator
+     * @param cardManaSymbols mana cost
+     * @param cardRules       rules list
+     * @param secondSideCard  second side of double faces card
+     * @return
+     */
+    public static FilterMana getColorIdentity(ObjectColor cardColor, String cardManaSymbols, List<String> cardRules, Card secondSideCard) {
+        // 20210121
+        // 903.4
+        // The Commander variant uses color identity to determine what cards can be in a deck with a certain
+        // commander. The color identity of a card is the color or colors of any mana symbols in that card’s mana
+        // cost or rules text, plus any colors defined by its characteristic-defining abilities (see rule 604.3)
+        // or color indicator (see rule 204).
+        // 903.4d
+        // The back face of a double-faced card (see rule 711) is included when determining a card’s color identity.
+        // This is an exception to rule 711.4a.
+        FilterMana res = new FilterMana();
+
+        // from object (color indicator)
+        ObjectColor color = (cardColor != null ? new ObjectColor(cardColor) : new ObjectColor());
+
+        // from mana
+        res.setWhite(color.isWhite() || containsManaSymbol(cardManaSymbols, "W"));
+        res.setBlue(color.isBlue() || containsManaSymbol(cardManaSymbols, "U"));
+        res.setBlack(color.isBlack() || containsManaSymbol(cardManaSymbols, "B"));
+        res.setRed(color.isRed() || containsManaSymbol(cardManaSymbols, "R"));
+        res.setGreen(color.isGreen() || containsManaSymbol(cardManaSymbols, "G"));
+
+        // from rules
+        for (String rule : cardRules) {
+            rule = rule.replaceAll("(?i)<i.*?</i>", ""); // Ignoring reminder text in italic
+            if (!res.isWhite() && (rule.matches(regexWhite))) {
+                res.setWhite(true);
+            }
+            if (!res.isBlue() && (rule.matches(regexBlue))) {
+                res.setBlue(true);
+            }
+            if (!res.isBlack() && rule.matches(regexBlack)) {
+                res.setBlack(true);
+            }
+            if (!res.isRed() && (rule.matches(regexRed))) {
+                res.setRed(true);
+            }
+            if (!res.isGreen() && (rule.matches(regexGreen))) {
+                res.setGreen(true);
+            }
+        }
+
+        // SECOND SIDE CARD
+        if (secondSideCard != null) {
+            // from object (color indicator)
+            ObjectColor secondColor = secondSideCard.getColor(null);
+            res.setBlack(res.isBlack() || secondColor.isBlack());
+            res.setGreen(res.isGreen() || secondColor.isGreen());
+            res.setRed(res.isRed() || secondColor.isRed());
+            res.setBlue(res.isBlue() || secondColor.isBlue());
+            res.setWhite(res.isWhite() || secondColor.isWhite());
+
+            // from mana
+            List<String> secondManaSymbols = secondSideCard.getManaCostSymbols();
+            res.setWhite(res.isWhite() || containsManaSymbol(secondManaSymbols, "W"));
+            res.setBlue(res.isBlue() || containsManaSymbol(secondManaSymbols, "U"));
+            res.setBlack(res.isBlack() || containsManaSymbol(secondManaSymbols, "B"));
+            res.setRed(res.isRed() || containsManaSymbol(secondManaSymbols, "R"));
+            res.setGreen(res.isGreen() || containsManaSymbol(secondManaSymbols, "G"));
+
+            // from rules
+            for (String rule : secondSideCard.getRules()) {
+                rule = rule.replaceAll("(?i)<i.*?</i>", ""); // Ignoring reminder text in italic
+                if (!res.isWhite() && rule.matches(regexWhite)) {
+                    res.setWhite(true);
+                }
+                if (!res.isBlue() && rule.matches(regexBlue)) {
+                    res.setBlue(true);
+                }
+                if (!res.isBlack() && rule.matches(regexBlack)) {
+                    res.setBlack(true);
+                }
+                if (!res.isRed() && rule.matches(regexRed)) {
+                    res.setRed(true);
+                }
+                if (!res.isGreen() && rule.matches(regexGreen)) {
+                    res.setGreen(true);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    private static boolean containsManaSymbol(List<String> cardManaSymbols, String needSymbol) {
+        // search R in {R/B}
+        return cardManaSymbols.stream().anyMatch(s -> s.contains(needSymbol));
+    }
+
+    private static boolean containsManaSymbol(String cardManaSymbols, String needSymbol) {
+        // search R in {R/B}
+        return cardManaSymbols.contains(needSymbol);
+    }
+
+    public static FilterMana getColorIdentity(Card card) {
+        Card secondSide;
+        if (card instanceof SplitCard) {
+            secondSide = ((SplitCard) card).getRightHalfCard();
+        } else if (card instanceof AdventureCard) {
+            secondSide = ((AdventureCard) card).getSpellCard();
+        } else if (card instanceof ModalDoubleFacesCard) {
+            secondSide = ((ModalDoubleFacesCard) card).getRightHalfCard();
+        } else {
+            secondSide = card.getSecondCardFace();
+        }
+        return getColorIdentity(card.getColor(), String.join("", card.getManaCostSymbols()), card.getRules(), secondSide);
+    }
+
+    public static int getColorIdentityHash(FilterMana colorIdentity) {
+        int hash = 3;
+        hash = 23 * hash + (colorIdentity.isWhite() ? 1 : 0);
+        hash = 23 * hash + (colorIdentity.isBlue() ? 1 : 0);
+        hash = 23 * hash + (colorIdentity.isBlack() ? 1 : 0);
+        hash = 23 * hash + (colorIdentity.isRed() ? 1 : 0);
+        hash = 23 * hash + (colorIdentity.isGreen() ? 1 : 0);
+        return hash;
+    }
+
+    /**
+     * all ability/effect code with "= new GenericManaCost" must be replaced by
+     * createManaCost call
      */
     public static ManaCost createManaCost(int genericManaCount, boolean payAsX) {
         if (payAsX) {
@@ -536,13 +681,13 @@ public final class ManaUtil {
             wantToPay = player.announceXMana(0, Integer.MAX_VALUE, "How much mana will you pay?", game, source);
             if (wantToPay > 0) {
                 Cost cost = ManaUtil.createManaCost(wantToPay, payAsX);
-                payed = cost.pay(source, game, source.getSourceId(), player.getId(), false, null);
+                payed = cost.pay(source, game, source, player.getId(), false, null);
             } else {
                 payed = true;
             }
 
             if (!payed) {
-                game.restoreState(bookmark, restoreContextName);
+                player.restoreState(bookmark, restoreContextName, game);
                 game.fireUpdatePlayersEvent();
             } else {
                 game.removeBookmark(bookmark);
@@ -555,6 +700,23 @@ public final class ManaUtil {
         } else {
             return 0;
         }
+    }
 
+    /**
+     * Find all used mana types in mana cost (wubrg + colorless)
+     *
+     * @return
+     */
+    public static List<ManaType> getManaTypesInCost(ManaCost cost) {
+        List<ManaType> res = new ArrayList<>();
+        for (Mana mana : cost.getManaOptions()) {
+            if (mana.getWhite() > 0) res.add(ManaType.WHITE);
+            if (mana.getBlue() > 0) res.add(ManaType.BLUE);
+            if (mana.getBlack() > 0) res.add(ManaType.BLACK);
+            if (mana.getRed() > 0) res.add(ManaType.RED);
+            if (mana.getGreen() > 0) res.add(ManaType.GREEN);
+            if (mana.getColorless() > 0 || mana.getGeneric() > 0 || mana.getAny() > 0) res.add(ManaType.COLORLESS);
+        }
+        return res;
     }
 }

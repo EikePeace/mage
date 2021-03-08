@@ -14,7 +14,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -46,7 +46,7 @@ public final class GhituJourneymage extends CardImpl {
         ));
     }
 
-    public GhituJourneymage(final GhituJourneymage card) {
+    private GhituJourneymage(final GhituJourneymage card) {
         super(card);
     }
 

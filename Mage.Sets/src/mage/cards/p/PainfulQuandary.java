@@ -31,7 +31,7 @@ public final class PainfulQuandary extends CardImpl {
         this.addAbility(new SpellCastOpponentTriggeredAbility(Zone.BATTLEFIELD, new PainfulQuandryEffect(), StaticFilters.FILTER_SPELL, false, SetTargetPointer.PLAYER));
     }
 
-    public PainfulQuandary(final PainfulQuandary card) {
+    private PainfulQuandary(final PainfulQuandary card) {
         super(card);
     }
 
@@ -64,12 +64,12 @@ class PainfulQuandryEffect extends OneShotEffect {
         if (player != null) {
             boolean paid = false;
             Cost cost = new DiscardTargetCost(new TargetCardInHand());
-            if (cost.canPay(source, source.getSourceId(), player.getId(), game)
+            if (cost.canPay(source, source, player.getId(), game)
                     && player.chooseUse(Outcome.Detriment, "Discard a card (otherwise you lose 5 life)?", source, game)) {
-                paid = cost.pay(source, game, source.getSourceId(), player.getId(), false, null);
+                paid = cost.pay(source, game, source, player.getId(), false, null);
             }
             if (!paid) {
-                player.loseLife(5, game, false);
+                player.loseLife(5, game, source, false);
             }
             return true;
         }

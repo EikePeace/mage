@@ -45,7 +45,7 @@ public final class BalanWanderingKnight extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BalanWanderingKnightEffect(), new ManaCostsImpl("{1}{W}")));
     }
 
-    public BalanWanderingKnight(final BalanWanderingKnight card) {
+    private BalanWanderingKnight(final BalanWanderingKnight card) {
         super(card);
     }
 
@@ -79,8 +79,8 @@ public final class BalanWanderingKnight extends CardImpl {
                 for (Permanent equipment : game.getBattlefield().getAllActivePermanents(filter, source.getControllerId(), game)) {
                     if (equipment != null) {
                         //If an Equipment can't equip, it isn't attached, and it doesn't become unattached (if it's attached to a creature).
-                        if (!balan.cantBeAttachedBy(equipment, game, false)) {
-                            balan.addAttachment(equipment.getId(), game);
+                        if (!balan.cantBeAttachedBy(equipment, source, game, false)) {
+                            balan.addAttachment(equipment.getId(), source, game);
                         }
                     }
                 }

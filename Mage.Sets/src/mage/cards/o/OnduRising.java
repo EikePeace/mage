@@ -34,7 +34,7 @@ public final class OnduRising extends CardImpl {
         this.addAbility(new AwakenAbility(this, 4, "{4}{W}"));
     }
 
-    public OnduRising(final OnduRising card) {
+    private OnduRising(final OnduRising card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class OnduRisingTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

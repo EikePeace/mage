@@ -21,7 +21,6 @@ import mage.constants.ComparisonType;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPlayer;
 
 /**
@@ -48,7 +47,7 @@ public final class JushiApprentice extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JushiApprentice(final JushiApprentice card) {
+    private JushiApprentice(final JushiApprentice card) {
         super(card);
     }
 

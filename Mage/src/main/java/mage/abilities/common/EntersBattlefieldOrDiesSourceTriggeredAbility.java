@@ -19,6 +19,7 @@ public class EntersBattlefieldOrDiesSourceTriggeredAbility extends TriggeredAbil
 
     public EntersBattlefieldOrDiesSourceTriggeredAbility(Effect effect, boolean optional) {
         super(Zone.BATTLEFIELD, effect, optional);
+        setLeavesTheBattlefieldTrigger(true);
     }
 
     public EntersBattlefieldOrDiesSourceTriggeredAbility(final EntersBattlefieldOrDiesSourceTriggeredAbility ability) {
@@ -41,8 +42,8 @@ public class EntersBattlefieldOrDiesSourceTriggeredAbility extends TriggeredAbil
                 && event.getTargetId().equals(getSourceId())) {
             return true;
         }
-        if (event.getType() == EventType.ZONE_CHANGE && event.getTargetId().equals(this.getSourceId())) {
-            ZoneChangeEvent zEvent = (ZoneChangeEvent)event;
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE && event.getTargetId().equals(this.getSourceId())) {
+            ZoneChangeEvent zEvent = (ZoneChangeEvent) event;
             if (zEvent.isDiesEvent()) {
                 return true;
             }

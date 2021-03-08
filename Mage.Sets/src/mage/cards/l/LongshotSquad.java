@@ -17,7 +17,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -30,12 +29,12 @@ public final class LongshotSquad extends CardImpl {
     static {
         filter.add(CardType.CREATURE.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public LongshotSquad(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.ARCHER);
 
         this.power = new MageInt(3);
@@ -49,7 +48,7 @@ public final class LongshotSquad extends CardImpl {
 
     }
 
-    public LongshotSquad(final LongshotSquad card) {
+    private LongshotSquad(final LongshotSquad card) {
         super(card);
     }
 

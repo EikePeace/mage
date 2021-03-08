@@ -1,6 +1,5 @@
 package mage.abilities.effects.keyword;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
@@ -14,8 +13,9 @@ import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801, JayDi85
  */
 public class ExploreSourceEffect extends OneShotEffect {
@@ -61,6 +61,7 @@ public class ExploreSourceEffect extends OneShotEffect {
     public ExploreSourceEffect(boolean showAbilityHint, String whosExplores) {
         super(Outcome.Benefit);
 
+        this.showAbilityHint = showAbilityHint;
         if (whosExplores != null) {
             this.sourceName = whosExplores;
         }
@@ -71,7 +72,6 @@ public class ExploreSourceEffect extends OneShotEffect {
         super(effect);
         this.showAbilityHint = effect.showAbilityHint;
         this.sourceName = effect.sourceName;
-        setText();
     }
 
     private void setText() {
@@ -98,8 +98,7 @@ public class ExploreSourceEffect extends OneShotEffect {
         if (permanentController == null) {
             return false;
         }
-        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.EXPLORED, permanentId,
-                source.getSourceId(), permanent.getControllerId()));
+        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.EXPLORED, permanentId, source, permanent.getControllerId()));
         if (permanentController.getLibrary().hasCards()) {
             Card card = permanentController.getLibrary().getFromTop(game);
             Cards cards = new CardsImpl();
@@ -111,7 +110,7 @@ public class ExploreSourceEffect extends OneShotEffect {
                     permanentController.moveCards(card, Zone.HAND, source, game);
                 } else {
                     if (game.getState().getZone(permanentId) == Zone.BATTLEFIELD) { // needed in case LKI object is used
-                        permanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                        permanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                     }
                     if (permanentController.chooseUse(Outcome.Neutral, "Put " + card.getLogName() + " in your graveyard?", source, game)) {
                         permanentController.moveCards(card, Zone.GRAVEYARD, source, game);
@@ -125,7 +124,7 @@ public class ExploreSourceEffect extends OneShotEffect {
                 && game.getState().getZone(permanentId) == Zone.BATTLEFIELD) {
             // If no card is revealed, most likely because that player's library is empty,
             // the exploring creature receives a +1/+1 counter.
-            permanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
         }
         return true;
     }

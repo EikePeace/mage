@@ -37,7 +37,7 @@ public final class PsychicIntrusion extends CardImpl {
 
     }
 
-    public PsychicIntrusion(final PsychicIntrusion card) {
+    private PsychicIntrusion(final PsychicIntrusion card) {
         super(card);
     }
 
@@ -104,7 +104,7 @@ class PsychicIntrusionExileEffect extends OneShotEffect {
                 if (card != null) {
                     // move card to exile
                     UUID exileId = CardUtil.getCardExileZoneId(game, source);
-                    controller.moveCardToExileWithInfo(card, exileId, sourceObject.getIdName(), source.getSourceId(), game, fromHand ? Zone.HAND : Zone.GRAVEYARD, true);
+                    controller.moveCardToExileWithInfo(card, exileId, sourceObject.getIdName(), source, game, fromHand ? Zone.HAND : Zone.GRAVEYARD, true);
                     // allow to cast the card
                     ContinuousEffect effect = new PsychicIntrusionCastFromExileEffect();
                     effect.setTargetPointer(new FixedTarget(card.getId()));
@@ -184,7 +184,7 @@ class PsychicIntrusionSpendAnyManaEffect extends AsThoughEffectImpl implements A
         if (objectId.equals(((FixedTarget) getTargetPointer()).getTarget())
                 && game.getState().getZoneChangeCounter(objectId) <= ((FixedTarget) getTargetPointer()).getZoneChangeCounter() + 1) {
             // if the card moved from exile to spell the zone change counter is increased by 1 (effect must applies before and on stack, use isCheckPlayableMode?)
-            return affectedControllerId.equals(source.getControllerId());
+            return source.isControlledBy(affectedControllerId);
         } else {
             if (((FixedTarget) getTargetPointer()).getTarget().equals(objectId)) {
                 // object has moved zone so effect can be discarted

@@ -1,7 +1,5 @@
-
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.abilityword.StriveAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -13,13 +11,13 @@ import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.HourOfNeedSphinxToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class HourOfNeed extends CardImpl {
@@ -29,12 +27,13 @@ public final class HourOfNeed extends CardImpl {
 
         // Strive — Hour of Need costs {1}{U} more to cast for each target beyond the first.
         this.addAbility(new StriveAbility("{1}{U}"));
+
         // Exile any number of target creatures. For each creature exiled this way, its controller creates a 4/4 blue Sphinx creature token with flying.
         this.getSpellAbility().addEffect(new HourOfNeedExileEffect());
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(0, Integer.MAX_VALUE));
     }
 
-    public HourOfNeed(final HourOfNeed card) {
+    private HourOfNeed(final HourOfNeed card) {
         super(card);
     }
 
@@ -67,9 +66,9 @@ class HourOfNeedExileEffect extends OneShotEffect {
             for (UUID creatureId : getTargetPointer().getTargets(game, source)) {
                 Permanent creature = game.getPermanent(creatureId);
                 if (creature != null) {
-                    controller.moveCardToExileWithInfo(creature, null, null, source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                    controller.moveCardToExileWithInfo(creature, null, null, source, game, Zone.BATTLEFIELD, true);
                     Token token = new HourOfNeedSphinxToken();
-                    token.putOntoBattlefield(1, game, source.getSourceId(), creature.getControllerId());
+                    token.putOntoBattlefield(1, game, source, creature.getControllerId());
                 }
             }
             return true;

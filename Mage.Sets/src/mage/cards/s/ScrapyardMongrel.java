@@ -26,7 +26,7 @@ public final class ScrapyardMongrel extends CardImpl {
 
     public ScrapyardMongrel(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{3}{R}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.color.setRed(true);
         this.power = new MageInt(3);
@@ -46,7 +46,7 @@ public final class ScrapyardMongrel extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScrapyardMongrel(final ScrapyardMongrel card) {
+    private ScrapyardMongrel(final ScrapyardMongrel card) {
         super(card);
     }
 

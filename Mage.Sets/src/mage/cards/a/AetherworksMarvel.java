@@ -2,7 +2,7 @@ package mage.cards.a;
 
 import java.util.Set;
 import java.util.UUID;
-import mage.MageObjectReference;
+import mage.ApprovingObject;
 import mage.abilities.Ability;
 import mage.abilities.common.PutIntoGraveFromBattlefieldAllTriggeredAbility;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -46,7 +46,7 @@ public final class AetherworksMarvel extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AetherworksMarvel(final AetherworksMarvel card) {
+    private AetherworksMarvel(final AetherworksMarvel card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class AetherworksMarvelEffect extends OneShotEffect {
                 if (card != null) {
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                     Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                            game, true, new MageObjectReference(source.getSourceObject(game), game));
+                            game, true, new ApprovingObject(source, game));
                     game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     if (cardWasCast) {
                         cards.remove(card);

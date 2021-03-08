@@ -1,5 +1,6 @@
 package mage;
 
+import mage.abilities.Ability;
 import mage.cards.Card;
 import mage.constants.Zone;
 import mage.game.Game;
@@ -9,6 +10,7 @@ import mage.game.stack.StackObject;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,20 +26,24 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
     private final int zoneChangeCounter;
 
     public MageObjectReference(MageObject mageObject, Game game) {
+        this(mageObject, game, 0);
+    }
+
+    public MageObjectReference(MageObject mageObject, Game game, int offset) {
         if (mageObject == null) {
             this.sourceId = null;
             this.zoneChangeCounter = -1;
             return;
         }
         this.sourceId = mageObject.getId();
-        this.zoneChangeCounter = mageObject.getZoneChangeCounter(game);
+        this.zoneChangeCounter = mageObject.getZoneChangeCounter(game) + offset;
     }
 
     /**
      * That values manually (can be used to let it reference to a Permanent that
      * is not yet on the battlefield.
      *
-     * @param sourceId
+     * @param sourceId          can be null
      * @param zoneChangeCounter
      * @param game
      */
@@ -51,10 +57,24 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
         this.zoneChangeCounter = -1;
     }
 
+    public MageObjectReference(Ability source) {
+        this(source, 0);
+    }
+
+    public MageObjectReference(Ability source, int modifier) {
+        this.sourceId = source.getSourceId();
+        this.zoneChangeCounter = source.getSourceObjectZoneChangeCounter() + modifier;
+    }
+
+    /**
+     * @param sourceId can be null
+     * @param game
+     */
     public MageObjectReference(UUID sourceId, Game game) {
         this.sourceId = sourceId;
         if (sourceId == null) {
-            throw new IllegalArgumentException("MageObjectReference contains nullable sourceId");
+            this.zoneChangeCounter = -1;
+            return;
         }
 
         MageObject mageObject = game.getObject(sourceId);
@@ -73,8 +93,8 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
                     this.zoneChangeCounter = mageObject.getZoneChangeCounter(game);
                     logger.error("SourceId found in LKI");
                 } else {
-                    logger.error("SourceId NOT found in LKI");
                     this.zoneChangeCounter = 0;
+                    logger.error("SourceId NOT found in LKI");
                 }
             }
         }
@@ -90,7 +110,7 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
 
     @Override
     public int compareTo(MageObjectReference o) {
-        if (o.getSourceId().equals(this.sourceId)) {
+        if (o.getSourceId() == null || this.sourceId == null || Objects.equals(o.getSourceId(), this.sourceId)) {
             return o.getZoneChangeCounter() - this.zoneChangeCounter;
         }
         return o.getSourceId().compareTo(sourceId);
@@ -99,7 +119,7 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
     @Override
     public boolean equals(Object v) {
         if (v instanceof MageObjectReference) {
-            if (((MageObjectReference) v).getSourceId().equals(this.sourceId)) {
+            if (Objects.equals(((MageObjectReference) v).getSourceId(), this.sourceId)) {
                 return ((MageObjectReference) v).getZoneChangeCounter() == this.zoneChangeCounter;
             }
         }
@@ -120,7 +140,7 @@ public class MageObjectReference implements Comparable<MageObjectReference>, Ser
     public boolean refersTo(MageObject mageObject, Game game) {
         if (mageObject != null) {
             if (mageObject instanceof Spell) {
-                return ((Spell) mageObject).getSourceId().equals(sourceId) && this.zoneChangeCounter == mageObject.getZoneChangeCounter(game);
+                return Objects.equals(((Spell) mageObject).getSourceId(), this.sourceId) && this.zoneChangeCounter == mageObject.getZoneChangeCounter(game);
             }
             return mageObject.getId().equals(sourceId) && this.zoneChangeCounter == mageObject.getZoneChangeCounter(game);
         }

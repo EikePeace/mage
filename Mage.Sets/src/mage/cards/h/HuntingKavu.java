@@ -42,12 +42,12 @@ public final class HuntingKavu extends CardImpl {
         // {1}{R}{G}, {tap}: Exile Hunting Kavu and target creature without flying that's attacking you.
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new ExileSourceEffect(), new ManaCostsImpl("{1}{R}{G}"));
         ability.addCost(new TapSourceCost());
-        ability.addEffect(new ExileTargetEffect().setText("nd target creature without flying that's attacking you"));
+        ability.addEffect(new ExileTargetEffect().setText("and target creature without flying that's attacking you"));
         ability.addTarget(new TargetCreaturePermanent(filter));
         this.addAbility(ability);
     }
 
-    public HuntingKavu(final HuntingKavu card) {
+    private HuntingKavu(final HuntingKavu card) {
         super(card);
     }
 

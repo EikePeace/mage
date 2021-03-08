@@ -10,7 +10,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
-import mage.constants.WatcherScope;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
@@ -39,7 +38,7 @@ public final class HomicidalBrute extends CardImpl {
         this.addAbility(new HomicidalBruteTriggeredAbility());
     }
 
-    public HomicidalBrute(final HomicidalBrute card) {
+    private HomicidalBrute(final HomicidalBrute card) {
         super(card);
     }
 
@@ -68,7 +67,7 @@ class HomicidalBruteTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override

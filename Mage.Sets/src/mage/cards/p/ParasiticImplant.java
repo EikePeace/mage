@@ -41,7 +41,7 @@ public final class ParasiticImplant extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ParasiticImplant(final ParasiticImplant card) {
+    private ParasiticImplant(final ParasiticImplant card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ParasiticImplantEffect extends OneShotEffect {
         if (enchantment != null && enchantment.getAttachedTo() != null) {
             Permanent creature = game.getPermanent(enchantment.getAttachedTo());
             if (creature != null) {
-                return creature.sacrifice(source.getSourceId(), game);
+                return creature.sacrifice(source, game);
             }
         }
         return false;

@@ -51,7 +51,7 @@ public final class GoblinVandal extends CardImpl {
 
     }
 
-    public GoblinVandal(final GoblinVandal card) {
+    private GoblinVandal(final GoblinVandal card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class GoblinVandalTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_BLOCKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_BLOCKERS;
     }
 
     @Override

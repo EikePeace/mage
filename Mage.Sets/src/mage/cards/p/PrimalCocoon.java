@@ -43,7 +43,7 @@ public final class PrimalCocoon extends CardImpl {
 
     }
 
-    public PrimalCocoon(final PrimalCocoon card) {
+    private PrimalCocoon(final PrimalCocoon card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class PrimalCocoonAbility1 extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override
@@ -101,7 +101,7 @@ class PrimalCocoonAbility2 extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED  || event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED  || event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

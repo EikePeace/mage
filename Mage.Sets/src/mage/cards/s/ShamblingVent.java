@@ -17,7 +17,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -40,7 +39,7 @@ public final class ShamblingVent extends CardImpl {
                 new ShamblingVentToken(), "land", Duration.EndOfTurn), new ManaCostsImpl("{1}{W}{B}")));
     }
 
-    public ShamblingVent(final ShamblingVent card) {
+    private ShamblingVent(final ShamblingVent card) {
         super(card);
     }
 

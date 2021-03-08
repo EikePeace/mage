@@ -43,7 +43,7 @@ public final class Dread extends CardImpl {
         this.addAbility(new PutIntoGraveFromAnywhereSourceTriggeredAbility(new ShuffleIntoLibrarySourceEffect()));
     }
 
-    public Dread(final Dread card) {
+    private Dread(final Dread card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class DreadTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
     
     @Override

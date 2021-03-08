@@ -54,7 +54,7 @@ public final class DreadWight extends CardImpl {
 
     }
 
-    public DreadWight(final DreadWight card) {
+    private DreadWight(final DreadWight card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class DreadWightTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return (event.getType() == EventType.BLOCKER_DECLARED);
+        return (event.getType() == GameEvent.EventType.BLOCKER_DECLARED);
     }
 
     @Override
@@ -126,10 +126,10 @@ class DreadWightEffect extends OneShotEffect {
         if (permanent != null) {
             // add paralyzation counter
             Effect effect = new AddCountersTargetEffect(CounterType.PARALYZATION.createInstance());
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             effect.apply(game, source);
             // tap permanent
-            permanent.tap(game);
+            permanent.tap(source, game);
             // does not untap while paralyzation counter is on it
             ContinuousRuleModifyingEffect effect2 = new DreadWightDoNotUntapEffect(
                     Duration.WhileOnBattlefield,
@@ -146,7 +146,7 @@ class DreadWightEffect extends OneShotEffect {
                     ability,
                     Duration.WhileOnBattlefield);
             ability.setRuleVisible(true);
-            effect3.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect3.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect3, source);
             // each gains 4: remove paralyzation counter
             Ability activatedAbility = new SimpleActivatedAbility(
@@ -156,7 +156,7 @@ class DreadWightEffect extends OneShotEffect {
             ContinuousEffect effect4 = new GainAbilityTargetEffect(
                     activatedAbility,
                     Duration.WhileOnBattlefield);
-            effect4.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect4.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect4, source);
             return true;
         }

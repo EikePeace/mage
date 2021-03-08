@@ -1,4 +1,3 @@
-
 package mage.cards.v;
 
 import java.util.UUID;
@@ -16,11 +15,10 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
-import mage.filter.FilterOpponent;
 import mage.game.Game;
 import mage.game.permanent.token.SurvivorToken;
 import mage.players.Player;
-import mage.target.TargetPlayer;
+import mage.target.common.TargetOpponent;
 import mage.target.targetpointer.FixedTarget;
 
 /**
@@ -45,7 +43,7 @@ public final class VarchildsWarRiders extends CardImpl {
         this.addAbility(new RampageAbility(1));
     }
 
-    public VarchildsWarRiders(final VarchildsWarRiders card) {
+    private VarchildsWarRiders(final VarchildsWarRiders card) {
         super(card);
     }
 
@@ -57,10 +55,8 @@ public final class VarchildsWarRiders extends CardImpl {
 
 class OpponentCreateSurvivorTokenCost extends CostImpl {
 
-    private static final FilterOpponent filter = new FilterOpponent();
-
     public OpponentCreateSurvivorTokenCost() {
-        this.text = "have an opponent create a 1/1 red Survivor creature token";
+        this.text = "Have an opponent create a 1/1 red Survivor creature token.";
     }
 
     public OpponentCreateSurvivorTokenCost(OpponentCreateSurvivorTokenCost cost) {
@@ -68,7 +64,7 @@ class OpponentCreateSurvivorTokenCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
             if (!game.getOpponents(controllerId).isEmpty()) {
@@ -79,11 +75,11 @@ class OpponentCreateSurvivorTokenCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
-            TargetPlayer target = new TargetPlayer(1, 1, true, filter);
-            if (controller.chooseTarget(Outcome.Detriment, target, ability, game)) {
+            TargetOpponent target = new TargetOpponent();
+            if (controller.chooseTarget(Outcome.Neutral, target, ability, game)) {
                 Player opponent = game.getPlayer(target.getFirstTarget());
                 if (opponent != null) {
                     Effect effect = new CreateTokenTargetEffect(new SurvivorToken());

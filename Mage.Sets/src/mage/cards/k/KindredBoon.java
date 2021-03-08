@@ -21,7 +21,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.ChosenSubtypePredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.target.TargetPermanent;
 /**
  *
@@ -31,7 +30,7 @@ public final class KindredBoon extends CardImpl {
     
     private static final FilterControlledCreaturePermanent filterDivinity = new FilterControlledCreaturePermanent("Each creature you control with a divinity counter on it");
     static {
-        filterDivinity.add(new CounterPredicate(CounterType.DIVINITY));
+        filterDivinity.add(CounterType.DIVINITY.getPredicate());
     }
 
     public KindredBoon(UUID ownerId, CardSetInfo setInfo) {
@@ -42,7 +41,7 @@ public final class KindredBoon extends CardImpl {
         
         // {1}{W}: Put a divinity counter on target creature you control of the chosen type.
         FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("creature you control of the chosen type");
-        filter.add(ChosenSubtypePredicate.instance);
+        filter.add(ChosenSubtypePredicate.TRUE);
         Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new AddCountersTargetEffect(CounterType.DIVINITY.createInstance()), new ManaCostsImpl("{1}{W}"));
         ability.addTarget(new TargetPermanent(filter));
         this.addAbility(ability);
@@ -53,7 +52,7 @@ public final class KindredBoon extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
     }
 
-    public KindredBoon(final KindredBoon card) {
+    private KindredBoon(final KindredBoon card) {
         super(card);
     }
 

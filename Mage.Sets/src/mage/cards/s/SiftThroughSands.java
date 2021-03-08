@@ -52,7 +52,7 @@ public final class SiftThroughSands extends CardImpl {
         this.getSpellAbility().addWatcher(new SiftThroughSandsWatcher());
     }
 
-    public SiftThroughSands(final SiftThroughSands card) {
+    private SiftThroughSands(final SiftThroughSands card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class SiftThroughSandsWatcher extends Watcher {
         if (condition) { //no need to check - condition has already occured
             return;
         }
-        if (event.getType() == EventType.SPELL_CAST
+        if (event.getType() == GameEvent.EventType.SPELL_CAST
                 && controllerId.equals(event.getPlayerId())) {
             Spell spell = game.getStack().getSpell(event.getTargetId());
             if (spell.getCard().getName().equals("Peer Through Depths")) {

@@ -17,7 +17,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 import java.util.UUID;
 
@@ -56,7 +56,7 @@ public final class KangeeAerieKeeper extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostAllEffect(new CountersSourceCount(CounterType.FEATHER), new CountersSourceCount(CounterType.FEATHER), Duration.WhileOnBattlefield, filter, true, "Other Bird creatures get +1/+1 for each feather counter on {this}.")));
     }
 
-    public KangeeAerieKeeper(final KangeeAerieKeeper card) {
+    private KangeeAerieKeeper(final KangeeAerieKeeper card) {
         super(card);
     }
 

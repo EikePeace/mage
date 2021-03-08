@@ -43,7 +43,7 @@ public final class HedonistsTrove extends CardImpl {
 
     }
 
-    public HedonistsTrove(final HedonistsTrove card) {
+    private HedonistsTrove(final HedonistsTrove card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class HedonistsTroveExileEffect extends OneShotEffect {
             for (UUID cardId : graveyard) {
                 Card card = game.getCard(cardId);
                 if (card != null) {
-                    controller.moveCardToExileWithInfo(card, exileId, sourceObject.getIdName(), source.getSourceId(), game, Zone.GRAVEYARD, true);
+                    controller.moveCardToExileWithInfo(card, exileId, sourceObject.getIdName(), source, game, Zone.GRAVEYARD, true);
                 }
             }
             return true;

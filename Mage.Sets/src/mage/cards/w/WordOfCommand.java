@@ -1,8 +1,9 @@
 package mage.cards.w;
 
+import mage.ApprovingObject;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
+import mage.abilities.PlayLandAbility;
 import mage.abilities.SpellAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.AsThoughEffect;
@@ -23,6 +24,7 @@ import mage.players.Player;
 import mage.target.TargetCard;
 import mage.target.common.TargetOpponent;
 import mage.target.targetpointer.FixedTarget;
+import mage.util.CardUtil;
 
 import java.util.UUID;
 
@@ -42,7 +44,7 @@ public final class WordOfCommand extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public WordOfCommand(final WordOfCommand card) {
+    private WordOfCommand(final WordOfCommand card) {
         super(card);
     }
 
@@ -95,13 +97,7 @@ class WordOfCommandEffect extends OneShotEffect {
             }
 
             // You control that player until Word of Command finishes resolving
-            controller.controlPlayersTurn(game, targetPlayer.getId());
-            while (controller.canRespond()) {
-                if (controller.chooseUse(Outcome.Benefit, "Resolve " + sourceObject.getLogName() + " now" + (card != null ? " and play " + card.getLogName() : "") + '?', source, game)) {
-                    // this is used to give the controller a little space to utilize their player controlling effect (look at face down creatures, hand, etc.)
-                    break;
-                }
-            }
+            CardUtil.takeControlUnderPlayerStart(game, controller, targetPlayer, true);
 
             // The player plays that card if able
             if (card != null) {
@@ -119,7 +115,7 @@ class WordOfCommandEffect extends OneShotEffect {
                 boolean canPlay = checkPlayability(card, targetPlayer, game, source);
                 while (canPlay
                         && targetPlayer.canRespond()
-                        && !targetPlayer.playCard(card, game, false, true, new MageObjectReference(source.getSourceObject(game), game))) {
+                        && !targetPlayer.playCard(card, game, false, true, new ApprovingObject(source, game))) {
                     SpellAbility spellAbility = card.getSpellAbility();
                     if (spellAbility != null) {
                         spellAbility.getManaCostsToPay().clear();
@@ -156,10 +152,7 @@ class WordOfCommandEffect extends OneShotEffect {
             if (wordOfCommand != null) {
                 wordOfCommand.setCommandedBy(controller.getId()); // You control the player until Word of Command finishes resolving
             } else {
-                targetPlayer.setGameUnderYourControl(true, false);
-                if (!targetPlayer.getTurnControlledBy().equals(controller.getId())) {
-                    controller.getPlayersUnderYourControl().remove(targetPlayer.getId());
-                }
+                CardUtil.takeControlUnderPlayerEnd(game, controller, targetPlayer);
             }
             return true;
         }
@@ -172,17 +165,18 @@ class WordOfCommandEffect extends OneShotEffect {
         if (card.isLand()) { // we can't use getPlayableObjects(game) in here because it disallows playing lands outside the main step // TODO: replace to getPlayable() checks with disable step condition?
             if (targetPlayer.canPlayLand()
                     && game.getActivePlayerId().equals(targetPlayer.getId())) {
-                canPlay = true;
                 for (Ability ability : card.getAbilities(game)) {
-                    if (!game.getContinuousEffects().preventedByRuleModification(GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, ability.getSourceId(), ability.getSourceId(), targetPlayer.getId()), ability, game, true)) {
-                        canPlay &= true;
+                    if (ability instanceof PlayLandAbility) {
+                        if (!game.getContinuousEffects().preventedByRuleModification(GameEvent.getEvent(GameEvent.EventType.PLAY_LAND, ability.getSourceId(), ability, targetPlayer.getId()), ability, game, true)) {
+                            canPlay = true;
+                        }
                     }
                 }
             }
         } else { // Word of Command allows the chosen card to be played "as if it had flash" so we need to invoke such effect to bypass the check
             AsThoughEffectImpl effect2 = new WordOfCommandTestFlashEffect();
             game.addEffect(effect2, source);
-            if (targetPlayer.getPlayableObjects(game, Zone.HAND).containsKey(card.getId())) {
+            if (targetPlayer.getPlayableObjects(game, Zone.HAND).containsObject(card.getId())) {
                 canPlay = true;
             }
             for (AsThoughEffect eff : game.getContinuousEffects().getApplicableAsThoughEffects(AsThoughEffectType.CAST_AS_INSTANT, game)) {

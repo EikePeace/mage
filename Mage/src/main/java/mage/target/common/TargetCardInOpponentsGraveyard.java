@@ -1,5 +1,7 @@
 package mage.target.common;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.cards.Card;
@@ -7,6 +9,7 @@ import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.game.Game;
 import mage.game.events.GameEvent;
+import mage.game.events.TargetEvent;
 import mage.players.Player;
 import mage.target.TargetCard;
 
@@ -31,6 +34,23 @@ public class TargetCardInOpponentsGraveyard extends TargetCard {
     public TargetCardInOpponentsGraveyard(final TargetCardInOpponentsGraveyard target) {
         super(target);
         this.allFromOneOpponent = target.allFromOneOpponent;
+    }
+
+    @Override
+    public boolean canTarget(UUID playerId, UUID id, Ability source, Game game) {
+        Card card = game.getCard(id);
+        if (card != null && zone.match(game.getState().getZone(id))) {
+            if (game.getPlayer(source.getControllerId()).hasOpponent(card.getOwnerId(), game)) {
+                if (allFromOneOpponent && !targets.isEmpty()) {
+                    Card firstCard = game.getCard(targets.keySet().iterator().next());
+                    if (firstCard != null && !card.isOwnedBy(firstCard.getOwnerId())) {
+                        return false;
+                    }
+                }
+                return filter.match(card, source.getId(), playerId, game);
+            }
+        }
+        return false;
     }
 
     @Override
@@ -69,12 +89,19 @@ public class TargetCardInOpponentsGraveyard extends TargetCard {
         if (getNumberOfTargets() == 0) { // if 0 target is valid, the canChoose is always true
             return true;
         }
+        Player sourceController = game.getPlayer(sourceControllerId);
         for (UUID playerId: game.getState().getPlayersInRange(sourceControllerId, game)) {
+            if (!sourceController.hasOpponent(playerId, game)) {
+                continue;
+            }
+            if (this.allFromOneOpponent) {
+                possibleTargets = 0;
+            }
             if (!playerId.equals(sourceControllerId)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     for (Card card : player.getGraveyard().getCards(filter, sourceId, sourceControllerId, game)) {
-                        if (sourceId == null || isNotTarget() || !game.replaceEvent(GameEvent.getEvent(GameEvent.EventType.TARGET, card.getId(), sourceId, sourceControllerId))) {
+                        if (sourceId == null || isNotTarget() || !game.replaceEvent(new TargetEvent(card, sourceId, sourceControllerId))) {
                             possibleTargets++;
                             if (possibleTargets >= this.minNumberOfTargets) {
                                 return true;
@@ -86,6 +113,33 @@ public class TargetCardInOpponentsGraveyard extends TargetCard {
         }
         return false;
     }
+
+    @Override
+    public Set<UUID> possibleTargets(UUID sourceId, UUID sourceControllerId, Game game) {
+        Set<UUID> possibleTargets = new HashSet<>();
+        Player sourceController = game.getPlayer(sourceControllerId);
+        for (UUID playerId : game.getState().getPlayersInRange(sourceControllerId, game)) {
+            if (!sourceController.hasOpponent(playerId, game)) {
+                continue;
+            }
+            Player player = game.getPlayer(playerId);
+            if (player != null) {
+                Set<UUID> targetsInThisGraveyeard = new HashSet<>();
+                for (Card card : player.getGraveyard().getCards(filter, sourceId, sourceControllerId, game)) {
+                    if (sourceId == null || isNotTarget() || !game.replaceEvent(new TargetEvent(card, sourceId, sourceControllerId))) {
+                        targetsInThisGraveyeard.add(card.getId());
+                    }
+                }
+                // if there is not enough possible targets, the can't be any
+                if (this.allFromOneOpponent && targetsInThisGraveyeard.size() < this.minNumberOfTargets) {
+                    continue;
+                }
+                possibleTargets.addAll(targetsInThisGraveyeard);
+            }
+        }
+        return possibleTargets;
+    }
+
     @Override
     public TargetCardInOpponentsGraveyard copy() {
         return new TargetCardInOpponentsGraveyard(this);

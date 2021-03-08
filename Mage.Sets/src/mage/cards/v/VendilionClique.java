@@ -49,7 +49,7 @@ public final class VendilionClique extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VendilionClique(final VendilionClique card) {
+    private VendilionClique(final VendilionClique card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class VendilionCliqueEffect extends OneShotEffect {
                     cards.add(card);
                     player.revealCards(sourceObject.getIdName(), cards, game);
                     player.putCardsOnBottomOfLibrary(cards, game, source, true);
-                    player.drawCards(1, game);
+                    player.drawCards(1, source, game);
                 }
             }
             return true;

@@ -1,7 +1,6 @@
 package mage.cards.h;
 
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -21,6 +20,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import mage.ApprovingObject;
 
 /**
  * @author jeffwadsworth & L_J
@@ -42,7 +42,7 @@ public final class HellcarverDemon extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new HellcarverDemonEffect(), false));
     }
 
-    public HellcarverDemon(final HellcarverDemon card) {
+    private HellcarverDemon(final HellcarverDemon card) {
         super(card);
     }
 
@@ -72,12 +72,12 @@ class HellcarverDemonEffect extends OneShotEffect {
         if (controller != null && sourceObject != null) {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(source.getControllerId())) {
                 if (!Objects.equals(permanent, sourceObject)) {
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                 }
             }
             if (!controller.getHand().isEmpty()) {
                 int cardsInHand = controller.getHand().size();
-                controller.discard(cardsInHand, false, source, game);
+                controller.discard(cardsInHand, false, false, source, game);
             }
             // move cards from library to exile
             Set<Card> currentExiledCards = new HashSet<>();
@@ -103,7 +103,7 @@ class HellcarverDemonEffect extends OneShotEffect {
                     if (card != null) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                         Boolean cardWasCast = controller.cast(controller.chooseAbilityForCast(card, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                         cardsToCast.remove(card);
                         if (!cardWasCast) {

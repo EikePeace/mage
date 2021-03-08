@@ -14,7 +14,7 @@ import mage.constants.SetTargetPointer;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class PrimalForcemage extends CardImpl {
                 filter, false, SetTargetPointer.PERMANENT, rule, true));
     }
 
-    public PrimalForcemage(final PrimalForcemage card) {
+    private PrimalForcemage(final PrimalForcemage card) {
         super(card);
     }
 

@@ -39,7 +39,7 @@ public final class ChargingTuskodon extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ChargingTuskodonEffect()));
     }
 
-    public ChargingTuskodon(final ChargingTuskodon card) {
+    private ChargingTuskodon(final ChargingTuskodon card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class ChargingTuskodonEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 

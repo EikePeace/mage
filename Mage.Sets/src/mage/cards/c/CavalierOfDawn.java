@@ -2,7 +2,7 @@ package mage.cards.c;
 
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
@@ -51,7 +51,7 @@ public final class CavalierOfDawn extends CardImpl {
         this.addAbility(ability);
 
         // When Cavalier of Dawn dies, return target artifact or enchantment card from your graveyard to your hand.
-        ability = new DiesTriggeredAbility(new ReturnFromGraveyardToHandTargetEffect());
+        ability = new DiesSourceTriggeredAbility(new ReturnFromGraveyardToHandTargetEffect());
         ability.addTarget(new TargetCardInYourGraveyard(filter));
         this.addAbility(ability);
     }
@@ -90,7 +90,7 @@ class CavalierOfDawnEffect extends OneShotEffect {
             return false;
         }
         Player player = game.getPlayer(permanent.getControllerId());
-        permanent.destroy(source.getSourceId(), game, false);
+        permanent.destroy(source, game, false);
         if (player == null) {
             return false;
         }

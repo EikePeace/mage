@@ -41,7 +41,7 @@ public final class PowerLeak extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new PowerLeakEffect(), TargetController.CONTROLLER_ATTACHED_TO, false, true, "At the beginning of the upkeep of enchanted enchantment's controller, "));
     }
 
-    public PowerLeak(final PowerLeak card) {
+    private PowerLeak(final PowerLeak card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class PowerLeakEffect extends OneShotEffect {
         if (player.chooseUse(Outcome.Neutral, message, source, game)) {
             xValue = player.announceXMana(0, Integer.MAX_VALUE, "Choose the amount of mana to pay", game, source);
             cost.add(new GenericManaCost(xValue));
-            if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+            if (cost.pay(source, game, source, player.getId(), false, null)) {
                 game.informPlayers(player.getLogName() + " paid {" + xValue + "} for " + permanent.getLogName());
             } else {
                 game.informPlayers(player.getLogName() + " didn't pay {X} for " + permanent.getLogName());
@@ -91,10 +91,10 @@ class PowerLeakEffect extends OneShotEffect {
 
         PreventDamageByTargetEffect effect = new PreventDamageByTargetEffect(Duration.OneUse, xValue, false);
         if (xValue != 0 && cost.isPaid()) {
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
         }
-        player.damage(2, source.getSourceId(), game);
+        player.damage(2, source.getSourceId(), source, game);
         effect.discard();
         return true;
     }

@@ -45,7 +45,7 @@ public final class Chaosphere extends CardImpl {
 
     }
 
-    public Chaosphere(final Chaosphere card) {
+    private Chaosphere(final Chaosphere card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class ChaosphereEffect extends RestrictionEffect {
         if (attacker == null) {
             return true;
         }
-        return attacker.hasAbility(FlyingAbility.getInstance().getId(), game);
+        return attacker.hasAbility(FlyingAbility.getInstance(), game);
     }
 
     @Override

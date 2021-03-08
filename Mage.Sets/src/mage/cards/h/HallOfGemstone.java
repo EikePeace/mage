@@ -2,7 +2,6 @@
 package mage.cards.h;
 
 import java.util.UUID;
-import mage.MageObject;
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -35,7 +34,7 @@ public final class HallOfGemstone extends CardImpl {
 
     }
 
-    public HallOfGemstone(final HallOfGemstone card) {
+    private HallOfGemstone(final HallOfGemstone card) {
         super(card);
     }
 

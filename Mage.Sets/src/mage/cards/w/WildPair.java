@@ -45,7 +45,7 @@ public final class WildPair extends CardImpl {
         ), new CastFromHandWatcher());
     }
 
-    public WildPair(final WildPair card) {
+    private WildPair(final WildPair card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class WildPairEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+            Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (permanent != null) {
                 int totalPT = permanent.getPower().getValue() + permanent.getToughness().getValue();
                 FilterCreatureCard filter = new FilterCreatureCard("creature card with total power and toughness " + totalPT);

@@ -35,7 +35,7 @@ public final class WorldBottlingKit extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WorldBottlingKit(final WorldBottlingKit card) {
+    private WorldBottlingKit(final WorldBottlingKit card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class WorldBottlingKitEffect extends OneShotEffect {
                 List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game);
                 for (Permanent permanent : permanents) {
                     if (permanent.getExpansionSetCode().equals(setChosen)) {
-                        controller.moveCardToExileWithInfo(permanent, null, "", source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                        controller.moveCardToExileWithInfo(permanent, null, "", source, game, Zone.BATTLEFIELD, true);
                     }
                 }
             }

@@ -53,7 +53,7 @@ public final class SivvisValor extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public SivvisValor(final SivvisValor card) {
+    private SivvisValor(final SivvisValor card) {
         super(card);
     }
 
@@ -81,7 +81,7 @@ class SivvisValorEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -94,7 +94,7 @@ class SivvisValorEffect extends ReplacementEffectImpl {
         Player controller = game.getPlayer(source.getControllerId());
         DamageEvent damageEvent = (DamageEvent) event;
         if (controller != null) {
-            controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
+            controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
             return true;
         }
         return false;

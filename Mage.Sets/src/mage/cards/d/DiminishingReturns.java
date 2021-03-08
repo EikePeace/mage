@@ -4,7 +4,7 @@ package mage.cards.d;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
+import mage.abilities.effects.common.ShuffleHandGraveyardAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -23,10 +23,11 @@ public final class DiminishingReturns extends CardImpl {
         super(ownerId,setInfo,new CardType[]{CardType.SORCERY},"{2}{U}{U}");
 
         // Each player shuffles their hand and graveyard into their library. You exile the top ten cards of your library. Then each player draws up to seven cards.
-        this.getSpellAbility().addEffect(new DiminishingReturnsEffect());
+        this.getSpellAbility().addEffect(new ShuffleHandGraveyardAllEffect());
+        this.getSpellAbility().addEffect(new DiminishingReturnsEffect());        
     }
 
-    public DiminishingReturns(final DiminishingReturns card) {
+    private DiminishingReturns(final DiminishingReturns card) {
         super(card);
     }
 
@@ -40,7 +41,7 @@ class DiminishingReturnsEffect extends OneShotEffect {
 
     public DiminishingReturnsEffect() {
         super(Outcome.Neutral);
-        staticText = "Each player shuffles their hand and graveyard into their library. You exile the top ten cards of your library. Then each player draws up to seven cards.";
+        staticText = "You exile the top ten cards of your library. Then each player draws up to seven cards.";
     }
 
     public DiminishingReturnsEffect(final DiminishingReturnsEffect effect) {
@@ -51,28 +52,13 @@ class DiminishingReturnsEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
+            controller.moveCards(controller.getLibrary().getTopCards(game, 10), Zone.EXILED, source, game);
+            game.getState().processAction(game);
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
-                    for (Card card: player.getHand().getCards(game)) {
-                        card.moveToZone(Zone.LIBRARY, source.getSourceId(), game, true);
-                    }                    
-                    for (Card card: player.getGraveyard().getCards(game)) {
-                        card.moveToZone(Zone.LIBRARY, source.getSourceId(), game, true);
-                    }                    
-                    player.shuffleLibrary(source, game);
-                }
-            }
-
-            for (Card card: controller.getLibrary().getTopCards(game, 10)) {
-                controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.LIBRARY, true);
-            }
-
-            for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
-                Player player = game.getPlayer(playerId);
-                if (player != null) {
-                    int cardsToDrawCount = player.getAmount(0, 7, "How many cards to draw (up to 7)?", game);
-                    player.drawCards(cardsToDrawCount, game);
+                    int amount = player.getAmount(0, 7, "How many cards to draw (up to 7)?", game);
+                    player.drawCards(amount, source, game);
                 }
             }
         }

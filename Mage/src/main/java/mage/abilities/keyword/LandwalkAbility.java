@@ -5,7 +5,7 @@ import mage.abilities.EvasionAbility;
 import mage.abilities.effects.RestrictionEffect;
 import mage.constants.AsThoughEffectType;
 import mage.constants.Duration;
-import mage.filter.common.FilterLandPermanent;
+import mage.filter.common.FilterControlledLandPermanent;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
@@ -14,15 +14,21 @@ import mage.game.permanent.Permanent;
  */
 public class LandwalkAbility extends EvasionAbility {
 
-    public LandwalkAbility(FilterLandPermanent filter) {
+    /**
+     * Don't use source related filters here (example: landwalk for user selected land type).
+     * If you want it then use workaround from Traveler's Cloak to transfer settings after gain
+     *
+     * @param filter
+     */
+    public LandwalkAbility(FilterControlledLandPermanent filter) {
         this(filter, true);
     }
 
-    public LandwalkAbility(FilterLandPermanent filter, boolean withHintText) {
+    public LandwalkAbility(FilterControlledLandPermanent filter, boolean withHintText) {
         this.addEffect(new LandwalkEffect(filter, withHintText));
     }
 
-    public LandwalkAbility(final LandwalkAbility ability) {
+    protected LandwalkAbility(final LandwalkAbility ability) {
         super(ability);
     }
 
@@ -39,42 +45,40 @@ public class LandwalkAbility extends EvasionAbility {
         }
         return ruleText;
     }
-
 }
 
 class LandwalkEffect extends RestrictionEffect {
 
-    protected FilterLandPermanent filter;
+    private final FilterControlledLandPermanent filter;
 
-    public LandwalkEffect(FilterLandPermanent filter, boolean withHintText) {
+    LandwalkEffect(FilterControlledLandPermanent filter, boolean withHintText) {
         super(Duration.WhileOnBattlefield);
         this.filter = filter;
         staticText = setText(withHintText);
     }
 
-    public LandwalkEffect(final LandwalkEffect effect) {
+    private LandwalkEffect(final LandwalkEffect effect) {
         super(effect);
         this.filter = effect.filter.copy();
     }
 
     @Override
     public boolean canBeBlocked(Permanent attacker, Permanent blocker, Ability source, Game game, boolean canUseChooseDialogs) {
-        if (game.getBattlefield().contains(filter, blocker.getControllerId(), 1, game)
-                && null == game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_LANDWALK, source, blocker.getControllerId(), game)) {
+        if (game.getBattlefield().contains(filter, source.getSourceId(), blocker.getControllerId(), game, 1)
+                && null == game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_LANDWALK, null, blocker.getControllerId(), game)) {
             switch (filter.getMessage()) {
                 case "plains":
-                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_PLAINSWALK, source, blocker.getControllerId(), game);
+                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_PLAINSWALK, null, blocker.getControllerId(), game);
                 case "island":
-                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_ISLANDWALK, source, blocker.getControllerId(), game);
+                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_ISLANDWALK, null, blocker.getControllerId(), game);
                 case "swamp":
-                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_SWAMPWALK, source, blocker.getControllerId(), game);
+                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_SWAMPWALK, null, blocker.getControllerId(), game);
                 case "mountain":
-                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_MOUNTAINWALK, source, blocker.getControllerId(), game);
+                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_MOUNTAINWALK, null, blocker.getControllerId(), game);
                 case "forest":
-                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_FORESTWALK, source, blocker.getControllerId(), game);
+                    return null != game.getContinuousEffects().asThough(blocker.getId(), AsThoughEffectType.BLOCK_FORESTWALK, null, blocker.getControllerId(), game);
                 default:
                     return false;
-
             }
         }
         return true;
@@ -91,6 +95,9 @@ class LandwalkEffect extends RestrictionEffect {
     }
 
     private String setText(boolean withHintText) {
+        if (filter.getMessage().startsWith("chosen type")) {
+            return "landwalk of the chosen type";
+        }
         // Swampwalk (This creature can't be blocked as long as defending player controls a Swamp.)
         StringBuilder sb = new StringBuilder();
         sb.append(filter.getMessage()).append("walk");

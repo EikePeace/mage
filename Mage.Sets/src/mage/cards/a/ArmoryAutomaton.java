@@ -11,6 +11,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterArtifactPermanent;
+import mage.filter.common.FilterEquipmentPermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.CardIdPredicate;
 import mage.filter.predicate.permanent.AttachedToPredicate;
@@ -39,7 +40,7 @@ public final class ArmoryAutomaton extends CardImpl {
         this.addAbility(new EntersBattlefieldOrAttacksSourceTriggeredAbility(new ArmoryAutomatonEffect()));
     }
 
-    public ArmoryAutomaton(final ArmoryAutomaton card) {
+    private ArmoryAutomaton(final ArmoryAutomaton card) {
         super(card);
     }
 
@@ -78,9 +79,9 @@ class ArmoryAutomatonEffect extends OneShotEffect {
         if (player != null && sourcePermanent != null) {
 
             // dynamic filter (can't selects own attaches and can't selects twice)
-            FilterPermanent currentFilter = filter.copy();
+            FilterPermanent currentFilter = new FilterEquipmentPermanent();
             FilterPermanent filterSourceId = new FilterPermanent();
-            filterSourceId.add(new CardIdPredicate(this.getId()));
+            filterSourceId.add(new CardIdPredicate(source.getSourceId()));
             currentFilter.add(Predicates.not(new AttachedToPredicate(filterSourceId)));
 
             int countBattlefield = game.getBattlefield().getAllActivePermanents(currentFilter, game).size();
@@ -94,9 +95,9 @@ class ArmoryAutomatonEffect extends OneShotEffect {
                     if (aura != null) {
                         Permanent attachedTo = game.getPermanent(aura.getAttachedTo());
                         if (attachedTo != null) {
-                            attachedTo.removeAttachment(aura.getId(), game);
+                            attachedTo.removeAttachment(aura.getId(), source, game);
                         }
-                        sourcePermanent.addAttachment(aura.getId(), game);
+                        sourcePermanent.addAttachment(aura.getId(), source, game);
                     }
                 } else {
                     break;

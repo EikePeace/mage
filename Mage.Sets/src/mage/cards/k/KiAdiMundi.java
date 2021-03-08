@@ -15,7 +15,7 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class KiAdiMundi extends CardImpl {
         this.addAbility(new MeditateAbility(new ManaCostsImpl("{1}{G}")));
     }
 
-    public KiAdiMundi(final KiAdiMundi card) {
+    private KiAdiMundi(final KiAdiMundi card) {
         super(card);
     }
 

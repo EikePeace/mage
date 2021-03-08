@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.LimitedTimesPerTurnActivatedAbility;
-import mage.abilities.condition.common.CardsInControllerGraveCondition;
+import mage.abilities.condition.common.CardsInControllerGraveyardCondition;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostImpl;
 import mage.abilities.effects.common.continuous.BoostSourceEffect;
@@ -37,12 +37,12 @@ public final class BattlefieldScrounger extends CardImpl {
                 new BoostSourceEffect(3, 3, Duration.EndOfTurn),
                 new BattlefieldScroungerCost(),
                 1,
-                new CardsInControllerGraveCondition(7));
+                new CardsInControllerGraveyardCondition(7));
         ability.setAbilityWord(AbilityWord.THRESHOLD);
         this.addAbility(ability);
     }
 
-    public BattlefieldScrounger(final BattlefieldScrounger card) {
+    private BattlefieldScrounger(final BattlefieldScrounger card) {
         super(card);
     }
 
@@ -65,16 +65,16 @@ class BattlefieldScroungerCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         if (controller != null) {
-            if (targets.choose(Outcome.Removal, controllerId, sourceId, game)) {
+            if (targets.choose(Outcome.Removal, controllerId, source.getSourceId(), game)) {
                 for (UUID targetId: targets.get(0).getTargets()) {
                     Card card = game.getCard(targetId);
                     if (card == null || game.getState().getZone(targetId) != Zone.GRAVEYARD) {
                         return false;
                     }
-                    paid |= controller.moveCardToLibraryWithInfo(card, sourceId, game, Zone.GRAVEYARD, false, true);
+                    paid |= controller.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, false, true);
                 }
             }
 
@@ -83,8 +83,8 @@ class BattlefieldScroungerCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return targets.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return targets.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override

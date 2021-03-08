@@ -4,7 +4,7 @@ package mage.cards.n;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
@@ -38,13 +38,13 @@ public final class NoxiousDragon extends CardImpl {
         this.addAbility(FlyingAbility.getInstance());
 
         // When Noxious Dragon dies, you may destroy target creature with converted mana cost 3 or less.
-        Ability ability = new DiesTriggeredAbility(new DestroyTargetEffect(), true);
+        Ability ability = new DiesSourceTriggeredAbility(new DestroyTargetEffect(), true);
         ability.addTarget(new TargetCreaturePermanent(filter));
         this.addAbility(ability);
         
     }
 
-    public NoxiousDragon(final NoxiousDragon card) {
+    private NoxiousDragon(final NoxiousDragon card) {
         super(card);
     }
 

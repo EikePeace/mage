@@ -50,7 +50,7 @@ public final class BlindingBeam extends CardImpl {
         this.addAbility(new EntwineAbility("{1}"));
     }
 
-    public BlindingBeam(final BlindingBeam card) {
+    private BlindingBeam(final BlindingBeam card) {
         super(card);
     }
 
@@ -127,7 +127,7 @@ class BlindingBeamEffect2 extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UNTAP;
+        return event.getType() == GameEvent.EventType.UNTAP;
     }
     
     @Override

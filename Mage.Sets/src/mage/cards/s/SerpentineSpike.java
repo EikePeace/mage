@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -56,7 +56,7 @@ public final class SerpentineSpike extends CardImpl {
         this.getSpellAbility().addWatcher(new DamagedByWatcher(false));
     }
 
-    public SerpentineSpike(final SerpentineSpike card) {
+    private SerpentineSpike(final SerpentineSpike card) {
         super(card);
     }
 
@@ -86,15 +86,15 @@ class SerpentineSpikeEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getTargets().get(0).getFirstTarget());
         if (permanent != null) {
-            permanent.damage(2, source.getSourceId(), game, false, true);
+            permanent.damage(2, source.getSourceId(), source, game, false, true);
         }
         permanent = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (permanent != null) {
-            permanent.damage(3, source.getSourceId(), game, false, true);
+            permanent.damage(3, source.getSourceId(), source, game, false, true);
         }
         permanent = game.getPermanent(source.getTargets().get(2).getFirstTarget());
         if (permanent != null) {
-            permanent.damage(4, source.getSourceId(), game, false, true);
+            permanent.damage(4, source.getSourceId(), source, game, false, true);
         }
         return true;
     }

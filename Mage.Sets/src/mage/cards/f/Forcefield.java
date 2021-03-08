@@ -39,7 +39,7 @@ public final class Forcefield extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new ForcefieldEffect(), new GenericManaCost(1)));
     }
 
-    public Forcefield(final Forcefield card) {
+    private Forcefield(final Forcefield card) {
         super(card);
     }
 
@@ -115,7 +115,7 @@ class ForcefieldPreventionEffect extends PreventionEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
     @Override

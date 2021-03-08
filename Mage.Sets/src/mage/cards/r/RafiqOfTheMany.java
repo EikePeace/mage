@@ -44,7 +44,7 @@ public final class RafiqOfTheMany extends CardImpl {
         this.addAbility(new RafiqOfTheManyAbility());
     }
 
-    public RafiqOfTheMany(final RafiqOfTheMany card) {
+    private RafiqOfTheMany(final RafiqOfTheMany card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class RafiqOfTheManyAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override

@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -46,7 +46,7 @@ public final class GuardianShieldBearer extends CardImpl {
 
     }
 
-    public GuardianShieldBearer(final GuardianShieldBearer card) {
+    private GuardianShieldBearer(final GuardianShieldBearer card) {
         super(card);
     }
 

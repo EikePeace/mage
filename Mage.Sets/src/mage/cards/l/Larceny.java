@@ -30,7 +30,7 @@ public final class Larceny extends CardImpl {
         this.addAbility(new LarcenyTriggeredAbility());
     }
 
-    public Larceny(final Larceny card) {
+    private Larceny(final Larceny card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class LarcenyTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

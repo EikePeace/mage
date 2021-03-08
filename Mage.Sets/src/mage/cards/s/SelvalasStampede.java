@@ -26,7 +26,7 @@ public final class SelvalasStampede extends CardImpl {
         this.getSpellAbility().addEffect(new SelvalasStampedeDilemmaEffect());
     }
 
-    public SelvalasStampede(final SelvalasStampede card) {
+    private SelvalasStampede(final SelvalasStampede card) {
         super(card);
     }
 
@@ -40,7 +40,7 @@ class SelvalasStampedeDilemmaEffect extends CouncilsDilemmaVoteEffect {
 
     public SelvalasStampedeDilemmaEffect() {
         super(Outcome.PutCardInPlay);
-        this.staticText = "<i>Council's dilemma</i> — Starting with you, each player votes for wild or free. Reveal cards from the top of your library until you reveal a creature card for each wild vote. Put those creature cards onto the battlefield, then shuffle the rest into your library. "
+        this.staticText = "<i>Council's dilemma</i> &mdash; Starting with you, each player votes for wild or free. Reveal cards from the top of your library until you reveal a creature card for each wild vote. Put those creature cards onto the battlefield, then shuffle the rest into your library. "
                 + "You may put a permanent card from your hand onto the battlefield for each free vote";
     }
 

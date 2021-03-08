@@ -67,7 +67,7 @@ public class AmassEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        if (!game.getBattlefield().contains(filter, source.getControllerId(), 1, game)) {
+        if (!game.getBattlefield().containsControlled(filter, source, game, 1)) {
             new CreateTokenEffect(new ZombieArmyToken()).apply(game, source);
         }
         Target target = new TargetPermanent(filter);
@@ -79,7 +79,7 @@ public class AmassEffect extends OneShotEffect {
         if (permanent == null) {
             return false;
         }
-        permanent.addCounters(CounterType.P1P1.createInstance(xValue), source, game);
+        permanent.addCounters(CounterType.P1P1.createInstance(xValue), source.getControllerId(), source, game);
         this.amassedCreatureId = permanent.getId();
         return true;
     }

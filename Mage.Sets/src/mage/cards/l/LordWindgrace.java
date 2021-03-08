@@ -68,7 +68,7 @@ public final class LordWindgrace extends CardImpl {
         this.addAbility(CanBeYourCommanderAbility.getInstance());
     }
 
-    public LordWindgrace(final LordWindgrace card) {
+    private LordWindgrace(final LordWindgrace card) {
         super(card);
     }
 
@@ -101,11 +101,11 @@ class LordWindgraceEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        Card card = player.discardOne(false, source, game);
+        Card card = player.discardOne(false, false, source, game);
         if (card == null || !card.isLand()) {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
         } else {
-            player.drawCards(2, game);
+            player.drawCards(2, source, game);
         }
         return true;
     }

@@ -34,7 +34,7 @@ public final class ChecksAndBalances extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new ChecksAndBalancesEffect(), new FilterSpell("a spell"), false, SetTargetPointer.SPELL));
     }
 
-    public ChecksAndBalances(final ChecksAndBalances card) {
+    private ChecksAndBalances(final ChecksAndBalances card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class ChecksAndBalancesEffect extends OneShotEffect {
             for (UUID uuid : game.getOpponents(spell.getControllerId())) {
                 Player player = game.getPlayer(uuid);
                 if (player != null) {
-                    if (!player.chooseUse(outcome, "Do you wish to discard a card to counter " + spell.getLogName() + '?', source, game)) {
+                    if (!player.chooseUse(outcome, "Discard a card to counter " + spell.getLogName() + '?', source, game)) {
                         game.informPlayers(player.getLogName() + " refuses to discard a card to counter " + spell.getLogName());
                         return true;
                     } else {
@@ -104,12 +104,12 @@ class ChecksAndBalancesEffect extends OneShotEffect {
                     TargetCardInHand target = new TargetCardInHand();
                     if (player.choose(Outcome.Discard, target, source.getSourceId(), game)) {
                         Card card = game.getCard(target.getFirstTarget());
-                        player.discard(card, source, game);
+                        player.discard(card, false, source, game);
                     }
 
                 }
             }
-            game.getStack().counter(spell.getId(), source.getSourceId(), game);
+            game.getStack().counter(spell.getId(), source, game);
             return true;
         }
         return false;

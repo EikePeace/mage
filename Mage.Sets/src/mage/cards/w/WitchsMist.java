@@ -24,7 +24,7 @@ public final class WitchsMist extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature that was dealt damage this turn");
 
     static {
-        filter.add(new WasDealtDamageThisTurnPredicate());
+        filter.add(WasDealtDamageThisTurnPredicate.instance);
     }
 
     public WitchsMist(UUID ownerId, CardSetInfo setInfo) {
@@ -38,7 +38,7 @@ public final class WitchsMist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WitchsMist(final WitchsMist card) {
+    private WitchsMist(final WitchsMist card) {
         super(card);
     }
 

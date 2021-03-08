@@ -3,7 +3,7 @@ package mage.cards.e;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.CantBeCounteredAbility;
+import mage.abilities.common.CantBeCounteredSourceAbility;
 import mage.abilities.common.PutIntoGraveFromAnywhereSourceTriggeredAbility;
 import mage.abilities.effects.common.CastSourceTriggeredAbility;
 import mage.abilities.effects.common.ShuffleIntoLibraryGraveOfSourceOwnerEffect;
@@ -16,7 +16,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
-import mage.filter.FilterSpell;
+import mage.filter.FilterStackObject;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
 
@@ -25,7 +25,7 @@ import mage.filter.predicate.mageobject.ColorlessPredicate;
  */
 public final class EmrakulTheAeonsTorn extends CardImpl {
 
-    private static final FilterSpell filter = new FilterSpell("colored spells");
+    private static final FilterStackObject filter = new FilterStackObject("colored spells");
 
     static {
         filter.add(Predicates.not(ColorlessPredicate.instance));
@@ -39,7 +39,7 @@ public final class EmrakulTheAeonsTorn extends CardImpl {
         this.toughness = new MageInt(15);
 
         // Emrakul, the Aeons Torn can't be countered.
-        this.addAbility(new CantBeCounteredAbility());
+        this.addAbility(new CantBeCounteredSourceAbility());
         // When you cast Emrakul, take an extra turn after this one.
         this.addAbility(new CastSourceTriggeredAbility(new AddExtraTurnControllerEffect()));
 
@@ -51,7 +51,7 @@ public final class EmrakulTheAeonsTorn extends CardImpl {
         this.addAbility(new PutIntoGraveFromAnywhereSourceTriggeredAbility(new ShuffleIntoLibraryGraveOfSourceOwnerEffect(), false));
     }
 
-    public EmrakulTheAeonsTorn(final EmrakulTheAeonsTorn card) {
+    private EmrakulTheAeonsTorn(final EmrakulTheAeonsTorn card) {
         super(card);
     }
 

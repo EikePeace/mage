@@ -41,7 +41,7 @@ public final class HammerMage extends CardImpl {
         this.addAbility(ability);
     }
 
-    public HammerMage(final HammerMage card) {
+    private HammerMage(final HammerMage card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class HammerMageEffect extends  OneShotEffect {
         FilterArtifactPermanent filter = new FilterArtifactPermanent();
         filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, source.getManaCostsToPay().getX() + 1));
         for(Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
         }
         return true;
     }

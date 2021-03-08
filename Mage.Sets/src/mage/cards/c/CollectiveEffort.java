@@ -80,7 +80,7 @@ public final class CollectiveEffort extends CardImpl {
         this.getSpellAbility().addMode(mode);
     }
 
-    public CollectiveEffort(final CollectiveEffort card) {
+    private CollectiveEffort(final CollectiveEffort card) {
         super(card);
     }
 
@@ -106,7 +106,7 @@ class CollectiveEffortEffect extends OneShotEffect {
         Player target = game.getPlayer(source.getFirstTarget());
         if (target != null) {
             for (Permanent p : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, target.getId(), game)) {
-                p.addCounters(CounterType.P1P1.createInstance(), source, game);
+                p.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
             }
             return true;
         }

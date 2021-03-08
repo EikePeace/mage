@@ -1,7 +1,5 @@
-
 package mage.cards.c;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.ObjectColor;
 import mage.abilities.Ability;
@@ -18,14 +16,15 @@ import mage.filter.common.FilterLandPermanent;
 import mage.filter.common.FilterNonlandPermanent;
 import mage.game.Game;
 import mage.game.command.CommandObject;
+import mage.game.command.Commander;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
-import mage.game.command.Commander;
+
+import java.util.UUID;
 
 /**
- *
  * @author LevelX2
  */
 public final class CelestialDawn extends CardImpl {
@@ -47,7 +46,7 @@ public final class CelestialDawn extends CardImpl {
 
     }
 
-    public CelestialDawn(final CelestialDawn card) {
+    private CelestialDawn(final CelestialDawn card) {
         super(card);
     }
 
@@ -89,8 +88,8 @@ class CelestialDawnToPlainsEffect extends ContinuousEffectImpl {
                     land.addAbility(new WhiteManaAbility(), source.getSourceId(), game);
                     break;
                 case TypeChangingEffects_4:
-                    land.getSubtype(game).clear();
-                    land.getSubtype(game).add(SubType.PLAINS);
+                    land.removeAllSubTypes(game, SubTypeSet.NonBasicLandType);
+                    land.addSubType(game, SubType.PLAINS);
                     break;
             }
         }
@@ -200,7 +199,7 @@ class CelestialDawnSpendAnyManaEffect extends AsThoughEffectImpl implements AsTh
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return affectedControllerId.equals(source.getControllerId());
+        return source.isControlledBy(affectedControllerId);
     }
 
     @Override
@@ -235,14 +234,16 @@ class CelestialDawnSpendColorlessManaEffect extends AsThoughEffectImpl implement
 
     @Override
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        return affectedControllerId.equals(source.getControllerId());
+        return source.isControlledBy(affectedControllerId);
     }
 
     @Override
     public ManaType getAsThoughManaType(ManaType manaType, ManaPoolItem mana, UUID affectedControllerId, Ability source, Game game) {
         if (mana.getWhite() == 0) {
             return ManaType.COLORLESS;
+        } else {
+            // must return manaType cause applied all the time
+            return manaType;
         }
-        return manaType;
     }
 }

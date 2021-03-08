@@ -55,7 +55,7 @@ public final class DisplayOfDominance extends CardImpl {
         this.getSpellAbility().getModes().addMode(mode);
     }
 
-    public DisplayOfDominance(final DisplayOfDominance card) {
+    private DisplayOfDominance(final DisplayOfDominance card) {
         super(card);
     }
 
@@ -88,7 +88,7 @@ class DisplayOfDominanceEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGET;
+        return event.getType() == GameEvent.EventType.TARGET;
     }
 
     @Override

@@ -40,7 +40,7 @@ public final class OranRiefHydra extends CardImpl {
         this.addAbility(new OranRiefHydraTriggeredAbility());
     }
 
-    public OranRiefHydra(final OranRiefHydra card) {
+    private OranRiefHydra(final OranRiefHydra card) {
         super(card);
     }
 
@@ -117,7 +117,7 @@ class OranRiefHydraEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         // the LKI of the land to verify the last-known land type
-        Permanent landLKI = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent landLKI = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         Permanent land = game.getPermanent(getTargetPointer().getFirst(game, source));
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
         // the land must be on the battlefield when the trigger resolves
@@ -125,9 +125,9 @@ class OranRiefHydraEffect extends OneShotEffect {
                 && landLKI != null
                 && sourcePermanent != null) {
             if (landLKI.hasSubtype(SubType.FOREST, game)) {
-                sourcePermanent.addCounters(CounterType.P1P1.createInstance(2), source, game);
+                sourcePermanent.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
             } else {
-                sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
             }
             return true;
         }

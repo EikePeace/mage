@@ -50,7 +50,7 @@ public final class ArchfiendOfDespair extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new ArchfiendOfDespairEffect(), TargetController.ANY, false));
     }
 
-    public ArchfiendOfDespair(final ArchfiendOfDespair card) {
+    private ArchfiendOfDespair(final ArchfiendOfDespair card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class ArchfiendOfDespairEffect extends OneShotEffect {
                 if (opponent != null) {
                     int lifeLost = watcher.getLifeLost(playerId);
                     if (lifeLost > 0) {
-                        opponent.loseLife(lifeLost, game, false);
+                        opponent.loseLife(lifeLost, game, source, false);
                     }
                 }
             }

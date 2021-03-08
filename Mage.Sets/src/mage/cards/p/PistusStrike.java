@@ -38,7 +38,7 @@ public final class PistusStrike extends CardImpl {
         this.getSpellAbility().addEffect(new PoisonControllerTargetCreatureEffect());
     }
 
-    public PistusStrike(final PistusStrike card) {
+    private PistusStrike(final PistusStrike card) {
         super(card);
     }
 
@@ -66,11 +66,11 @@ class PoisonControllerTargetCreatureEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
-                player.addCounters(CounterType.POISON.createInstance(), game);
+                player.addCounters(CounterType.POISON.createInstance(), source.getControllerId(), source, game);
             }
             return true;
         }

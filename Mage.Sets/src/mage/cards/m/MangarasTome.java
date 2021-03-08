@@ -40,7 +40,7 @@ public final class MangarasTome extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new MangarasTomeReplacementEffect(), new GenericManaCost(2)));
     }
 
-    public MangarasTome(final MangarasTome card) {
+    private MangarasTome(final MangarasTome card) {
         super(card);
     }
 
@@ -117,7 +117,7 @@ class MangarasTomeReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_CARD;
+        return event.getType() == GameEvent.EventType.DRAW_CARD;
     }
 
     @Override

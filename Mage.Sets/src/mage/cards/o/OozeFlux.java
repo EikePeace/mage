@@ -17,7 +17,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.game.Game;
 import mage.game.permanent.token.OozeToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 
 /**
@@ -35,7 +34,7 @@ public final class OozeFlux extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OozeFlux(final OozeFlux card) {
+    private OozeFlux(final OozeFlux card) {
         super(card);
     }
 
@@ -78,7 +77,7 @@ class OozeFluxCreateTokenEffect extends OneShotEffect {
         tokenCopy.getAbilities().newId();
         tokenCopy.getPower().modifyBaseValue(xValue);
         tokenCopy.getToughness().modifyBaseValue(xValue);
-        tokenCopy.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        tokenCopy.putOntoBattlefield(1, game, source, source.getControllerId());
         return true;
     }
 }

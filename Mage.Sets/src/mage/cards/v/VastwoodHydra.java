@@ -4,7 +4,7 @@ package mage.cards.v;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.dynamicvalue.common.CountersSourceCount;
 import mage.abilities.effects.OneShotEffect;
@@ -45,12 +45,12 @@ public final class VastwoodHydra extends CardImpl {
         this.addAbility(new EntersBattlefieldAbility(new EntersBattlefieldWithXCountersEffect(CounterType.P1P1.createInstance())));
 
         // When Vastwood Hydra dies, you may distribute a number of +1/+1 counters equal to the number of +1/+1 counters on Vastwood Hydra among any number of creatures you control.
-        Ability ability = new DiesTriggeredAbility(new VastwoodHydraDistributeEffect(), true);
+        Ability ability = new DiesSourceTriggeredAbility(new VastwoodHydraDistributeEffect(), true);
         ability.addTarget(new TargetCreaturePermanentAmount(new CountersSourceCount(CounterType.P1P1), filter));
         this.addAbility(ability);
     }
 
-    public VastwoodHydra(final VastwoodHydra card) {
+    private VastwoodHydra(final VastwoodHydra card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class VastwoodHydraDistributeEffect extends OneShotEffect {
             for (UUID target : multiTarget.getTargets()) {
                 Permanent permanent = game.getPermanent(target);
                 if (permanent != null) {
-                    permanent.addCounters(CounterType.P1P1.createInstance(multiTarget.getTargetAmount(target)), source, game);
+                    permanent.addCounters(CounterType.P1P1.createInstance(multiTarget.getTargetAmount(target)), source.getControllerId(), source, game);
                 }
             }
         }

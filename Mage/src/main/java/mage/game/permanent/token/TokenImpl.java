@@ -2,14 +2,12 @@ package mage.game.permanent.token;
 
 import mage.MageObject;
 import mage.MageObjectImpl;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.cards.Card;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.CreateTokenEvent;
-import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
+import mage.game.events.CreatedTokenEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentToken;
@@ -20,6 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
+import mage.abilities.SpellAbility;
+import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.AttachEffect;
+import mage.abilities.keyword.EnchantAbility;
+import mage.constants.Outcome;
+import mage.constants.SubType;
+import mage.target.Target;
 
 public abstract class TokenImpl extends MageObjectImpl implements Token {
 
@@ -32,6 +37,7 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
     private String tokenDescriptor;
     private boolean expansionSetCodeChecked;
     private Card copySourceCard; // the card the Token is a copy from
+    private static final int MAX_TOKENS_PER_GAME = 500;
 
     // list of set codes token images are available for
     protected List<String> availableImageSetCodes = new ArrayList<>();
@@ -50,6 +56,9 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
         int getCode() {
             return this.code;
         }
+    }
+
+    public TokenImpl() {
     }
 
     public TokenImpl(String name, String description) {
@@ -74,7 +83,6 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
         this.expansionSetCodeChecked = token.expansionSetCodeChecked;
         this.copySourceCard = token.copySourceCard; // will never be changed
         this.availableImageSetCodes = token.availableImageSetCodes;
-        this.isAllCreatureTypes = token.isAllCreatureTypes;
     }
 
     @Override
@@ -122,13 +130,13 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
     }
 
     @Override
-    public boolean putOntoBattlefield(int amount, Game game, UUID sourceId, UUID controllerId) {
-        return this.putOntoBattlefield(amount, game, sourceId, controllerId, false, false);
+    public boolean putOntoBattlefield(int amount, Game game, Ability source, UUID controllerId) {
+        return this.putOntoBattlefield(amount, game, source, controllerId, false, false);
     }
 
     @Override
-    public boolean putOntoBattlefield(int amount, Game game, UUID sourceId, UUID controllerId, boolean tapped, boolean attacking) {
-        return putOntoBattlefield(amount, game, sourceId, controllerId, tapped, attacking, null);
+    public boolean putOntoBattlefield(int amount, Game game, Ability source, UUID controllerId, boolean tapped, boolean attacking) {
+        return putOntoBattlefield(amount, game, source, controllerId, tapped, attacking, null);
     }
 
     private String getSetCode(Game game, UUID sourceId) {
@@ -157,64 +165,168 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
     }
 
     @Override
-    public boolean putOntoBattlefield(int amount, Game game, UUID sourceId, UUID controllerId, boolean tapped, boolean attacking, UUID attackedPlayer) {
+    public boolean putOntoBattlefield(int amount, Game game, Ability source, UUID controllerId, boolean tapped, boolean attacking, UUID attackedPlayer) {
+        return putOntoBattlefield(amount, game, source, controllerId, tapped, attacking, attackedPlayer, true);
+    }
+
+    @Override
+    public boolean putOntoBattlefield(int amount, Game game, Ability source, UUID controllerId, boolean tapped, boolean attacking, UUID attackedPlayer, boolean created) {
         Player controller = game.getPlayer(controllerId);
         if (controller == null) {
             return false;
         }
+        if (amount == 0) {
+            return false;
+        }
         lastAddedTokenIds.clear();
 
-        CreateTokenEvent event = new CreateTokenEvent(sourceId, controllerId, amount, this);
-        if (!game.replaceEvent(event)) {
-            putOntoBattlefieldHelper(event, game, tapped, attacking, attackedPlayer);
+        CreateTokenEvent event = new CreateTokenEvent(source, controllerId, amount, this);
+        if (!created || !game.replaceEvent(event)) {
+            int currentTokens = game.getBattlefield().countTokens(event.getPlayerId());
+            int tokenSlots = Math.max(MAX_TOKENS_PER_GAME - currentTokens, 0);
+            if (event.getAmount() > tokenSlots) {
+                game.informPlayers(
+                        "The token limit per player is " + MAX_TOKENS_PER_GAME + ", " + controller.getName()
+                        + " will only create " + tokenSlots + " tokens."
+                );
+            }
+            event.setAmount(Math.min(event.getAmount(), tokenSlots));
+            putOntoBattlefieldHelper(event, game, source, tapped, attacking, attackedPlayer, created);
             return true;
         }
         return false;
     }
 
-    private static void putOntoBattlefieldHelper(CreateTokenEvent event, Game game, boolean tapped, boolean attacking, UUID attackedPlayer) {
+    private static void putOntoBattlefieldHelper(CreateTokenEvent event, Game game, Ability source, boolean tapped, boolean attacking, UUID attackedPlayer, boolean created) {
         Player controller = game.getPlayer(event.getPlayerId());
+        if (controller == null) {
+            return;
+        }
+
         Token token = event.getToken();
         int amount = event.getAmount();
-
-        List<Permanent> permanents = new ArrayList<>();
-        List<Permanent> permanentsEntered = new ArrayList<>();
-
         String setCode = token instanceof TokenImpl ? ((TokenImpl) token).getSetCode(game, event.getSourceId()) : null;
 
+        List<Permanent> needTokens = new ArrayList<>();
+        List<Permanent> allowedTokens = new ArrayList<>();
+
+        // prepare tokens to enter
         for (int i = 0; i < amount; i++) {
-            PermanentToken newToken = new PermanentToken(token, event.getPlayerId(), setCode, game); // use event.getPlayerId() because it can be replaced by replacement effect
-            game.getState().addCard(newToken);
-            permanents.add(newToken);
-            game.getPermanentsEntering().put(newToken.getId(), newToken);
-            newToken.setTapped(tapped);
+            // use event.getPlayerId() as controller cause it can be replaced by replacement effect
+            PermanentToken newPermanent = new PermanentToken(token, event.getPlayerId(), setCode, game);
+            game.getState().addCard(newPermanent);
+            needTokens.add(newPermanent);
+            game.getPermanentsEntering().put(newPermanent.getId(), newPermanent);
+            newPermanent.setTapped(tapped);
+
+            ZoneChangeEvent emptyEvent = new ZoneChangeEvent(newPermanent, newPermanent.getControllerId(), Zone.OUTSIDE, Zone.BATTLEFIELD);
+            // tokens zcc must simulate card's zcc too keep copied card/spell settings
+            // (example: etb's kicker ability of copied creature spell, see tests with Deathforge Shaman)
+            newPermanent.updateZoneChangeCounter(game, emptyEvent);
         }
+
+        // check ETB effects
         game.setScopeRelevant(true);
-        for (Permanent permanent : permanents) {
-            if (permanent.entersBattlefield(event.getSourceId(), game, Zone.OUTSIDE, true)) {
-                permanentsEntered.add(permanent);
+        for (Permanent permanent : needTokens) {
+            if (permanent.entersBattlefield(source, game, Zone.OUTSIDE, true)) {
+                allowedTokens.add(permanent);
             } else {
                 game.getPermanentsEntering().remove(permanent.getId());
             }
         }
         game.setScopeRelevant(false);
-        for (Permanent permanent : permanentsEntered) {
-            game.addPermanent(permanent);
+
+        // put allowed tokens to play
+        int createOrder = game.getState().getNextPermanentOrderNumber();
+        for (Permanent permanent : allowedTokens) {
+            game.addPermanent(permanent, createOrder);
             permanent.setZone(Zone.BATTLEFIELD, game);
             game.getPermanentsEntering().remove(permanent.getId());
 
+            // keep tokens ids
             if (token instanceof TokenImpl) {
                 ((TokenImpl) token).lastAddedTokenIds.add(permanent.getId());
                 ((TokenImpl) token).lastAddedTokenId = permanent.getId();
             }
-            game.addSimultaneousEvent(new ZoneChangeEvent(permanent, permanent.getControllerId(), Zone.OUTSIDE, Zone.BATTLEFIELD));
+
+            // created token events
+            ZoneChangeEvent zccEvent = new ZoneChangeEvent(permanent, permanent.getControllerId(), Zone.OUTSIDE, Zone.BATTLEFIELD);
+            game.addSimultaneousEvent(zccEvent);
+            if (permanent instanceof PermanentToken && created) {
+                game.addSimultaneousEvent(new CreatedTokenEvent(source, (PermanentToken) permanent));
+            }
+
+            // handle auras coming into the battlefield
+            // code refactored from CopyPermanentEffect
+            if (permanent.getSubtype().contains(SubType.AURA)) {
+                Outcome auraOutcome = Outcome.BoostCreature;
+                Target auraTarget = null;
+
+                // attach - search effect in spell ability (example: cast Utopia Sprawl, cast Estrid's Invocation on it)
+                for (Ability ability : permanent.getAbilities()) {
+                    if (!(ability instanceof SpellAbility)) {
+                        continue;
+                    }
+                    auraOutcome = ability.getEffects().getOutcome(ability);
+                    for (Effect effect : ability.getEffects()) {
+                        if (!(effect instanceof AttachEffect)) {
+                            continue;
+                        }
+                        if (permanent.getSpellAbility().getTargets().size() > 0) {
+                            auraTarget = permanent.getSpellAbility().getTargets().get(0);
+                        }
+                    }
+                }
+
+                // enchant - search in all abilities (example: cast Estrid's Invocation on enchanted creature by Estrid, the Masked second ability, cast Estrid's Invocation on it)
+                if (auraTarget == null) {
+                    for (Ability ability : permanent.getAbilities()) {
+                        if (!(ability instanceof EnchantAbility)) {
+                            continue;
+                        }
+                        auraOutcome = ability.getEffects().getOutcome(ability);
+                        if (ability.getTargets().size() > 0) { // Animate Dead don't have targets
+                            auraTarget = ability.getTargets().get(0);
+                        }
+                    }
+                }
+
+                // if this is a copy of a copy, the copy's target has been copied and needs to be cleared
+                if (auraTarget == null) {
+                    break;
+                }
+                // clear selected target
+                if (auraTarget.getFirstTarget() != null) {
+                    auraTarget.remove(auraTarget.getFirstTarget());
+                }
+
+                // select new target
+                auraTarget.setNotTarget(true);
+                if (!controller.choose(auraOutcome, auraTarget, source.getSourceId(), game)) {
+                    break;
+                }
+                UUID targetId = auraTarget.getFirstTarget();
+                Permanent targetPermanent = game.getPermanent(targetId);
+                Player targetPlayer = game.getPlayer(targetId);
+                if (targetPermanent != null) {
+                    targetPermanent.addAttachment(permanent.getId(), source, game);
+                } else if (targetPlayer != null) {
+                    targetPlayer.addAttachment(permanent.getId(), source, game);
+                }
+            }
+            // end of aura code : just remove this line if everything works out well
+            
+            // must attack
             if (attacking && game.getCombat() != null && game.getActivePlayerId().equals(permanent.getControllerId())) {
                 game.getCombat().addAttackingCreature(permanent.getId(), game, attackedPlayer);
             }
-            if (!game.isSimulation()) {
-                game.informPlayers(controller.getLogName() + " creates a " + permanent.getLogName() + " token");
-            }
 
+            // game logs
+            if (created) {
+                game.informPlayers(controller.getLogName() + " creates a " + permanent.getLogName() + " token");
+            } else {
+                game.informPlayers(permanent.getLogName() + " enters the battlefield as a token under " + controller.getLogName() + "'s control'");
+            }
         }
         game.getState().applyEffects(game); // Needed to do it here without LKIReset i.e. do get SwordOfTheMeekTest running correctly.
     }
@@ -234,6 +346,10 @@ public abstract class TokenImpl extends MageObjectImpl implements Token {
         return tokenType;
     }
 
+    /**
+     * Set token index to search in card-pictures-tok.txt (if set have multiple
+     * tokens with same name) Default is 1
+     */
     @Override
     public void setTokenType(int tokenType) {
         this.tokenType = tokenType;

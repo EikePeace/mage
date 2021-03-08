@@ -32,7 +32,7 @@ public final class ScrapMastery extends CardImpl {
         this.getSpellAbility().addEffect(new ScrapMasteryEffect());
     }
 
-    public ScrapMastery(final ScrapMastery card) {
+    private ScrapMastery(final ScrapMastery card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class ScrapMasteryEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     for (Permanent permanent : game.getBattlefield().getAllActivePermanents(new FilterArtifactPermanent(), playerId, game)) {
-                        permanent.sacrifice(source.getSourceId(), game);
+                        permanent.sacrifice(source, game);
                     }
                 }
             }

@@ -15,10 +15,9 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToPermanentId;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCardInLibrary;
@@ -44,7 +43,7 @@ public final class SovereignsOfLostAlara extends CardImpl {
         this.addAbility(new CreatureControlledAttacksAloneTriggeredAbility());
     }
 
-    public SovereignsOfLostAlara(final SovereignsOfLostAlara card) {
+    private SovereignsOfLostAlara(final SovereignsOfLostAlara card) {
         super(card);
     }
 
@@ -71,7 +70,7 @@ class CreatureControlledAttacksAloneTriggeredAbility extends TriggeredAbilityImp
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override
@@ -118,7 +117,7 @@ class SovereignsOfLostAlaraEffect extends OneShotEffect {
                         Card aura = game.getCard(target.getFirstTarget());
                         game.getState().setValue("attachTo:" + aura.getId(), attackingCreature);
                         controller.moveCards(aura, Zone.BATTLEFIELD, source, game);
-                        return attackingCreature.addAttachment(aura.getId(), game);
+                        return attackingCreature.addAttachment(aura.getId(), source, game);
                     }
                 }
             }

@@ -24,7 +24,7 @@ public final class SqueesRevenge extends CardImpl {
         this.getSpellAbility().addEffect(new SqueesRevengeEffect());
     }
 
-    public SqueesRevenge(final SqueesRevenge card) {
+    private SqueesRevenge(final SqueesRevenge card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class SqueesRevengeEffect extends OneShotEffect {
                     return true;
                 }
             }
-            player.drawCards(2 * number, game);
+            player.drawCards(2 * number, source, game);
             return true;
         }
         return false;

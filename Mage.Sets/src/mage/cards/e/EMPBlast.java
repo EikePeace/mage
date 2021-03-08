@@ -31,7 +31,7 @@ public final class EMPBlast extends CardImpl {
         this.getSpellAbility().addEffect(new EMPBlastEffect());
     }
 
-    public EMPBlast(final EMPBlast card) {
+    private EMPBlast(final EMPBlast card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class EMPBlastEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         for (Permanent artifact : game.getBattlefield().getActivePermanents(new FilterArtifactPermanent(), source.getControllerId(), source.getSourceId(), game)) {
-            artifact.tap(game);
+            artifact.tap(source, game);
         }
         return true;
     }

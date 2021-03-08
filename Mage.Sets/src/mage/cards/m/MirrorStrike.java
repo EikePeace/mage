@@ -16,7 +16,6 @@ import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.Predicates;
 import mage.filter.predicate.permanent.UnblockedPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -40,7 +39,7 @@ public final class MirrorStrike extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public MirrorStrike(final MirrorStrike card) {
+    private MirrorStrike(final MirrorStrike card) {
         super(card);
     }
 
@@ -85,7 +84,7 @@ class MirrorStrikeEffect extends ReplacementEffectImpl {
             if (targetPermanent != null) {
                 Player targetsController = game.getPlayer(targetPermanent.getControllerId());
                 if (targetsController != null) {
-                    targetsController.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
+                    targetsController.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
                     return true;
                 }
             }

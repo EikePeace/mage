@@ -23,13 +23,13 @@ public final class ChangelingTitan extends CardImpl {
         this.toughness = new MageInt(7);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         // Champion a creature
         this.addAbility(new ChampionAbility(this, true));
     }
 
-    public ChangelingTitan(final ChangelingTitan card) {
+    private ChangelingTitan(final ChangelingTitan card) {
         super(card);
     }
 

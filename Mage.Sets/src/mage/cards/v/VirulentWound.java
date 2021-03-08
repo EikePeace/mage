@@ -15,7 +15,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -37,7 +36,7 @@ public final class VirulentWound extends CardImpl {
         this.getSpellAbility().addEffect(new VirulentWoundEffect());
     }
 
-    public VirulentWound(final VirulentWound card) {
+    private VirulentWound(final VirulentWound card) {
         super(card);
     }
 
@@ -86,7 +85,7 @@ class VirulentWoundDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -136,7 +135,7 @@ class VirulentWoundDelayedEffect extends OneShotEffect {
         if (permanent != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
-                player.addCounters(CounterType.POISON.createInstance(1), game);
+                player.addCounters(CounterType.POISON.createInstance(1), source.getControllerId(), source, game);
                 return true;
             }
         }

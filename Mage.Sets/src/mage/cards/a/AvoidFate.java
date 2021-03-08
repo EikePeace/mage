@@ -9,7 +9,7 @@ import mage.constants.SubType;
 import mage.filter.FilterSpell;
 import mage.filter.StaticFilters;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.target.TargetSpell;
 
 import java.util.UUID;
@@ -35,7 +35,7 @@ public final class AvoidFate extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter));
     }
 
-    public AvoidFate(final AvoidFate card) {
+    private AvoidFate(final AvoidFate card) {
         super(card);
     }
 

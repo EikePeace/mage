@@ -1,10 +1,8 @@
 
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.abilities.TriggeredAbilityImpl;
-import mage.abilities.effects.Effect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveTargetEffect;
+import mage.abilities.effects.common.MillCardsTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -15,22 +13,21 @@ import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class MesmericOrb extends CardImpl {
 
     public MesmericOrb(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ARTIFACT},"{2}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT}, "{2}");
 
         // Whenever a permanent becomes untapped, that permanent's controller puts the top card of their library into their graveyard.
-        Effect effect = new PutTopCardOfLibraryIntoGraveTargetEffect(1);
-        effect.setText("that permanent's controller puts the top card of their library into their graveyard");
-        this.addAbility(new BecomesUntappedPermanentTriggeredAbility(effect, false));
+        this.addAbility(new MesmericOrbTriggeredAbility());
     }
 
-    public MesmericOrb(final MesmericOrb card) {
+    private MesmericOrb(final MesmericOrb card) {
         super(card);
     }
 
@@ -40,24 +37,24 @@ public final class MesmericOrb extends CardImpl {
     }
 }
 
-class BecomesUntappedPermanentTriggeredAbility extends TriggeredAbilityImpl{
+class MesmericOrbTriggeredAbility extends TriggeredAbilityImpl {
 
-    public BecomesUntappedPermanentTriggeredAbility(Effect effect, boolean optional) {
-        super(Zone.BATTLEFIELD, effect, optional);
+    MesmericOrbTriggeredAbility() {
+        super(Zone.BATTLEFIELD, new MillCardsTargetEffect(1), false);
     }
 
-    public BecomesUntappedPermanentTriggeredAbility(final BecomesUntappedPermanentTriggeredAbility ability) {
+    private MesmericOrbTriggeredAbility(final MesmericOrbTriggeredAbility ability) {
         super(ability);
     }
 
     @Override
-    public BecomesUntappedPermanentTriggeredAbility copy() {
-        return new BecomesUntappedPermanentTriggeredAbility(this);
+    public MesmericOrbTriggeredAbility copy() {
+        return new MesmericOrbTriggeredAbility(this);
     }
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UNTAPPED;
+        return event.getType() == GameEvent.EventType.UNTAPPED;
     }
 
     @Override
@@ -72,7 +69,7 @@ class BecomesUntappedPermanentTriggeredAbility extends TriggeredAbilityImpl{
 
     @Override
     public String getRule() {
-        return "Whenever a permanent becomes untapped, " + super.getRule();
+        return "Whenever a permanent becomes untapped, that permanent's controller mills a card.";
     }
 
 }

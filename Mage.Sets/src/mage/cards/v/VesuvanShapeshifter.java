@@ -3,8 +3,8 @@ package mage.cards.v;
 import mage.MageInt;
 import mage.MageObject;
 import mage.abilities.Ability;
+import mage.abilities.common.AsEntersBattlefieldAbility;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
-import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.AsTurnedFaceUpEffect;
@@ -18,12 +18,12 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
-import mage.util.functions.ApplyToPermanent;
+import mage.util.functions.CopyApplier;
 
 import java.util.UUID;
 
@@ -39,27 +39,29 @@ public final class VesuvanShapeshifter extends CardImpl {
         this.toughness = new MageInt(0);
 
         // As Vesuvan Shapeshifter turned face up, may choose another creature. If you do, until Vesuvan Shapeshifter is turned face down, it becomes a copy of that creature
-        Ability ability = new SimpleStaticAbility(Zone.BATTLEFIELD, new AsTurnedFaceUpEffect(new VesuvanShapeshifterEffect(), false));
+        Ability ability = new SimpleStaticAbility(new AsTurnedFaceUpEffect(
+                new VesuvanShapeshifterEffect(), false
+        ).setText("As {this} enters the battlefield or is turned face up, " +
+                "you may choose another creature on the battlefield. If you do, " +
+                "until {this} is turned face down, it becomes a copy of that creature, " +
+                "except it has \"At the beginning of your upkeep, you may turn this creature face down.\"")
+        );
         ability.setWorksFaceDown(true);
         this.addAbility(ability);
 
         // As Vesuvan Shapeshifter etbs, you may choose another creature. If you do, until Vesuvan Shapeshifter is turned face down, it becomes a copy of that creature
-        Effect effect = new CopyPermanentEffect(StaticFilters.FILTER_PERMANENT_CREATURE, new VesuvanShapeShifterFaceUpApplier());
-        effect.setText("as a copy of any creature on the battlefield until {this} is turned faced down");
-        ability = new EntersBattlefieldAbility(effect, true);
+        ability = new AsEntersBattlefieldAbility(new CopyPermanentEffect(
+                StaticFilters.FILTER_PERMANENT_CREATURE, new VesuvanShapeShifterFaceUpCopyApplier()
+        ));
         ability.setWorksFaceDown(false);
-        this.addAbility(ability);
-
-        // and has "At the beginning of your upkeep, you may turn this creature face down".
-        effect = new VesuvanShapeshifterFaceDownEffect();
-        ability = new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, effect, TargetController.YOU, true);
+        ability.setRuleVisible(false);
         this.addAbility(ability);
 
         // Morph {1}{U}
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{1}{U}")));
     }
 
-    public VesuvanShapeshifter(final VesuvanShapeshifter card) {
+    private VesuvanShapeshifter(final VesuvanShapeshifter card) {
         super(card);
     }
 
@@ -69,33 +71,25 @@ public final class VesuvanShapeshifter extends CardImpl {
     }
 }
 
-class VesuvanShapeShifterFaceUpApplier extends ApplyToPermanent {
+class VesuvanShapeShifterFaceUpCopyApplier extends CopyApplier {
 
     @Override
-    public boolean apply(Game game, Permanent permanent, Ability source, UUID copyToObjectId) {
-        Effect effect = new VesuvanShapeshifterFaceDownEffect();
-        Ability ability = new BeginningOfUpkeepTriggeredAbility(effect, TargetController.YOU, true);
-        permanent.getAbilities().add(ability);
-        return true;
-    }
-
-    @Override
-    public boolean apply(Game game, MageObject mageObject, Ability source, UUID copyToObjectId) {
-        Effect effect = new VesuvanShapeshifterFaceDownEffect();
-        Ability ability = new BeginningOfUpkeepTriggeredAbility(effect, TargetController.YOU, true);
-        mageObject.getAbilities().add(ability);
+    public boolean apply(Game game, MageObject blueprint, Ability source, UUID copyToObjectId) {
+        blueprint.getAbilities().add(new BeginningOfUpkeepTriggeredAbility(
+                new VesuvanShapeshifterFaceDownEffect(), TargetController.YOU, true
+        ));
         return true;
     }
 }
 
 class VesuvanShapeshifterEffect extends OneShotEffect {
 
-    public VesuvanShapeshifterEffect() {
+    VesuvanShapeshifterEffect() {
         super(Outcome.Copy);
         staticText = "have {this} become a copy of a creature, except it has this ability";
     }
 
-    public VesuvanShapeshifterEffect(final VesuvanShapeshifterEffect effect) {
+    private VesuvanShapeshifterEffect(final VesuvanShapeshifterEffect effect) {
         super(effect);
     }
 
@@ -113,14 +107,14 @@ class VesuvanShapeshifterEffect extends OneShotEffect {
             FilterCreaturePermanent filter = new FilterCreaturePermanent("another creature");
             filter.add(AnotherPredicate.instance);
 
-            TargetCreaturePermanent target = new TargetCreaturePermanent(0, 1, filter, false);
+            TargetCreaturePermanent target = new TargetCreaturePermanent(0, 1, filter, true);
 
             if (controller != null && controller.chooseTarget(Outcome.BecomeCreature, target, source, game) && !target.getTargets().isEmpty()) {
                 Permanent copyFromCreature = game.getPermanentOrLKIBattlefield(target.getFirstTarget());
                 if (copyFromCreature != null) {
-                    game.copyPermanent(Duration.Custom, copyFromCreature, copyToCreature.getId(), source, new VesuvanShapeShifterFaceUpApplier());
+                    game.copyPermanent(Duration.Custom, copyFromCreature, copyToCreature.getId(), source, new VesuvanShapeShifterFaceUpCopyApplier());
                     source.getTargets().clear();
-                    game.applyEffects(); // needed to get effects ready if copy happens in replacment and the copied abilities react of the same event (e.g. turn face up)
+                    game.getState().processAction(game); // needed to get effects ready if copy happens in replacment and the copied abilities react of the same event (e.g. turn face up)
                     return true;
                 }
             }
@@ -131,12 +125,12 @@ class VesuvanShapeshifterEffect extends OneShotEffect {
 
 class VesuvanShapeshifterFaceDownEffect extends OneShotEffect {
 
-    public VesuvanShapeshifterFaceDownEffect() {
+    VesuvanShapeshifterFaceDownEffect() {
         super(Outcome.Copy);
-        staticText = "have {this} become a morphed, faced down creature";
+        staticText = "turn this creature face down";
     }
 
-    public VesuvanShapeshifterFaceDownEffect(final VesuvanShapeshifterFaceDownEffect effect) {
+    private VesuvanShapeshifterFaceDownEffect(final VesuvanShapeshifterFaceDownEffect effect) {
         super(effect);
     }
 
@@ -150,25 +144,25 @@ class VesuvanShapeshifterFaceDownEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
 
         Permanent permanent = game.getPermanent(source.getSourceId());
-        if (controller != null && permanent != null) {
-            permanent.removeAllAbilities(source.getSourceId(), game);
+        if (controller == null || permanent == null) {
+            return false;
+        }
+        permanent.removeAllAbilities(source.getSourceId(), game);
 
-            // Set any previous copy effects to 'discarded'
-            for (Effect effect : game.getState().getContinuousEffects().getLayeredEffects(game)) {
-                if (effect instanceof CopyEffect) {
-                    CopyEffect copyEffect = (CopyEffect) effect;
-                    if (copyEffect.getSourceId().equals(permanent.getId())) {
-                        copyEffect.discard();
-                    }
+        // Set any previous copy effects to 'discarded'
+        for (Effect effect : game.getState().getContinuousEffects().getLayeredEffects(game)) {
+            if (effect instanceof CopyEffect) {
+                CopyEffect copyEffect = (CopyEffect) effect;
+                if (copyEffect.getSourceId().equals(permanent.getId())) {
+                    copyEffect.discard();
                 }
             }
-
-            permanent.turnFaceDown(game, source.getControllerId());
-            permanent.setManifested(false);
-            permanent.setMorphed(true);
-            return permanent.isFaceDown(game);
         }
 
-        return false;
+        permanent.turnFaceDown(source, game, source.getControllerId());
+        permanent.setManifested(false);
+        permanent.setMorphed(true);
+        return permanent.isFaceDown(game);
+
     }
 }

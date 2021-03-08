@@ -21,7 +21,7 @@ import mage.filter.predicate.mageobject.ColorPredicate;
  */
 public final class QuirionDryad extends CardImpl {
 
-    private static final FilterSpell filter = new FilterSpell("white, blue, black, or red spell");
+    private static final FilterSpell filter = new FilterSpell("a spell that's white, blue, black, or red");
 
     static {
         filter.add(Predicates.or(
@@ -40,7 +40,7 @@ public final class QuirionDryad extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance(1)), filter, false));
     }
 
-    public QuirionDryad(final QuirionDryad card) {
+    private QuirionDryad(final QuirionDryad card) {
         super(card);
     }
 

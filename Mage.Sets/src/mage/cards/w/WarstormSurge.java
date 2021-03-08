@@ -32,7 +32,7 @@ public final class WarstormSurge extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WarstormSurge(final WarstormSurge card) {
+    private WarstormSurge(final WarstormSurge card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class WarstormSurgeTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override
@@ -106,12 +106,12 @@ class WarstormSurgeEffect extends OneShotEffect {
             UUID target = source.getTargets().getFirstTarget();
             Permanent targetCreature = game.getPermanent(target);
             if (targetCreature != null) {
-                targetCreature.damage(amount, creature.getId(), game, false, true);
+                targetCreature.damage(amount, creature.getId(), source, game, false, true);
                 return true;
             }
             Player player = game.getPlayer(target);
             if (player != null) {
-                player.damage(amount, creature.getId(), game);
+                player.damage(amount, creature.getId(), source, game);
                 return true;
             }
         }

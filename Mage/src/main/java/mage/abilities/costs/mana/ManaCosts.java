@@ -39,9 +39,7 @@ public interface ManaCosts<T extends ManaCost> extends List<T>, ManaCost {
      */
     void load(String mana, boolean extractMonoHybridGenericValue);
 
-    List<String> getSymbols();
-
-    boolean payOrRollback(Ability ability, Game game, UUID sourceId, UUID payingPlayerId);
+    boolean payOrRollback(Ability ability, Game game, Ability source, UUID payingPlayerId);
 
     @Override
     Mana getMana();
@@ -56,5 +54,4 @@ public interface ManaCosts<T extends ManaCost> extends List<T>, ManaCost {
                 .collect(Collectors.toCollection(ManaCostsImpl::new));
 
     }
-
 }

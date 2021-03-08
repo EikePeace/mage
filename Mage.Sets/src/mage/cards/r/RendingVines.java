@@ -35,7 +35,7 @@ public final class RendingVines extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public RendingVines(final RendingVines card) {
+    private RendingVines(final RendingVines card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class RendingVinesEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (controller != null) {
             if (permanent.getConvertedManaCost() <= controller.getHand().size()) {
-                return permanent.destroy(source.getSourceId(), game, false);
+                return permanent.destroy(source, game, false);
             }
         }
         return false;

@@ -6,9 +6,8 @@ import mage.abilities.effects.common.CounterTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.filter.FilterAbility;
 import mage.filter.FilterStackObject;
-import mage.filter.predicate.ability.ArtifactSourcePredicate;
+import mage.filter.predicate.other.ArtifactSourcePredicate;
 import mage.target.common.TargetActivatedAbility;
 
 /**
@@ -31,7 +30,7 @@ public final class Rust extends CardImpl {
         this.getSpellAbility().addTarget(new TargetActivatedAbility(filter));
     }
 
-    public Rust(final Rust card) {
+    private Rust(final Rust card) {
         super(card);
     }
 

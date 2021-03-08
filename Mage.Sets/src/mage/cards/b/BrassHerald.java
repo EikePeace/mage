@@ -40,7 +40,7 @@ public final class BrassHerald extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostAllOfChosenSubtypeEffect(1, 1, Duration.WhileOnBattlefield, false)));
     }
 
-    public BrassHerald(final BrassHerald card) {
+    private BrassHerald(final BrassHerald card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class BrassHeraldEntersEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         FilterCard filter = new FilterCard("creature cards of the chosen type");
-        filter.add(ChosenSubtypePredicate.instance);
+        filter.add(ChosenSubtypePredicate.TRUE);
         return new RevealLibraryPutIntoHandEffect(4, filter, Zone.LIBRARY).apply(game, source);
     }
 }

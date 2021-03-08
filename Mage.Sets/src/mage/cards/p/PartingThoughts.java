@@ -28,7 +28,7 @@ public final class PartingThoughts extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public PartingThoughts(final PartingThoughts card) {
+    private PartingThoughts(final PartingThoughts card) {
         super(card);
     }
 
@@ -60,14 +60,14 @@ class PartingThoughtsEffect extends OneShotEffect {
         if (controller != null) {
             Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (permanent != null) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
                 int numberOfCounters = 0;
                 for (Counter counter : permanent.getCounters(game).values()) {
                     numberOfCounters += counter.getCount();
                 }
                 if (numberOfCounters > 0) {
-                    controller.drawCards(numberOfCounters, game);
-                    controller.loseLife(numberOfCounters, game, false);
+                    controller.drawCards(numberOfCounters, source, game);
+                    controller.loseLife(numberOfCounters, game, source, false);
                 }
             }
             return true;

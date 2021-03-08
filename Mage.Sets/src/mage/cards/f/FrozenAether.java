@@ -30,7 +30,7 @@ public final class FrozenAether extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new FrozenAetherTapEffect()));
     }
 
-    public FrozenAether(final FrozenAether card) {
+    private FrozenAether(final FrozenAether card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class FrozenAetherTapEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

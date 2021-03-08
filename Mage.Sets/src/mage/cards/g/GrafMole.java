@@ -31,7 +31,7 @@ public final class GrafMole extends CardImpl {
         this.addAbility(new GrafMoleTriggeredAbility());
     }
 
-    public GrafMole(final GrafMole card) {
+    private GrafMole(final GrafMole card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class GrafMoleTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

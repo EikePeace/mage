@@ -1,4 +1,3 @@
-
 package mage.abilities.common;
 
 import mage.abilities.TriggeredAbilityImpl;
@@ -92,6 +91,7 @@ public class BeginningOfUpkeepTriggeredAbility extends TriggeredAbilityImpl {
                 break;
             case ANY:
             case ACTIVE:
+            case EACH_PLAYER:
                 if (setTargetPointer && getTargets().isEmpty()) {
                     for (Effect effect : this.getEffects()) {
                         effect.setTargetPointer(new FixedTarget(event.getPlayerId()));
@@ -137,9 +137,10 @@ public class BeginningOfUpkeepTriggeredAbility extends TriggeredAbilityImpl {
             case OPPONENT:
                 return sb.insert(0, generateZoneString()).insert(0, "At the beginning of each opponent's upkeep, ").toString();
             case ANY:
-                return sb.insert(0, generateZoneString()).insert(0, "At the beginning of each upkeep, ").toString();
             case ACTIVE:
                 return sb.insert(0, generateZoneString()).insert(0, "At the beginning of each player's upkeep, ").toString();
+            case EACH_PLAYER:
+                return sb.insert(0, generateZoneString()).insert(0, "At the beginning of each upkeep, ").toString();
             case CONTROLLER_ATTACHED_TO:
                 return sb.insert(0, generateZoneString()).insert(0, "At the beginning of the upkeep of enchanted creature's controller, ").toString();
         }

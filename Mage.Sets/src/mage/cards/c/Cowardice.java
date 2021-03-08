@@ -12,7 +12,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
-import mage.game.stack.StackObject;
 import mage.target.targetpointer.FixedTarget;
 
 /**
@@ -28,7 +27,7 @@ public final class Cowardice extends CardImpl {
         this.addAbility(new CowardiceTriggeredAbility());
     }
 
-    public Cowardice(final Cowardice card) {
+    private Cowardice(final Cowardice card) {
         super(card);
     }
 
@@ -50,7 +49,7 @@ class CowardiceTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

@@ -32,7 +32,7 @@ public final class SettleTheScore extends CardImpl {
         this.getSpellAbility().addEffect(new SettleTheScoreEffect());
     }
 
-    public SettleTheScore(final SettleTheScore card) {
+    private SettleTheScore(final SettleTheScore card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class SettleTheScoreEffect extends OneShotEffect {
         if (target.choose(Outcome.Benefit, player.getId(), source.getSourceId(), game)) {
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                permanent.addCounters(CounterType.LOYALTY.createInstance(2), source, game);
+                permanent.addCounters(CounterType.LOYALTY.createInstance(2), source.getControllerId(), source, game);
             }
         }
         return true;

@@ -38,7 +38,7 @@ public final class ErdwalIlluminator extends CardImpl {
 
     }
 
-    public ErdwalIlluminator(final ErdwalIlluminator card) {
+    private ErdwalIlluminator(final ErdwalIlluminator card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class ErdwalIlluminatorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.INVESTIGATED;
+        return event.getType() == GameEvent.EventType.INVESTIGATED;
     }
 
     @Override
@@ -91,7 +91,7 @@ class InvestigatedWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.INVESTIGATED) {
+        if (event.getType() == GameEvent.EventType.INVESTIGATED) {
             timesInvestigated.put(event.getPlayerId(), getTimesInvestigated(event.getPlayerId()) + 1);
 
         }

@@ -40,7 +40,7 @@ public final class CustodiSquire extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new CustodiSquireVoteEffect(), false, true));
     }
 
-    public CustodiSquire(final CustodiSquire card) {
+    private CustodiSquire(final CustodiSquire card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class CustodiSquireVoteEffect extends OneShotEffect {
                         player.chooseTarget(outcome, possibleCards, target, source, game);
                         Card card = game.getCard(target.getFirstTarget());
                         if (card != null) {
-                            game.informPlayers(player.getName() + " voted for " + card.getLogName());
+                            game.informPlayers(player.getLogName() + " voted for " + card.getLogName());
                             if (!cardCounter.containsKey(target.getFirstTarget())) {
                                 cardCounter.put(target.getFirstTarget(), 1);
                             } else {

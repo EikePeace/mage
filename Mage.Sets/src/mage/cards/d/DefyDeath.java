@@ -1,7 +1,5 @@
-
 package mage.cards.d;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ReturnFromGraveyardToBattlefieldTargetEffect;
@@ -16,8 +14,9 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCardInYourGraveyard;
 
+import java.util.UUID;
+
 /**
- *
  * @author North
  */
 public final class DefyDeath extends CardImpl {
@@ -26,12 +25,12 @@ public final class DefyDeath extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{W}{W}");
 
         // Return target creature card from your graveyard to the battlefield. If it's an Angel, put two +1/+1 counters on it.
-        this.getSpellAbility().addEffect(new ReturnFromGraveyardToBattlefieldTargetEffect());
+        this.getSpellAbility().addEffect(new ReturnFromGraveyardToBattlefieldTargetEffect(false, false));
         this.getSpellAbility().addEffect(new DefyDeathEffect());
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD));
     }
 
-    public DefyDeath(final DefyDeath card) {
+    private DefyDeath(final DefyDeath card) {
         super(card);
     }
 
@@ -61,7 +60,7 @@ class DefyDeathEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getFirstTarget());
         if (permanent != null && permanent.hasSubtype(SubType.ANGEL, game)) {
-            permanent.addCounters(CounterType.P1P1.createInstance(2), source, game);
+            permanent.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
             return true;
         }
         return false;

@@ -64,7 +64,7 @@ public class SacrificeAllEffect extends OneShotEffect {
             if (player != null) {
                 int numTargets = Math.min(amount.calculate(game, source, this), game.getBattlefield().countAll(filter, player.getId(), game));
                 TargetControlledPermanent target = new TargetControlledPermanent(numTargets, numTargets, filter, true);
-                if (target.canChoose(player.getId(), game)) {
+                if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                     while (!target.isChosen() && player.canRespond()) {
                         player.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
                     }
@@ -75,7 +75,7 @@ public class SacrificeAllEffect extends OneShotEffect {
         for (UUID permID : perms) {
             Permanent permanent = game.getPermanent(permID);
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
         return true;
@@ -88,7 +88,8 @@ public class SacrificeAllEffect extends OneShotEffect {
             sb.append(amount.toString());
             sb.append(' ');
         } else if (!filter.getMessage().startsWith("a ")) {
-            sb.append(CardUtil.numberToText(amount.toString(), "a "));
+            sb.append(CardUtil.numberToText(amount.toString(), "a"));
+            sb.append(' ');
         }
         sb.append(filter.getMessage());
         staticText = sb.toString();

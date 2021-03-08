@@ -42,7 +42,7 @@ public final class VengefulArchon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VengefulArchon(final VengefulArchon card) {
+    private VengefulArchon(final VengefulArchon card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class VengefulArchonEffect extends PreventDamageToControllerEffect {
         PreventionEffectData preventionEffectData = super.preventDamageAction(event, source, game);
         int damage = preventionEffectData.getPreventedDamage();
         if (damage > 0) {
-            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), damage, source.getSourceId(), game, false, true);
+            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), damage, source.getSourceId(), source, game, false, true);
         }
         return preventionEffectData;
     }

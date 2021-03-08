@@ -27,7 +27,7 @@ public final class WindsOfChange extends CardImpl {
         this.getSpellAbility().addEffect(new WindsOfChangeEffect());
     }
 
-    public WindsOfChange(final WindsOfChange card) {
+    private WindsOfChange(final WindsOfChange card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class WindsOfChangeEffect extends OneShotEffect {
             for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null && permanentsCount.containsKey(playerId)) {
-                    player.drawCards(permanentsCount.get(playerId), game);
+                    player.drawCards(permanentsCount.get(playerId), source, game);
                 }
             }
             return true;

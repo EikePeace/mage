@@ -1,6 +1,5 @@
 package mage.abilities.effects.common;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.StaticValue;
@@ -15,8 +14,9 @@ import mage.target.Target;
 import mage.target.TargetPermanent;
 import mage.util.CardUtil;
 
+import java.util.UUID;
+
 /**
- *
  * @author maurer.it_at_gmail.com
  */
 public class SacrificeEffect extends OneShotEffect {
@@ -58,14 +58,14 @@ public class SacrificeEffect extends OneShotEffect {
                 Target target = new TargetPermanent(amount, amount, newFilter, true);
                 if (amount > 0 && target.canChoose(source.getSourceId(), player.getId(), game)) {
                     while (!target.isChosen()
-                            && target.canChoose(player.getId(), game)
+                            && target.canChoose(source.getSourceId(), player.getId(), game)
                             && player.canRespond()) {
                         player.chooseTarget(Outcome.Sacrifice, target, source, game);
                     }
                     for (int idx = 0; idx < target.getTargets().size(); idx++) {
                         Permanent permanent = game.getPermanent(target.getTargets().get(idx));
                         if (permanent != null
-                                && permanent.sacrifice(source.getSourceId(), game)) {
+                                && permanent.sacrifice(source, game)) {
                             applied = true;
                         }
                     }
@@ -98,7 +98,9 @@ public class SacrificeEffect extends OneShotEffect {
                 sb.append(" sacrifice ");
             }
         }
-        sb.append(CardUtil.numberToText(count.toString(), "a")).append(' ');
+        if (!filter.getMessage().startsWith("another")) {
+            sb.append(CardUtil.numberToText(count.toString(), "a")).append(' ');
+        }
         sb.append(filter.getMessage());
         staticText = sb.toString();
     }

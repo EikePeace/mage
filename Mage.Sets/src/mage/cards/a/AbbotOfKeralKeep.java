@@ -39,7 +39,7 @@ public final class AbbotOfKeralKeep extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new AbbotOfKeralKeepExileEffect()));
     }
 
-    public AbbotOfKeralKeep(final AbbotOfKeralKeep card) {
+    private AbbotOfKeralKeep(final AbbotOfKeralKeep card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class AbbotOfKeralKeepExileEffect extends OneShotEffect {
                 String exileName = sourcePermanent.getIdName() + " <this card may be played the turn it was exiled>";
                 controller.moveCardsToExile(card, source, game, true, source.getSourceId(), exileName);
                 ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Duration.EndOfTurn);
-                effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+                effect.setTargetPointer(new FixedTarget(card, game));
                 game.addEffect(effect, source);
             }
             return true;

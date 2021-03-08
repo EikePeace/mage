@@ -1,4 +1,3 @@
-
 package mage.cards.w;
 
 import java.util.HashSet;
@@ -35,7 +34,7 @@ public final class Worldpurge extends CardImpl {
 
     }
 
-    public Worldpurge(final Worldpurge card) {
+    private Worldpurge(final Worldpurge card) {
         super(card);
     }
 
@@ -78,19 +77,14 @@ class WorldpurgeEffect extends OneShotEffect {
                     int numberInHand = Math.min(7, hand.size());
                     TargetCardInHand target = new TargetCardInHand(0, numberInHand, new FilterCard("cards to keep in hand"));
                     Cards cardsToLibrary = new CardsImpl();
+                    cardsToLibrary.addAll(player.getHand());
                     if (player.choose(Outcome.Benefit, target, source.getSourceId(), game)) {
-                        for (Card card : hand.getCards(game)) {
-                            if (!target.getTargets().contains(card.getId())) {
-                                cardsToLibrary.add(card);
-                                card.moveToZone(Zone.LIBRARY, source.getSourceId(), game, false);
-                            }
-                        }
+                        cardsToLibrary.removeAll(target.getTargets());
                     }
-                    player.putCardsOnTopOfLibrary(cardsToLibrary, game, source, false);
-                    player.shuffleLibrary(source, game);
+                    player.shuffleCardsToLibrary(cardsToLibrary, game, source);
                 }
             }
-            game.emptyManaPools();
+            game.emptyManaPools(source);
             game.informPlayers(sourceObject.getLogName() + " - All players have lost all unspent mana");
             return true;
         }

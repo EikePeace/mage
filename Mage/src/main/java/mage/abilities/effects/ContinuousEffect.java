@@ -47,8 +47,6 @@ public interface ContinuousEffect extends Effect {
 
     SubLayer getSublayer();
 
-    void overrideRuleText(String text);
-
     List<MageObjectReference> getAffectedObjects();
 
     Set<UUID> isDependentTo(List<ContinuousEffect> allEffectsInLayer);
@@ -66,8 +64,6 @@ public interface ContinuousEffect extends Effect {
     void setStartingControllerAndTurnNum(Game game, UUID startingController, UUID activePlayerId);
 
     UUID getStartingController();
-
-    void incYourTurnNumPlayed();
 
     boolean isYourNextTurn(Game game);
 

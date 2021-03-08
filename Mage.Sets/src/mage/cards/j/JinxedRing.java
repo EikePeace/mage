@@ -50,7 +50,7 @@ public final class JinxedRing extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JinxedRing(final JinxedRing card) {
+    private JinxedRing(final JinxedRing card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class JinxedRingEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = (Permanent) source.getSourceObjectIfItStillExists(game);
         if (permanent != null) {
-            return permanent.changeControllerId(source.getFirstTarget(), game);
+            return permanent.changeControllerId(source.getFirstTarget(), game, source);
         } else {
             discard();
         }

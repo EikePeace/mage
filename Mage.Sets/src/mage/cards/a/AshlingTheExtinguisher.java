@@ -37,7 +37,7 @@ public final class AshlingTheExtinguisher extends CardImpl {
         this.addAbility(new AshlingTheExtinguisherTriggeredAbility());
     }
 
-    public AshlingTheExtinguisher(final AshlingTheExtinguisher card) {
+    private AshlingTheExtinguisher(final AshlingTheExtinguisher card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class AshlingTheExtinguisherTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

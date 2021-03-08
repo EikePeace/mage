@@ -11,7 +11,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -35,7 +34,7 @@ public final class FleetSwallower extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FleetSwallower(final FleetSwallower card) {
+    private FleetSwallower(final FleetSwallower card) {
         super(card);
     }
 
@@ -61,7 +60,8 @@ class FleetSwallowerEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getFirstTarget());
         if (player != null) {
             int amount = (int) Math.ceil(player.getLibrary().size() * .5);
-            return player.moveCards(player.getLibrary().getTopCards(game, amount), Zone.GRAVEYARD, source, game);
+            player.millCards(amount, source, game);
+            return true;
         }
         return false;
     }

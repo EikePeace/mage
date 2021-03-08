@@ -39,6 +39,7 @@ public final class ChickenALaKing extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{1}{U}{U}");
 
         this.subtype.add(SubType.BIRD);
+        this.subtype.add(SubType.NOBLE);
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
 
@@ -49,7 +50,7 @@ public final class ChickenALaKing extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RollDiceEffect(null, Outcome.Benefit, 6), new TapTargetCost(new TargetControlledPermanent(1, 1, filter, false))));
     }
 
-    public ChickenALaKing(final ChickenALaKing card) {
+    private ChickenALaKing(final ChickenALaKing card) {
         super(card);
     }
 

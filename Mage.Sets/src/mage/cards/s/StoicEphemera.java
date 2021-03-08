@@ -3,7 +3,7 @@ package mage.cards.s;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.BlocksTriggeredAbility;
+import mage.abilities.common.BlocksSourceTriggeredAbility;
 import mage.abilities.common.delayed.AtTheEndOfCombatDelayedTriggeredAbility;
 import mage.abilities.effects.common.CreateDelayedTriggeredAbilityEffect;
 import mage.abilities.effects.common.SacrificeSourceEffect;
@@ -31,14 +31,14 @@ public final class StoicEphemera extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
         // When Stoic Ephemera blocks, sacrifice it at end of combat.
-        this.addAbility(new BlocksTriggeredAbility(
+        this.addAbility(new BlocksSourceTriggeredAbility(
                 new CreateDelayedTriggeredAbilityEffect(
                         new AtTheEndOfCombatDelayedTriggeredAbility(new SacrificeSourceEffect())
                 ), false, false, true
         ));
     }
 
-    public StoicEphemera(final StoicEphemera card) {
+    private StoicEphemera(final StoicEphemera card) {
         super(card);
     }
 

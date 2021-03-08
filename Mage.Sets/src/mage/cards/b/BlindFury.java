@@ -11,7 +11,7 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.StaticFilters;
 import mage.game.Game;
-import mage.game.events.DamageCreatureEvent;
+import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.util.CardUtil;
@@ -30,7 +30,7 @@ public final class BlindFury extends CardImpl {
         this.getSpellAbility().addEffect(new LoseAbilityAllEffect(
                 TrampleAbility.getInstance(), Duration.EndOfTurn,
                 StaticFilters.FILTER_PERMANENT_CREATURES
-        ).setText("All creatures lose trample until end of turn."));
+        ).setText("All creatures lose trample until end of turn"));
         this.getSpellAbility().addEffect(new FurnaceOfRathEffect());
     }
 
@@ -63,7 +63,7 @@ class FurnaceOfRathEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -71,13 +71,13 @@ class FurnaceOfRathEffect extends ReplacementEffectImpl {
         Permanent permanent = game.getPermanent(event.getSourceId());
         return permanent != null
                 && permanent.isCreature()
-                && ((DamageCreatureEvent) event).isCombatDamage();
+                && ((DamageEvent) event).isCombatDamage();
 
     }
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

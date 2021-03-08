@@ -35,7 +35,7 @@ public final class EidolonOfTheGreatRevel extends CardImpl {
 
     }
 
-    public EidolonOfTheGreatRevel(final EidolonOfTheGreatRevel card) {
+    private EidolonOfTheGreatRevel(final EidolonOfTheGreatRevel card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class EidolonOfTheGreatRevelTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

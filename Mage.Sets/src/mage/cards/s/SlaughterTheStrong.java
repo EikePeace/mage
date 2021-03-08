@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import mage.abilities.Ability;
@@ -35,7 +34,7 @@ public final class SlaughterTheStrong extends CardImpl {
         this.getSpellAbility().addEffect(new SlaughterTheStrongEffect());
     }
 
-    public SlaughterTheStrong(final SlaughterTheStrong card) {
+    private SlaughterTheStrong(final SlaughterTheStrong card) {
         super(card);
     }
 
@@ -70,7 +69,7 @@ class SlaughterTheStrongEffect extends OneShotEffect {
                 if (player != null) {
                     boolean selectionDone = false;
                     Set<UUID> selectedCreatures = new HashSet<>();
-                    while (selectionDone == false && player.isInGame()) {
+                    while (player.canRespond() && selectionDone == false) {
                         int powerSum = 0;
                         for (UUID creatureId : selectedCreatures) {
                             Permanent creature = game.getPermanent(creatureId);
@@ -93,14 +92,16 @@ class SlaughterTheStrongEffect extends OneShotEffect {
 
                         // human can de-select targets, but AI must choose only one time
                         Target target;
-                        if (player.isHuman()) {
-                            target = new TargetPermanent(0, 1, currentFilter, true);
-                        } else {
+                        if (player.isComputer()) {
+                            // AI settings
                             FilterControlledCreaturePermanent strictFilter = currentFilter.copy();
                             selectedCreatures.stream().forEach(id -> {
                                 strictFilter.add(Predicates.not(new PermanentIdPredicate(id)));
                             });
                             target = new TargetPermanent(0, 1, strictFilter, true);
+                        } else {
+                            // Human settings
+                            target = new TargetPermanent(0, 1, currentFilter, true);
                         }
 
                         player.chooseTarget(Outcome.BoostCreature, target, source, game);
@@ -111,7 +112,11 @@ class SlaughterTheStrongEffect extends OneShotEffect {
                                 selectedCreatures.add(target.getFirstTarget());
                             }
                         } else {
-                            if (player.isHuman()) {
+                            if (player.isComputer()) {
+                                // AI stops
+                                selectionDone = true;
+                            } else {
+                                // Human can continue
                                 String selected = "Selected: ";
                                 for (UUID creatureId : selectedCreatures) {
                                     Permanent creature = game.getPermanent(creatureId);
@@ -124,14 +129,12 @@ class SlaughterTheStrongEffect extends OneShotEffect {
                                         selected,
                                         "End the selection",
                                         "Continue the selection", source, game);
-                            } else {
-                                selectionDone = true;
                             }
                         }
                     }
                     for (Permanent creature : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, playerId, game)) {
                         if (!selectedCreatures.contains(creature.getId())) {
-                            creature.sacrifice(source.getSourceId(), game);
+                            creature.sacrifice(source, game);
                         }
                     }
                 }

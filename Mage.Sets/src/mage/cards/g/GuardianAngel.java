@@ -38,7 +38,7 @@ public final class GuardianAngel extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public GuardianAngel(final GuardianAngel card) {
+    private GuardianAngel(final GuardianAngel card) {
         super(card);
     }
 
@@ -132,7 +132,7 @@ class GuardianAngelDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CLEANUP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.CLEANUP_STEP_PRE;
     }
 
     @Override

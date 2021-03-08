@@ -3,7 +3,7 @@ package mage.cards.s;
 
 import mage.MageObject;
 import mage.abilities.Ability;
-import mage.abilities.common.CantBeCounteredAbility;
+import mage.abilities.common.CantBeCounteredSourceAbility;
 import mage.abilities.effects.AsThoughEffectImpl;
 import mage.abilities.effects.ContinuousRuleModifyingEffectImpl;
 import mage.abilities.effects.ReplacementEffectImpl;
@@ -16,13 +16,11 @@ import mage.game.Game;
 import mage.game.command.Commander;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.watchers.Watcher;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  *
@@ -34,7 +32,7 @@ public final class SavageSummoning extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{G}");
 
         // Savage Summoning can't be countered.
-        Ability ability = new CantBeCounteredAbility();
+        Ability ability = new CantBeCounteredSourceAbility();
         ability.setRuleAtTheTop(true);
         this.addAbility(ability);
 
@@ -47,7 +45,7 @@ public final class SavageSummoning extends CardImpl {
 
     }
 
-    public SavageSummoning(final SavageSummoning card) {
+    private SavageSummoning(final SavageSummoning card) {
         super(card);
     }
 
@@ -64,7 +62,7 @@ class SavageSummoningAsThoughEffect extends AsThoughEffectImpl {
 
     public SavageSummoningAsThoughEffect() {
         super(AsThoughEffectType.CAST_AS_INSTANT, Duration.EndOfTurn, Outcome.Benefit);
-        staticText = "The next creature card you cast this turn can be cast as though it had flash";
+        staticText = "The next creature spell you cast this turn can be cast as though it had flash";
     }
 
     public SavageSummoningAsThoughEffect(final SavageSummoningAsThoughEffect effect) {
@@ -266,7 +264,7 @@ class SavageSummoningEntersBattlefieldEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
         }
         discard();
         return false;
@@ -274,7 +272,7 @@ class SavageSummoningEntersBattlefieldEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

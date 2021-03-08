@@ -28,7 +28,7 @@ public final class EchoingCalm extends CardImpl {
         this.getSpellAbility().addEffect(new EchoingCalmEffect());
     }
 
-    public EchoingCalm(final EchoingCalm card) {
+    private EchoingCalm(final EchoingCalm card) {
         super(card);
     }
 
@@ -58,11 +58,11 @@ class EchoingCalmEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         if (controller != null && permanent != null) {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
             if (!CardUtil.haveEmptyName(permanent)) { // in case of face down enchantment creature
                 for (Permanent perm : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
                     if (!perm.getId().equals(permanent.getId()) && CardUtil.haveSameNames(perm, permanent) && perm.isEnchantment()) {
-                        perm.destroy(source.getSourceId(), game, false);
+                        perm.destroy(source, game, false);
                     }
                 }
             }

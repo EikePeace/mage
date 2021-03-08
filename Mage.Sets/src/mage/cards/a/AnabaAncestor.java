@@ -14,7 +14,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -43,7 +43,7 @@ public final class AnabaAncestor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AnabaAncestor(final AnabaAncestor card) {
+    private AnabaAncestor(final AnabaAncestor card) {
         super(card);
     }
 

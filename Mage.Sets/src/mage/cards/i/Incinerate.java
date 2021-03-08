@@ -32,7 +32,7 @@ public final class Incinerate extends CardImpl {
         this.getSpellAbility().addWatcher(new DamagedByWatcher(false));
     }
 
-    public Incinerate(final Incinerate card) {
+    private Incinerate(final Incinerate card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class IncinerateEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.REGENERATE;
+        return event.getType() == GameEvent.EventType.REGENERATE;
     }
 
     @Override

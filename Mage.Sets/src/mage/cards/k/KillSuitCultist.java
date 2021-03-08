@@ -44,7 +44,7 @@ public final class KillSuitCultist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public KillSuitCultist(final KillSuitCultist card) {
+    private KillSuitCultist(final KillSuitCultist card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class KillSuitCultistEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE;
+        return event.getType() == EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -89,7 +89,7 @@ class KillSuitCultistEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
         if(permanent != null) {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
             return true;
         }
         return false;

@@ -18,7 +18,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -55,7 +55,7 @@ public final class FlamerushRider extends CardImpl {
         this.addAbility(new DashAbility(this, "{2}{R}{R}"));
     }
 
-    public FlamerushRider(final FlamerushRider card) {
+    private FlamerushRider(final FlamerushRider card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class FlamerushRiderEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(source.getControllerId(), null, true, 1, true, true);
             effect.setTargetPointer(new FixedTarget(permanent, game));

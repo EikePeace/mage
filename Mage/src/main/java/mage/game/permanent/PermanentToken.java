@@ -3,8 +3,10 @@ package mage.game.permanent;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.ManaCost;
+import mage.cards.Card;
 import mage.constants.EmptyNames;
 import mage.game.Game;
+import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.token.Token;
 
 import java.util.UUID;
@@ -25,6 +27,12 @@ public class PermanentToken extends PermanentImpl {
         this.power.modifyBaseValue(token.getPower().getBaseValueModified());
         this.toughness.modifyBaseValue(token.getToughness().getBaseValueModified());
         this.copyFromToken(this.token, game, false); // needed to have at this time (e.g. for subtypes for entersTheBattlefield replacement effects)
+
+        // token's ZCC must be synced with original token to keep abilities settings
+        // Example: kicker ability and kicked status
+        if (game != null) { // game == null in GUI for card viewer's tokens
+            this.setZoneChangeCounter(this.token.getZoneChangeCounter(game), game);
+        }
     }
 
     public PermanentToken(final PermanentToken permanent) {
@@ -52,14 +60,16 @@ public class PermanentToken extends PermanentImpl {
     }
 
     private void copyFromToken(Token token, Game game, boolean reset) {
+        // modify all attributes permanently (without game usage)
         this.name = token.getName();
         this.abilities.clear();
         if (reset) {
             this.abilities.addAll(token.getAbilities());
         } else {
             // first time -> create ContinuousEffects only once
+            // so sourceId must be null (keep triggered abilities forever?)
             for (Ability ability : token.getAbilities()) {
-                this.addAbility(ability, game);
+                this.addAbility(ability, null, game);
             }
         }
         this.abilities.setControllerId(this.controllerId);
@@ -74,9 +84,7 @@ public class PermanentToken extends PermanentImpl {
         this.frameStyle = token.getFrameStyle();
         this.supertype.clear();
         this.supertype.addAll(token.getSuperType());
-        this.subtype.clear();
-        this.subtype.addAll(token.getSubtype(game));
-        this.isAllCreatureTypes = token.isAllCreatureTypes();
+        this.subtype.copyFrom(token.getSubtype(game));
         this.tokenDescriptor = token.getTokenDescriptor();
     }
 
@@ -112,4 +120,17 @@ public class PermanentToken extends PermanentImpl {
         }
     }
 
+    @Override
+    public void updateZoneChangeCounter(Game game, ZoneChangeEvent event) {
+        // token must change zcc on enters to battlefield (like cards do with stack),
+        // so it can keep abilities settings synced with copied spell/card
+        // example: kicker ability of copied creature spell
+        super.updateZoneChangeCounter(game, event);
+    }
+
+    @Override
+    public Card getMainCard() {
+        // token don't have game card, so return itself
+        return this;
+    }
 }

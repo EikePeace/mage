@@ -5,11 +5,11 @@ import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
 import mage.constants.Outcome;
 import mage.counters.Counter;
+import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 
 /**
- *
  * @author Loki
  */
 public class RemoveCounterSourceEffect extends OneShotEffect {
@@ -33,7 +33,7 @@ public class RemoveCounterSourceEffect extends OneShotEffect {
         if (permanent != null) {
             int toRemove = Math.min(counter.getCount(), permanent.getCounters(game).getCount(counter.getName()));
             if (toRemove > 0) {
-                permanent.removeCounters(counter.getName(), toRemove, game);
+                permanent.removeCounters(counter.getName(), toRemove, source, game);
                 if (!game.isSimulation()) {
                     game.informPlayers("Removed " + toRemove + ' ' + counter.getName() + " counter from " + permanent.getLogName());
                 }
@@ -45,7 +45,7 @@ public class RemoveCounterSourceEffect extends OneShotEffect {
             if (card != null) {
                 int toRemove = Math.min(counter.getCount(), card.getCounters(game).getCount(counter.getName()));
                 if (toRemove > 0) {
-                    card.removeCounters(counter.getName(), toRemove, game);
+                    card.removeCounters(counter.getName(), toRemove, source, game);
                     if (!game.isSimulation()) {
                         game.informPlayers("Removed " + toRemove + ' ' + counter.getName()
                                 + " counter from " + card.getLogName()
@@ -69,7 +69,7 @@ public class RemoveCounterSourceEffect extends OneShotEffect {
             sb.append("remove ").append(Integer.toString(counter.getCount())).append(' ').append(counter.getName()).append(" counters from {this}");
             staticText = sb.toString();
         } else {
-            staticText = "remove a " + counter.getName() + " counter from {this}";
+            staticText = "remove " + CounterType.findArticle(counter.getName()) + " " + counter.getName() + " counter from {this}";
         }
     }
 }

@@ -35,7 +35,7 @@ public final class TemporalCascade extends CardImpl {
         this.addAbility(new EntwineAbility("{2}"));
     }
 
-    public TemporalCascade(final TemporalCascade card) {
+    private TemporalCascade(final TemporalCascade card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class TemporalCascadeDrawEffect extends OneShotEffect {
         for (UUID playerId : game.getState().getPlayersInRange(sourcePlayer.getId(), game)) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                player.drawCards(7, game);
+                player.drawCards(7, source, game);
             }
         }
         return true;

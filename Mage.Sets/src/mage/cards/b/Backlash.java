@@ -35,7 +35,7 @@ public final class Backlash extends CardImpl {
         this.getSpellAbility().addEffect(new BacklashEffect());
     }
 
-    public Backlash(final Backlash card) {
+    private Backlash(final Backlash card) {
         super(card);
     }
 
@@ -63,16 +63,15 @@ class BacklashEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        boolean applied = false;
         Permanent targetCreature = game.getPermanent(targetPointer.getFirst(game, source));
         if (targetCreature != null) {
-            applied = targetCreature.tap(game);
+            targetCreature.tap(source, game);
             Player controller = game.getPlayer(targetCreature.getControllerId());
             if (controller != null) {
-                controller.damage(targetCreature.getPower().getValue(), source.getSourceId(), game);
-                applied = true;
+                controller.damage(targetCreature.getPower().getValue(), targetCreature.getId(), source, game);
+                return true;
             }
         }
-        return applied;
+        return false;
     }
 }

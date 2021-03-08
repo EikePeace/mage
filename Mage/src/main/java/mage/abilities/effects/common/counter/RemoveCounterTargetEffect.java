@@ -1,8 +1,6 @@
 
 package mage.abilities.effects.common.counter;
 
-import java.util.HashSet;
-import java.util.Set;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.abilities.effects.OneShotEffect;
@@ -11,13 +9,16 @@ import mage.choices.Choice;
 import mage.choices.ChoiceImpl;
 import mage.constants.Outcome;
 import mage.counters.Counter;
+import mage.counters.CounterType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.util.CardUtil;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- *
  * @author LevelX2
  */
 public class RemoveCounterTargetEffect extends OneShotEffect {
@@ -45,7 +46,7 @@ public class RemoveCounterTargetEffect extends OneShotEffect {
         if (p != null) {
             Counter toRemove = (counter == null ? selectCounterType(game, source, p) : counter);
             if (toRemove != null && p.getCounters(game).getCount(toRemove.getName()) >= toRemove.getCount()) {
-                p.removeCounters(toRemove.getName(), toRemove.getCount(), game);
+                p.removeCounters(toRemove.getName(), toRemove.getCount(), source, game);
                 if (!game.isSimulation()) {
                     game.informPlayers("Removed " + toRemove.getCount() + ' ' + toRemove.getName()
                             + " counter from " + p.getName());
@@ -54,7 +55,7 @@ public class RemoveCounterTargetEffect extends OneShotEffect {
         } else {
             Card c = game.getCard(targetPointer.getFirst(game, source));
             if (c != null && counter != null && c.getCounters(game).getCount(counter.getName()) >= counter.getCount()) {
-                c.removeCounters(counter.getName(), counter.getCount(), game);
+                c.removeCounters(counter.getName(), counter.getCount(), source, game);
                 if (!game.isSimulation()) {
                     game.informPlayers(new StringBuilder("Removed ").append(counter.getCount()).append(' ').append(counter.getName())
                             .append(" counter from ").append(c.getName())
@@ -111,7 +112,7 @@ public class RemoveCounterTargetEffect extends OneShotEffect {
         if (counter == null) {
             text += "a counter";
         } else {
-            text += CardUtil.numberToText(counter.getCount(), "a") + ' ' + counter.getName();
+            text += CardUtil.numberToText(counter.getCount(), CounterType.findArticle(counter.getName())) + ' ' + counter.getName();
             text += counter.getCount() > 1 ? " counters" : " counter";
         }
         text += " from target " + (mode.getTargets().isEmpty() ? " object" : mode.getTargets().get(0).getTargetName());

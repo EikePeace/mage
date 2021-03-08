@@ -1,5 +1,10 @@
 package mage.counters;
 
+import mage.abilities.keyword.*;
+import mage.cards.Card;
+import mage.filter.predicate.Predicate;
+import mage.game.Game;
+
 /**
  * Enum for counters, names and instances.
  *
@@ -7,6 +12,7 @@ package mage.counters;
  */
 public enum CounterType {
 
+    AEGIS("aegis"),
     AGE("age"),
     AIM("aim"),
     ARROW("arrow"),
@@ -28,12 +34,14 @@ public enum CounterType {
     CUBE("cube"),
     CURRENCY("currency"),
     DEATH("death"),
+    DEATHTOUCH("deathtouch"),
     DELAY("delay"),
     DEPLETION("depletion"),
     DESPAIR("despair"),
     DEVOTION("devotion"),
     DIVINITY("divinity"),
     DOOM("doom"),
+    DOUBLE_STRIKE("double strike"),
     DREAM("dream"),
     ECHO("echo"),
     EGG("egg"),
@@ -45,25 +53,33 @@ public enum CounterType {
     FADE("fade"),
     FATE("fate"),
     FEATHER("feather"),
+    FETCH("fetch"),
     FILIBUSTER("filibuster"),
+    FIRST_STRIKE("first strike"),
     FLOOD("flood"),
+    FLYING("flying"),
+    FORESHADOW("foreshadow"),
     FUNK("funk"),
     FURY("fury"),
     FUNGUS("fungus"),
     FUSE("fuse"),
     GEM("gem"),
+    GHOSTFORM("ghostform"),
     GLOBE("globe"),
     GLYPH("glyph"),
     GOLD("gold"),
     GROWTH("growth"),
     HATCHLING("hatchling"),
     HEALING("healing"),
+    HEXPROOF("hexproof"),
     HIT("hit"),
     HOOFPRINT("hoofprint"),
-    HOUR("hour"),
-    HOURGLASS("hourglass"),
+    HOUR("hour", "an"),
+    HOURGLASS("hourglass", "an"),
     HUNGER("hunger"),
     ICE("ice"),
+    INCARNATION("incarnation"),
+    INDESTRUCTIBLE("indestructible"),
     INFECTION("infection"),
     INTERVENTION("intervention"),
     ISOLATION("isolation"),
@@ -72,13 +88,18 @@ public enum CounterType {
     KI("ki"),
     LANDMARK("landmark"),
     LEVEL("level"),
+    LIFELINK("lifelink"),
     LORE("lore"),
     LUCK("luck"),
     LOYALTY("loyalty"),
     MANIFESTATION("manifestation"),
     MANNEQUIN("mannequin"),
     MATRIX("matrix"),
+    MENACE("menace"),
+    M0M1(new BoostCounter(-0, -1).name),
+    M0M2(new BoostCounter(-0, -2).name),
     M1M1(new BoostCounter(-1, -1).name),
+    M1M0(new BoostCounter(-1, -0).name),
     M2M1(new BoostCounter(-2, -1).name),
     M2M2(new BoostCounter(-2, -2).name),
     MINE("mine"),
@@ -87,6 +108,7 @@ public enum CounterType {
     MUSIC("music"),
     MUSTER("muster"),
     NET("net"),
+    NIGHT("night"),
     OMEN("omen"),
     ORE("ore"),
     P0P1(new BoostCounter(0, 1).name),
@@ -109,6 +131,7 @@ public enum CounterType {
     PREY("prey"),
     PROGRESS("progress"),
     PUPA("pupa"),
+    REACH("reach"),
     RESEARCH("research"),
     REPAIR("repair"),
     RUST("rust"),
@@ -122,6 +145,7 @@ public enum CounterType {
     SLIME("slime"),
     SLUMBER("slumber"),
     SOOT("soot"),
+    SOUL("soul"),
     SPITE("spite"),
     SPORE("spore"),
     STABILITY("stability"),
@@ -134,22 +158,33 @@ public enum CounterType {
     TIME("time"),
     TOWER("tower"),
     TRAINING("training"),
+    TRAMPLE("trample"),
     TRAP("trap"),
     TREASURE("treasure"),
-    UNITY("unity"),
+    UNITY("unity", "a"),
     VELOCITY("velocity"),
     VERSE("verse"),
+    VIGILANCE("vigilance"),
     VITALITY("vitality"),
     VORTEX("vortex"),
+    VOYAGE("voyage"),
     WAGE("wage"),
     WINCH("winch"),
     WIND("wind"),
     WISH("wish");
 
     private final String name;
+    private final String article;
+    private final CounterPredicate predicate;
 
     CounterType(String name) {
+        this(name, "aeiou".contains("" + name.charAt(0)) ? "an" : "a");
+    }
+
+    CounterType(String name, String article) {
         this.name = name;
+        this.article = article;
+        this.predicate = new CounterPredicate(this);
     }
 
     /**
@@ -159,6 +194,10 @@ public enum CounterType {
      */
     public String getName() {
         return this.name;
+    }
+
+    public String getArticle() {
+        return article;
     }
 
     /**
@@ -189,12 +228,40 @@ public enum CounterType {
                 return new BoostCounter(1, 2, amount);
             case P2P2:
                 return new BoostCounter(2, 2, amount);
+            case M0M1:
+                return new BoostCounter(0, -1, amount);
+            case M0M2:
+                return new BoostCounter(0, -2, amount);
+            case M1M0:
+                return new BoostCounter(-1, 0, amount);
             case M1M1:
                 return new BoostCounter(-1, -1, amount);
             case M2M1:
                 return new BoostCounter(-2, -1, amount);
             case M2M2:
                 return new BoostCounter(-2, -2, amount);
+            case DEATHTOUCH:
+                return new AbilityCounter(DeathtouchAbility.getInstance(), amount);
+            case DOUBLE_STRIKE:
+                return new AbilityCounter(DoubleStrikeAbility.getInstance(), amount);
+            case FIRST_STRIKE:
+                return new AbilityCounter(FirstStrikeAbility.getInstance(), amount);
+            case FLYING:
+                return new AbilityCounter(FlyingAbility.getInstance(), amount);
+            case HEXPROOF:
+                return new AbilityCounter(HexproofAbility.getInstance(), amount);
+            case INDESTRUCTIBLE:
+                return new AbilityCounter(IndestructibleAbility.getInstance(), amount);
+            case LIFELINK:
+                return new AbilityCounter(LifelinkAbility.getInstance(), amount);
+            case MENACE:
+                return new AbilityCounter(new MenaceAbility(), amount);
+            case REACH:
+                return new AbilityCounter(ReachAbility.getInstance(), amount);
+            case TRAMPLE:
+                return new AbilityCounter(TrampleAbility.getInstance(), amount);
+            case VIGILANCE:
+                return new AbilityCounter(VigilanceAbility.getInstance(), amount);
             default:
                 return new Counter(name, amount);
         }
@@ -212,5 +279,37 @@ public enum CounterType {
             }
         }
         return null;
+    }
+
+    public static String findArticle(String name) {
+        CounterType counterType = findByName(name);
+        return counterType == null ? "a" : counterType.article;
+    }
+
+    public CounterPredicate getPredicate() {
+        return predicate;
+    }
+
+    private static class CounterPredicate implements Predicate<Card> {
+
+        private final CounterType counter;
+
+        private CounterPredicate(CounterType counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public boolean apply(Card input, Game game) {
+            if (counter == null) {
+                return !input.getCounters(game).keySet().isEmpty();
+            } else {
+                return input.getCounters(game).containsKey(counter);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "CounterType(" + counter.getName() + ')';
+        }
     }
 }

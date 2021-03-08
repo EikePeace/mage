@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.d;
 
 import java.util.UUID;
@@ -40,7 +35,7 @@ public final class DwarvenMiner extends CardImpl {
         
     }
     
-    public DwarvenMiner(final DwarvenMiner card) {
+    private DwarvenMiner(final DwarvenMiner card) {
         super(card);
     }
     

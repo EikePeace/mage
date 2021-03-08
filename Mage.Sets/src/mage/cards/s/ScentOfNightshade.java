@@ -31,7 +31,7 @@ public final class ScentOfNightshade extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public ScentOfNightshade(final ScentOfNightshade card) {
+    private ScentOfNightshade(final ScentOfNightshade card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ScentOfNightshadeEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         RevealTargetFromHandCost cost = new RevealTargetFromHandCost(new TargetCardInHand(0, Integer.MAX_VALUE, filter));
-        if (!cost.pay(source, game, source.getSourceId(), source.getControllerId(), true)) {
+        if (!cost.pay(source, game, source, source.getControllerId(), true)) {
             return false;
         }
         int xValue = -1 * cost.getNumberRevealedCards();

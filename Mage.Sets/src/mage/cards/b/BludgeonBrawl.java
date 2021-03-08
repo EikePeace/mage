@@ -33,7 +33,7 @@ public final class BludgeonBrawl extends CardImpl {
         this.addAbility(new BludgeonBrawlAbility());
     }
 
-    public BludgeonBrawl(final BludgeonBrawl card) {
+    private BludgeonBrawl(final BludgeonBrawl card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class BludgeonBrawlAddSubtypeEffect extends ContinuousEffectImpl {
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
             if (permanent != null) {
-                permanent.getSubtype(game).add(SubType.EQUIPMENT);
+                permanent.addSubType(game, SubType.EQUIPMENT);
                 affectedPermanents.add(permanent.getId());
             }
         }
@@ -122,8 +122,8 @@ class BludgeonBrawlGainAbilityEffect extends ContinuousEffectImpl {
                 Permanent permanent = game.getPermanent(permanentId);
                 if (permanent != null) {
                     int convertedManaCost = permanent.getConvertedManaCost();
-                    permanent.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(convertedManaCost)), game);
-                    permanent.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(convertedManaCost, 0)), game);
+                    permanent.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(convertedManaCost)), source.getSourceId(), game);
+                    permanent.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(convertedManaCost, 0)), source.getSourceId(), game);
                 }
             }
             return true;

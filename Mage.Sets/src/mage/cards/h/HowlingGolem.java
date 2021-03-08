@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.h;
 
 import java.util.UUID;
@@ -30,7 +25,7 @@ public final class HowlingGolem extends CardImpl {
         this.addAbility(new AttacksOrBlocksTriggeredAbility(new DrawCardAllEffect(1), false));
     }
 
-    public HowlingGolem(final HowlingGolem card) {
+    private HowlingGolem(final HowlingGolem card) {
         super(card);
     }
 

@@ -38,7 +38,7 @@ public final class NissasChosen extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new NissasChosenEffect()));
     }
 
-    public NissasChosen(final NissasChosen card) {
+    private NissasChosen(final NissasChosen card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class NissasChosenEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
     
     @Override
@@ -85,7 +85,7 @@ class NissasChosenEffect extends ReplacementEffectImpl {
         Permanent permanent = ((ZoneChangeEvent) event).getTarget();
         Player controller = game.getPlayer(source.getControllerId());
         if (permanent != null && controller != null) {
-            controller.moveCardToLibraryWithInfo(permanent, source.getSourceId(), game, Zone.BATTLEFIELD, false, true);
+            controller.moveCardToLibraryWithInfo(permanent, source, game, Zone.BATTLEFIELD, false, true);
             return true;            
         }
         return false;

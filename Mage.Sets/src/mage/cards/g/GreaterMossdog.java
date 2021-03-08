@@ -18,7 +18,7 @@ public final class GreaterMossdog extends CardImpl {
     public GreaterMossdog(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{G}");
         this.subtype.add(SubType.PLANT);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(3);
@@ -27,7 +27,7 @@ public final class GreaterMossdog extends CardImpl {
         this.addAbility(new DredgeAbility(3));
     }
 
-    public GreaterMossdog(final GreaterMossdog card) {
+    private GreaterMossdog(final GreaterMossdog card) {
         super(card);
     }
 

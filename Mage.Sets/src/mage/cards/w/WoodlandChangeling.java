@@ -22,10 +22,10 @@ public final class WoodlandChangeling extends CardImpl {
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
     }
 
-    public WoodlandChangeling(final WoodlandChangeling card) {
+    private WoodlandChangeling(final WoodlandChangeling card) {
         super(card);
     }
 

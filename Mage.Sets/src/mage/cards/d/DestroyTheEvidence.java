@@ -31,7 +31,7 @@ public final class DestroyTheEvidence extends CardImpl {
         this.getSpellAbility().addEffect(new DestroyTheEvidenceEffect());
     }
 
-    public DestroyTheEvidence(final DestroyTheEvidence card) {
+    private DestroyTheEvidence(final DestroyTheEvidence card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class DestroyTheEvidenceEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent landPermanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent landPermanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (landPermanent != null) {
             Player player = game.getPlayer(landPermanent.getControllerId());
             if (player == null) {

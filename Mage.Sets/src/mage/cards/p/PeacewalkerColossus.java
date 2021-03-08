@@ -15,7 +15,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledArtifactPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 import java.util.UUID;
@@ -50,7 +50,7 @@ public final class PeacewalkerColossus extends CardImpl {
         this.addAbility(new CrewAbility(4));
     }
 
-    public PeacewalkerColossus(final PeacewalkerColossus card) {
+    private PeacewalkerColossus(final PeacewalkerColossus card) {
         super(card);
     }
 

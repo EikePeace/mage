@@ -41,7 +41,7 @@ public final class MazirekKraulDeathPriest extends CardImpl {
         this.addAbility(new PlayerSacrificesPermanentTriggeredAbility(new AddCountersAllEffect(CounterType.P1P1.createInstance(), new FilterControlledCreaturePermanent()), false));
     }
 
-    public MazirekKraulDeathPriest(final MazirekKraulDeathPriest card) {
+    private MazirekKraulDeathPriest(final MazirekKraulDeathPriest card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class PlayerSacrificesPermanentTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

@@ -26,7 +26,7 @@ public final class MinionsMurmurs extends CardImpl {
         this.getSpellAbility().addHint(CreaturesYouControlHint.instance);
     }
 
-    public MinionsMurmurs(final MinionsMurmurs card) {
+    private MinionsMurmurs(final MinionsMurmurs card) {
         super(card);
     }
 
@@ -56,8 +56,8 @@ public final class MinionsMurmurs extends CardImpl {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
                 int creaturesControlled = game.getBattlefield().countAll(StaticFilters.FILTER_PERMANENT_CREATURE, controller.getId(), game);
-                controller.drawCards(creaturesControlled, game);
-                controller.loseLife(creaturesControlled, game, false);
+                controller.drawCards(creaturesControlled, source, game);
+                controller.loseLife(creaturesControlled, game, source, false);
                 return true;
             }
             return false;

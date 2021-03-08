@@ -1,33 +1,32 @@
 package mage.abilities.keyword;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import mage.MageObject;
 import mage.ObjectColor;
 import mage.abilities.StaticAbility;
 import mage.cards.Card;
 import mage.constants.Zone;
-import mage.filter.Filter;
-import mage.filter.FilterCard;
-import mage.filter.FilterObject;
-import mage.filter.FilterPermanent;
-import mage.filter.FilterSpell;
+import mage.filter.*;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
 import mage.game.stack.StackObject;
+import mage.players.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class ProtectionAbility extends StaticAbility {
 
     protected Filter filter;
     protected boolean removeAuras;
+    protected boolean removeEquipment;
+    protected boolean doesntRemoveControlled;
     protected static List<ObjectColor> colors = new ArrayList<>();
     protected UUID auraIdNotToBeRemoved; // defines an Aura objectId that will not be removed from this protection ability
 
@@ -35,6 +34,8 @@ public class ProtectionAbility extends StaticAbility {
         super(Zone.BATTLEFIELD, null);
         this.filter = filter;
         this.removeAuras = true;
+        this.removeEquipment = true;
+        this.doesntRemoveControlled = false;
         this.auraIdNotToBeRemoved = null;
     }
 
@@ -42,6 +43,8 @@ public class ProtectionAbility extends StaticAbility {
         super(ability);
         this.filter = ability.filter.copy();
         this.removeAuras = ability.removeAuras;
+        this.removeEquipment = ability.removeEquipment;
+        this.doesntRemoveControlled = ability.doesntRemoveControlled;
         this.auraIdNotToBeRemoved = ability.auraIdNotToBeRemoved;
     }
 
@@ -87,6 +90,7 @@ public class ProtectionAbility extends StaticAbility {
             }
             return true;
         }
+
         if (filter instanceof FilterSpell) {
             if (source instanceof Spell) {
                 return !filter.match(source, game);
@@ -99,9 +103,28 @@ public class ProtectionAbility extends StaticAbility {
                 return true;
             }
         }
+
+        // Emrakul, the Aeons Torn
+        if (filter instanceof FilterStackObject) {
+            if (filter.match(source, game)) {
+                return (!source.isInstantOrSorcery());
+            }
+        }
+
         if (filter instanceof FilterObject) {
             return !filter.match(source, game);
         }
+
+        if (filter instanceof FilterPlayer) {
+            Player player = null;
+            if (source instanceof Permanent) {
+                player = game.getPlayer(((Permanent) source).getControllerId());
+            } else if (source instanceof Card) {
+                player = game.getPlayer(((Card) source).getOwnerId());
+            }
+            return !((FilterPlayer) filter).match(player, getSourceId(), this.getControllerId(), game);
+        }
+
         return true;
     }
 
@@ -119,6 +142,22 @@ public class ProtectionAbility extends StaticAbility {
 
     public boolean removesAuras() {
         return removeAuras;
+    }
+
+    public void setRemoveEquipment(boolean removeEquipment) {
+        this.removeEquipment = removeEquipment;
+    }
+
+    public boolean removesEquipment() {
+        return removeEquipment;
+    }
+
+    public void setDoesntRemoveControlled(boolean doesntRemoveControlled) {
+        this.doesntRemoveControlled = doesntRemoveControlled;
+    }
+
+    public boolean getDoesntRemoveControlled() {
+        return doesntRemoveControlled;
     }
 
     public List<ObjectColor> getColors() {

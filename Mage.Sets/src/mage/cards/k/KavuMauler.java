@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterAttackingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -41,7 +41,7 @@ public final class KavuMauler extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(value, value, Duration.EndOfTurn, true), false));
     }
 
-    public KavuMauler(final KavuMauler card) {
+    private KavuMauler(final KavuMauler card) {
         super(card);
     }
 

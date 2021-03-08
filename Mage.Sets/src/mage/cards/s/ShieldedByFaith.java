@@ -39,17 +39,19 @@ public final class ShieldedByFaith extends CardImpl {
         this.addAbility(new EnchantAbility(auraTarget.getTargetName()));
         
         // Enchanted creature has indestructible.
-        Effect effect = new GainAbilityAttachedEffect(IndestructibleAbility.getInstance(), AttachmentType.AURA, Duration.WhileOnBattlefield);
+        Effect effect = new GainAbilityAttachedEffect(IndestructibleAbility.getInstance(), 
+                AttachmentType.AURA, Duration.WhileOnBattlefield);
         effect.setText("Enchanted creature has indestructible");
+        effect.setOutcome(Outcome.Benefit);
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, effect));
         
         // Whenever a creature enters the battlefield, you may attach Shielded by Faith to that creature.
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(
-                Zone.BATTLEFIELD, new AttachEffect(Outcome.Neutral, "attach {source} to that creature"),
+                Zone.BATTLEFIELD, new AttachEffect(Outcome.Benefit, "attach {this} to that creature"),
                 new FilterCreaturePermanent("a creature"), true, SetTargetPointer.PERMANENT, null, false));
     }
 
-    public ShieldedByFaith(final ShieldedByFaith card) {
+    private ShieldedByFaith(final ShieldedByFaith card) {
         super(card);
     }
 

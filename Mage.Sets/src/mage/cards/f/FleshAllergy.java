@@ -42,7 +42,7 @@ public final class FleshAllergy extends CardImpl {
         this.getSpellAbility().addWatcher(new FleshAllergyWatcher());
     }
 
-    public FleshAllergy(final FleshAllergy card) {
+    private FleshAllergy(final FleshAllergy card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class FleshAllergyWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
-        if (event.getType() == EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
+        if (event.getType() == GameEvent.EventType.ZONE_CHANGE && ((ZoneChangeEvent) event).isDiesEvent()) {
             MageObject card = game.getLastKnownInformation(event.getTargetId(), Zone.BATTLEFIELD);
             if (card != null && card.isCreature()) {
                 creaturesDiedThisTurn++;
@@ -101,13 +101,13 @@ class FleshAllergyEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         FleshAllergyWatcher watcher = game.getState().getWatcher(FleshAllergyWatcher.class);
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null && watcher != null) {
             Player player = game.getPlayer(permanent.getControllerId());
             if (player != null) {
                 int amount = watcher.getCreaturesDiedThisTurn();
                 if (amount > 0) {
-                    player.loseLife(amount, game, false);
+                    player.loseLife(amount, game, source, false);
                     return true;
                 }
             }

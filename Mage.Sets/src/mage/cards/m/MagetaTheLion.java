@@ -17,7 +17,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInHand;
 
 /**
@@ -48,7 +48,7 @@ public final class MagetaTheLion extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagetaTheLion(final MagetaTheLion card) {
+    private MagetaTheLion(final MagetaTheLion card) {
         super(card);
     }
 

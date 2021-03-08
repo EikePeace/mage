@@ -33,7 +33,7 @@ public final class PlagueFiend extends CardImpl {
         this.addAbility(new DealsCombatDamageToACreatureTriggeredAbility(new PlagueFiendEffect(new GenericManaCost(2)), false, true));
     }
 
-    public PlagueFiend(final PlagueFiend card) {
+    private PlagueFiend(final PlagueFiend card) {
         super(card);
     }
 
@@ -74,10 +74,10 @@ class PlagueFiendEffect extends OneShotEffect {
                     cost.clearPaid();
                     final StringBuilder sb = new StringBuilder("Pay {2}? (Otherwise ").append(targetCreature.getName()).append(" will be destroyed)");
                     if (player.chooseUse(Outcome.Benefit, sb.toString(), source, game)) {
-                        cost.pay(source, game, targetCreature.getControllerId(), targetCreature.getControllerId(), false, null);
+                        cost.pay(source, game, source, targetCreature.getControllerId(), false, null);
                     }
                     if (!cost.isPaid()) {
-                        targetCreature.destroy(source.getSourceId(), game, false);
+                        targetCreature.destroy(source, game, false);
                     }
                 }
             }

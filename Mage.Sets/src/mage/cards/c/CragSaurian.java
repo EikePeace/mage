@@ -38,7 +38,7 @@ public final class CragSaurian extends CardImpl {
         this.addAbility(new CragSaurianTriggeredAbility());
     }
 
-    public CragSaurian(final CragSaurian card) {
+    private CragSaurian(final CragSaurian card) {
         super(card);
     }
 
@@ -94,7 +94,7 @@ public final class CragSaurian extends CardImpl {
     
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.DAMAGED_CREATURE;
+            return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
         }
     
         @Override

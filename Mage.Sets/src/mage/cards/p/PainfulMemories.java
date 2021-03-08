@@ -31,7 +31,7 @@ public final class PainfulMemories extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public PainfulMemories(final PainfulMemories card) {
+    private PainfulMemories(final PainfulMemories card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class PainfulMemoriesEffect extends OneShotEffect {
                 if (you.choose(Outcome.Benefit, targetPlayer.getHand(), target, game)) {
                     Card card = targetPlayer.getHand().get(target.getFirstTarget(), game);
                     if (card != null) {
-                        return targetPlayer.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.HAND, true, true);
+                        return targetPlayer.moveCardToLibraryWithInfo(card, source, game, Zone.HAND, true, true);
                     }
                 }
             }

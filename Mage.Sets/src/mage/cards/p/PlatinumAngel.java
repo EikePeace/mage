@@ -35,7 +35,7 @@ public final class PlatinumAngel extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlatinumAngelEffect()));
     }
 
-    public PlatinumAngel(final PlatinumAngel card) {
+    private PlatinumAngel(final PlatinumAngel card) {
         super(card);
     }
 
@@ -67,8 +67,8 @@ public final class PlatinumAngel extends CardImpl {
 
         @Override
         public boolean applies(GameEvent event, Ability source, Game game) {
-            if ((event.getType() == EventType.WINS && game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) ||
-                (event.getType() == EventType.LOSES && event.getPlayerId().equals(source.getControllerId()))) {
+            if ((event.getType() == GameEvent.EventType.WINS && game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) ||
+                (event.getType() == GameEvent.EventType.LOSES && event.getPlayerId().equals(source.getControllerId()))) {
                 return true;
             }
             return false;

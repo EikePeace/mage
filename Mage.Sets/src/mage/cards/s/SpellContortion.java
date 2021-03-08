@@ -1,8 +1,6 @@
 
 package mage.cards.s;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import mage.abilities.costs.mana.GenericManaCost;
@@ -33,7 +31,7 @@ public final class SpellContortion extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public SpellContortion(final SpellContortion card) {
+    private SpellContortion(final SpellContortion card) {
         super(card);
     }
 

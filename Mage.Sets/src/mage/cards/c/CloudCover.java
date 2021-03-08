@@ -28,7 +28,7 @@ public final class CloudCover extends CardImpl {
         this.addAbility(new CloudCoverAbility());
     }
 
-    public CloudCover(final CloudCover card) {
+    private CloudCover(final CloudCover card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class CloudCoverAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

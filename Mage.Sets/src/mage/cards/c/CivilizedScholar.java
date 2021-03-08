@@ -16,13 +16,10 @@ import mage.cards.h.HomicidalBruteWatcher;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Outcome;
-import mage.constants.WatcherScope;
 import mage.constants.Zone;
 import mage.game.Game;
-import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
-import mage.watchers.Watcher;
 
 /**
  * @author nantuko
@@ -45,7 +42,7 @@ public final class CivilizedScholar extends CardImpl {
         this.addAbility(new TransformAbility(), new HomicidalBruteWatcher());
     }
 
-    public CivilizedScholar(final CivilizedScholar card) {
+    private CivilizedScholar(final CivilizedScholar card) {
         super(card);
     }
 
@@ -77,8 +74,8 @@ class CivilizedScholarEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(1, game);
-            Card card = player.discardOne(false, source, game);
+            player.drawCards(1, source, game);
+            Card card = player.discardOne(false, false, source, game);
             if (card != null && card.isCreature()) {
                 Permanent permanent = game.getPermanent(source.getSourceId());
                 if (permanent != null) {

@@ -22,7 +22,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -126,7 +126,7 @@ public class ChampionAbility extends StaticAbility {
     @Override
     public String getRule() {
         StringBuilder sb = new StringBuilder("Champion ").append(objectDescription);
-        sb.append("<i>(When this enters the battlefield, sacrifice it unless you exile another ");
+        sb.append(" <i>(When this enters the battlefield, sacrifice it unless you exile another ");
         sb.append(objectDescription);
         sb.append(" you control. When this leaves the battlefield, that card returns to the battlefield.)</i>");
         return sb.toString();
@@ -135,7 +135,7 @@ public class ChampionAbility extends StaticAbility {
 
 class ChampionExileCost extends CostImpl {
 
-    private String exileZone = null;
+    private String exileZone;
 
     public ChampionExileCost(FilterControlledPermanent filter, String exileZone) {
         this.addTarget(new TargetControlledPermanent(1, 1, filter, true));
@@ -149,20 +149,20 @@ class ChampionExileCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Player controller = game.getPlayer(controllerId);
         MageObject sourceObject = ability.getSourceObject(game);
         if (controller != null && sourceObject != null) {
-            if (targets.choose(Outcome.Exile, controllerId, sourceId, game)) {
-                UUID exileId = CardUtil.getExileZoneId(game, ability.getSourceId(), ability.getSourceObjectZoneChangeCounter());
+            if (targets.choose(Outcome.Exile, controllerId, source.getSourceId(), game)) {
+                UUID exileId = CardUtil.getExileZoneId(game, ability.getSourceId(), ability.getSourceObjectZoneChangeCounter()); // exileId important for return effect
                 for (UUID targetId : targets.get(0).getTargets()) {
                     Permanent permanent = game.getPermanent(targetId);
                     if (permanent == null) {
                         return false;
                     }
-                    paid |= controller.moveCardToExileWithInfo(permanent, exileId, sourceObject.getIdName() + " championed permanents", sourceId, game, Zone.BATTLEFIELD, true);
+                    paid |= controller.moveCardToExileWithInfo(permanent, exileId, sourceObject.getIdName() + " championed permanents", source, game, Zone.BATTLEFIELD, true);
                     if (paid) {
-                        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.CREATURE_CHAMPIONED, permanent.getId(), sourceId, controllerId));
+                        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.CREATURE_CHAMPIONED, permanent.getId(), source, controllerId));
                     }
                 }
             }
@@ -171,8 +171,8 @@ class ChampionExileCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return targets.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return targets.canChoose(source.getSourceId(), controllerId, game);
     }
 
     @Override

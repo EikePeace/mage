@@ -45,7 +45,7 @@ public final class DaredevilDragster extends CardImpl {
         this.addAbility(new CrewAbility(2));
     }
 
-    public DaredevilDragster(final DaredevilDragster card) {
+    private DaredevilDragster(final DaredevilDragster card) {
         super(card);
     }
 
@@ -76,10 +76,10 @@ class DaredevilDragsterEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(source.getSourceId());
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && permanent != null) {
-            permanent.addCounters(CounterType.VELOCITY.createInstance(), source, game);
+            permanent.addCounters(CounterType.VELOCITY.createInstance(), source.getControllerId(), source, game);
             if (permanent.getCounters(game).getCount(CounterType.VELOCITY) >= 2) {
-                permanent.sacrifice(source.getSourceId(), game);
-                controller.drawCards(2, game);
+                permanent.sacrifice(source, game);
+                controller.drawCards(2, source, game);
             }
             return true;
         }

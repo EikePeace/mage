@@ -32,7 +32,7 @@ public final class RiteOfTheSerpent extends CardImpl {
         this.getSpellAbility().addEffect(new RiteOfTheSerpentEffect());
     }
 
-    public RiteOfTheSerpent(final RiteOfTheSerpent card) {
+    private RiteOfTheSerpent(final RiteOfTheSerpent card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class RiteOfTheSerpentEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent targetCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent targetCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (targetCreature != null) {
             if (targetCreature.getCounters(game).containsKey(CounterType.P1P1)) {
                 new CreateTokenEffect(new SnakeToken("KTK")).apply(game, source);

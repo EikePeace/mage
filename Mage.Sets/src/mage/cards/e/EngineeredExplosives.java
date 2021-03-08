@@ -37,7 +37,7 @@ public final class EngineeredExplosives extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EngineeredExplosives(final EngineeredExplosives card) {
+    private EngineeredExplosives(final EngineeredExplosives card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class EngineeredExplosivesEffect extends OneShotEffect {
             int count = ((Permanent)engineeredExplosives).getCounters(game).getCount(CounterType.CHARGE);
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 if(permanent.getConvertedManaCost() == count){
-                    permanent.destroy(source.getSourceId(), game, false);
+                    permanent.destroy(source, game, false);
                 }
             }
             return true;

@@ -34,7 +34,7 @@ public final class AngelsTrumpet extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new AngelsTrumpetTapEffect(), TargetController.ANY, false), new AttackedThisTurnWatcher());
     }
 
-    public AngelsTrumpet(final AngelsTrumpet card) {
+    private AngelsTrumpet(final AngelsTrumpet card) {
         super(card);
     }
 
@@ -76,11 +76,11 @@ class AngelsTrumpetTapEffect extends OneShotEffect {
                     continue;
                 }
                 // Tap the rest.
-                creature.tap(game);
+                creature.tap(source, game);
                 count++;
             }
             if (count > 0) {
-                player.damage(count, source.getSourceId(), game);
+                player.damage(count, source.getSourceId(), source, game);
             }
             return true;
         }

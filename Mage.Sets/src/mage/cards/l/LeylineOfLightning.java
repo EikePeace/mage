@@ -32,7 +32,7 @@ public final class LeylineOfLightning extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LeylineOfLightning(final LeylineOfLightning card) {
+    private LeylineOfLightning(final LeylineOfLightning card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class LeylineOfLightningEffect extends DamageTargetEffect {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
             Cost cost = ManaUtil.createManaCost(1, false);
-            if (cost.pay(source, game, source.getSourceId(), source.getControllerId(), false, null)) {
+            if (cost.pay(source, game, source, source.getControllerId(), false, null)) {
                 super.apply(game, source);
             }
             return true;

@@ -15,7 +15,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.common.FilterEnchantmentPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.mageobject.AttachmentAttachedToCardTypePredicate;
+import mage.filter.predicate.permanent.AttachmentAttachedToCardTypePredicate;
 import mage.filter.predicate.permanent.PermanentIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -47,7 +47,7 @@ public final class CrownOfTheAges extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CrownOfTheAges(final CrownOfTheAges card) {
+    private CrownOfTheAges(final CrownOfTheAges card) {
         super(card);
     }
 
@@ -105,13 +105,13 @@ class CrownOfTheAgesEffect extends OneShotEffect {
                     }
                     // Check for protection
                     MageObject auraObject = game.getObject(aura.getId());
-                    if (auraObject != null && creatureToAttachAura.cantBeAttachedBy(auraObject, game, true)) {
+                    if (auraObject != null && creatureToAttachAura.cantBeAttachedBy(auraObject, source, game, true)) {
                         passed = false;
                     }
                 }
                 if (passed) {
-                    fromPermanent.removeAttachment(aura.getId(), game);
-                    creatureToAttachAura.addAttachment(aura.getId(), game);
+                    fromPermanent.removeAttachment(aura.getId(), source, game);
+                    creatureToAttachAura.addAttachment(aura.getId(), source, game);
                     return true;
                 }
             }

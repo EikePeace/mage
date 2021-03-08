@@ -35,7 +35,7 @@ public final class BurningTreeShaman extends CardImpl {
         this.addAbility(new BurningTreeShamanTriggeredAbility());
     }
 
-    public BurningTreeShaman(final BurningTreeShaman card) {
+    private BurningTreeShaman(final BurningTreeShaman card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class BurningTreeShamanTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ACTIVATED_ABILITY;
+        return event.getType() == GameEvent.EventType.ACTIVATED_ABILITY;
     }
 
     @Override

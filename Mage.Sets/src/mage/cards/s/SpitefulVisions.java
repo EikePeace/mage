@@ -36,7 +36,7 @@ public final class SpitefulVisions extends CardImpl {
         this.addAbility(triggeredAbility);
     }
 
-    public SpitefulVisions(final SpitefulVisions card) {
+    private SpitefulVisions(final SpitefulVisions card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class SpitefulVisionsTriggeredAbility  extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DREW_CARD;
+        return event.getType() == GameEvent.EventType.DREW_CARD;
     }
 
     @Override

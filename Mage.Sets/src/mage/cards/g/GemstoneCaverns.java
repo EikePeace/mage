@@ -55,7 +55,7 @@ public final class GemstoneCaverns extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GemstoneCaverns(final GemstoneCaverns card) {
+    private GemstoneCaverns(final GemstoneCaverns card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class GemstoneCavernsAbility extends StaticAbility implements OpeningHandAction 
 
     @Override
     public boolean askUseOpeningHandAction(Card card, Player player, Game game) {
-        return player.chooseUse(Outcome.PutCardInPlay, "Do you wish to put " + card.getIdName() + " into play?", this, game);
+        return player.chooseUse(Outcome.PutCardInPlay, "Put " + card.getIdName() + " onto the battlefield?", this, game);
     }
 
     @Override
@@ -132,8 +132,8 @@ class GemstoneCavernsEffect extends OneShotEffect {
                     Permanent permanent = game.getPermanent(card.getId());
                     if (permanent != null) {
                         Cost cost = new ExileFromHandCost(new TargetCardInHand());
-                        if (cost.canPay(source, source.getSourceId(), source.getControllerId(), game)) {
-                            result = cost.pay(source, game, source.getSourceId(), source.getControllerId(), true, null);
+                        if (cost.canPay(source, source, source.getControllerId(), game)) {
+                            result = cost.pay(source, game, source, source.getControllerId(), true, null);
                         }
                     }
                 }

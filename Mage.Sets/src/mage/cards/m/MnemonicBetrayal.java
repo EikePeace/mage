@@ -13,7 +13,6 @@ import mage.game.events.GameEvent;
 import mage.players.ManaPoolItem;
 import mage.players.Player;
 import mage.util.CardUtil;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,14 +25,17 @@ public final class MnemonicBetrayal extends CardImpl {
     public MnemonicBetrayal(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{1}{U}{B}");
 
-        // Exile all cards from all opponents' graveyards. You may cast those cards this turn, and you may spend mana as though it were mana of any type to cast those spells. At the beginning of the next end step, if any of those cards remain exiled, return them to their owner's graveyards.
+        // Exile all cards from all opponents' graveyards. You may cast those cards 
+        // this turn, and you may spend mana as though it were mana of any type to cast 
+        // those spells. At the beginning of the next end step, if any of those 
+        // cards remain exiled, return them to their owner's graveyards.
         this.getSpellAbility().addEffect(new MnemonicBetrayalExileEffect());
 
         // Exile Mnemonic Betrayal.
         this.getSpellAbility().addEffect(ExileSpellEffect.getInstance());
     }
 
-    public MnemonicBetrayal(final MnemonicBetrayal card) {
+    private MnemonicBetrayal(final MnemonicBetrayal card) {
         super(card);
     }
 
@@ -72,7 +74,8 @@ class MnemonicBetrayalExileEffect extends OneShotEffect {
         }
         Cards cards = new CardsImpl();
         Map<UUID, Integer> cardMap = new HashMap<>();
-        game.getOpponents(source.getControllerId()).stream().map((playerId) -> game.getPlayer(playerId)).filter((player) -> (player != null)).forEachOrdered((player) -> {
+        game.getOpponents(source.getControllerId()).stream().map((playerId)
+                -> game.getPlayer(playerId)).filter((player) -> (player != null)).forEachOrdered((player) -> {
             cards.addAll(player.getGraveyard());
         });
         cards.getCards(game).stream().map((card) -> {
@@ -84,7 +87,8 @@ class MnemonicBetrayalExileEffect extends OneShotEffect {
         }).forEachOrdered((card) -> {
             game.addEffect(new MnemonicBetrayalAnyColorEffect(card, game), source);
         });
-        controller.moveCardsToExile(cards.getCards(game), source, game, true, source.getSourceId(), source.getSourceObjectIfItStillExists(game).getName());
+        controller.moveCardsToExile(cards.getCards(game), source, game, true,
+                source.getSourceId(), source.getSourceObjectIfItStillExists(game).getName());
         game.addDelayedTriggeredAbility(new MnemonicBetrayalDelayedTriggeredAbility(cards, cardMap), source);
         return true;
     }
@@ -125,7 +129,8 @@ class MnemonicBetrayalCastFromExileEffect extends AsThoughEffectImpl {
         }
         return objectId.equals(card.getId())
                 && card.getZoneChangeCounter(game) == zoneCounter
-                && affectedControllerId.equals(source.getControllerId());
+                && source.isControlledBy(affectedControllerId)
+                && !card.isLand();  // cast only not play
     }
 }
 
@@ -161,7 +166,7 @@ class MnemonicBetrayalAnyColorEffect extends AsThoughEffectImpl implements AsTho
         objectId = CardUtil.getMainCardId(game, objectId); // for split cards
         if (objectId.equals(card.getId())
                 && card.getZoneChangeCounter(game) <= zoneCounter + 1
-                && affectedControllerId.equals(source.getControllerId())) {
+                && source.isControlledBy(affectedControllerId)) {
             return true;
         } else {
             if (objectId.equals(card.getId())) {

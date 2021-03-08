@@ -30,7 +30,7 @@ public final class RitualOfTheReturned extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE));
     }
 
-    public RitualOfTheReturned(final RitualOfTheReturned card) {
+    private RitualOfTheReturned(final RitualOfTheReturned card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class RitualOfTheReturnedExileEffect extends OneShotEffect {
         if (controller != null) {
             Card card = game.getCard(getTargetPointer().getFirst(game, source));
             if (card != null && game.getState().getZone(card.getId()) == Zone.GRAVEYARD) {
-                controller.moveCardToExileWithInfo(card, null, null, source.getSourceId(), game, Zone.GRAVEYARD, true);
+                controller.moveCardToExileWithInfo(card, null, null, source, game, Zone.GRAVEYARD, true);
                 return new CreateTokenEffect(
                         new RitualOfTheReturnedZombieToken(card.getPower().getValue(), card.getToughness().getValue())).apply(game, source);
             }

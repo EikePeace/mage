@@ -5,7 +5,6 @@ import java.util.UUID;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.effects.common.search.SearchLibraryPutInPlayEffect;
 import mage.abilities.keyword.AftermathAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -33,7 +32,7 @@ public final class SpringMind extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(new DrawCardSourceControllerEffect(2));
     }
 
-    public SpringMind(final SpringMind card) {
+    private SpringMind(final SpringMind card) {
         super(card);
     }
 

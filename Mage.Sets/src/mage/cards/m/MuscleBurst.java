@@ -44,7 +44,7 @@ public final class MuscleBurst extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public MuscleBurst(final MuscleBurst card) {
+    private MuscleBurst(final MuscleBurst card) {
         super(card);
     }
 
@@ -74,8 +74,8 @@ class MuscleBurstCount extends CardsInAllGraveyardsCount {
     }
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
-        return super.calculate(game, source, effect) + 3;
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
+        return super.calculate(game, sourceAbility, effect) + 3;
     }
 
 }

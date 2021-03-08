@@ -11,7 +11,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -22,7 +21,7 @@ public final class OuterRimGang extends CardImpl {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("each creature with a bounty counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.BOUNTY));
+        filter.add(CounterType.BOUNTY.getPredicate());
     }
 
     public OuterRimGang(UUID ownerId, CardSetInfo setInfo) {
@@ -38,7 +37,7 @@ public final class OuterRimGang extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new BoostAllEffect(-2, -2, Duration.EndOfTurn, filter, false)));
     }
 
-    public OuterRimGang(final OuterRimGang card) {
+    private OuterRimGang(final OuterRimGang card) {
         super(card);
     }
 

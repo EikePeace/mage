@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -36,7 +35,7 @@ public final class OjutaiMonument extends CardImpl {
             (new OjutaiMonumentToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{4}{W}{U}")));
     }
 
-    public OjutaiMonument(final OjutaiMonument card) {
+    private OjutaiMonument(final OjutaiMonument card) {
         super(card);
     }
 

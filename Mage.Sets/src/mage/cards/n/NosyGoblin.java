@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -42,7 +42,7 @@ public final class NosyGoblin extends CardImpl {
         this.addAbility(ability);
     }
 
-    public NosyGoblin(final NosyGoblin card) {
+    private NosyGoblin(final NosyGoblin card) {
         super(card);
     }
 

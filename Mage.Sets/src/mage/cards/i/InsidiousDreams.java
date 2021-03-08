@@ -41,7 +41,7 @@ public final class InsidiousDreams extends CardImpl {
 
     }
 
-    public InsidiousDreams(final InsidiousDreams card) {
+    private InsidiousDreams(final InsidiousDreams card) {
         super(card);
     }
 
@@ -92,7 +92,7 @@ class InsidiousDreamsEffect extends OneShotEffect {
                     Card card = chosen.get(targetToLib.getFirstTarget(), game);
                     if (card != null) {
                         chosen.remove(card);
-                        controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, true, false);
+                        controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, true, false);
 
                     }
                     targetToLib.clearChosen();
@@ -100,7 +100,7 @@ class InsidiousDreamsEffect extends OneShotEffect {
 
                 if (chosen.size() == 1) {
                     Card card = chosen.get(chosen.iterator().next(), game);
-                    controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.LIBRARY, true, false);
+                    controller.moveCardToLibraryWithInfo(card, source, game, Zone.LIBRARY, true, false);
                 }
             }
             return true;
@@ -113,7 +113,7 @@ class InsidiousDreamsAdditionalCost extends VariableCostImpl {
 
     InsidiousDreamsAdditionalCost() {
         super("cards to discard");
-        this.text = "as an additional cost to cast this spell, discard X cards";
+        this.text = "discard X cards";
     }
 
     InsidiousDreamsAdditionalCost(final InsidiousDreamsAdditionalCost cost) {

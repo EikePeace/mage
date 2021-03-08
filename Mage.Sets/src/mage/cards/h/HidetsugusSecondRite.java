@@ -26,7 +26,7 @@ public final class HidetsugusSecondRite extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public HidetsugusSecondRite(final HidetsugusSecondRite card) {
+    private HidetsugusSecondRite(final HidetsugusSecondRite card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class HidetsugusSecondRiteEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
             if (targetPlayer.getLife() == 10) {
-                targetPlayer.damage(10, source.getSourceId(), game);
+                targetPlayer.damage(10, source.getSourceId(), source, game);
             }
             return true;
         }

@@ -15,10 +15,9 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
 
@@ -46,7 +45,7 @@ public final class EfreetWeaponmaster extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{2}{U}{R}{W}")));
     }
 
-    public EfreetWeaponmaster(final EfreetWeaponmaster card) {
+    private EfreetWeaponmaster(final EfreetWeaponmaster card) {
         super(card);
     }
 
@@ -86,10 +85,10 @@ class EfreetWeaponmasterAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkTrigger(GameEvent event, Game game) {
-        if (event.getType() == EventType.TURNEDFACEUP && event.getTargetId().equals(this.getSourceId())) {
+        if (event.getType() == GameEvent.EventType.TURNEDFACEUP && event.getTargetId().equals(this.getSourceId())) {
             return true;
         }
-        if (event.getType() == EventType.ENTERS_THE_BATTLEFIELD && event.getTargetId().equals(this.getSourceId()) ) {
+        if (event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD && event.getTargetId().equals(this.getSourceId()) ) {
             Permanent sourcePermanent = game.getPermanent(getSourceId());
             if (sourcePermanent != null && !sourcePermanent.isFaceDown(game)) {
                 return true;

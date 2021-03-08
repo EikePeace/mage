@@ -27,7 +27,7 @@ public final class Forget extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Forget(final Forget card) {
+    private Forget(final Forget card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class ForgetEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(source.getFirstTarget());
         if (targetPlayer != null) {
-            targetPlayer.drawCards(targetPlayer.discard(2, false, source, game).size(), game);
+            targetPlayer.drawCards(targetPlayer.discard(2, false, false, source, game).size(), source, game);
             return true;
         }
         return false;

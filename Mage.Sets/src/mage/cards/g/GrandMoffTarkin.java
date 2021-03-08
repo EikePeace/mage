@@ -41,7 +41,7 @@ public final class GrandMoffTarkin extends CardImpl {
         this.addAbility(new GrandMoffTarkinTriggeredAbility(new GrandMoffTarkinEffect(), false));
     }
 
-    public GrandMoffTarkin(final GrandMoffTarkin card) {
+    private GrandMoffTarkin(final GrandMoffTarkin card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class GrandMoffTarkinTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override
@@ -133,17 +133,17 @@ class GrandMoffTarkinEffect extends OneShotEffect {
         }
 
         if (player.getLife() > 2 && player.chooseUse(Outcome.Neutral, "Pay 2 life? If you don't, " + targetCreature.getName() + " will be destroyed", source, game)) {
-            player.loseLife(2, game, false);
+            player.loseLife(2, game, source, false);
             game.informPlayers(player.getLogName() + " pays 2 life to prevent " + targetCreature.getName() + " being destroyed");
             Player sourceController = game.getPlayer(source.getControllerId());
             if (sourceController != null) {
-                sourceController.drawCards(1, game);
+                sourceController.drawCards(1, source, game);
             }
 
             return true;
         }
 
-        targetCreature.destroy(source.getSourceId(), game, false);
+        targetCreature.destroy(source, game, false);
         return true;
     }
 }

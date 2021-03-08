@@ -1,21 +1,17 @@
 package mage.cards.m;
 
 import mage.abilities.Ability;
-import mage.abilities.effects.AsThoughEffectImpl;
-import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
+import mage.abilities.effects.common.asthought.PlayFromNotOwnHandZoneTargetEffect;
 import mage.abilities.keyword.StormAbility;
-import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.AsThoughEffectType;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.TargetController;
 import mage.game.Game;
 import mage.players.Player;
-import mage.target.targetpointer.FixedTargets;
-import mage.util.CardUtil;
 
 import java.util.UUID;
 
@@ -34,7 +30,7 @@ public final class MindsDesire extends CardImpl {
         this.addAbility(new StormAbility());
     }
 
-    public MindsDesire(final MindsDesire card) {
+    private MindsDesire(final MindsDesire card) {
         super(card);
     }
 
@@ -65,55 +61,8 @@ class MindsDesireEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             controller.shuffleLibrary(source, game);
-            Card card = controller.getLibrary().getFromTop(game);
-            if (card != null) {
-                UUID exileId = CardUtil.getExileZoneId(controller.getId().toString() + "-" + game.getState().getTurnNum() + "-" + MindsDesire.class.toString(), game);
-                String exileName = "Mind's Desire free cast on " + game.getState().getTurnNum() + " turn for " + controller.getName();
-                game.getExile().createZone(exileId, exileName).setCleanupOnEndTurn(true);
-                if (controller.moveCardsToExile(card, source, game, true, exileId, exileName)) {
-                    ContinuousEffect effect = new MindsDesireCastFromExileEffect();
-                    effect.setTargetPointer(new FixedTargets(game.getExile().getExileZone(exileId).getCards(game), game));
-                    game.addEffect(effect, source);
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-}
-
-class MindsDesireCastFromExileEffect extends AsThoughEffectImpl {
-
-    MindsDesireCastFromExileEffect() {
-        super(AsThoughEffectType.PLAY_FROM_NOT_OWN_HAND_ZONE, Duration.EndOfTurn, Outcome.Benefit);
-        staticText = "you may play that card without paying its mana cost";
-    }
-
-    MindsDesireCastFromExileEffect(final MindsDesireCastFromExileEffect effect) {
-        super(effect);
-    }
-
-    @Override
-    public boolean apply(Game game, Ability source) {
-        return true;
-    }
-
-    @Override
-    public MindsDesireCastFromExileEffect copy() {
-        return new MindsDesireCastFromExileEffect(this);
-    }
-
-    @Override
-    public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
-        if (affectedControllerId.equals(source.getControllerId()) && getTargetPointer().getTargets(game, source).contains(objectId)) {
-            Card card = game.getCard(objectId);
-            if (card != null && !card.isLand() && card.getSpellAbility().getCosts() != null) {
-                Player player = game.getPlayer(affectedControllerId);
-                if (player != null) {
-                    player.setCastSourceIdWithAlternateMana(objectId, null, card.getSpellAbility().getCosts());
-                }
-            }
-            return true;
+            return PlayFromNotOwnHandZoneTargetEffect.exileAndPlayFromExile(game, source, controller.getLibrary().getFromTop(game),
+                    TargetController.YOU, Duration.EndOfTurn, true, false);
         }
         return false;
     }

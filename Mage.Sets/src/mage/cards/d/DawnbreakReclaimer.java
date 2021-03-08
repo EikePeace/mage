@@ -18,7 +18,7 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreatureCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetCard;
@@ -44,7 +44,7 @@ public final class DawnbreakReclaimer extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new DawnbreakReclaimerEffect(), TargetController.YOU, false));
     }
 
-    public DawnbreakReclaimer(final DawnbreakReclaimer card) {
+    private DawnbreakReclaimer(final DawnbreakReclaimer card) {
         super(card);
     }
 

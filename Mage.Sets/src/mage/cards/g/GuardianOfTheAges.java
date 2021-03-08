@@ -37,7 +37,7 @@ public final class GuardianOfTheAges extends CardImpl {
         this.addAbility(new GuardianOfTheAgesTriggerAbility());
     }
     
-    public GuardianOfTheAges(final GuardianOfTheAges card){
+    private GuardianOfTheAges(final GuardianOfTheAges card){
         super(card);
     }
     
@@ -63,7 +63,7 @@ class GuardianOfTheAgesTriggerAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
     
     @Override

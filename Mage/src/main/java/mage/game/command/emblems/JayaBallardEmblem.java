@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.game.command.emblems;
 
 import java.util.UUID;
@@ -65,6 +60,7 @@ class JayaBallardCastFromGraveyardEffect extends AsThoughEffectImpl {
     public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
         Card card = game.getCard(objectId);
         if (card != null
+                && card.isOwnedBy(affectedControllerId)
                 && affectedControllerId.equals(source.getControllerId())
                 && StaticFilters.FILTER_CARD_INSTANT_OR_SORCERY.match(card, game)
                 && Zone.GRAVEYARD.equals(game.getState().getZone(card.getId()))) {
@@ -102,8 +98,7 @@ class JayaBallardReplacementEffect extends ReplacementEffectImpl {
         if (controller != null) {
             Card card = (Card) game.getState().getValue("JayaBallard");
             if (card != null) {
-                controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.STACK, true);
-                return true;
+                ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
             }
         }
         return false;
@@ -111,7 +106,7 @@ class JayaBallardReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

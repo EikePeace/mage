@@ -39,7 +39,7 @@ public final class LandsEdge extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LandsEdge(final LandsEdge card) {
+    private LandsEdge(final LandsEdge card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class LandsEdgeEffect extends OneShotEffect {
 
     public LandsEdgeEffect() {
         super(Outcome.Neutral);
-        staticText = "If the discarded card was a land card, Land's Edge deals 2 damage to target player.";
+        staticText = "If the discarded card was a land card, {this} deals 2 damage to target player";
     }
 
     public LandsEdgeEffect(final LandsEdgeEffect effect) {

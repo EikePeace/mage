@@ -11,7 +11,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -86,7 +86,7 @@ class WickedGuardianEffect extends OneShotEffect {
         if (permanent == null) {
             return false;
         }
-        permanent.damage(2, source.getSourceId(), game);
-        return player.drawCards(1, game) > 0;
+        permanent.damage(2, source.getSourceId(), source, game);
+        return player.drawCards(1, source, game) > 0;
     }
 }

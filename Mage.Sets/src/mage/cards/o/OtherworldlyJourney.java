@@ -40,7 +40,7 @@ public final class OtherworldlyJourney extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public OtherworldlyJourney(final OtherworldlyJourney card) {
+    private OtherworldlyJourney(final OtherworldlyJourney card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class OtherworldlyJourneyEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getFirstTarget());
         if (permanent != null) {
-            if (permanent.moveToExile(source.getSourceId(), "Otherworldly Journey", source.getSourceId(), game)) {
+            if (permanent.moveToExile(source.getSourceId(), "Otherworldly Journey", source, game)) {
                 ExileZone exile = game.getExile().getExileZone(source.getSourceId());
                 // only if permanent is in exile (tokens would be stop to exist)
                 if (exile != null && !exile.isEmpty()) {
@@ -149,7 +149,7 @@ class OtherworldlyJourneyEntersBattlefieldEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        if (event.getType() == EventType.ENTERS_THE_BATTLEFIELD) {
+        if (event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD) {
             return event.getTargetId().equals(objectToReturn.getSourceId());
         }
         return false;
@@ -159,7 +159,7 @@ class OtherworldlyJourneyEntersBattlefieldEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent permanent = ((EntersTheBattlefieldEvent) event).getTarget();
         if (permanent != null) {
-            permanent.addCounters(CounterType.P1P1.createInstance(), source, game, event.getAppliedEffects());
+            permanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game, event.getAppliedEffects());
             discard(); // use only once
         }
         return false;

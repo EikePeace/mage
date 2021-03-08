@@ -17,7 +17,7 @@ import mage.constants.SuperType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.permanent.token.ZombieToken;
 
@@ -55,7 +55,7 @@ public final class LilianaHereticalHealer extends CardImpl {
                 new CreateTokenEffect(new ZombieToken())), false, filter));
     }
 
-    public LilianaHereticalHealer(final LilianaHereticalHealer card) {
+    private LilianaHereticalHealer(final LilianaHereticalHealer card) {
         super(card);
     }
 

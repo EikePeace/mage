@@ -35,7 +35,7 @@ public final class Mindswipe extends CardImpl {
         this.getSpellAbility().addEffect(new MindswipeEffect());
     }
 
-    public Mindswipe(final Mindswipe card) {
+    private Mindswipe(final Mindswipe card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class MindswipeEffect extends OneShotEffect {
                 Player spellController = game.getPlayer(spell.getControllerId());
                 if (spellController != null) {
                     int damage = ManacostVariableValue.instance.calculate(game, source, this);
-                    spellController.damage(damage, source.getSourceId(), game);
+                    spellController.damage(damage, source.getSourceId(), source, game);
                 }
                 return true;
             }

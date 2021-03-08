@@ -36,7 +36,7 @@ public final class Reverberation extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter));
     }
 
-    public Reverberation(final Reverberation card) {
+    private Reverberation(final Reverberation card) {
         super(card);
     }
 
@@ -64,8 +64,7 @@ class ReverberationEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE ||
-                event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER ||
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT ||
                 event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
@@ -83,7 +82,7 @@ class ReverberationEffect extends ReplacementEffectImpl {
             if (targetSpell != null) {
                 Player targetsController = game.getPlayer(targetSpell.getControllerId());
                 if (targetsController != null) {
-                    targetsController.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
+                    targetsController.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
                     return true;
                 }
             }

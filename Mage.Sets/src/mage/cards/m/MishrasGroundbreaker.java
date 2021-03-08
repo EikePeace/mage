@@ -11,11 +11,9 @@ import mage.abilities.effects.common.continuous.BecomesCreatureTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.ColoredManaSymbol;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.common.TargetLandPermanent;
 
 /**
@@ -34,7 +32,7 @@ public final class MishrasGroundbreaker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MishrasGroundbreaker(final MishrasGroundbreaker card) {
+    private MishrasGroundbreaker(final MishrasGroundbreaker card) {
         super(card);
     }
 

@@ -1,7 +1,6 @@
 
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
@@ -9,20 +8,17 @@ import mage.abilities.costs.common.RemoveCounterCost;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.Outcome;
-import mage.constants.SubType;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.permanent.CounterAnyPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author spjspj
  */
 public final class HungryHungryHeifer extends CardImpl {
@@ -38,7 +34,7 @@ public final class HungryHungryHeifer extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new HungryHungryHeiferEffect(), TargetController.YOU, false, false));
     }
 
-    public HungryHungryHeifer(final HungryHungryHeifer card) {
+    private HungryHungryHeifer(final HungryHungryHeifer card) {
         super(card);
     }
 
@@ -53,7 +49,7 @@ class HungryHungryHeiferEffect extends OneShotEffect {
     private static final FilterControlledPermanent filter = new FilterControlledPermanent("a permanent you control with a counter on it");
 
     static {
-        filter.add(new CounterPredicate(null));
+        filter.add(CounterAnyPredicate.instance);
     }
 
     public HungryHungryHeiferEffect() {
@@ -78,11 +74,11 @@ class HungryHungryHeiferEffect extends OneShotEffect {
             if (controller.chooseUse(outcome, "Remove a counter from a permanent you control?", source, game)) {
                 TargetControlledPermanent target = new TargetControlledPermanent(1, 1, filter, true);
                 RemoveCounterCost cost = new RemoveCounterCost(target);
-                if (cost.pay(null, game, source.getSourceId(), controller.getId(), true)) {
+                if (cost.pay(null, game, source, controller.getId(), true)) {
                     return true;
                 }
             }
-            sourceObject.sacrifice(source.getSourceId(), game);
+            sourceObject.sacrifice(source, game);
             return true;
         }
         return false;

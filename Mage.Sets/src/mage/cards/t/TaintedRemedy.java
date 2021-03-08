@@ -29,7 +29,7 @@ public final class TaintedRemedy extends CardImpl {
 
     }
 
-    public TaintedRemedy(final TaintedRemedy card) {
+    private TaintedRemedy(final TaintedRemedy card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class TaintedRemedyReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Player opponent = game.getPlayer(event.getPlayerId());
         if (opponent != null) {
-            opponent.loseLife(event.getAmount(), game, false);
+            opponent.loseLife(event.getAmount(), game, source, false);
         }
         return true;
     }

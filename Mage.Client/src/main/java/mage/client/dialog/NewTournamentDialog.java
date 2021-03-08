@@ -1,5 +1,13 @@
 package mage.client.dialog;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.swing.*;
 import mage.cards.decks.Deck;
 import mage.cards.decks.DeckFileFilter;
 import mage.cards.decks.importer.DeckImporter;
@@ -26,14 +34,9 @@ import mage.view.TableView;
 import mage.view.TournamentTypeView;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.util.List;
-import java.util.*;
-import java.util.stream.Collectors;
-
 /**
+ * App GUI: create new TOURNEY
+ *
  * @author BetaSteward_at_googlemail.com, JayDi85
  */
 public class NewTournamentDialog extends MageDialog {
@@ -53,6 +56,7 @@ public class NewTournamentDialog extends MageDialog {
     private boolean isRandom = false;
     private boolean isRichMan = false;
     private String cubeFromDeckFilename = "";
+    private String jumpstartPacksFilename = "";
     private boolean automaticChange = false;
 
     public NewTournamentDialog() {
@@ -657,6 +661,12 @@ public class NewTournamentDialog extends MageDialog {
 
     private void cbTournamentTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbTournamentTypeActionPerformed
         prepareTourneyView((Integer) this.spnNumPlayers.getValue());
+
+        jumpstartPacksFilename = "";
+        if (cbTournamentType.getSelectedItem().toString().matches(".*Jumpstart.*Custom.*")) {
+            jumpstartPacksFilename = playerLoadJumpstartPacks();
+        }
+
     }//GEN-LAST:event_cbTournamentTypeActionPerformed
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
@@ -682,26 +692,32 @@ public class NewTournamentDialog extends MageDialog {
             // message must be send by server!
             return;
         }
+
+        // join AI
+        for (TournamentPlayerPanel player : players) {
+            if (player.getPlayerType().getSelectedItem() != PlayerType.HUMAN) {
+                if (!player.joinTournamentTable(roomId, table.getTableId(), DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile(), true))) {
+                    // error message must be send by sever
+                    SessionHandler.removeTable(roomId, table.getTableId());
+                    table = null;
+                    return;
+                }
+            }
+        }
+
+        // join itself
         if (SessionHandler.joinTournamentTable(
                 roomId,
                 table.getTableId(),
                 this.player1Panel.getPlayerName(),
                 PlayerType.HUMAN, 1,
-                DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile()),
+                DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile(), true),
                 tOptions.getPassword())) {
-            for (TournamentPlayerPanel player : players) {
-                if (player.getPlayerType().getSelectedItem() != PlayerType.HUMAN) {
-                    if (!player.joinTournamentTable(roomId, table.getTableId(), DeckImporter.importDeckFromFile(this.player1Panel.getDeckFile()))) {
-                        // error message must be send by sever
-                        SessionHandler.removeTable(roomId, table.getTableId());
-                        table = null;
-                        return;
-                    }
-                }
-            }
+            // all fine, can close create dialog (join dialog will be opened after feedback from server)
             this.hideDialog();
             return;
         }
+
         JOptionPane.showMessageDialog(MageFrame.getDesktop(), "Error joining tournament.", "Error", JOptionPane.ERROR_MESSAGE);
         SessionHandler.removeTable(roomId, table.getTableId());
         table = null;
@@ -743,11 +759,7 @@ public class NewTournamentDialog extends MageDialog {
 
     private void spnNumSeatsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_spnNumSeatsStateChanged
         int numSeats = (Integer) this.spnNumSeats.getValue();
-        if (numSeats > 2) {
-            this.spnNumPlayers.setEnabled(false);
-        } else {
-            this.spnNumPlayers.setEnabled(true);
-        }
+        this.spnNumPlayers.setEnabled(numSeats <= 2);
         updateNumSeats();
     }//GEN-LAST:event_spnNumSeatsStateChanged
 
@@ -774,6 +786,26 @@ public class NewTournamentDialog extends MageDialog {
         int ret = fcSelectDeck.showDialog(this, "Select Deck");
         if (ret == JFileChooser.APPROVE_OPTION) {
             File file = fcSelectDeck.getSelectedFile();
+            return (file.getPath());
+        }
+        return "";
+    }
+
+    private JFileChooser fcJumpstartSelectDeck = null;
+
+    protected String playerLoadJumpstartPacks() {
+        if (fcJumpstartSelectDeck == null) {
+            fcJumpstartSelectDeck = new JFileChooser();
+            fcJumpstartSelectDeck.setAcceptAllFileFilterUsed(false);
+            fcJumpstartSelectDeck.addChoosableFileFilter(new DeckFileFilter("txt", "Jumpstart Packs (*.txt)"));
+        }
+        String lastFolder = MageFrame.getPreferences().get("lastDeckFolder", "");
+        if (!lastFolder.isEmpty()) {
+            fcJumpstartSelectDeck.setCurrentDirectory(new File(lastFolder));
+        }
+        int ret = fcJumpstartSelectDeck.showDialog(this, "Select Jumpstart Packs file");
+        if (ret == JFileChooser.APPROVE_OPTION) {
+            File file = fcJumpstartSelectDeck.getSelectedFile();
             return (file.getPath());
         }
         return "";
@@ -953,7 +985,7 @@ public class NewTournamentDialog extends MageDialog {
 
     private void loadRandomPacks(int version) {
         String versionStr = prepareVersionStr(version, false);
-        List<String> packList;
+        java.util.List<String> packList;
         String packNames;
         String randomPrefs = PreferencesDialog.getCachedValue(PreferencesDialog.KEY_NEW_TOURNAMENT_PACKS_RANDOM_DRAFT + versionStr, "");
         if (!randomPrefs.isEmpty()) {
@@ -1203,12 +1235,29 @@ public class NewTournamentDialog extends MageDialog {
             tOptions.getLimitedOptions().setConstructionTime((Integer) this.spnConstructTime.getValue() * 60);
             tOptions.getLimitedOptions().setIsRandom(tournamentType.isRandom());
             tOptions.getLimitedOptions().setIsRichMan(tournamentType.isRichMan());
+            tOptions.getLimitedOptions().setIsJumpstart(tournamentType.isJumpstart());
+
+            if (tournamentType.isJumpstart()) {
+                if (!(jumpstartPacksFilename.isEmpty())) {
+                    String jumpstartPacksData = "";
+                    try {
+                        jumpstartPacksData = new String(Files.readAllBytes(Paths.get(jumpstartPacksFilename)));
+                        if (jumpstartPacksData.length() > 300000) {
+                            JOptionPane.showMessageDialog(MageFrame.getDesktop(), "Chosen file too big", "Jumpstart Packs data is too long.  Please trim or choose another file.", JOptionPane.ERROR_MESSAGE);
+                            jumpstartPacksData = "";
+                        }
+                    } catch (IOException e2) {
+                        JOptionPane.showMessageDialog(MageFrame.getDesktop(), e2.getMessage(), "Error loading Jumpstart Packs data", JOptionPane.ERROR_MESSAGE);
+                    }
+                    tOptions.getLimitedOptions().setJumpstartPacks(jumpstartPacksData);
+                }
+            }
             if (tournamentType.isCubeBooster()) {
                 tOptions.getLimitedOptions().setDraftCubeName(this.cbDraftCube.getSelectedItem().toString());
                 if (!(cubeFromDeckFilename.isEmpty())) {
                     Deck cubeFromDeck = new Deck();
                     try {
-                        cubeFromDeck = Deck.load(DeckImporter.importDeckFromFile(cubeFromDeckFilename), true, true);
+                        cubeFromDeck = Deck.load(DeckImporter.importDeckFromFile(cubeFromDeckFilename, true), true, true);
                     } catch (GameException e1) {
                         JOptionPane.showMessageDialog(MageFrame.getDesktop(), e1.getMessage(), "Error loading deck", JOptionPane.ERROR_MESSAGE);
                     }
@@ -1221,7 +1270,7 @@ public class NewTournamentDialog extends MageDialog {
                 this.isRandom = tournamentType.isRandom();
                 this.isRichMan = tournamentType.isRichMan();
                 tOptions.getLimitedOptions().getSetCodes().clear();
-                List<String> selected = randomPackSelector.getSelectedPacks();
+                java.util.List<String> selected = randomPackSelector.getSelectedPacks();
                 Collections.shuffle(selected);
                 int maxPacks = 3 * (players.size() + 1);
                 if (tournamentType.isRichMan()) {
@@ -1259,7 +1308,7 @@ public class NewTournamentDialog extends MageDialog {
             tOptions.getMatchOptions().setLimited(false);
         }
 
-        String serverAddress = SessionHandler.getSession().getServerHostname().orElseGet(() -> "");
+        String serverAddress = SessionHandler.getSession().getServerHostname().orElse("");
         tOptions.getMatchOptions().setBannedUsers(IgnoreList.getIgnoredUsers(serverAddress));
 
         tOptions.getMatchOptions().setMatchTimeLimit((MatchTimeLimit) this.cbTimeLimit.getSelectedItem());

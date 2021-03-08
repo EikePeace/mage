@@ -30,7 +30,7 @@ public final class ElvishBard extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new MustBeBlockedByAllSourceEffect()));
     }
 
-    public ElvishBard(final ElvishBard card) {
+    private ElvishBard(final ElvishBard card) {
         super(card);
     }
 

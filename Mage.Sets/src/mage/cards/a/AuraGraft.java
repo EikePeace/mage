@@ -16,7 +16,7 @@ import mage.filter.Filter;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.ObjectPlayer;
 import mage.filter.predicate.ObjectPlayerPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -44,7 +44,7 @@ public final class AuraGraft extends CardImpl {
         this.getSpellAbility().addEffect(new MoveTargetAuraEffect());
     }
 
-    public AuraGraft(final AuraGraft card) {
+    private AuraGraft(final AuraGraft card) {
         super(card);
     }
 
@@ -127,8 +127,8 @@ class MoveTargetAuraEffect extends OneShotEffect {
                 && controller.choose(outcome, target, oldAttachment.getId(), game)) {
             Permanent newAttachment = game.getPermanent(target.getFirstTarget());
             if (newAttachment != null
-                    && oldAttachment.removeAttachment(enchantment.getId(), game)) {
-                newAttachment.addAttachment(enchantment.getId(), game);
+                    && oldAttachment.removeAttachment(enchantment.getId(), source, game)) {
+                newAttachment.addAttachment(enchantment.getId(), source, game);
                 game.informPlayers(enchantment.getLogName() + " was unattached from " + oldAttachment.getLogName() + " and attached to " + newAttachment.getLogName());
                 return true;
             }

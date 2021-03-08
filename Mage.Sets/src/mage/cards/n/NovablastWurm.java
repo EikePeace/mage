@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class NovablastWurm extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new DestroyAllEffect(filter), false));
     }
 
-    public NovablastWurm(final NovablastWurm card) {
+    private NovablastWurm(final NovablastWurm card) {
         super(card);
     }
 

@@ -32,7 +32,7 @@ public final class HarmlessOffering extends CardImpl {
         this.getSpellAbility().addTarget(new TargetControlledPermanent());
     }
 
-    public HarmlessOffering(final HarmlessOffering card) {
+    private HarmlessOffering(final HarmlessOffering card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class HarmlessOfferingEffect extends ContinuousEffectImpl {
         Player controller = game.getPlayer(controllerId);
         Permanent permanent = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (controller != null && permanent != null) {
-            permanent.changeControllerId(controllerId, game);
+            permanent.changeControllerId(controllerId, game, source);
         } else {
             this.discard();
         }

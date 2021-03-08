@@ -15,7 +15,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class FireAnts extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new DamageAllEffect(1, filter), new TapSourceCost()));
     }
 
-    public FireAnts(final FireAnts card) {
+    private FireAnts(final FireAnts card) {
         super(card);
     }
 

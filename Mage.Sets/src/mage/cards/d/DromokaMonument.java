@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -36,7 +35,7 @@ public final class DromokaMonument extends CardImpl {
             (new DromokaMonumentToken(), "", Duration.EndOfTurn), new ManaCostsImpl("{4}{G}{W}")));
     }
 
-    public DromokaMonument(final DromokaMonument card) {
+    private DromokaMonument(final DromokaMonument card) {
         super(card);
     }
 

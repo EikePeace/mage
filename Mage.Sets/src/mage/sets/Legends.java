@@ -104,7 +104,6 @@ public final class Legends extends ExpansionSet {
         cards.add(new SetCardInfo("Eureka", 185, Rarity.RARE, mage.cards.e.Eureka.class));
         cards.add(new SetCardInfo("Evil Eye of Orms-by-Gore", 96, Rarity.UNCOMMON, mage.cards.e.EvilEyeOfOrmsByGore.class));
         cards.add(new SetCardInfo("Fallen Angel", 97, Rarity.UNCOMMON, mage.cards.f.FallenAngel.class));
-        cards.add(new SetCardInfo("Falling Star", 145, Rarity.RARE, mage.cards.f.FallingStar.class));
         cards.add(new SetCardInfo("Feint", 146, Rarity.COMMON, mage.cards.f.Feint.class));
         cards.add(new SetCardInfo("Field of Dreams", 55, Rarity.RARE, mage.cards.f.FieldOfDreams.class));
         cards.add(new SetCardInfo("Fire Sprites", 186, Rarity.COMMON, mage.cards.f.FireSprites.class));

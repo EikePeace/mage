@@ -41,7 +41,7 @@ public final class DeadlyDesigns extends CardImpl {
         this.addAbility(triggerredAbility);
     }
 
-    public DeadlyDesigns(final DeadlyDesigns card) {
+    private DeadlyDesigns(final DeadlyDesigns card) {
         super(card);
     }
 
@@ -104,7 +104,7 @@ class DeadlyDesignsEffect extends SacrificeSourceEffect {
             for (UUID target : getTargetPointer().getTargets(game, source)) {
                 toDestroy = game.getPermanent(target);
                 if (toDestroy != null) {
-                    toDestroy.destroy(source.getId(), game, false);
+                    toDestroy.destroy(source, game, false);
                 }
             }
         }

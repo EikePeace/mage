@@ -37,7 +37,7 @@ public final class TheMimeoplasm extends CardImpl {
         this.addAbility(new AsEntersBattlefieldAbility(new TheMimeoplasmEffect(), "you may exile two creature cards from graveyards. If you do, it enters the battlefield as a copy of one of those cards with a number of additional +1/+1 counters on it equal to the power of the other card"));
     }
 
-    public TheMimeoplasm(final TheMimeoplasm card) {
+    private TheMimeoplasm(final TheMimeoplasm card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class TheMimeoplasmEffect extends OneShotEffect {
                                     controller.moveCards(cardsToExile, Zone.EXILED, source, game);
                                     CopyEffect copyEffect = new CopyEffect(Duration.Custom, cardToCopy, source.getSourceId());
                                     game.addEffect(copyEffect, source);
-                                    permanent.addCounters(CounterType.P1P1.createInstance(cardForCounters.getPower().getValue()), source, game);
+                                    permanent.addCounters(CounterType.P1P1.createInstance(cardForCounters.getPower().getValue()), source.getControllerId(), source, game);
                                 }
                             }
                         }

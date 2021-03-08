@@ -41,7 +41,7 @@ public final class Witchstalker extends CardImpl {
 
     }
 
-    public Witchstalker(final Witchstalker card) {
+    private Witchstalker(final Witchstalker card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class WitchstalkerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

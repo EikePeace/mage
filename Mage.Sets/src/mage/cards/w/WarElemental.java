@@ -43,7 +43,7 @@ public final class WarElemental extends CardImpl {
 
     }
 
-    public WarElemental(final WarElemental card) {
+    private WarElemental(final WarElemental card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class WarElementalTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -11,7 +11,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterEnchantmentPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -42,7 +42,7 @@ public final class AncestralMask extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEnchantedEffect(countEnchantments, countEnchantments, Duration.WhileOnBattlefield)));
     }
 
-    public AncestralMask(final AncestralMask card) {
+    private AncestralMask(final AncestralMask card) {
         super(card);
     }
 

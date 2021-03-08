@@ -25,7 +25,7 @@ public final class KrakensEye extends CardImpl {
         this.addAbility(new KrakensEyeAbility());
     }
 
-    public KrakensEye(final KrakensEye card) {
+    private KrakensEye(final KrakensEye card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class KrakensEyeAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

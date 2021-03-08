@@ -47,7 +47,7 @@ public final class BubblingCauldron extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public BubblingCauldron(final BubblingCauldron card) {
+    private BubblingCauldron(final BubblingCauldron card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class BubblingCauldronEffect extends OneShotEffect {
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
             Player opponent = game.getPlayer(opponentId);
             if (opponent != null) {
-                lostLife += opponent.loseLife(4, game, false);
+                lostLife += opponent.loseLife(4, game, source, false);
             }
         }
         if (controller != null) {

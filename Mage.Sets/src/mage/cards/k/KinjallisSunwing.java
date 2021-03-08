@@ -39,7 +39,7 @@ public final class KinjallisSunwing extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new KinjallisSunwingEffect()));
     }
 
-    public KinjallisSunwing(final KinjallisSunwing card) {
+    private KinjallisSunwing(final KinjallisSunwing card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class KinjallisSunwingEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent target = ((EntersTheBattlefieldEvent) event).getTarget();
         if (target != null) {
-            target.tap(game);
+            target.tap(source, game);
         }
         return false;
     }

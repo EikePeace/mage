@@ -19,7 +19,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -69,7 +69,7 @@ public final class ArahboRoarOfTheWorld extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ArahboRoarOfTheWorld(final ArahboRoarOfTheWorld card) {
+    private ArahboRoarOfTheWorld(final ArahboRoarOfTheWorld card) {
         super(card);
     }
 

@@ -30,7 +30,7 @@ public final class DimirCutpurse extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new DimirCutpurseEffect(), false, true));
     }
 
-    public DimirCutpurse(final DimirCutpurse card) {
+    private DimirCutpurse(final DimirCutpurse card) {
         super(card);
     }
 
@@ -56,10 +56,10 @@ class DimirCutpurseEffect extends OneShotEffect {
         Player you = game.getPlayer(source.getControllerId());
         Player damagedPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (damagedPlayer != null) {
-            damagedPlayer.discard(1, false,source, game);
+            damagedPlayer.discard(1, false, false, source, game);
         }
         if (you != null) {
-            you.drawCards(1, game);
+            you.drawCards(1, source, game);
         }
         return true;
     }

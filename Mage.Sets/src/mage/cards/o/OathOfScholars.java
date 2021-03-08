@@ -34,7 +34,7 @@ public final class OathOfScholars extends CardImpl {
         this.addAbility(ability);
     }
 
-    public OathOfScholars(final OathOfScholars card) {
+    private OathOfScholars(final OathOfScholars card) {
         super(card);
     }
 
@@ -106,8 +106,8 @@ class OathOfScholarsEffect extends OneShotEffect {
             return false;
         }
         if (firstPlayer.chooseUse(Outcome.AIDontUseIt, "Discard your hand and draw 3 cards?", source, game)) {
-            firstPlayer.discard(firstPlayer.getHand().size(), true, source, game);
-            firstPlayer.drawCards(3, game);
+            firstPlayer.discard(firstPlayer.getHand().size(), true, false, source, game);
+            firstPlayer.drawCards(3, source, game);
             return true;
         }
         return false;

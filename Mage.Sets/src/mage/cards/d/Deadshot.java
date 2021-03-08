@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCreaturePermanent;
@@ -44,7 +44,7 @@ public final class Deadshot extends CardImpl {
         this.getSpellAbility().addTarget(target);
     }
 
-    public Deadshot(final Deadshot card) {
+    private Deadshot(final Deadshot card) {
         super(card);
     }
 
@@ -73,12 +73,12 @@ class DeadshotDamageEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent ownCreature = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+        Permanent ownCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (ownCreature != null) {
             int damage = ownCreature.getPower().getValue();
             Permanent targetCreature = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (targetCreature != null) {
-                targetCreature.damage(damage, ownCreature.getId(), game, false, true);
+                targetCreature.damage(damage, ownCreature.getId(), source, game, false, true);
                 return true;
             }
         }

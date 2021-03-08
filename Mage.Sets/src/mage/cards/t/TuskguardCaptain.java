@@ -17,7 +17,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -30,7 +29,7 @@ public final class TuskguardCaptain extends CardImpl {
     static {
         filter.add(CardType.CREATURE.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     static final String rule = "Each creature you control with a +1/+1 counter on it has trample";
@@ -51,7 +50,7 @@ public final class TuskguardCaptain extends CardImpl {
 
     }
 
-    public TuskguardCaptain(final TuskguardCaptain card) {
+    private TuskguardCaptain(final TuskguardCaptain card) {
         super(card);
     }
 

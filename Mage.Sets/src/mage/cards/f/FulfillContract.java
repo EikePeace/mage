@@ -13,7 +13,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -30,7 +29,7 @@ public final class FulfillContract extends CardImpl {
     private static final FilterControlledCreaturePermanent filterRogueOrHunter = new FilterControlledCreaturePermanent("Rogue or Hunter you control");
 
     static {
-        filterBountyCreature.add(new CounterPredicate(CounterType.BOUNTY));
+        filterBountyCreature.add(CounterType.BOUNTY.getPredicate());
         filterRogueOrHunter.add(Predicates.or(SubType.ROGUE.getPredicate(), SubType.HUNTER.getPredicate()));
     }
 
@@ -44,7 +43,7 @@ public final class FulfillContract extends CardImpl {
 
     }
 
-    public FulfillContract(final FulfillContract card) {
+    private FulfillContract(final FulfillContract card) {
         super(card);
     }
 
@@ -76,9 +75,9 @@ class FulfillContractEffect extends OneShotEffect {
         Permanent permanentToDestroy = game.getPermanent(getTargetPointer().getFirst(game, source));
         Permanent permanentToPutCounter = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (controller != null) {
-            if (permanentToDestroy != null && permanentToDestroy.destroy(source.getSourceId(), game, false)) {
+            if (permanentToDestroy != null && permanentToDestroy.destroy(source, game, false)) {
                 if (permanentToPutCounter != null) {
-                    permanentToPutCounter.addCounters(CounterType.P1P1.createInstance(), source, game);
+                    permanentToPutCounter.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 }
             }
             return true;

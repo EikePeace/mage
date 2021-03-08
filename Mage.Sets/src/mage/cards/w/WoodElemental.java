@@ -46,7 +46,7 @@ public final class WoodElemental extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.ALL, new InfoEffect("{this}'s power and toughness are each equal to the number of Forests sacrificed as it entered the battlefield")));
     }
 
-    public WoodElemental(final WoodElemental card) {
+    private WoodElemental(final WoodElemental card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class WoodElementalEffect extends OneShotEffect {
                     for (UUID targetId : target.getTargets()) {
                         Permanent targetPermanent = game.getPermanent(targetId);
                         if (targetPermanent != null) {
-                            targetPermanent.sacrifice(source.getSourceId(), game);
+                            targetPermanent.sacrifice(source, game);
                         }
                     }
                     game.addEffect(new SetPowerToughnessSourceEffect(sacrificedForests, sacrificedForests, Duration.Custom, SubLayer.SetPT_7b), source);

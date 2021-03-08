@@ -1,12 +1,14 @@
-
 package mage.abilities.keyword;
 
+import mage.MageInt;
 import mage.abilities.Ability;
+import mage.abilities.common.CrewWithToughnessAbility;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.CostImpl;
 import mage.abilities.effects.common.continuous.AddCardTypeSourceEffect;
 import mage.abilities.hint.HintUtils;
+import mage.abilities.icon.abilities.CrewAbilityIcon;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
@@ -34,6 +36,7 @@ public class CrewAbility extends SimpleActivatedAbility {
     public CrewAbility(int value) {
         super(Zone.BATTLEFIELD, new AddCardTypeSourceEffect(Duration.EndOfTurn, CardType.ARTIFACT), new CrewCost(value));
         this.addEffect(new AddCardTypeSourceEffect(Duration.EndOfTurn, CardType.ARTIFACT, CardType.CREATURE));
+        this.addIcon(CrewAbilityIcon.instance);
         this.value = value;
     }
 
@@ -73,7 +76,7 @@ class CrewCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Target target = new TargetControlledCreaturePermanent(0, Integer.MAX_VALUE, filter, true) {
             @Override
             public String getMessage() {
@@ -81,7 +84,7 @@ class CrewCost extends CostImpl {
                 int selectedPower = this.targets.entrySet().stream()
                         .map(entry -> (game.getPermanent(entry.getKey())))
                         .filter(Objects::nonNull)
-                        .mapToInt(p -> (p.getPower().getValue()))
+                        .mapToInt(p -> (getCrewPower(p, game)))
                         .sum();
                 String extraInfo = "(selected power " + selectedPower + " of " + value + ")";
                 if (selectedPower >= value) {
@@ -92,21 +95,21 @@ class CrewCost extends CostImpl {
         };
 
         // can cancel
-        if (target.choose(Outcome.Tap, controllerId, sourceId, game)) {
+        if (target.choose(Outcome.Tap, controllerId, source.getSourceId(), game)) {
             int sumPower = 0;
             for (UUID targetId : target.getTargets()) {
-                GameEvent event = new GameEvent(GameEvent.EventType.CREW_VEHICLE, targetId, sourceId, controllerId);
+                GameEvent event = new GameEvent(GameEvent.EventType.CREW_VEHICLE, targetId, source, controllerId);
                 if (!game.replaceEvent(event)) {
                     Permanent permanent = game.getPermanent(targetId);
-                    if (permanent != null && permanent.tap(game)) {
-                        sumPower += permanent.getPower().getValue();
+                    if (permanent != null && permanent.tap(source, game)) {
+                        sumPower += getCrewPower(permanent, game);
                     }
                 }
             }
             paid = sumPower >= value;
             if (paid) {
                 for (UUID targetId : target.getTargets()) {
-                    game.fireEvent(GameEvent.getEvent(GameEvent.EventType.CREWED_VEHICLE, targetId, sourceId, controllerId));
+                    game.fireEvent(GameEvent.getEvent(GameEvent.EventType.CREWED_VEHICLE, targetId, source, controllerId));
                 }
             }
         } else {
@@ -117,10 +120,11 @@ class CrewCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         int sumPower = 0;
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, controllerId, game)) {
-            int powerToAdd = permanent.getPower().getValue();
+            int powerToAdd = getCrewPower(permanent, game);
+
             if (powerToAdd > 0) {
                 sumPower += powerToAdd;
             }
@@ -134,5 +138,17 @@ class CrewCost extends CostImpl {
     @Override
     public CrewCost copy() {
         return new CrewCost(this);
+    }
+
+    private int getCrewPower(Permanent permanent, Game game) {
+        MageInt crewPowerSource = null;
+
+        if (permanent.hasAbility(CrewWithToughnessAbility.getInstance(), game)) {
+            crewPowerSource = permanent.getToughness();
+        } else {
+            crewPowerSource = permanent.getPower();
+        }
+
+        return crewPowerSource.getValue();
     }
 }

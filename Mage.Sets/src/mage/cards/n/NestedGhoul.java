@@ -31,7 +31,7 @@ public final class NestedGhoul extends CardImpl {
         this.addAbility(new NestedGhoulTriggeredAbility());
     }
 
-    public NestedGhoul(final NestedGhoul card) {
+    private NestedGhoul(final NestedGhoul card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class NestedGhoulTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

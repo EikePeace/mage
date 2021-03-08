@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class RotShambler extends CardImpl {
 
     }
 
-    public RotShambler(final RotShambler card) {
+    private RotShambler(final RotShambler card) {
         super(card);
     }
 

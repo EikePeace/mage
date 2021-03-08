@@ -40,7 +40,7 @@ public final class MirrorMadPhantasm extends CardImpl {
 
     }
 
-    public MirrorMadPhantasm(final MirrorMadPhantasm card) {
+    private MirrorMadPhantasm(final MirrorMadPhantasm card) {
         super(card);
     }
 
@@ -69,10 +69,7 @@ class MirrorMadPhantasmEffect extends OneShotEffect {
             if (owner == null) {
                 return false;
             }
-            if (owner.moveCards(perm, Zone.LIBRARY, source, game)) {
-                owner.shuffleLibrary(source, game);
-                perm.moveToZone(Zone.LIBRARY, source.getSourceId(), game, true);
-                owner.shuffleLibrary(source, game);
+            if (owner.shuffleCardsToLibrary(perm, game, source)) {
                 Cards cards = new CardsImpl();
                 Card phantasmCard = null;
                 for (Card card : owner.getLibrary().getCards(game)) {

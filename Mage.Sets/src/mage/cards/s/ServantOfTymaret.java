@@ -37,7 +37,7 @@ public final class ServantOfTymaret extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new RegenerateSourceEffect(), new ManaCostsImpl("{2}{B}")));
     }
 
-    public ServantOfTymaret(final ServantOfTymaret card) {
+    private ServantOfTymaret(final ServantOfTymaret card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class ServantOfTymaretEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int lostAmount = 0;
         for (UUID opponentId: game.getOpponents(source.getControllerId())) {
-            lostAmount += game.getPlayer(opponentId).loseLife(1, game, false);
+            lostAmount += game.getPlayer(opponentId).loseLife(1, game, source, false);
         }
         game.getPlayer(source.getControllerId()).gainLife(lostAmount, game, source);
         return true;

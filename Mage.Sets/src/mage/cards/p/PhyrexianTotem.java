@@ -22,7 +22,6 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.targetpointer.FixedTarget;
 
 /**
@@ -43,7 +42,7 @@ public final class PhyrexianTotem extends CardImpl {
         this.addAbility(new PhyrexianTotemTriggeredAbility());
     }
 
-    public PhyrexianTotem(final PhyrexianTotem card) {
+    private PhyrexianTotem(final PhyrexianTotem card) {
         super(card);
     }
 
@@ -99,7 +98,7 @@ class PhyrexianTotemTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

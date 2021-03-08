@@ -7,7 +7,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.filter.predicate.permanent.BlockingPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -40,7 +40,7 @@ public final class DissensionInTheRanks extends CardImpl {
         this.getSpellAbility().addTarget(target2);
     }
 
-    public DissensionInTheRanks(final DissensionInTheRanks card) {
+    private DissensionInTheRanks(final DissensionInTheRanks card) {
         super(card);
     }
 

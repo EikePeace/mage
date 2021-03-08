@@ -46,7 +46,7 @@ public final class RiteOfTheRagingStorm extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new RiteOfTheRagingStormEffect(), TargetController.ANY, false));
     }
 
-    public RiteOfTheRagingStorm(final RiteOfTheRagingStorm card) {
+    private RiteOfTheRagingStorm(final RiteOfTheRagingStorm card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class RiteOfTheRagingStormEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
-            return new LightningRagerToken().putOntoBattlefield(1, game, source.getSourceId(), player.getId());
+            return new LightningRagerToken().putOntoBattlefield(1, game, source, player.getId());
         }
         return false;
     }

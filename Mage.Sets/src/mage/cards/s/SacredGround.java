@@ -28,7 +28,7 @@ public final class SacredGround extends CardImpl {
         this.addAbility(new SacredGroundTriggeredAbility());
     }
 
-    public SacredGround(final SacredGround card) {
+    private SacredGround(final SacredGround card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class SacredGroundTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

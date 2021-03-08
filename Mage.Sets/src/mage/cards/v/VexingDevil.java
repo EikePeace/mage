@@ -31,7 +31,7 @@ public final class VexingDevil extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new VexingDevilEffect(), false));
     }
 
-    public VexingDevil(final VexingDevil card) {
+    private VexingDevil(final VexingDevil card) {
         super(card);
     }
 
@@ -61,8 +61,8 @@ class VexingDevilEffect extends OneShotEffect {
                 Player opponent = game.getPlayer(opponentUuid);
                 if (opponent != null && opponent.chooseUse(Outcome.LoseLife, "Make " + permanent.getLogName() + " deal 4 damage to you?", source, game)) {
                     game.informPlayers(opponent.getLogName() + " has chosen to receive 4 damage from " + permanent.getLogName());
-                    opponent.damage(4, permanent.getId(), game);
-                    permanent.sacrifice(source.getSourceId(), game);
+                    opponent.damage(4, permanent.getId(), source, game);
+                    permanent.sacrifice(source, game);
                     return true;
                 }
             }

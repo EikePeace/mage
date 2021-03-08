@@ -36,7 +36,7 @@ public final class MoxDiamond extends CardImpl {
         this.addAbility(new AnyColorManaAbility());
     }
 
-    public MoxDiamond(final MoxDiamond card) {
+    private MoxDiamond(final MoxDiamond card) {
         super(card);
     }
 
@@ -73,10 +73,10 @@ class MoxDiamondReplacementEffect extends ReplacementEffectImpl {
         if (player != null) {
             TargetCardInHand target = new TargetCardInHand(new FilterLandCard());
             Cost cost = new DiscardTargetCost(target);
-            if (cost.canPay(source, source.getSourceId(), source.getControllerId(), game)
+            if (cost.canPay(source, source, source.getControllerId(), game)
                     && player.chooseUse(outcome, "Discard land? (Otherwise Mox Diamond goes to graveyard)", source, game)
                     && player.chooseTarget(Outcome.Discard, target, source, game)) {
-                player.discard(game.getCard(target.getFirstTarget()), source, game);
+                player.discard(game.getCard(target.getFirstTarget()), false, source, game);
                 return false;
             } else {
                 Permanent permanent = game.getPermanentEntering(event.getTargetId());

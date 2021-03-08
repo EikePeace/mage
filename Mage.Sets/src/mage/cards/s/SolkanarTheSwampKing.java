@@ -37,7 +37,7 @@ public final class SolkanarTheSwampKing extends CardImpl {
 
     }
 
-    public SolkanarTheSwampKing(final SolkanarTheSwampKing card) {
+    private SolkanarTheSwampKing(final SolkanarTheSwampKing card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class SolkanarTheSwampKingAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

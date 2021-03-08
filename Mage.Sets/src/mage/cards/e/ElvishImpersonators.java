@@ -33,7 +33,7 @@ public final class ElvishImpersonators extends CardImpl {
         this.addAbility(new AsEntersBattlefieldAbility(new ElvishImpersonatorsEffect()));
     }
 
-    public ElvishImpersonators(final ElvishImpersonators card) {
+    private ElvishImpersonators(final ElvishImpersonators card) {
         super(card);
     }
 
@@ -63,8 +63,8 @@ class ElvishImpersonatorsEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            int firstRoll = controller.rollDice(game, 6);
-            int secondRoll = controller.rollDice(game, 6);
+            int firstRoll = controller.rollDice(source, game, 6);
+            int secondRoll = controller.rollDice(source, game, 6);
             game.addEffect(new SetPowerToughnessSourceEffect(firstRoll, secondRoll, Duration.WhileOnBattlefield, SubLayer.SetPT_7b), source);
             return true;
         }

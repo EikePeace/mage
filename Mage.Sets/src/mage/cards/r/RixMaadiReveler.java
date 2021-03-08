@@ -37,7 +37,7 @@ public final class RixMaadiReveler extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new RixMaadiRevelerEffect(), false));
     }
 
-    public RixMaadiReveler(final RixMaadiReveler card) {
+    private RixMaadiReveler(final RixMaadiReveler card) {
         super(card);
     }
 
@@ -72,11 +72,11 @@ class RixMaadiRevelerEffect extends OneShotEffect {
             return false;
         }
         if (SpectacleCondition.instance.apply(game, source)) {
-            player.discard(player.getHand().size(), false, source, game);
-            player.drawCards(3, game);
+            player.discard(player.getHand().size(), false, false, source, game);
+            player.drawCards(3, source, game);
         } else {
-            player.discard(1, false, source, game);
-            player.drawCards(1, game);
+            player.discard(1, false, false, source, game);
+            player.drawCards(1, source, game);
         }
         return true;
     }

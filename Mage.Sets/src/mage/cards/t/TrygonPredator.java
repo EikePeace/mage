@@ -40,7 +40,7 @@ public final class TrygonPredator extends CardImpl {
         this.addAbility(new TrygonPredatorTriggeredAbility());
     }
 
-    public TrygonPredator(final TrygonPredator card) {
+    private TrygonPredator(final TrygonPredator card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class TrygonPredatorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

@@ -35,7 +35,7 @@ public final class FlamespeakerAdept extends CardImpl {
         this.addAbility(new ScryTriggeredAbility());
     }
 
-    public FlamespeakerAdept(final FlamespeakerAdept card) {
+    private FlamespeakerAdept(final FlamespeakerAdept card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class ScryTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SCRY;
+        return event.getType() == GameEvent.EventType.SCRIED;
     }
 
     @Override

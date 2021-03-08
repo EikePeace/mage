@@ -12,6 +12,7 @@ import mage.constants.Outcome;
 import mage.game.Game;
 import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
+import mage.game.permanent.Permanent;
 import mage.players.Player;
 
 /**
@@ -27,7 +28,7 @@ public final class BloodOfTheMartyr extends CardImpl {
         this.getSpellAbility().addEffect(new BloodOfTheMartyrEffect());
     }
 
-    public BloodOfTheMartyr(final BloodOfTheMartyr card) {
+    private BloodOfTheMartyr(final BloodOfTheMartyr card) {
         super(card);
     }
 
@@ -55,7 +56,7 @@ class BloodOfTheMartyrEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -68,7 +69,7 @@ class BloodOfTheMartyrEffect extends ReplacementEffectImpl {
         Player controller = game.getPlayer(source.getControllerId());
         DamageEvent damageEvent = (DamageEvent) event;
         if (controller != null) {
-            controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
+            controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
             return true;
         }
         return false;
@@ -77,8 +78,11 @@ class BloodOfTheMartyrEffect extends ReplacementEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         Player controller = game.getPlayer(source.getControllerId());
+        Permanent permanent = game.getPermanent(event.getTargetId());
         DamageEvent damageEvent = (DamageEvent) event;
         return controller != null
-                && controller.chooseUse(outcome, "Would you like to have " + damageEvent.getAmount() + " damage dealt to you instead of " + game.getPermanentOrLKIBattlefield(damageEvent.getTargetId()).getLogName() + "?", source, game);
+                && permanent != null
+                && permanent.isCreature()
+                && controller.chooseUse(outcome, "Have " + damageEvent.getAmount() + " damage dealt to you instead of " + permanent.getLogName() + "?", source, game);
     }
 }

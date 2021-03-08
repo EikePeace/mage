@@ -13,7 +13,7 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class GodheadOfAwe extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new SetPowerToughnessAllEffect(1, 1, Duration.WhileOnBattlefield, filter, true)));
     }
 
-    public GodheadOfAwe(final GodheadOfAwe card) {
+    private GodheadOfAwe(final GodheadOfAwe card) {
         super(card);
     }
 

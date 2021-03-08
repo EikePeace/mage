@@ -7,7 +7,6 @@ import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.CreateTokenEffect;
 import mage.abilities.effects.common.DestroyTargetEffect;
 import mage.abilities.keyword.AftermathAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -42,7 +41,7 @@ public final class StartFinish extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(new DestroyTargetEffect("Destroy target creature"));
     }
 
-    public StartFinish(final StartFinish card) {
+    private StartFinish(final StartFinish card) {
         super(card);
     }
 

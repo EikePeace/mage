@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.a;
 
 import java.util.UUID;
@@ -38,7 +33,7 @@ public final class ArenaOfTheAncients extends CardImpl {
         this.addAbility(tapAllLegendsAbility);
     }
     
-    public ArenaOfTheAncients(final ArenaOfTheAncients card) {
+    private ArenaOfTheAncients(final ArenaOfTheAncients card) {
         super(card);
     }
 

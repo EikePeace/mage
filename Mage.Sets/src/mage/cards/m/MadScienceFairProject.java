@@ -3,7 +3,7 @@ package mage.cards.m;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -29,7 +29,7 @@ public final class MadScienceFairProject extends CardImpl {
         this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new MadScienceFairManaEffect(), new TapSourceCost()));
     }
 
-    public MadScienceFairProject(final MadScienceFairProject card) {
+    private MadScienceFairProject(final MadScienceFairProject card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class MadScienceFairManaEffect extends ManaEffect {
         if (game != null) {
             Player controller = game.getPlayer(source.getControllerId());
             if (controller != null) {
-                int amount = controller.rollDice(game, 6);
+                int amount = controller.rollDice(source, game, 6);
                 if (amount <= 3) {
                     return Mana.ColorlessMana(1);
                 } else {

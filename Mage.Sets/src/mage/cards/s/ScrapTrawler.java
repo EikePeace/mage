@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -9,21 +7,21 @@ import mage.abilities.effects.common.ReturnToHandTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.ComparisonType;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterArtifactCard;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetCardInYourGraveyard;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class ScrapTrawler extends CardImpl {
@@ -42,7 +40,7 @@ public final class ScrapTrawler extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScrapTrawler(final ScrapTrawler card) {
+    private ScrapTrawler(final ScrapTrawler card) {
         super(card);
     }
 
@@ -70,7 +68,7 @@ class ScrapTrawlerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override
@@ -78,7 +76,9 @@ class ScrapTrawlerTriggeredAbility extends TriggeredAbilityImpl {
         if (((ZoneChangeEvent) event).getToZone() == Zone.GRAVEYARD
                 && ((ZoneChangeEvent) event).getFromZone() == Zone.BATTLEFIELD) {
             Permanent permanent = ((ZoneChangeEvent) event).getTarget();
-            if (permanent.isControlledBy(this.getControllerId()) && permanent.isArtifact()) {
+            if (permanent != null
+                    && permanent.isControlledBy(this.getControllerId())
+                    && permanent.isArtifact()) {
                 FilterCard filter = new FilterArtifactCard("artifact card in your graveyard with converted mana cost less than " + permanent.getManaCost().convertedManaCost());
                 filter.add(new ConvertedManaCostPredicate(ComparisonType.FEWER_THAN, permanent.getManaCost().convertedManaCost()));
                 TargetCardInYourGraveyard target = new TargetCardInYourGraveyard(filter);

@@ -32,7 +32,7 @@ public final class AnvilOfBogardan extends CardImpl {
         this.addAbility(new BeginningOfDrawTriggeredAbility(Zone.BATTLEFIELD, new AnvilOfBogardanEffect(), TargetController.ANY, false));
     }
     
-    public AnvilOfBogardan(final AnvilOfBogardan card) {
+    private AnvilOfBogardan(final AnvilOfBogardan card) {
         super(card);
     }
     
@@ -57,8 +57,8 @@ class AnvilOfBogardanEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         if (targetPlayer != null) {
-            targetPlayer.drawCards(1, game);
-            targetPlayer.discard(1, false, source, game);
+            targetPlayer.drawCards(1, source, game);
+            targetPlayer.discard(1, false, false, source, game);
             return true;
         }
         return false;

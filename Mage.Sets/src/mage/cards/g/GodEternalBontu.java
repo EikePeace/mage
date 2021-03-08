@@ -14,7 +14,7 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -92,10 +92,10 @@ class GodEternalBontuEffect extends OneShotEffect {
         int counter = 0;
         for (UUID permanentId : target.getTargets()) {
             Permanent permanent = game.getPermanent(permanentId);
-            if (permanent != null && permanent.sacrifice(source.getSourceId(), game)) {
+            if (permanent != null && permanent.sacrifice(source, game)) {
                 counter++;
             }
         }
-        return player.drawCards(counter, game) > 0;
+        return player.drawCards(counter, source, game) > 0;
     }
 }

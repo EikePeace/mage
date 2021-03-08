@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.Target;
 import mage.target.TargetPermanent;
 
@@ -48,7 +48,7 @@ public final class WormfangTurtle extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public WormfangTurtle(final WormfangTurtle card) {
+    private WormfangTurtle(final WormfangTurtle card) {
         super(card);
     }
 

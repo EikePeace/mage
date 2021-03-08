@@ -17,8 +17,7 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -37,7 +36,7 @@ public final class RageForger extends CardImpl {
         filter.add(SubType.SHAMAN.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
         filter.add(AnotherPredicate.instance);
-        filterAttack.add(new CounterPredicate(CounterType.P1P1));
+        filterAttack.add(CounterType.P1P1.getPredicate());
     }
 
     public RageForger(UUID ownerId, CardSetInfo setInfo) {
@@ -57,7 +56,7 @@ public final class RageForger extends CardImpl {
 
     }
 
-    public RageForger(final RageForger card) {
+    private RageForger(final RageForger card) {
         super(card);
     }
 
@@ -86,9 +85,9 @@ class RageForgerDamageEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent attackingCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent attackingCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && attackingCreature != null) {
-            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), 1, attackingCreature.getId(), game, false, true);
+            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), 1, attackingCreature.getId(), source, game, false, true);
             return true;
         }
         return false;

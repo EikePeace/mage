@@ -15,10 +15,10 @@ import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
-import mage.game.stack.Spell;
 import mage.util.CardUtil;
 
 import java.util.UUID;
+import mage.cards.Card;
 
 /**
  * @author LevelX2
@@ -44,7 +44,7 @@ public final class RakdosLordOfRiots extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new RakdosLordOfRiotsCostReductionEffect()));
     }
 
-    public RakdosLordOfRiots(final RakdosLordOfRiots card) {
+    private RakdosLordOfRiots(final RakdosLordOfRiots card) {
         super(card);
     }
 
@@ -58,7 +58,7 @@ class RakdosLordOfRiotsCantCastEffect extends ContinuousRuleModifyingEffectImpl 
 
     public RakdosLordOfRiotsCantCastEffect() {
         super(Duration.WhileOnBattlefield, Outcome.Detriment);
-        staticText = "You can't cast {this} unless an opponent lost life this turn";
+        staticText = "You can't cast this spell unless an opponent lost life this turn";
     }
 
     public RakdosLordOfRiotsCantCastEffect(final RakdosLordOfRiotsCantCastEffect effect) {
@@ -77,7 +77,7 @@ class RakdosLordOfRiotsCantCastEffect extends ContinuousRuleModifyingEffectImpl 
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL;
+        return event.getType() == GameEvent.EventType.CAST_SPELL;
     }
 
     @Override
@@ -105,10 +105,8 @@ class RakdosLordOfRiotsCostReductionEffect extends CostModificationEffectImpl {
         Ability spellAbility = abilityToModify;
         if (spellAbility != null) {
             int amount = OpponentsLostLifeCount.instance.calculate(game, source, this);
-            if (amount > 0) {
-                CardUtil.reduceCost(spellAbility, amount);
-                return true;
-            }
+            CardUtil.reduceCost(spellAbility, amount);
+            return true;
         }
         return false;
     }
@@ -117,9 +115,9 @@ class RakdosLordOfRiotsCostReductionEffect extends CostModificationEffectImpl {
     public boolean applies(Ability abilityToModify, Ability source, Game game) {
         if (abilityToModify instanceof SpellAbility) {
             if (abilityToModify.isControlledBy(source.getControllerId())) {
-                Spell spell = (Spell) game.getStack().getStackObject(abilityToModify.getId());
-                if (spell != null) {
-                    return spell.isCreature();
+                Card spellCard = ((SpellAbility) abilityToModify).getCharacteristics(game);
+                if (spellCard != null) {
+                    return spellCard.isCreature();
                 }
             }
         }

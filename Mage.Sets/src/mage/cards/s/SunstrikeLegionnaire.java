@@ -19,7 +19,7 @@ import mage.constants.ComparisonType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -53,7 +53,7 @@ public final class SunstrikeLegionnaire extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SunstrikeLegionnaire(final SunstrikeLegionnaire card) {
+    private SunstrikeLegionnaire(final SunstrikeLegionnaire card) {
         super(card);
     }
 

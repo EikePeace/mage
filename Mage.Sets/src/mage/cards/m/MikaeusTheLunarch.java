@@ -20,7 +20,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  * @author nantuko
@@ -55,7 +55,7 @@ public final class MikaeusTheLunarch extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MikaeusTheLunarch(final MikaeusTheLunarch card) {
+    private MikaeusTheLunarch(final MikaeusTheLunarch card) {
         super(card);
     }
 

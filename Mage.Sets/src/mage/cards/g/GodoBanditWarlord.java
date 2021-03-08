@@ -17,7 +17,7 @@ import mage.constants.SubType;
 import mage.constants.SuperType;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -53,7 +53,7 @@ public final class GodoBanditWarlord extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GodoBanditWarlord(final GodoBanditWarlord card) {
+    private GodoBanditWarlord(final GodoBanditWarlord card) {
         super(card);
     }
 

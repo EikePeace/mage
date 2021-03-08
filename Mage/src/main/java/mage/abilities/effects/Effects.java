@@ -4,8 +4,10 @@ import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.constants.Outcome;
 import mage.target.targetpointer.TargetPointer;
+import mage.util.CardUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -13,9 +15,7 @@ import java.util.ArrayList;
 public class Effects extends ArrayList<Effect> {
 
     public Effects(Effect... effects) {
-        for (Effect effect : effects) {
-            this.add(effect);
-        }
+        this.addAll(Arrays.asList(effects));
     }
 
     public Effects(final Effects effects) {
@@ -31,7 +31,7 @@ public class Effects extends ArrayList<Effect> {
     public String getTextStartingUpperCase(Mode mode) {
         String text = getText(mode);
         if (text.length() > 3) {
-            return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+            return CardUtil.getTextWithFirstCharUpperCase(text);
         }
         return text;
     }
@@ -52,39 +52,51 @@ public class Effects extends ArrayList<Effect> {
 
             // concat effects (default: each effect with a new sentence)
             String concatPrefix = effect.getConcatPrefix();
+
             if (effectNum > 1 && !concatPrefix.isEmpty() && !concatPrefix.equals(".")) {
                 nextRule = concatPrefix + " " + nextRule;
             }
 
-            if (nextRule != null) {
-                if (nextRule.startsWith("and ") || nextRule.startsWith("with ") || nextRule.startsWith("then ")) {
+
+            //check if nextRule is a new sentence or not.
+            if (nextRule.startsWith("and ") || nextRule.startsWith("with ") || nextRule.startsWith("then ")) {
+                endString = " ";
+            } else if (nextRule.startsWith(",") || nextRule.startsWith(" ")) {
+                endString = "";
+                // nextRule determined to be a new sentence, now check ending of lastRule
+            } else if (lastRule != null && lastRule.length() > 3) {
+                //check if lastRule already has appropriate punctuation, if so, add a space.
+                if (lastRule.endsWith(".\"")
+                        || lastRule.endsWith(".)")
+                        || lastRule.endsWith(".)</i>")
+                        || lastRule.endsWith(".")) {
                     endString = " ";
-                } else if (nextRule.startsWith(",") || nextRule.startsWith(" ")) {
-                    endString = "";
-                } else if (lastRule != null && lastRule.length() > 3) {
-                    if (!lastRule.endsWith(".") && !lastRule.endsWith("<br>")) {
-                        endString = ". ";
-                    }
-                    if (nextRule.length() > 3) {
-                        nextRule = Character.toUpperCase(nextRule.charAt(0)) + nextRule.substring(1);
-                    }
+                    // if lastRule does not have appropriate punctuation, add the default ". "
+                } else if (!lastRule.endsWith(".") && !lastRule.endsWith("<br>")) {
+                    endString = ". ";
                 }
-
-                String currentRule = endString + nextRule;
-                // fix dot in the combined effect like IfDoCost
-                if (sbText.length() > 0 && currentRule.length() > 0) {
-                    boolean prevTextEndsWithDot = sbText.charAt(sbText.length() - 1) == '.';
-                    boolean currentTextStartsWithDot = currentRule.startsWith(",") || currentRule.startsWith(".");
-                    if (prevTextEndsWithDot && currentTextStartsWithDot) {
-                        sbText.delete(sbText.length() - 1, sbText.length());
-                    }
+                if (nextRule.length() > 3) {
+                    nextRule = Character.toUpperCase(nextRule.charAt(0)) + nextRule.substring(1);
                 }
-
-                sbText.append(currentRule);
             }
+
+            String currentRule = endString + nextRule;
+            // fix dot in the combined effect like IfDoCost
+            if (sbText.length() > 0 && currentRule.length() > 0) {
+                boolean prevTextEndsWithDot = sbText.charAt(sbText.length() - 1) == '.';
+                boolean currentTextStartsWithDot = currentRule.startsWith(",") || currentRule.startsWith(".");
+                if (prevTextEndsWithDot && currentTextStartsWithDot) {
+                    sbText.delete(sbText.length() - 1, sbText.length());
+                }
+            }
+
+            sbText.append(currentRule);
+
             lastRule = nextRule;
+
         }
 
+        //add punctuation to very last rule.
         if (lastRule != null && lastRule.length() > 3
                 && !lastRule.endsWith(".")
                 && !lastRule.endsWith("\"")
@@ -95,6 +107,7 @@ public class Effects extends ArrayList<Effect> {
         }
 
         return sbText.toString();
+
     }
 
     public boolean hasOutcome(Ability source, Outcome outcome) {
@@ -167,4 +180,7 @@ public class Effects extends ArrayList<Effect> {
         }
     }
 
+    public void setValue(String key, Object value) {
+        this.stream().forEach(effect -> effect.setValue(key, value));
+    }
 }

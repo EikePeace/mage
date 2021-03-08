@@ -43,7 +43,7 @@ public final class SaffiEriksdotter extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SaffiEriksdotter(final SaffiEriksdotter card) {
+    private SaffiEriksdotter(final SaffiEriksdotter card) {
         super(card);
     }
 
@@ -99,7 +99,7 @@ class SaffiEriksdotterDelayedTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

@@ -4,7 +4,7 @@ package mage.cards.g;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -34,13 +34,13 @@ public final class GriefTyrant extends CardImpl {
         this.addAbility(new EntersBattlefieldAbility(new AddCountersSourceEffect(CounterType.M1M1.createInstance(4))));
 
         // When Grief Tyrant dies, put a -1/-1 counter on target creature for each -1/-1 counter on Grief Tyrant.
-        Ability ability = new DiesTriggeredAbility(new GriefTyrantEffect());
+        Ability ability = new DiesSourceTriggeredAbility(new GriefTyrantEffect());
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability);
         
     }
     
-    public GriefTyrant(final GriefTyrant card) {
+    private GriefTyrant(final GriefTyrant card) {
         super(card);
     }
     
@@ -72,7 +72,7 @@ class GriefTyrantEffect extends OneShotEffect {
         Permanent griefTyrant = game.getPermanentOrLKIBattlefield(source.getSourceId());
         int countersOnGriefTyrant = griefTyrant.getCounters(game).getCount(CounterType.M1M1);
         if (targetCreature != null) {
-            targetCreature.addCounters(CounterType.M1M1.createInstance(countersOnGriefTyrant), source, game);
+            targetCreature.addCounters(CounterType.M1M1.createInstance(countersOnGriefTyrant), source.getControllerId(), source, game);
             return true;
         }
         return false;

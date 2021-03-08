@@ -1,5 +1,6 @@
 package mage.target.targetpointer;
 
+import mage.MageObject;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.cards.Card;
@@ -12,13 +13,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class FixedTarget implements TargetPointer {
+public class FixedTarget extends TargetPointerImpl {
 
     private final UUID targetId;
     private int zoneChangeCounter;
     private boolean initialized;
 
+    /**
+     * Use this best only to target to a player or spells on the stack. Try to
+     * avoid this method to set the target to a specific card or permanent if
+     * possible. Because the zoneChangeCounter is not set immediately, it can be
+     * undefined to which object you refer to at the end. Best is to set the
+     * target for cards or permanents by using the methods with the card or
+     * permanent object or also setting the zoneChangeCounter directly.
+     *
+     * @param target
+     */
     public FixedTarget(UUID target) {
+        super();
         this.targetId = target;
         this.initialized = false;
     }
@@ -27,16 +39,29 @@ public class FixedTarget implements TargetPointer {
         this(mor.getSourceId(), mor.getZoneChangeCounter());
     }
 
+    /**
+     * Target counter is immediatly initialised with current zoneChangeCounter
+     * value from the GameState Sets fixed the currect zoneChangeCounter
+     *
+     * @param card used to get the objectId
+     * @param game
+     */
     public FixedTarget(Card card, Game game) {
+        super();
         this.targetId = card.getId();
         this.zoneChangeCounter = card.getZoneChangeCounter(game);
         this.initialized = true;
     }
 
+    /**
+     * Target counter is immediatly initialised with current zoneChangeCounter
+     * value from the given permanent
+     *
+     * @param permanent
+     * @param game
+     */
     public FixedTarget(Permanent permanent, Game game) {
-        this.targetId = permanent.getId();
-        this.zoneChangeCounter = permanent.getZoneChangeCounter(game);
-        this.initialized = true;
+        this(permanent.getId(), game);
     }
 
     /**
@@ -49,6 +74,7 @@ public class FixedTarget implements TargetPointer {
      * @param zoneChangeCounter
      */
     public FixedTarget(UUID targetId, int zoneChangeCounter) {
+        super();
         this.targetId = targetId;
         this.initialized = true;
         this.zoneChangeCounter = zoneChangeCounter;
@@ -61,15 +87,18 @@ public class FixedTarget implements TargetPointer {
      * @param game
      */
     public FixedTarget(UUID targetId, Game game) {
+        super();
         this.targetId = targetId;
         this.initialized = true;
         this.zoneChangeCounter = game.getState().getZoneChangeCounter(targetId);
     }
 
-    public FixedTarget(final FixedTarget fixedTarget) {
-        this.targetId = fixedTarget.targetId;
-        this.zoneChangeCounter = fixedTarget.zoneChangeCounter;
-        this.initialized = fixedTarget.initialized;
+    public FixedTarget(final FixedTarget targetPointer) {
+        super(targetPointer);
+
+        this.targetId = targetPointer.targetId;
+        this.zoneChangeCounter = targetPointer.zoneChangeCounter;
+        this.initialized = targetPointer.initialized;
     }
 
     @Override
@@ -80,6 +109,15 @@ public class FixedTarget implements TargetPointer {
         }
     }
 
+    /**
+     * This returns a list of the targetIds (but only if the targets are still
+     * have the same zoneChangeCounter). So if the target has changed zone
+     * meanwhile there is no id returned for this target and the list is empty.
+     *
+     * @param game
+     * @param source
+     * @return
+     */
     @Override
     public List<UUID> getTargets(Game game, Ability source) {
         // check target not changed zone
@@ -90,8 +128,10 @@ public class FixedTarget implements TargetPointer {
             }
         }
 
-        List<UUID> list = new ArrayList<>(1);
-        list.add(targetId);
+        List<UUID> list = new ArrayList<>();
+        if (targetId != null) {
+            list.add(targetId);
+        }
         return list;
     }
 
@@ -109,7 +149,7 @@ public class FixedTarget implements TargetPointer {
     }
 
     @Override
-    public TargetPointer copy() {
+    public FixedTarget copy() {
         return new FixedTarget(this);
     }
 
@@ -121,18 +161,23 @@ public class FixedTarget implements TargetPointer {
         return zoneChangeCounter;
     }
 
-    public Permanent getTargetedPermanentOrLKIBattlefield(Game game) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(targetId);
-        if (permanent != null && permanent.getZoneChangeCounter(game) != zoneChangeCounter) {
-            permanent = (Permanent) game.getLastKnownInformation(targetId, Zone.BATTLEFIELD, zoneChangeCounter);
-        }
-        return permanent;
-    }
-
     @Override
     public FixedTarget getFixedTarget(Game game, Ability source) {
         init(game, source);
         return this;
     }
 
+    @Override
+    public Permanent getFirstTargetPermanentOrLKI(Game game, Ability source) {
+        init(game, source);
+        Permanent permanent = game.getPermanent(targetId);
+        if (permanent != null && permanent.getZoneChangeCounter(game) == zoneChangeCounter) {
+            return permanent;
+        }
+        MageObject mageObject = game.getLastKnownInformation(targetId, Zone.BATTLEFIELD, zoneChangeCounter);
+        if (mageObject instanceof Permanent) {
+            return (Permanent) mageObject;
+        }
+        return null;
+    }
 }

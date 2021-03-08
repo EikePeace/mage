@@ -31,7 +31,7 @@ public final class FatalPush extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public FatalPush(final FatalPush card) {
+    private FatalPush(final FatalPush card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class FatalPushEffect extends OneShotEffect {
                 int cmc = targetCreature.getConvertedManaCost();
                 if (cmc <= 2
                         || (RevoltCondition.instance.apply(game, source) && cmc <= 4)) {
-                    targetCreature.destroy(source.getSourceId(), game, false);
+                    targetCreature.destroy(source, game, false);
                 }
             }
             return true;

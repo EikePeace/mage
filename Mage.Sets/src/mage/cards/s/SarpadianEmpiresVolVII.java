@@ -40,7 +40,7 @@ public final class SarpadianEmpiresVolVII extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SarpadianEmpiresVolVII(final SarpadianEmpiresVolVII card) {
+    private SarpadianEmpiresVolVII(final SarpadianEmpiresVolVII card) {
         super(card);
     }
 
@@ -125,7 +125,7 @@ class SarpadianEmpiresCreateSelectedTokenEffect extends OneShotEffect {
                 token = new SaprolingToken();
                 break;
         }
-        token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+        token.putOntoBattlefield(1, game, source, source.getControllerId());
         return true;
     }
 }

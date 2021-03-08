@@ -1,4 +1,3 @@
-
 package mage.cards.b;
 
 import java.util.UUID;
@@ -28,11 +27,11 @@ import mage.target.common.TargetCreaturePermanent;
  *
  */
 public final class BlowflyInfestation extends CardImpl {
-    
+
     private static final String rule = "Whenever a creature dies, if it had a -1/-1 counter on it, put a -1/-1 counter on target creature.";
 
     public BlowflyInfestation(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.ENCHANTMENT},"{2}{B}");
+        super(ownerId, setInfo, new CardType[]{CardType.ENCHANTMENT}, "{2}{B}");
 
         //Whenever a creature dies, if it had a -1/-1 counter on it, put a -1/-1 counter on target creature.
         Effect effect = new BlowflyInfestationEffect();
@@ -43,7 +42,7 @@ public final class BlowflyInfestation extends CardImpl {
 
     }
 
-    public BlowflyInfestation(final BlowflyInfestation card) {
+    private BlowflyInfestation(final BlowflyInfestation card) {
         super(card);
     }
 
@@ -61,7 +60,7 @@ class BlowflyInfestationCondition implements Condition {
     public boolean apply(Game game, Ability source) {
         for (Effect effect : source.getEffects()) {
             if (effect.getTargetPointer().getFirst(game, source) != null) {
-                permanent = game.getPermanentOrLKIBattlefield(effect.getTargetPointer().getFirst(game, source));
+                permanent = effect.getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             }
         }
         if (permanent != null) {
@@ -85,7 +84,7 @@ class BlowflyInfestationEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent creature = game.getPermanent(source.getFirstTarget());
         if (creature != null) {
-            creature.addCounters(CounterType.M1M1.createInstance(), source, game);
+            creature.addCounters(CounterType.M1M1.createInstance(), source.getControllerId(), source, game);
             return true;
         }
         return false;

@@ -3,7 +3,7 @@ package mage.cards.m;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.mana.GenericManaCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -28,7 +28,7 @@ public final class ManaScrew extends CardImpl {
         this.addAbility(new ManaScrewAbility());
     }
 
-    public ManaScrew(final ManaScrew card) {
+    private ManaScrew(final ManaScrew card) {
         super(card);
     }
 

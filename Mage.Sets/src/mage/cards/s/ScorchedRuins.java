@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.s;
 
 import java.util.UUID;
@@ -44,7 +39,7 @@ public final class ScorchedRuins extends CardImpl {
         
     }
     
-    public ScorchedRuins(final ScorchedRuins card) {
+    private ScorchedRuins(final ScorchedRuins card) {
         super(card);
     }
     

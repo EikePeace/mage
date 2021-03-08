@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -23,7 +23,7 @@ public final class SaltRoadAmbushers extends CardImpl {
 
     public SaltRoadAmbushers(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.WARRIOR);
         this.power = new MageInt(3);
         this.toughness = new MageInt(3);
@@ -35,7 +35,7 @@ public final class SaltRoadAmbushers extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{3}{G}{G}"), true));
     }
 
-    public SaltRoadAmbushers(final SaltRoadAmbushers card) {
+    private SaltRoadAmbushers(final SaltRoadAmbushers card) {
         super(card);
     }
 

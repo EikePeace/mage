@@ -4,7 +4,6 @@ package mage.cards.p;
 
 import java.util.UUID;
 import mage.abilities.effects.common.DestroyAllControlledTargetEffect;
-import mage.abilities.effects.common.DestroyAllEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -25,7 +24,7 @@ public final class PrimevalLight extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public PrimevalLight(final PrimevalLight card) {
+    private PrimevalLight(final PrimevalLight card) {
         super(card);
     }
 

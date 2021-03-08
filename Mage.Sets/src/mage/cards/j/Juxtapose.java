@@ -29,12 +29,12 @@ public final class Juxtapose extends CardImpl {
         super(ownerId, setInfo, new CardType[]{CardType.SORCERY}, "{3}{U}");
 
         // You and target player exchange control of the creature you each control with the highest converted mana cost. Then exchange control of artifacts the same way. If two or more permanents a player controls are tied for highest cost, their controller chooses one of them.
-        this.getSpellAbility().addEffect(new JuxtaposeEffect(StaticFilters.FILTER_PERMANENT_CREATURE, "You and target player exchange control of the creature you each control with the highest converted mana cost."));
-        this.getSpellAbility().addEffect(new JuxtaposeEffect(new FilterArtifactPermanent(), "Then exchange control of artifacts the same way. If two or more permanents a player controls are tied for highest cost, their controller chooses one of them."));
+        this.getSpellAbility().addEffect(new JuxtaposeEffect(StaticFilters.FILTER_PERMANENT_CREATURE, "You and target player exchange control of the creature you each control with the highest converted mana cost"));
+        this.getSpellAbility().addEffect(new JuxtaposeEffect(new FilterArtifactPermanent(), "Then exchange control of artifacts the same way. If two or more permanents a player controls are tied for highest cost, their controller chooses one of them"));
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Juxtapose(final Juxtapose card) {
+    private Juxtapose(final Juxtapose card) {
         super(card);
     }
 
@@ -94,8 +94,8 @@ class JuxtaposeEffect extends ContinuousEffectImpl {
                 this.lockedControllers.put(permanent2.getId(), permanent1.getControllerId());
                 this.zoneChangeCounter.put(permanent2.getId(), permanent2.getZoneChangeCounter(game));
 
-                permanent1.changeControllerId(targetPlayer.getId(), game);
-                permanent2.changeControllerId(you.getId(), game);
+                permanent1.changeControllerId(targetPlayer.getId(), game, source);
+                permanent2.changeControllerId(you.getId(), game, source);
                 MageObject sourceObject = game.getCard(source.getSourceId());
                 game.informPlayers((sourceObject != null ? sourceObject.getLogName() : "") + ": " + you.getLogName() +
                         " and " + targetPlayer.getLogName() + " exchange control of " + permanent1.getLogName() +
@@ -117,7 +117,7 @@ class JuxtaposeEffect extends ContinuousEffectImpl {
                 toDelete.add(entry.getKey());
                 continue;
             }
-            permanent.changeControllerId(lockedControllers.get(permanent.getId()), game);
+            permanent.changeControllerId(lockedControllers.get(permanent.getId()), game, source);
         }
         if (!toDelete.isEmpty()) {
             for (UUID uuid : toDelete) {

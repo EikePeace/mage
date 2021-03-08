@@ -20,8 +20,9 @@ import mage.constants.SuperType;
 import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
 import mage.util.GameLog;
-import mage.util.SubTypeList;
+import mage.util.SubTypes;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +32,7 @@ import java.util.UUID;
  */
 public class Emblem implements CommandObject {
 
-    private static EnumSet<CardType> emptySet = EnumSet.noneOf(CardType.class);
+    private static ArrayList<CardType> emptySet = new ArrayList<>();
     private static ObjectColor emptyColor = new ObjectColor();
     private static ManaCosts emptyCost = new ManaCostsImpl();
 
@@ -75,7 +76,7 @@ public class Emblem implements CommandObject {
         this.sourceObject = sourceObject;
         if (sourceObject instanceof Card) {
             if (name.isEmpty()) {
-                name = sourceObject.getSubtype(null).toString();
+                name = sourceObject.getSubtype().toString();
             }
             if (expansionSetCodeForImage.isEmpty()) {
                 expansionSetCodeForImage = ((Card) sourceObject).getExpansionSetCode();
@@ -148,13 +149,18 @@ public class Emblem implements CommandObject {
     }
 
     @Override
-    public EnumSet<CardType> getCardType() {
+    public ArrayList<CardType> getCardType() {
         return emptySet;
     }
 
     @Override
-    public SubTypeList getSubtype(Game game) {
-        return new SubTypeList();
+    public SubTypes getSubtype() {
+        return new SubTypes();
+    }
+
+    @Override
+    public SubTypes getSubtype(Game game) {
+        return new SubTypes();
     }
 
     @Override
@@ -173,8 +179,13 @@ public class Emblem implements CommandObject {
     }
 
     @Override
-    public boolean hasAbility(UUID abilityId, Game game) {
-        return abilites.containsKey(abilityId);
+    public boolean hasAbility(Ability ability, Game game) {
+        return getAbilities().contains(ability);
+    }
+
+    @Override
+    public ObjectColor getColor() {
+        return emptyColor;
     }
 
     @Override
@@ -210,6 +221,10 @@ public class Emblem implements CommandObject {
     @Override
     public int getStartingLoyalty() {
         return 0;
+    }
+
+    @Override
+    public void setStartingLoyalty(int startingLoyalty) {
     }
 
     @Override
@@ -253,11 +268,17 @@ public class Emblem implements CommandObject {
         throw new UnsupportedOperationException("Unsupported operation");
     }
 
-    public boolean isAllCreatureTypes() {
+    @Override
+    public boolean isAllCreatureTypes(Game game) {
         return false;
     }
 
+    @Override
     public void setIsAllCreatureTypes(boolean value) {
+    }
+
+    @Override
+    public void setIsAllCreatureTypes(Game game, boolean value) {
     }
 
     public void discardEffects() {

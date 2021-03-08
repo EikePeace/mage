@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class LivingTotem extends CardImpl {
         this.addAbility(ability);
     }
 
-    public LivingTotem(final LivingTotem card) {
+    private LivingTotem(final LivingTotem card) {
         super(card);
     }
 

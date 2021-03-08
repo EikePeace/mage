@@ -40,7 +40,7 @@ public final class FiredrinkerSatyr extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FiredrinkerSatyr(final FiredrinkerSatyr card) {
+    private FiredrinkerSatyr(final FiredrinkerSatyr card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class FiredrinkerSatyrDealDamageEffect extends OneShotEffect {
         if (amount > 0) {
             Player player = game.getPlayer(source.getControllerId());
             if (player != null) {
-                player.damage(amount, source.getSourceId(), game);
+                player.damage(amount, source.getSourceId(), source, game);
                 return true;
             }
         }

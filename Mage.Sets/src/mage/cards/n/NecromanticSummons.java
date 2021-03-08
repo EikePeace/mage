@@ -1,4 +1,3 @@
-
 package mage.cards.n;
 
 import java.util.UUID;
@@ -34,11 +33,14 @@ public final class NecromanticSummons extends CardImpl {
         this.getSpellAbility().addEffect(new ReturnFromGraveyardToBattlefieldTargetEffect());
         this.getSpellAbility().addTarget(new TargetCardInGraveyard(new FilterCreatureCard("creature card from a graveyard")));
 
-        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, that creature enters the battlefield with two additional +1/+1 counters on it.
-        this.getSpellAbility().addEffect(new InfoEffect("\"<br><i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, that creature enters the battlefield with two additional +1/+1 counters on it\""));
+        // <i>Spell mastery</i> &mdash; If there are two or more instant and/or sorcery cards in your graveyard, 
+        // that creature enters the battlefield with two additional +1/+1 counters on it.
+        this.getSpellAbility().addEffect(new InfoEffect("<br><i>Spell mastery</i> &mdash; If there are two or more "
+                + "instant and/or sorcery cards in your graveyard, that creature enters the "
+                + "battlefield with two additional +1/+1 counters on it."));
     }
 
-    public NecromanticSummons(final NecromanticSummons card) {
+    private NecromanticSummons(final NecromanticSummons card) {
         super(card);
     }
 
@@ -80,7 +82,7 @@ class NecromanticSummoningReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.P1P1.createInstance(2), source, game, event.getAppliedEffects());
+            creature.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game, event.getAppliedEffects());
             discard();
         }
         return false;

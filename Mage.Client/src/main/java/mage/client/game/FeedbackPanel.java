@@ -1,20 +1,5 @@
-
-
- /*
- * FeedbackPanel.java
- *
- * Created on 23-Dec-2009, 9:54:01 PM
- */
 package mage.client.game;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import mage.client.MageFrame;
 import mage.client.SessionHandler;
 import mage.client.chat.ChatPanelBasic;
@@ -22,15 +7,22 @@ import mage.client.dialog.MageDialog;
 import mage.client.util.GUISizeHelper;
 import mage.client.util.audio.AudioManager;
 import mage.client.util.gui.ArrowBuilder;
-import static mage.constants.Constants.Option.ORIGINAL_ID;
-import static mage.constants.Constants.Option.SECOND_MESSAGE;
-import static mage.constants.Constants.Option.SPECIAL_BUTTON;
 import mage.constants.PlayerAction;
 import mage.constants.TurnPhase;
 import org.apache.log4j.Logger;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static mage.constants.Constants.Option.*;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class FeedbackPanel extends javax.swing.JPanel {
@@ -75,7 +67,8 @@ public class FeedbackPanel extends javax.swing.JPanel {
                             int messageId, boolean gameNeedUserFeedback, TurnPhase gameTurnPhase) {
         synchronized (this) {
             if (messageId < this.lastMessageId) {
-                LOGGER.warn("ignoring message from later source: " + messageId + ", text=" + message);
+                // if too many warning messages here then look at GAME_REDRAW_GUI event logic
+                LOGGER.warn("catch un-synced message from later source (possible reason: connection or performance problems): " + messageId + ", text=" + message);
                 return;
             }
             this.lastMessageId = messageId;
@@ -84,7 +77,7 @@ public class FeedbackPanel extends javax.swing.JPanel {
         this.helper.setOriginalId(null); // reference to the feedback causing ability
         String lblText = addAdditionalText(message, options);
         this.helper.setTextArea(lblText);
-        //this.lblMessage.setText(lblText);
+
         this.mode = mode;
         switch (this.mode) {
             case INFORM:
@@ -174,16 +167,22 @@ public class FeedbackPanel extends javax.swing.JPanel {
     }
 
     private void handleOptions(Map<String, Serializable> options) {
+        // clear already opened dialog (second request)
+        if (connectedDialog != null) {
+            connectedDialog.removeDialog();
+            connectedDialog = null;
+        }
+
         if (options != null) {
             if (options.containsKey("UI.left.btn.text")) {
                 String text = (String) options.get("UI.left.btn.text");
                 this.btnLeft.setText(text);
-                this.helper.setLeft(text, true);
+                this.helper.setLeft(text, !text.isEmpty());
             }
             if (options.containsKey("UI.right.btn.text")) {
                 String text = (String) options.get("UI.right.btn.text");
                 this.btnRight.setText(text);
-                this.helper.setRight(text, true);
+                this.helper.setRight(text, !text.isEmpty());
             }
             if (options.containsKey("dialog")) {
                 connectedDialog = (MageDialog) options.get("dialog");

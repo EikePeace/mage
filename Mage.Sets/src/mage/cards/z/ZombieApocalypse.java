@@ -29,7 +29,7 @@ public final class ZombieApocalypse extends CardImpl {
         this.getSpellAbility().addEffect(new ZombieApocalypseEffect());
     }
 
-    public ZombieApocalypse(final ZombieApocalypse card) {
+    private ZombieApocalypse(final ZombieApocalypse card) {
         super(card);
     }
 
@@ -66,10 +66,10 @@ class ZombieApocalypseEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             controller.moveCards(controller.getGraveyard().getCards(filterZombie, game), Zone.BATTLEFIELD, source, game, true, false, false, null);
-            game.applyEffects();
+            game.getState().processAction(game);
             for (Permanent permanent : game.getBattlefield().getActivePermanents(
                     new FilterPermanent(SubType.HUMAN, "Humans"), source.getControllerId(), game)) {
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
             return true;
         }

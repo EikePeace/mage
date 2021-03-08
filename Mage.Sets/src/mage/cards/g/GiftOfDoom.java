@@ -17,7 +17,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -130,12 +130,12 @@ class GiftOfDoomEffect extends OneShotEffect {
         target.setNotTarget(true);
         if (player.choose(outcome, target, source.getSourceId(), game)
                 && game.getPermanent(target.getFirstTarget()) != null
-                && !game.getPermanent(target.getFirstTarget()).cantBeAttachedBy(giftOfDoom, game, false)) {
+                && !game.getPermanent(target.getFirstTarget()).cantBeAttachedBy(giftOfDoom, source, game, false)) {
             game.getState().setValue("attachTo:" + giftOfDoom.getId(), target.getFirstTarget());
-            game.getPermanent(target.getFirstTarget()).addAttachment(giftOfDoom.getId(), game);
+            game.getPermanent(target.getFirstTarget()).addAttachment(giftOfDoom.getId(), source, game);
             return true;
         }
-        player.moveCardToGraveyardWithInfo(giftOfDoom, source.getId(), game, Zone.BATTLEFIELD); //no legal target
+        player.moveCardToGraveyardWithInfo(giftOfDoom, source, game, Zone.BATTLEFIELD); //no legal target
         return false;
     }
 }

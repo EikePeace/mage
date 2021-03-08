@@ -54,7 +54,7 @@ public final class SynodSanctum extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public SynodSanctum(final SynodSanctum card) {
+    private SynodSanctum(final SynodSanctum card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class SynodSanctumEffect extends OneShotEffect {
                 if (permanent != null) {
                     UUID exileZone = CardUtil.getExileZoneId(game, source.getSourceId(), source.getSourceObjectZoneChangeCounter());
                     if (exileZone != null) {
-                        controller.moveCardToExileWithInfo(permanent, exileZone, sourceObject.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true);
+                        controller.moveCardToExileWithInfo(permanent, exileZone, sourceObject.getIdName(), source, game, Zone.BATTLEFIELD, true);
                     }
                 }
             }

@@ -21,7 +21,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -47,7 +46,7 @@ public final class HauntedPlateMail extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new ManaCostsImpl("{4}")));
     }
 
-    public HauntedPlateMail(final HauntedPlateMail card) {
+    private HauntedPlateMail(final HauntedPlateMail card) {
         super(card);
     }
 

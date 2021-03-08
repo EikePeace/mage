@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterTeamPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -46,7 +46,7 @@ public final class AuroraChampion extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AuroraChampion(final AuroraChampion card) {
+    private AuroraChampion(final AuroraChampion card) {
         super(card);
     }
 

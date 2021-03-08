@@ -16,7 +16,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.EntersTheBattlefieldEvent;
 import mage.game.events.GameEvent;
@@ -48,7 +48,7 @@ public final class Dracoplasm extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 0, Duration.EndOfTurn), new ColoredManaCost(ColoredManaSymbol.R)));
     }
 
-    public Dracoplasm(final Dracoplasm card) {
+    private Dracoplasm(final Dracoplasm card) {
         super(card);
     }
 
@@ -105,9 +105,9 @@ class DracoplasmEffect extends ReplacementEffectImpl {
                 int toughness = 0;
                 for (UUID targetId : target.getTargets()) {
                     Permanent targetCreature = game.getPermanent(targetId);
-                    if (targetCreature != null && targetCreature.sacrifice(source.getSourceId(), game)) {
-                        power = CardUtil.addWithOverflowCheck(power, targetCreature.getPower().getValue());
-                        toughness = CardUtil.addWithOverflowCheck(toughness, targetCreature.getToughness().getValue());
+                    if (targetCreature != null && targetCreature.sacrifice(source, game)) {
+                        power = CardUtil.overflowInc(power, targetCreature.getPower().getValue());
+                        toughness = CardUtil.overflowInc(toughness, targetCreature.getToughness().getValue());
                     }
                 }
                 ContinuousEffect effect = new SetPowerToughnessSourceEffect(power, toughness, Duration.Custom, SubLayer.SetPT_7b);

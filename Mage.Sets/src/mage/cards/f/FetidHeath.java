@@ -22,15 +22,15 @@ public final class FetidHeath extends CardImpl {
     public FetidHeath (UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.LAND},null);
         
-        // {tap}: Add {C}.
+        // {T}: Add {C}.
         this.addAbility(new ColorlessManaAbility());
         
-        // {W/B}, {tap}: Add {W}{W}, {W}{B}, or {B}{B}.
+        // {W/B}, {T}: Add {W}{W}, {W}{B}, or {B}{B}.
         SimpleManaAbility ability = new SimpleManaAbility(Zone.BATTLEFIELD, Mana.WhiteMana(2), new ManaCostsImpl("{W/B}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 1, 1, 0, 0, 0), new ManaCostsImpl("{W/B}"));
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 1, 0, 0, 0, 0, 0), new ManaCostsImpl("{W/B}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 

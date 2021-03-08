@@ -1,26 +1,22 @@
-
 package mage.cards.r;
 
-import java.util.*;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
-import mage.cards.Cards;
+import mage.cards.*;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Rarity;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicate;
-import mage.filter.predicate.Predicates;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.Objects;
+import java.util.UUID;
+
 /**
- *
  * @author L_J
  */
 public final class RareBGone extends CardImpl {
@@ -30,10 +26,9 @@ public final class RareBGone extends CardImpl {
 
         // Each player sacrifices all permanents that are rare or mythic rare, then each player reveals their hand and discards all cards that are rare or mythic rare.
         this.getSpellAbility().addEffect(new RareBGoneEffect());
-
     }
 
-    public RareBGone(final RareBGone card) {
+    private RareBGone(final RareBGone card) {
         super(card);
     }
 
@@ -49,22 +44,17 @@ class RareBGoneEffect extends OneShotEffect {
     private static final FilterCard filterCard = new FilterCard();
 
     static {
-        filterPermanent.add(Predicates.or(
-                new RarityPredicate(Rarity.RARE),
-                new RarityPredicate(Rarity.MYTHIC)
-        ));
-        filterCard.add(Predicates.or(
-                new RarityPredicate(Rarity.RARE),
-                new RarityPredicate(Rarity.MYTHIC)
-        ));
+        filterPermanent.add(RareBGonePredicate.instance);
+        filterCard.add(RareBGonePredicate.instance);
     }
 
-    public RareBGoneEffect() {
+    RareBGoneEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Each player sacrifices all permanents that are rare or mythic rare, then each player reveals their hand and discards all cards that are rare or mythic rare";
+        this.staticText = "Each player sacrifices all permanents that are rare or mythic rare, " +
+                "then each player reveals their hand and discards all cards that are rare or mythic rare";
     }
 
-    public RareBGoneEffect(final RareBGoneEffect effect) {
+    private RareBGoneEffect(final RareBGoneEffect effect) {
         super(effect);
     }
 
@@ -76,44 +66,29 @@ class RareBGoneEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        if (controller != null) {
-            for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
-                Player player = game.getPlayer(playerId);
-                if (player != null) {
-                    for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filterPermanent, playerId, game)) {
-                        permanent.sacrifice(source.getSourceId(), game);
-                    }
-                    Cards hand = player.getHand();
-                    player.revealCards("Rare-B-Gone", hand, game);
-                    Set<Card> cards = hand.getCards(game);
-                    for (Card card : cards) {
-                        if (card != null && filterCard.match(card, game)) {
-                            player.discard(card, source, game);
-                        }
-                    }
-                }
-            }
-            return true;
+        if (controller == null) {
+            return false;
         }
-        return false;
+        for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
+            Player player = game.getPlayer(playerId);
+            if (player == null) {
+            }
+            for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filterPermanent, playerId, game)) {
+                permanent.sacrifice(source, game);
+            }
+            Cards cards = player.getHand();
+            player.revealCards(source, cards, game);
+            player.discard(new CardsImpl(cards.getCards(filterCard, game)), false, source, game);
+        }
+        return true;
     }
 }
 
-class RarityPredicate implements Predicate<Card> {
-
-    private final Rarity rarity;
-
-    public RarityPredicate(Rarity rarity) {
-        this.rarity = rarity;
-    }
+enum RareBGonePredicate implements Predicate<Card> {
+    instance;
 
     @Override
     public boolean apply(Card input, Game game) {
-        return input.getRarity().equals(rarity);
-    }
-
-    @Override
-    public String toString() {
-        return "Rarity(" + rarity + ')';
+        return Objects.equals(input.getRarity(), Rarity.RARE) || Objects.equals(input.getRarity(), Rarity.MYTHIC);
     }
 }

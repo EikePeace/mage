@@ -1,7 +1,5 @@
 package mage.cards;
 
-import java.util.List;
-import java.util.UUID;
 import mage.abilities.Abilities;
 import mage.abilities.AbilitiesImpl;
 import mage.abilities.Ability;
@@ -9,6 +7,10 @@ import mage.abilities.SpellAbility;
 import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.game.Game;
+import mage.game.events.ZoneChangeEvent;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * @author TheElk801
@@ -16,7 +18,7 @@ import mage.game.Game;
 public abstract class AdventureCard extends CardImpl {
 
     /* The adventure spell card, i.e. Swift End. */
-    protected Card spellCard;
+    protected AdventureCardSpell spellCard;
 
     public AdventureCard(UUID ownerId, CardSetInfo setInfo, CardType[] types, CardType[] typesSpell, String costs, String adventureName, String costsSpell) {
         super(ownerId, setInfo, types, costs);
@@ -26,11 +28,17 @@ public abstract class AdventureCard extends CardImpl {
     public AdventureCard(AdventureCard card) {
         super(card);
         this.spellCard = card.getSpellCard().copy();
-        ((AdventureCardSpell) this.spellCard).setParentCard(this);
+        this.spellCard.setParentCard(this);
     }
 
-    public Card getSpellCard() {
+    public AdventureCardSpell getSpellCard() {
         return spellCard;
+    }
+
+    public void setParts(AdventureCardSpell cardSpell) {
+        // for card copy only - set new parts
+        this.spellCard = cardSpell;
+        cardSpell.setParentCard(this);
     }
 
     @Override
@@ -40,8 +48,8 @@ public abstract class AdventureCard extends CardImpl {
     }
 
     @Override
-    public boolean moveToZone(Zone toZone, UUID sourceId, Game game, boolean flag, List<UUID> appliedEffects) {
-        if (super.moveToZone(toZone, sourceId, game, flag, appliedEffects)) {
+    public boolean moveToZone(Zone toZone, Ability source, Game game, boolean flag, List<UUID> appliedEffects) {
+        if (super.moveToZone(toZone, source, game, flag, appliedEffects)) {
             game.getState().setZone(getSpellCard().getId(), toZone);
             return true;
         }
@@ -55,13 +63,29 @@ public abstract class AdventureCard extends CardImpl {
     }
 
     @Override
-    public boolean moveToExile(UUID exileId, String name, UUID sourceId, Game game, List<UUID> appliedEffects) {
-        if (super.moveToExile(exileId, name, sourceId, game, appliedEffects)) {
+    public boolean moveToExile(UUID exileId, String name, Ability source, Game game, List<UUID> appliedEffects) {
+        if (super.moveToExile(exileId, name, source, game, appliedEffects)) {
             Zone currentZone = game.getState().getZone(getId());
             game.getState().setZone(getSpellCard().getId(), currentZone);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean removeFromZone(Game game, Zone fromZone, Ability source) {
+        // zone contains only one main card
+        return super.removeFromZone(game, fromZone, source);
+    }
+
+    @Override
+    public void updateZoneChangeCounter(Game game, ZoneChangeEvent event) {
+        if (isCopy()) { // same as meld cards
+            super.updateZoneChangeCounter(game, event);
+            return;
+        }
+        super.updateZoneChangeCounter(game, event);
+        getSpellCard().updateZoneChangeCounter(game, event);
     }
 
     @Override
@@ -81,6 +105,12 @@ public abstract class AdventureCard extends CardImpl {
         allAbilities.addAll(spellCard.getAbilities());
         allAbilities.addAll(super.getAbilities());
         return allAbilities;
+    }
+
+    @Override
+    public Abilities<Ability> getInitAbilities() {
+        // must init only parent related abilities, spell card must be init separately
+        return super.getAbilities();
     }
 
     @Override

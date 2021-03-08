@@ -1,22 +1,21 @@
 package mage.game.turn;
 
-import mage.abilities.Ability;
-import mage.constants.PhaseStep;
-import mage.constants.TurnPhase;
-import mage.counters.CounterType;
-import mage.game.Game;
-import mage.game.events.GameEvent;
-import mage.game.permanent.Permanent;
-import mage.game.stack.Spell;
-import mage.game.stack.StackObject;
-import mage.players.Player;
-import mage.util.ThreadLocalStringBuilder;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import mage.abilities.Ability;
+import mage.constants.PhaseStep;
+import mage.constants.TurnPhase;
+import mage.counters.CounterType;
+import mage.game.Game;
+import mage.game.events.PhaseChangedEvent;
+import mage.game.permanent.Permanent;
+import mage.game.stack.Spell;
+import mage.game.stack.StackObject;
+import mage.players.Player;
+import mage.util.ThreadLocalStringBuilder;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -96,7 +95,10 @@ public class Turn implements Serializable {
      * @param activePlayer
      * @return true if turn is skipped
      */
-    public boolean play(Game game, Player activePlayer) {
+    public boolean play(Game game, Player activePlayer) {    
+        // uncomment this to trace triggered abilities and/or continous effects 
+        // TraceUtil.traceTriggeredAbilities(game);
+        // game.getState().getContinuousEffects().traceContinuousEffects(game);
         activePlayer.becomesActivePlayer();
         this.setDeclareAttackersStepStarted(false);
         if (game.isPaused() || game.checkIfGameIsOver()) {
@@ -121,14 +123,14 @@ public class Turn implements Serializable {
             }
             if (!isEndTurnRequested() || phase.getType() == TurnPhase.END) {
                 currentPhase = phase;
-                game.fireEvent(new GameEvent(GameEvent.EventType.PHASE_CHANGED, activePlayer.getId(), null, activePlayer.getId()));
+                game.fireEvent(new PhaseChangedEvent(activePlayer.getId(), null));
                 if (!game.getState().getTurnMods().skipPhase(activePlayer.getId(), currentPhase.getType())) {
                     if (phase.play(game, activePlayer.getId())) {
                         if (game.executingRollback()) {
                             return false;
                         }
                         //20091005 - 500.4/703.4n
-                        game.emptyManaPools();
+                        game.emptyManaPools(null);
                         game.saveState(false);
 
                         //20091005 - 500.8
@@ -155,7 +157,7 @@ public class Turn implements Serializable {
         } while (phase.type != phaseType);
         if (phase.resumePlay(game, stepType, wasPaused)) {
             //20091005 - 500.4/703.4n
-            game.emptyManaPools();
+            game.emptyManaPools(null);
             //game.saveState();
             //20091005 - 500.8
             playExtraPhases(game, phase.getType());
@@ -169,14 +171,14 @@ public class Turn implements Serializable {
             if (!game.getState().getTurnMods().skipPhase(activePlayerId, currentPhase.getType())) {
                 if (phase.play(game, activePlayerId)) {
                     //20091005 - 500.4/703.4n
-                    game.emptyManaPools();
+                    game.emptyManaPools(null);
                     //game.saveState();
                     //20091005 - 500.8
                     playExtraPhases(game, phase.getType());
                 }
             }
             if (!currentPhase.equals(phase)) { // phase was changed from the card
-                game.fireEvent(new GameEvent(GameEvent.EventType.PHASE_CHANGED, activePlayerId, null, activePlayerId));
+                game.fireEvent(new PhaseChangedEvent(activePlayerId, null));
                 break;
             }
         }
@@ -223,7 +225,7 @@ public class Turn implements Serializable {
                     phase = new EndPhase();
             }
             currentPhase = phase;
-            game.fireEvent(new GameEvent(GameEvent.EventType.PHASE_CHANGED, activePlayerId, extraPhaseTurnMod.getId(), activePlayerId));
+            game.fireEvent(new PhaseChangedEvent(activePlayerId, extraPhaseTurnMod));
             Player activePlayer = game.getPlayer(activePlayerId);
             if (activePlayer != null && !game.isSimulation()) {
                 game.informPlayers(activePlayer.getLogName() + " starts an additional " + phase.getType().toString() + " phase");
@@ -256,7 +258,7 @@ public class Turn implements Serializable {
         while (!game.hasEnded() && !game.getStack().isEmpty()) {
             StackObject stackObject = game.getStack().peekFirst();
             if (stackObject instanceof Spell) {
-                ((Spell) stackObject).moveToExile(null, "", source.getSourceId(), game);
+                ((Spell) stackObject).moveToExile(null, "", source, game);
             } else {
                 game.getStack().remove(stackObject, game); // stack ability
             }

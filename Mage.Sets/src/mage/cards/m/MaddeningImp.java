@@ -60,7 +60,7 @@ public final class MaddeningImp extends CardImpl {
 
     }
 
-    public MaddeningImp(final MaddeningImp card) {
+    private MaddeningImp(final MaddeningImp card) {
         super(card);
     }
 
@@ -163,7 +163,7 @@ class MaddeningImpDelayedDestroyEffect extends OneShotEffect {
                     continue;
                 }
                 // Destroy the rest.
-                permanent.destroy(source.getSourceId(), game, false);
+                permanent.destroy(source, game, false);
             }
             return true;
         }

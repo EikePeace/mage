@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.b;
 
 import mage.abilities.common.SimpleStaticAbility;
@@ -11,7 +6,6 @@ import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.PermanentsOnBattlefieldCount;
 import mage.abilities.effects.common.continuous.BoostEquippedEffect;
 import mage.abilities.keyword.EquipAbility;
-import mage.abilities.keyword.EquipFilterAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
@@ -19,6 +13,7 @@ import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledCreaturePermanent;
 
 import java.util.UUID;
+import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
  * @author Rystan
@@ -43,7 +38,7 @@ public final class BlackbladeReforged extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEquippedEffect(count, count)));
 
         // Equip legendary creature (3)
-        this.addAbility(new EquipFilterAbility(filter, new GenericManaCost(3)));
+        this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(3), new TargetControlledCreaturePermanent(filter)));
 
         // Equip {7}
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(7)));

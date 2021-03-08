@@ -28,7 +28,7 @@ public final class UnifiedWill extends CardImpl {
         this.getSpellAbility().addEffect(new UnifiedWillEffect());
     }
 
-    public UnifiedWill(final UnifiedWill card) {
+    private UnifiedWill(final UnifiedWill card) {
         super(card);
     }
 
@@ -55,7 +55,7 @@ class UnifiedWillEffect extends OneShotEffect {
         StackObject stackObject = game.getStack().getStackObject(source.getFirstTarget());
         if (stackObject != null) {
             if (game.getBattlefield().countAll(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game) > game.getBattlefield().countAll(StaticFilters.FILTER_PERMANENT_CREATURE, stackObject.getControllerId(), game)) {
-                return game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+                return game.getStack().counter(source.getFirstTarget(), source, game);
             }
             return true;
         }

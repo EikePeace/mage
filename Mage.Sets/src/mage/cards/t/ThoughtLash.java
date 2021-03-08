@@ -41,7 +41,7 @@ public final class ThoughtLash extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new PreventDamageToControllerEffect(Duration.EndOfTurn, 1), new ExileFromTopOfLibraryCost(1)));
     }
 
-    public ThoughtLash(final ThoughtLash card) {
+    private ThoughtLash(final ThoughtLash card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ThoughtLashTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DIDNT_PAY_CUMULATIVE_UPKEEP;
+        return event.getType() == GameEvent.EventType.DIDNT_PAY_CUMULATIVE_UPKEEP;
     }
 
     @Override

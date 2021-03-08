@@ -50,7 +50,15 @@ public interface Target extends Serializable {
 
     boolean canTarget(UUID id, Game game);
 
+    /**
+     * @param id
+     * @param source WARNING, it can be null for AI or other calls from events (TODO: introduce normal source in AI ComputerPlayer)
+     * @param game
+     * @return
+     */
     boolean canTarget(UUID id, Ability source, Game game);
+
+    boolean stillLegalTarget(UUID id, Ability source, Game game);
 
     boolean canTarget(UUID playerId, UUID id, Ability source, Game game);
 
@@ -58,7 +66,6 @@ public interface Target extends Serializable {
 
     List<? extends Target> getTargetOptions(Ability source, Game game);
 
-    //methods for non-targets
     boolean canChoose(UUID sourceControllerId, Game game);
 
     Set<UUID> possibleTargets(UUID sourceControllerId, Game game);
@@ -136,6 +143,8 @@ public interface Target extends Serializable {
     void setTargetAmount(UUID targetId, int amount, Game game);
 
     Target withChooseHint(String chooseHint);
+
+    String getChooseHint();
 
     void setEventReporting(boolean shouldReport);
 }

@@ -53,7 +53,7 @@ public final class OathkeeperTakenosDaisho extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new ManaCostsImpl("{2}")));
     }
 
-    public OathkeeperTakenosDaisho(final OathkeeperTakenosDaisho card) {
+    private OathkeeperTakenosDaisho(final OathkeeperTakenosDaisho card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class ExileEquippedEffect extends OneShotEffect {
         if (equipment != null && equipment.getAttachedTo() != null) {
             Permanent creature = game.getPermanent(equipment.getAttachedTo());
             if (creature != null) {
-                return creature.moveToExile(null, "", source.getSourceId(), game);
+                return creature.moveToExile(null, "", source, game);
             }
         }
         return false;

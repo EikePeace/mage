@@ -7,7 +7,7 @@ import mage.abilities.common.TapForManaAllTriggeredManaAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.mana.AddManaOfAnyTypeProducedEffect;
 import mage.abilities.effects.common.DontUntapInControllersNextUntapStepTargetEffect;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
@@ -22,7 +22,8 @@ import mage.filter.common.FilterLandPermanent;
 public final class WintersNight extends CardImpl {
     
     private static final FilterLandPermanent filter = new FilterLandPermanent("a player taps a snow land");
-    {
+    
+    static {
         filter.add(SuperType.SNOW.getPredicate());
     }
 
@@ -41,7 +42,7 @@ public final class WintersNight extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WintersNight(final WintersNight card) {
+    private WintersNight(final WintersNight card) {
         super(card);
     }
 

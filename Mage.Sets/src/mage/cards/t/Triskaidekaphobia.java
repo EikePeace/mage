@@ -33,7 +33,7 @@ public final class Triskaidekaphobia extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Triskaidekaphobia(final Triskaidekaphobia card) {
+    private Triskaidekaphobia(final Triskaidekaphobia card) {
         super(card);
     }
 
@@ -114,7 +114,7 @@ class TriskaidekaphobiaLoseLifeEffect extends OneShotEffect {
         for (UUID pid : playerList) {
             Player player = game.getPlayer(pid);
             if (player != null) {
-                player.loseLife(1, game, false);
+                player.loseLife(1, game, source, false);
             }
         }
         return true;

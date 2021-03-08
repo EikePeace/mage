@@ -19,7 +19,7 @@ import mage.constants.SetTargetPointer;
 import mage.filter.FilterSpell;
 import mage.filter.predicate.ObjectPlayer;
 import mage.filter.predicate.ObjectPlayerPredicate;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -47,7 +47,7 @@ public final class Ricochet extends CardImpl {
         this.addAbility(new SpellCastAllTriggeredAbility(new RicochetEffect(), filter, false, SetTargetPointer.SPELL));
     }
 
-    public Ricochet(final Ricochet card) {
+    private Ricochet(final Ricochet card) {
         super(card);
     }
 
@@ -116,7 +116,7 @@ class RicochetEffect extends OneShotEffect {
             }
             do {
                 for (Player player : playerRolls.keySet()) {
-                    playerRolls.put(player, player.rollDice(game, 6));
+                    playerRolls.put(player, player.rollDice(source, game, 6));
                 }
                 int minValueInMap = Collections.min(playerRolls.values());
                 for (Map.Entry<Player, Integer> mapEntry : new HashSet<>(playerRolls.entrySet())) {

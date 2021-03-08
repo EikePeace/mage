@@ -15,7 +15,6 @@ import mage.constants.SubType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
-import mage.target.targetpointer.FixedTarget;
 
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public final class BellowingFiend extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BellowingFiend(final BellowingFiend card) {
+    private BellowingFiend(final BellowingFiend card) {
         super(card);
     }
 
@@ -69,11 +68,11 @@ class BellowingFiendEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         boolean applied = false;
-        Permanent damagedCreature = ((FixedTarget) targetPointer).getTargetedPermanentOrLKIBattlefield(game);
+        Permanent damagedCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (damagedCreature != null) {
             Player controller = game.getPlayer(damagedCreature.getControllerId());
             if (controller != null) {
-                controller.damage(3, source.getSourceId(), game);
+                controller.damage(3, source.getSourceId(), source, game);
                 applied = true;
             }
         }

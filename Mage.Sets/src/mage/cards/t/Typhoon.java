@@ -26,7 +26,7 @@ public final class Typhoon extends CardImpl {
         this.getSpellAbility().addEffect(new TyphoonEffect());
     }
 
-    public Typhoon(final Typhoon card) {
+    private Typhoon(final Typhoon card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class TyphoonEffect extends OneShotEffect {
                         amount++;
                     }
                     if (amount > 0) {
-                        player.damage(amount, source.getSourceId(), game);
+                        player.damage(amount, source.getSourceId(), source, game);
                     }
                 }
             }

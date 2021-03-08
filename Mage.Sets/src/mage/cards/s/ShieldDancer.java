@@ -40,7 +40,7 @@ public final class ShieldDancer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ShieldDancer(final ShieldDancer card) {
+    private ShieldDancer(final ShieldDancer card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class ShieldDancerRedirectionEffect extends RedirectionEffect {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE;
+        return event.getType() == EventType.DAMAGE_PERMANENT;
     }
     
     @Override

@@ -27,12 +27,12 @@ public final class MakindiPatrol extends CardImpl {
         this.power = new MageInt(2);
         this.toughness = new MageInt(3);
 
-        // <i>Rally</i> — Whenever Makindi Patrol or another Ally enters the battlefield under your control, creatures you control gain vigilance until end of turn.
+        // <i>Rally</i> &mdash; Whenever Makindi Patrol or another Ally enters the battlefield under your control, creatures you control gain vigilance until end of turn.
         this.addAbility(new AllyEntersBattlefieldTriggeredAbility(
                 new GainAbilityControlledEffect(VigilanceAbility.getInstance(), Duration.EndOfTurn, new FilterControlledCreaturePermanent("creatures")), false));
     }
 
-    public MakindiPatrol(final MakindiPatrol card) {
+    private MakindiPatrol(final MakindiPatrol card) {
         super(card);
     }
 

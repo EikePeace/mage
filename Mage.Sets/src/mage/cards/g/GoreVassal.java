@@ -23,7 +23,7 @@ public final class GoreVassal extends CardImpl {
 
     public GoreVassal(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{W}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(1);
@@ -37,7 +37,7 @@ public final class GoreVassal extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoreVassal(final GoreVassal card) {
+    private GoreVassal(final GoreVassal card) {
         super(card);
     }
 

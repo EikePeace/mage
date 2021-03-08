@@ -60,7 +60,7 @@ public final class TravelingPlague extends CardImpl {
 
     }
 
-    public TravelingPlague(final TravelingPlague card) {
+    private TravelingPlague(final TravelingPlague card) {
         super(card);
     }
 
@@ -135,10 +135,10 @@ class TravelingPlagueEffect extends OneShotEffect {
                 target.setNotTarget(true);
                 if (controllerOfEnchantedCreature.choose(Outcome.Detriment, target, source.getSourceId(), game)) {
                     Permanent targetPermanent = game.getPermanent(target.getFirstTarget());
-                    if (!targetPermanent.cantBeAttachedBy(travelingPlague, game, false)) {
+                    if (!targetPermanent.cantBeAttachedBy(travelingPlague, source, game, false)) {
                         game.getState().setValue("attachTo:" + travelingPlague.getId(), targetPermanent);
                         controllerOfEnchantedCreature.moveCards(travelingPlague, Zone.BATTLEFIELD, source, game);
-                        return targetPermanent.addAttachment(travelingPlague.getId(), game);
+                        return targetPermanent.addAttachment(travelingPlague.getId(), source, game);
                     }
                 }
             }

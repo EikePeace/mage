@@ -1,8 +1,8 @@
 package mage.cards.m;
 
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.DealsCombatDamageToAPlayerTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -42,7 +42,7 @@ public final class MasterOfPredicaments extends CardImpl {
                 new MasterOfPredicamentsEffect(), false, true));
     }
 
-    public MasterOfPredicaments(final MasterOfPredicaments card) {
+    private MasterOfPredicaments(final MasterOfPredicaments card) {
         super(card);
     }
 
@@ -111,7 +111,7 @@ class MasterOfPredicamentsEffect extends OneShotEffect {
                                 + " without paying its mana cost?", source, game)) {
                             game.getState().setValue("PlayFromNotOwnHandZone" + cardFromHand.getId(), Boolean.TRUE);
                             controller.cast(controller.chooseAbilityForCast(cardFromHand, game, true),
-                                    game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                    game, true, new ApprovingObject(source, game));
                             game.getState().setValue("PlayFromNotOwnHandZone" + cardFromHand.getId(), null);
                         }
                     }

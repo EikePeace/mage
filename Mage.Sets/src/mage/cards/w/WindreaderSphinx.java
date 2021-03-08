@@ -37,7 +37,7 @@ public final class WindreaderSphinx extends CardImpl {
         this.addAbility(new WindreaderSphinxTriggeredAbility());
     }
 
-    public WindreaderSphinx(final WindreaderSphinx card) {
+    private WindreaderSphinx(final WindreaderSphinx card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class WindreaderSphinxTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

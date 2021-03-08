@@ -39,7 +39,7 @@ public final class DarienKingOfKjeldor extends CardImpl {
         this.addAbility(new DarienKingOfKjeldorTriggeredAbility());
     }
 
-    public DarienKingOfKjeldor(final DarienKingOfKjeldor card) {
+    private DarienKingOfKjeldor(final DarienKingOfKjeldor card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class DarienKingOfKjeldorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

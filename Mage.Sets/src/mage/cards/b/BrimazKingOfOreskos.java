@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
-import mage.abilities.common.BlocksTriggeredAbility;
+import mage.abilities.common.BlocksSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenEffect;
 import mage.abilities.keyword.VigilanceAbility;
@@ -19,7 +19,6 @@ import mage.game.Game;
 import mage.game.combat.CombatGroup;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.CatSoldierCreatureToken;
-import mage.game.permanent.token.TokenImpl;
 import mage.game.permanent.token.Token;
 import mage.players.Player;
 
@@ -44,10 +43,10 @@ public final class BrimazKingOfOreskos extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new CreateTokenEffect(new CatSoldierCreatureToken(), 1, false, true), false));
 
         // Whenever Brimaz blocks a creature, create a 1/1 white Cat Soldier creature token with vigilance blocking that creature.
-        this.addAbility(new BlocksTriggeredAbility(new BrimazKingOfOreskosEffect(), false, true));
+        this.addAbility(new BlocksSourceTriggeredAbility(new BrimazKingOfOreskosEffect(), false, true));
     }
 
-    public BrimazKingOfOreskos(final BrimazKingOfOreskos card) {
+    private BrimazKingOfOreskos(final BrimazKingOfOreskos card) {
         super(card);
     }
 
@@ -79,7 +78,7 @@ class BrimazKingOfOreskosEffect extends OneShotEffect {
 
         if (controller != null) {
             Token token = new CatSoldierCreatureToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+            token.putOntoBattlefield(1, game, source, source.getControllerId());
             Permanent attackingCreature = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (attackingCreature != null && game.getState().getCombat() != null) {
                 // Possible ruling (see Aetherplasm)

@@ -27,11 +27,11 @@ public final class NantukoElder extends CardImpl {
         this.toughness = new MageInt(2);
 
         // {tap}: Add {C}{G}.
-        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 0, 0, 0, 0, 0, 1), new TapSourceCost()));
+        this.addAbility(new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 0, 1, 0, 0, 1), new TapSourceCost()));
 
     }
 
-    public NantukoElder(final NantukoElder card) {
+    private NantukoElder(final NantukoElder card) {
         super(card);
     }
 

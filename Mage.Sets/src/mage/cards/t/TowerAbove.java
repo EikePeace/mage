@@ -41,7 +41,7 @@ public final class TowerAbove extends CardImpl {
 
     }
 
-    public TowerAbove(final TowerAbove card) {
+    private TowerAbove(final TowerAbove card) {
         super(card);
     }
 
@@ -103,7 +103,7 @@ class TowerAboveTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

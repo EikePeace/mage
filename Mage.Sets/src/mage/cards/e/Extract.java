@@ -32,7 +32,7 @@ public final class Extract extends CardImpl {
    
     }
 
-    public Extract(final Extract card) {
+    private Extract(final Extract card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class ExtractEffect extends OneShotEffect {
             if (player.searchLibrary(target, source, game, targetPlayer.getId())) {
                 Card card = targetPlayer.getLibrary().remove(target.getFirstTarget(), game);
                 if (card != null) {
-                    player.moveCardToExileWithInfo(card, null, null, source.getSourceId(), game, Zone.LIBRARY, true);
+                    player.moveCardToExileWithInfo(card, null, null, source, game, Zone.LIBRARY, true);
                 }
             }
             targetPlayer.shuffleLibrary(source, game);

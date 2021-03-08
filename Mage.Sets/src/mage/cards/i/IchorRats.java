@@ -32,7 +32,7 @@ public final class IchorRats extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new IchorRatsEffect(), false));
     }
 
-    public IchorRats(final IchorRats card) {
+    private IchorRats(final IchorRats card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class IchorRatsEffect extends OneShotEffect {
         for (UUID playerId : game.getState().getPlayerList(source.getControllerId())) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                player.addCounters(CounterType.POISON.createInstance(), game);
+                player.addCounters(CounterType.POISON.createInstance(), source.getControllerId(), source, game);
             }
         }
         return true;

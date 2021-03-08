@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -36,7 +36,7 @@ public final class MidnightGuard extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new UntapSourceEffect(), filter));
     }
 
-    public MidnightGuard(final MidnightGuard card) {
+    private MidnightGuard(final MidnightGuard card) {
         super(card);
     }
 

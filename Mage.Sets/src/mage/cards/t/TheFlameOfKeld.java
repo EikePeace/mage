@@ -42,7 +42,7 @@ public final class TheFlameOfKeld extends CardImpl {
         this.addAbility(sagaAbility);
     }
 
-    public TheFlameOfKeld(final TheFlameOfKeld card) {
+    private TheFlameOfKeld(final TheFlameOfKeld card) {
         super(card);
     }
 
@@ -65,15 +65,14 @@ class TheFlameOfKeldDamageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), 2));
+        event.setAmount(CardUtil.overflowInc(event.getAmount(), 2));
         return false;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
-            case DAMAGE_PLANESWALKER:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
                 return true;
             default:

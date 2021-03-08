@@ -34,7 +34,7 @@ public final class WaveOfVitriol extends CardImpl {
 
     }
 
-    public WaveOfVitriol(final WaveOfVitriol card) {
+    private WaveOfVitriol(final WaveOfVitriol card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class WaveOfVitriolEffect extends OneShotEffect {
                 if (player != null) {
                     int count = 0;
                     for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, playerId, game)) {
-                        if (permanent.sacrifice(source.getSourceId(), game) && permanent.isLand()) {
+                        if (permanent.sacrifice(source, game) && permanent.isLand()) {
                             count++;
                         }
                     }
@@ -92,7 +92,7 @@ class WaveOfVitriolEffect extends OneShotEffect {
                     }
                 }
             }
-            game.applyEffects();
+            game.getState().processAction(game);
             Cards toBattlefield = new CardsImpl();
             Set<Player> playersToShuffle = new LinkedHashSet<>();
             for (Map.Entry<Player, Integer> entry : sacrificedLands.entrySet()) {

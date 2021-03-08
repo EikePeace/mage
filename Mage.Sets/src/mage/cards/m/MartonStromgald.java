@@ -4,7 +4,7 @@ package mage.cards.m;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.AttacksTriggeredAbility;
-import mage.abilities.common.BlocksTriggeredAbility;
+import mage.abilities.common.BlocksSourceTriggeredAbility;
 import mage.abilities.dynamicvalue.common.PermanentsOnBattlefieldCount;
 import mage.abilities.effects.common.continuous.BoostAllEffect;
 import mage.cards.CardImpl;
@@ -15,7 +15,7 @@ import mage.constants.Duration;
 import mage.constants.SuperType;
 import mage.filter.common.FilterAttackingCreature;
 import mage.filter.common.FilterBlockingCreature;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -45,11 +45,11 @@ public final class MartonStromgald extends CardImpl {
 
         // Whenever Marton Stromgald blocks, other blocking creatures get +1/+1 until end of turn for each blocking creature other than Marton Stromgald.
         PermanentsOnBattlefieldCount blockingValue = new PermanentsOnBattlefieldCount(blockingFilter);
-        this.addAbility(new BlocksTriggeredAbility(new BoostAllEffect(blockingValue, blockingValue, Duration.EndOfTurn, new FilterBlockingCreature(), true, null, true), false));
+        this.addAbility(new BlocksSourceTriggeredAbility(new BoostAllEffect(blockingValue, blockingValue, Duration.EndOfTurn, new FilterBlockingCreature(), true, null, true), false));
         
     }
 
-    public MartonStromgald(final MartonStromgald card) {
+    private MartonStromgald(final MartonStromgald card) {
         super(card);
     }
 

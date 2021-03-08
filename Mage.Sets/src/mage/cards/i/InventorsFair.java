@@ -1,7 +1,5 @@
-
 package mage.cards.i;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.ActivateIfConditionActivatedAbility;
@@ -11,9 +9,11 @@ import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.effects.common.GainLifeEffect;
 import mage.abilities.effects.common.search.SearchLibraryPutInHandEffect;
+import mage.abilities.hint.common.MetalcraftHint;
 import mage.abilities.mana.ColorlessManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
+import mage.constants.AbilityWord;
 import mage.constants.CardType;
 import mage.constants.SuperType;
 import mage.constants.Zone;
@@ -24,8 +24,9 @@ import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.target.common.TargetCardInLibrary;
 
+import java.util.UUID;
+
 /**
- *
  * @author fireshoes
  */
 public final class InventorsFair extends CardImpl {
@@ -37,7 +38,7 @@ public final class InventorsFair extends CardImpl {
     }
 
     public InventorsFair(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.LAND},"");
+        super(ownerId, setInfo, new CardType[]{CardType.LAND}, "");
         addSuperType(SuperType.LEGENDARY);
 
         // At the beginning of your upkeep, if you control three or more artifacts, you gain 1 life.
@@ -52,10 +53,12 @@ public final class InventorsFair extends CardImpl {
                 new GenericManaCost(4), MetalcraftCondition.instance);
         ability.addCost(new TapSourceCost());
         ability.addCost(new SacrificeSourceCost());
+        ability.setAbilityWord(AbilityWord.METALCRAFT);
+        ability.addHint(MetalcraftHint.instance);
         this.addAbility(ability);
     }
 
-    public InventorsFair(final InventorsFair card) {
+    private InventorsFair(final InventorsFair card) {
         super(card);
     }
 
@@ -84,7 +87,7 @@ class InventorsFairAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override

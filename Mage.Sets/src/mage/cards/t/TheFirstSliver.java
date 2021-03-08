@@ -9,7 +9,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.SuperType;
-import mage.filter.FilterSpell;
+import mage.filter.FilterCard;
 
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 public final class TheFirstSliver extends CardImpl {
 
-    private static final FilterSpell filter = new FilterSpell("Sliver spells you cast");
+    private static final FilterCard filter = new FilterCard("Sliver spells you cast");
 
     static {
         filter.add(SubType.SLIVER.getPredicate());
@@ -33,10 +33,10 @@ public final class TheFirstSliver extends CardImpl {
         this.toughness = new MageInt(7);
 
         // Cascade
-        this.addAbility(new CascadeAbility());
+        this.addAbility(new CascadeAbility(false));
 
         // Sliver spells you cast have cascade.
-        this.addAbility(new SimpleStaticAbility(new GainAbilityControlledSpellsEffect(new CascadeAbility(), filter)));
+        this.addAbility(new SimpleStaticAbility(new GainAbilityControlledSpellsEffect(new CascadeAbility(false), filter)));
     }
 
     private TheFirstSliver(final TheFirstSliver card) {

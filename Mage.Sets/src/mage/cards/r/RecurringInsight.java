@@ -30,7 +30,7 @@ public final class RecurringInsight extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public RecurringInsight(final RecurringInsight card) {
+    private RecurringInsight(final RecurringInsight card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class RecurringInsightEffect extends OneShotEffect {
         if (controller != null) {
             Player opponent = game.getPlayer(getTargetPointer().getFirst(game, source));
             if (opponent != null) {
-                controller.drawCards(opponent.getHand().size(), game);
+                controller.drawCards(opponent.getHand().size(), source, game);
             }
             return true;
         }

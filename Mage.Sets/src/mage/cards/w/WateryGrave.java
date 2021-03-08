@@ -23,12 +23,12 @@ public final class WateryGrave extends CardImpl {
         this.subtype.add(SubType.ISLAND);
         this.subtype.add(SubType.SWAMP);
 
-        this.addAbility(new AsEntersBattlefieldAbility(new TapSourceUnlessPaysEffect(new PayLifeCost(2)), "you may pay 2 life. If you don't, {this} enters the battlefield tapped"));
+        this.addAbility(new AsEntersBattlefieldAbility(new TapSourceUnlessPaysEffect(new PayLifeCost(2)), "you may pay 2 life. If you don't, it enters the battlefield tapped"));
         this.addAbility(new BlueManaAbility());
         this.addAbility(new BlackManaAbility());
     }
 
-    public WateryGrave(final WateryGrave card) {
+    private WateryGrave(final WateryGrave card) {
         super(card);
     }
 

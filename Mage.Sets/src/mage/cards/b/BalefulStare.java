@@ -35,7 +35,7 @@ public final class BalefulStare extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public BalefulStare(final BalefulStare card) {
+    private BalefulStare(final BalefulStare card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class BalefulStareEffect extends OneShotEffect {
                    count++;
                }
             }
-            controller.drawCards(count, game);
+            controller.drawCards(count, source, game);
             return true;
         }
         return false;

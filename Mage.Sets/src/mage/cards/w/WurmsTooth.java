@@ -25,7 +25,7 @@ public final class WurmsTooth extends CardImpl {
         this.addAbility(new WurmsToothAbility());
     }
 
-    public WurmsTooth(final WurmsTooth card) {
+    private WurmsTooth(final WurmsTooth card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class WurmsToothAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

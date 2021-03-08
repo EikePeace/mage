@@ -8,7 +8,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.FilterSpell;
-import mage.filter.predicate.other.TargetsOnlyOnePlayerPredicate;
+import mage.filter.predicate.mageobject.TargetsOnlyOnePlayerPredicate;
 import mage.game.Game;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -32,7 +32,7 @@ public final class Rebound extends CardImpl {
 
     }
 
-    public Rebound(final Rebound card) {
+    private Rebound(final Rebound card) {
         super(card);
     }
 

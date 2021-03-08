@@ -1,7 +1,5 @@
-
 package mage.cards.m;
 
-import java.util.UUID;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbility;
@@ -27,8 +25,10 @@ import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 
+import java.util.UUID;
+import mage.abilities.dynamicvalue.common.CountersSourceCount;
+
 /**
- *
  * @author L_J
  */
 public final class ManaCache extends CardImpl {
@@ -44,7 +44,7 @@ public final class ManaCache extends CardImpl {
         this.addAbility(new ManaCacheManaAbility());
     }
 
-    public ManaCache(final ManaCache card) {
+    private ManaCache(final ManaCache card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class ManaCacheEffect extends OneShotEffect {
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
         if (player != null && sourcePermanent != null) {
             int controlledUntappedLands = game.getBattlefield().countAll(filter, game.getActivePlayerId(), game);
-            sourcePermanent.addCounters(CounterType.CHARGE.createInstance(controlledUntappedLands), source, game);
+            sourcePermanent.addCounters(CounterType.CHARGE.createInstance(controlledUntappedLands), source.getControllerId(), source, game);
             return true;
         }
         return false;
@@ -88,7 +88,8 @@ class ManaCacheEffect extends OneShotEffect {
 class ManaCacheManaAbility extends ActivatedManaAbilityImpl {
 
     public ManaCacheManaAbility() {
-        super(Zone.BATTLEFIELD, new BasicManaEffect(Mana.ColorlessMana(1)), new RemoveCountersSourceCost(CounterType.CHARGE.createInstance(1)));
+        super(Zone.BATTLEFIELD, new BasicManaEffect(Mana.ColorlessMana(1), new CountersSourceCount(CounterType.CHARGE)),
+                new RemoveCountersSourceCost(CounterType.CHARGE.createInstance(1)));
         this.netMana.add(new Mana(0, 0, 0, 0, 0, 0, 0, 1));
     }
 
@@ -103,9 +104,9 @@ class ManaCacheManaAbility extends ActivatedManaAbilityImpl {
         }
         Player player = game.getPlayer(playerId);
         if (player != null && playerId.equals(game.getActivePlayerId()) && game.getStep().getType().isBefore(PhaseStep.END_TURN)) {
-            if (costs.canPay(this, sourceId, playerId, game)) {
+            if (costs.canPay(this, this, playerId, game)) {
                 this.setControllerId(playerId);
-                return ActivationStatus.getTrue();
+                return ActivationStatus.getTrue(this, game);
             }
         }
         return ActivationStatus.getFalse();

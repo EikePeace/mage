@@ -16,7 +16,6 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 
 /**
  *
@@ -31,7 +30,7 @@ public final class FaerieConclave extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new BecomesCreatureSourceEffect(new FaerieConclaveToken(), "land", Duration.EndOfTurn), new ManaCostsImpl("{1}{U}")));
     }
 
-    public FaerieConclave(final FaerieConclave card) {
+    private FaerieConclave(final FaerieConclave card) {
         super(card);
     }
 

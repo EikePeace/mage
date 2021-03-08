@@ -6,11 +6,14 @@ import mage.abilities.costs.common.SacrificeTargetCost;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ChooseACardNameEffect;
 import mage.abilities.keyword.FlashbackAbility;
-import mage.cards.*;
+import mage.cards.Card;
+import mage.cards.CardImpl;
+import mage.cards.CardSetInfo;
+import mage.cards.Cards;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.TimingRule;
-import mage.filter.common.FilterControlledCreaturePermanent;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -34,11 +37,11 @@ public final class CabalTherapy extends CardImpl {
 
         // Flashback-Sacrifice a creature.
         this.addAbility(new FlashbackAbility(
-                new SacrificeTargetCost(new TargetControlledCreaturePermanent(1, 1, new FilterControlledCreaturePermanent("a creature"), true)),
+                new SacrificeTargetCost(new TargetControlledCreaturePermanent(1, 1, StaticFilters.FILTER_CONTROLLED_CREATURE_SHORT_TEXT, true)),
                 TimingRule.SORCERY));
     }
 
-    public CabalTherapy(final CabalTherapy card) {
+    private CabalTherapy(final CabalTherapy card) {
         super(card);
     }
 
@@ -64,25 +67,20 @@ class CabalTherapyEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(targetPointer.getFirst(game, source));
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = game.getObject(source.getSourceId());
-        if (targetPlayer != null && controller != null && sourceObject != null) {
-            String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-            Cards hand = targetPlayer.getHand();
-
-            for (Card card : hand.getCards(game)) {
-                if (card.isSplitCard()) {
-                    SplitCard splitCard = (SplitCard) card;
-                    if (CardUtil.haveSameNames(splitCard.getLeftHalfCard().getName(), cardName)) {
-                        targetPlayer.discard(card, source, game);
-                    } else if (CardUtil.haveSameNames(splitCard.getRightHalfCard().getName(), cardName)) {
-                        targetPlayer.discard(card, source, game);
-                    }
-                }
-                if (CardUtil.haveSameNames(card.getName(), cardName)) {
-                    targetPlayer.discard(card, source, game);
-                }
-            }
-            targetPlayer.revealCards("Cabal Therapy", hand, game);
+        String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+        if (targetPlayer == null || controller == null || sourceObject == null || cardName == null) {
+            return false;
         }
+        Cards hand = targetPlayer.getHand().copy();
+        targetPlayer.revealCards(source, hand, game);
+        hand.removeIf(uuid -> {
+            Card card = hand.get(uuid, game);
+            if (card == null) {
+                return true;
+            }
+            return !CardUtil.haveSameNames(card, cardName, game);
+        });
+        targetPlayer.discard(hand, false, source, game);
         return true;
     }
 

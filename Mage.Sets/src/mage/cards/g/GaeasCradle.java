@@ -10,7 +10,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SuperType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterControlledCreaturePermanent;
 
 /**
  *
@@ -30,7 +29,7 @@ public final class GaeasCradle extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GaeasCradle(final GaeasCradle card) {
+    private GaeasCradle(final GaeasCradle card) {
         super(card);
     }
 

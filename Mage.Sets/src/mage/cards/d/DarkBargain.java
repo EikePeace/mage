@@ -30,7 +30,7 @@ public final class DarkBargain extends CardImpl {
         this.getSpellAbility().addEffect(new DamageControllerEffect(2));
     }
 
-    public DarkBargain(final DarkBargain card) {
+    private DarkBargain(final DarkBargain card) {
         super(card);
     }
 
@@ -44,7 +44,7 @@ class DarkBargainEffect extends OneShotEffect {
 
     public DarkBargainEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Look at the top three cards of your library. Put two of them into your hand and the rest into your graveyard";
+        this.staticText = "Look at the top three cards of your library. Put two of them into your hand and the other into your graveyard";
     }
 
     public DarkBargainEffect(final DarkBargainEffect effect) {

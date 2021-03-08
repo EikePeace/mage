@@ -34,7 +34,7 @@ public final class Stranglehold extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new StrangleholdSkipExtraTurnsEffect()));
     }
 
-    public Stranglehold(final Stranglehold card) {
+    private Stranglehold(final Stranglehold card) {
         super(card);
     }
 
@@ -119,7 +119,7 @@ class StrangleholdSkipExtraTurnsEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.EXTRA_TURN;
+        return event.getType() == GameEvent.EventType.EXTRA_TURN;
     }
 
     @Override

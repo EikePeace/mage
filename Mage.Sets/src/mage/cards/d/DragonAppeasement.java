@@ -31,7 +31,7 @@ public final class DragonAppeasement extends CardImpl {
 
     }
 
-    public DragonAppeasement(final DragonAppeasement card) {
+    private DragonAppeasement(final DragonAppeasement card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class DragonAppeasementTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

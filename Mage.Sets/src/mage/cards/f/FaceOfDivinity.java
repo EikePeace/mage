@@ -50,7 +50,7 @@ public final class FaceOfDivinity extends CardImpl {
         this.addAbility(abilityBoost);
     }
 
-    public FaceOfDivinity(final FaceOfDivinity card) {
+    private FaceOfDivinity(final FaceOfDivinity card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ enum FaceOfDivinityCondition implements Condition {
                 for (UUID id : permanent.getAttachments()) {
                     Permanent otherAura = game.getPermanent(id);
                     if (otherAura != null && !otherAura.getId().equals(currentAura.getId())
-                            && otherAura.getSubtype(game).contains(SubType.AURA)) {
+                            && otherAura.hasSubtype(SubType.AURA, game)) {
                         return true;
                     }
                 }

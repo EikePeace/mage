@@ -10,7 +10,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -37,7 +37,7 @@ public final class InvasiveSpecies extends CardImpl {
         
     }
 
-    public InvasiveSpecies(final InvasiveSpecies card) {
+    private InvasiveSpecies(final InvasiveSpecies card) {
         super(card);
     }
 

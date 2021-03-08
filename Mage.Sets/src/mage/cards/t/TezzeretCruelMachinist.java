@@ -52,7 +52,7 @@ public final class TezzeretCruelMachinist extends CardImpl {
         this.addAbility(new LoyaltyAbility(new TezzeretCruelMachinistEffect(), -7));
     }
 
-    public TezzeretCruelMachinist(final TezzeretCruelMachinist card) {
+    private TezzeretCruelMachinist(final TezzeretCruelMachinist card) {
         super(card);
     }
 
@@ -141,7 +141,7 @@ class TezzeretCruelMachinistCardTypeEffect extends AddCardTypeTargetEffect {
                     case TypeChangingEffects_4:
                         target.getSuperType().clear();
                         target.getCardType().clear();
-                        target.getSubtype(game).clear();
+                        target.removeAllSubTypes(game);
                         target.addCardType(CardType.ARTIFACT);
                         target.addCardType(CardType.CREATURE);
                         break;

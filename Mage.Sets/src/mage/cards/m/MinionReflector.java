@@ -4,11 +4,9 @@ package mage.cards.m;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfEndStepTriggeredAbility;
-import mage.abilities.common.EntersBattlefieldAllTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldControlledTriggeredAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.ContinuousEffect;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.CreateTokenCopyTargetEffect;
 import mage.abilities.effects.common.DoIfCostPaid;
@@ -17,12 +15,10 @@ import mage.abilities.effects.common.continuous.GainAbilityTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
-import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.Game;
-import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
 
@@ -54,7 +50,7 @@ public final class MinionReflector extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MinionReflector(final MinionReflector card) {
+    private MinionReflector(final MinionReflector card) {
         super(card);
     }
 
@@ -83,7 +79,7 @@ class MinionReflectorEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             CreateTokenCopyTargetEffect effect = new CreateTokenCopyTargetEffect(source.getControllerId(), null, true);
             effect.setTargetPointer(new FixedTarget(permanent, game));

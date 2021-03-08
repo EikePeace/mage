@@ -37,7 +37,7 @@ public final class UrgorosTheEmptyOne extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new UrgorosTheEmptyOneEffect(), false, true));
     }
 
-    public UrgorosTheEmptyOne(final UrgorosTheEmptyOne card) {
+    private UrgorosTheEmptyOne(final UrgorosTheEmptyOne card) {
         super(card);
     }
 
@@ -69,9 +69,9 @@ class UrgorosTheEmptyOneEffect extends OneShotEffect {
         Player attackedPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
         if (controller != null && attackedPlayer != null) {
             if (attackedPlayer.getHand().isEmpty()) {
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
             } else {
-                attackedPlayer.discardOne(true, source, game);
+                attackedPlayer.discardOne(true, false, source, game);
             }
             return true;
         }

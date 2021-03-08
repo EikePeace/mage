@@ -29,7 +29,7 @@ public final class GravityWell extends CardImpl {
         this.addAbility(new GravityWellTriggeredAbility());
     }
 
-    public GravityWell(final GravityWell card) {
+    private GravityWell(final GravityWell card) {
         super(card);
     }
 
@@ -51,7 +51,7 @@ class GravityWellTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override
@@ -100,7 +100,7 @@ class GravityWellEffect extends ContinuousEffectImpl {
             switch (layer) {
                 case AbilityAddingRemovingEffects_6:
                     if (sublayer == SubLayer.NA) {
-                        permanent.getAbilities().removeIf(entry -> entry.getId().equals(FlyingAbility.getInstance().getId()));
+                        permanent.removeAbility(FlyingAbility.getInstance(), source.getSourceId(), game);
                     }
                     break;
             }

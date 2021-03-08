@@ -36,7 +36,7 @@ public final class VoidWinnower extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new VoidWinnowerCantBlockEffect()));
     }
 
-    public VoidWinnower(final VoidWinnower card) {
+    private VoidWinnower(final VoidWinnower card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class VoidWinnowerCantCastEffect extends ContinuousRuleModifyingEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL_LATE;
+        return event.getType() == GameEvent.EventType.CAST_SPELL_LATE;
     }
 
     @Override

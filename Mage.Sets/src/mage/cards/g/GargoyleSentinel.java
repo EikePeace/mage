@@ -32,7 +32,7 @@ public final class GargoyleSentinel extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GargoyleSentinelEffect(), new ManaCostsImpl("{3}")));
     }
 
-    public GargoyleSentinel(final GargoyleSentinel card) {
+    private GargoyleSentinel(final GargoyleSentinel card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class GargoyleSentinelEffect extends ContinuousEffectImpl {
             switch (layer) {
                 case AbilityAddingRemovingEffects_6:
                     if (sublayer == SubLayer.NA) {
-                        permanent.getAbilities().removeIf(entry -> entry.getId().equals(DefenderAbility.getInstance().getId()));
+                        permanent.removeAbility(DefenderAbility.getInstance(), source.getSourceId(), game);
                         permanent.getAbilities().add(FlyingAbility.getInstance());
                     }
                     break;

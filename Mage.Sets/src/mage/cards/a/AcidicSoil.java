@@ -27,7 +27,7 @@ public final class AcidicSoil extends CardImpl {
         this.getSpellAbility().addEffect(new AcidicSoilEffect());
     }
 
-    public AcidicSoil(final AcidicSoil card) {
+    private AcidicSoil(final AcidicSoil card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class AcidicSoilEffect extends OneShotEffect {
                     }
                 }
                 if (amount > 0) {
-                    player.damage(amount, source.getSourceId(), game);
+                    player.damage(amount, source.getSourceId(), source, game);
                 }
             }
         }

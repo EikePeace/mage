@@ -25,7 +25,7 @@ public final class VisionsOfBeyond extends CardImpl {
         this.getSpellAbility().addEffect(new VisionsOfBeyondEffect());
     }
 
-    public VisionsOfBeyond(final VisionsOfBeyond card) {
+    private VisionsOfBeyond(final VisionsOfBeyond card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class VisionsOfBeyondEffect extends OneShotEffect {
                 }
             }
         }
-        sourcePlayer.drawCards(count, game);
+        sourcePlayer.drawCards(count, source, game);
         return true;
     }
 

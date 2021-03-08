@@ -32,7 +32,7 @@ public final class BladeOfTheBloodchief extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(1)));
     }
 
-    public BladeOfTheBloodchief(final BladeOfTheBloodchief card) {
+    private BladeOfTheBloodchief(final BladeOfTheBloodchief card) {
         super(card);
     }
 
@@ -62,9 +62,9 @@ class BladeOfTheBloodchiefEffect extends OneShotEffect {
             Permanent creature = game.getPermanent(enchantment.getAttachedTo());
             if (creature != null) {
                 if (creature.hasSubtype(SubType.VAMPIRE, game)) {
-                    creature.addCounters(CounterType.P1P1.createInstance(2), source, game);
+                    creature.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
                 } else {
-                    creature.addCounters(CounterType.P1P1.createInstance(), source, game);
+                    creature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                 }
             }
         }

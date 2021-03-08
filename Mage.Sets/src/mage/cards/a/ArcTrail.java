@@ -8,7 +8,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePlayerOrPlaneswalker;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -33,9 +33,8 @@ public final class ArcTrail extends CardImpl {
         this.getSpellAbility().addTarget(target1);
 
         FilterCreaturePlayerOrPlaneswalker filter2 = new FilterCreaturePlayerOrPlaneswalker("another creature, player or planeswalker to deal 1 damage");
-        AnotherTargetPredicate predicate = new AnotherTargetPredicate(2);
-        filter2.getCreatureFilter().add(predicate);
-        filter2.getPlayerFilter().add(predicate);
+        filter2.getPermanentFilter().add(new AnotherTargetPredicate(2));
+        filter2.getPlayerFilter().add(new AnotherTargetPredicate(2));
         TargetAnyTarget target2 = new TargetAnyTarget(1, 1, filter2);
         target2.setTargetTag(2);
         this.getSpellAbility().addTarget(target2);
@@ -43,7 +42,7 @@ public final class ArcTrail extends CardImpl {
         this.getSpellAbility().addEffect(ArcTrailEffect.getInstance());
     }
 
-    public ArcTrail(final ArcTrail card) {
+    private ArcTrail(final ArcTrail card) {
         super(card);
     }
 
@@ -68,7 +67,7 @@ class ArcTrailEffect extends OneShotEffect {
 
     private ArcTrailEffect() {
         super(Outcome.Damage);
-        staticText = "{source} deals 2 damage to any target and 1 damage to another target";
+        staticText = "{this} deals 2 damage to any target and 1 damage to another target";
     }
 
     @Override
@@ -86,11 +85,11 @@ class ArcTrailEffect extends OneShotEffect {
             }
 
             if (permanent != null) {
-                applied |= (permanent.damage(damage, source.getSourceId(), game, false, true) > 0);
+                applied |= (permanent.damage(damage, source.getSourceId(), source, game, false, true) > 0);
             }
             Player player = game.getPlayer(target.getFirstTarget());
             if (player != null) {
-                applied |= (player.damage(damage, source.getSourceId(), game) > 0);
+                applied |= (player.damage(damage, source.getSourceId(), source, game) > 0);
             }
 
             twoDamageDone = true;

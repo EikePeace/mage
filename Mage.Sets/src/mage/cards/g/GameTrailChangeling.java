@@ -22,11 +22,11 @@ public final class GameTrailChangeling extends CardImpl {
 
         this.power = new MageInt(4);
         this.toughness = new MageInt(4);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(TrampleAbility.getInstance());
     }
 
-    public GameTrailChangeling(final GameTrailChangeling card) {
+    private GameTrailChangeling(final GameTrailChangeling card) {
         super(card);
     }
 

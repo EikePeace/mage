@@ -3,8 +3,8 @@ package mage.cards.c;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
@@ -36,7 +36,7 @@ public final class Counterlash extends CardImpl {
         this.getSpellAbility().addEffect(new CounterlashEffect());
     }
 
-    public Counterlash(final Counterlash card) {
+    private Counterlash(final Counterlash card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class CounterlashEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (stackObject != null
                 && controller != null) {
-            game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            game.getStack().counter(source.getFirstTarget(), source, game);
             if (controller.chooseUse(Outcome.PlayForFree, "Cast a nonland card in your hand that "
                     + "shares a card type with that spell without paying its mana cost?", source, game)) {
                 FilterCard filter = new FilterCard();
@@ -87,7 +87,7 @@ class CounterlashEffect extends OneShotEffect {
                     if (card != null) {
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), Boolean.TRUE);
                         controller.cast(controller.chooseAbilityForCast(card, game, true),
-                                game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                game, true, new ApprovingObject(source, game));
                         game.getState().setValue("PlayFromNotOwnHandZone" + card.getId(), null);
                     }
                 }

@@ -30,7 +30,7 @@ public final class OppressiveWill extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public OppressiveWill(final OppressiveWill card) {
+    private OppressiveWill(final OppressiveWill card) {
         super(card);
     }
 
@@ -66,9 +66,9 @@ class SpellSyphonEffect extends OneShotEffect {
                 int amount = controller.getHand().size();
                 if (amount > 0) {
                     Cost cost = ManaUtil.createManaCost(amount, false);
-                    if (!cost.pay(source, game, spell.getControllerId(), spell.getControllerId(), false)) {
+                    if (!cost.pay(source, game, source, spell.getControllerId(), false)) {
                         game.informPlayers(sourceObject.getLogName() + ": cost wasn't payed - countering target spell.");
-                        return game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+                        return game.getStack().counter(source.getFirstTarget(), source, game);
                     }
                 }
                 return true;

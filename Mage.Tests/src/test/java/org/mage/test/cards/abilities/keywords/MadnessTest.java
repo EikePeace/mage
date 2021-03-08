@@ -23,15 +23,11 @@ public class MadnessTest extends CardTestPlayerBase {
      * card into their graveyard.” 702.34b Casting a spell using its
      * madness ability follows the rules for paying alternative costs in rules
      * 601.2b and 601.2e–g.
-     *
-     */
-    /**
+     * <p>
      * Arrogant Wurm 3GG Creature -- Wurm 4/4 Trample Madness {2}{G} (If you
      * discard this card, you may cast it for its madness cost instead of
      * putting it into your graveyard.)
-     *
-     */
-    /**
+     * <p>
      * Raven's Crime B Sorcery Target player discards a card. Retrace (You may
      * cast this card from your graveyard by discarding a land card in addition
      * to paying its other costs.)
@@ -39,13 +35,16 @@ public class MadnessTest extends CardTestPlayerBase {
     @Test
     public void testMadness() {
         addCard(Zone.BATTLEFIELD, playerA, "Forest", 3);
-        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 1);
+        //
+        // Madness {2}{G} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)
         addCard(Zone.HAND, playerA, "Arrogant Wurm");
-        addCard(Zone.HAND, playerA, "Raven's Crime");
+        //
+        // Target player discards a card.
+        addCard(Zone.HAND, playerA, "Raven's Crime"); // {B}
+        addCard(Zone.BATTLEFIELD, playerA, "Swamp", 1);
 
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Raven's Crime", playerA);
         setChoice(playerA, "Yes"); // use madness triggered ability
-        setChoice(playerA, "Yes"); // use madness cast
 
         setStrictChooseMode(true);
         setStopAt(1, PhaseStep.BEGIN_COMBAT);
@@ -125,7 +124,6 @@ public class MadnessTest extends CardTestPlayerBase {
 
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerB, "Haunting Hymn", playerA);
         setChoice(playerA, "Yes"); // use madness triggered ability
-        setChoice(playerA, "Yes"); // use madness cast
         setChoice(playerA, "X=4");
         addTargetAmount(playerA, "Pillarfield Ox", 4);
 
@@ -177,12 +175,11 @@ public class MadnessTest extends CardTestPlayerBase {
         addCard(Zone.HAND, playerA, "Forest");
 
         castSpell(1, PhaseStep.PRECOMBAT_MAIN, playerA, "Falkenrath Gorger");
+
         setChoice(playerA, "Yes"); // Discard a card and put a +1/+1 counter on that creature, it gains haste until end of turn, and it becomes a Vampire in addition to its other types?
-        setChoice(playerA, "Asylum Visitor");
-        setChoice(playerA, "Asylum Visitor: Madness {1}{B}"); // choose replacement effect (TODO: 2 same madness effetcs: one from Asylum Visitor, one from Falkenrath -- is that ok?!)
-        //
+        setChoice(playerA, "Asylum Visitor"); // Card to discard from Falkenrath entering by Olivia effect
+        setChoice(playerA, "Asylum Visito"); // Madness {1}{B}
         setChoice(playerA, "Yes"); // use madness triggered ability
-        setChoice(playerA, "Yes"); // use madness cast
         setChoice(playerA, "Yes"); // Discard a card and put a +1/+1 counter on that creature, it gains haste until end of turn, and it becomes a Vampire in addition to its other types?
         setChoice(playerA, "Forest");
 

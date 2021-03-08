@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 public final class LilianaDreadhordeGeneral extends CardImpl {
 
-    private static final FilterControlledPermanent filter = new FilterControlledCreaturePermanent("creatures");
+    private static final FilterControlledPermanent filter = new FilterControlledCreaturePermanent(" creatures");
 
     public LilianaDreadhordeGeneral(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.PLANESWALKER}, "{4}{B}{B}");
@@ -109,7 +109,7 @@ class LilianaDreadhordeGeneralEffect extends OneShotEffect {
         }
         for (Permanent permanent : game.getBattlefield().getActivePermanents(source.getControllerId(), game)) {
             if (keepFilter.match(permanent, source.getSourceId(), source.getControllerId(), game)) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
         return true;

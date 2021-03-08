@@ -5,7 +5,6 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
-import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.DamageTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -35,7 +34,7 @@ public final class EruptingDreadwolf extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EruptingDreadwolf(final EruptingDreadwolf card) {
+    private EruptingDreadwolf(final EruptingDreadwolf card) {
         super(card);
     }
 

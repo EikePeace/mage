@@ -28,7 +28,7 @@ public final class Plagiarize extends CardImpl {
         this.getSpellAbility().addEffect(new PlagiarizeEffect());
     }
 
-    public Plagiarize(final Plagiarize card) {
+    private Plagiarize(final Plagiarize card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class PlagiarizeEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(1, game, event.getAppliedEffects());
+            player.drawCards(1, source, game, event);
         }
         return true;
     }

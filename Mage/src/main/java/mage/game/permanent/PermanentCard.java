@@ -8,26 +8,49 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.keyword.TransformAbility;
 import mage.cards.Card;
 import mage.cards.LevelerCard;
+import mage.cards.ModalDoubleFacesCard;
+import mage.cards.SplitCard;
+import mage.constants.SpellAbilityType;
 import mage.game.Game;
 import mage.game.events.ZoneChangeEvent;
 
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import java.util.UUID;
 
 /**
+ * Static permanent on the battlefield. There are possible multiple permanents per one card,
+ * so be carefull for targets (ids are different) and ZCC (zcc is static for permanent).
+ *
  * @author BetaSteward_at_googlemail.com
  */
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class PermanentCard extends PermanentImpl {
 
     protected int maxLevelCounters;
-    // A copy of the origin card that was cast (this is not the original card, so it's possible to chnage some attribute to this blueprint to change attributes to the permanent if it enters the battlefield with e.g. a subtype)
+    // A copy of the origin card that was cast (this is not the original card, so it's possible to change some attribute to this blueprint to change attributes to the permanent if it enters the battlefield with e.g. a subtype)
     protected Card card;
-    // A copy of original card that was used for copy and create current permanent (used in copy effects and special commands like adjustTargets)
-    protected Card copiedFromCard;
     // the number this permanent instance had
     protected int zoneChangeCounter;
 
     public PermanentCard(Card card, UUID controllerId, Game game) {
         super(card.getId(), card.getOwnerId(), controllerId, card.getName());
+
+        // usage check: you must put to play only real card's part
+        // if you use it in test code then call CardUtil.getDefaultCardSideForBattlefield for default side
+        // it's a basic check and still allows to create permanent from instant or sorcery
+        boolean goodForBattlefield = true;
+        if (card instanceof ModalDoubleFacesCard) {
+            goodForBattlefield = false;
+        } else if (card instanceof SplitCard) {
+            // fused spells allowed (it uses main card)
+            if (card.getSpellAbility() != null && !card.getSpellAbility().getSpellAbilityType().equals(SpellAbilityType.SPLIT_FUSED)) {
+                goodForBattlefield = false;
+            }
+        }
+        if (!goodForBattlefield) {
+            throw new IllegalArgumentException("ERROR, can't create permanent card from split or mdf: " + card.getName());
+        }
 
         this.card = card;
         this.zoneChangeCounter = card.getZoneChangeCounter(game); // local value already set to the raised number
@@ -43,9 +66,6 @@ public class PermanentCard extends PermanentImpl {
         if (otherAbilities != null) {
             abilities.addAll(otherAbilities);
         }
-        /*if (card.getCardType().contains(CardType.PLANESWALKER)) {
-         this.loyalty = new MageInt(card.getLoyalty().getValue());
-         }*/
         if (card instanceof LevelerCard) {
             maxLevelCounters = ((LevelerCard) card).getMaxLevelCounters();
         }
@@ -53,7 +73,7 @@ public class PermanentCard extends PermanentImpl {
             if (game.getState().getValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + getId()) != null) {
                 game.getState().setValue(TransformAbility.VALUE_KEY_ENTER_TRANSFORMED + getId(), null);
                 setTransformed(true);
-                TransformAbility.transform(this, getSecondCardFace(), game);
+                TransformAbility.transform(this, getSecondCardFace(), game, null);
             }
         }
     }
@@ -85,23 +105,14 @@ public class PermanentCard extends PermanentImpl {
                 }
             }
         } else {
+            // copy only own abilities; all dynamic added abilities must be added in the parent call
             this.abilities = card.getAbilities().copy();
-        }
-        // adventure cards must show adventure spell info on battlefield too
-        /*
-        if (card instanceof AdventureCard) {
-            // Adventure card spell abilities should not appear on permanents.
-            List<Ability> toRemove = new ArrayList<Ability>();
-            for (Ability ability : this.abilities) {
-                if (ability instanceof SpellAbility) {
-                    if (((SpellAbility) ability).getSpellAbilityType() == SpellAbilityType.ADVENTURE_SPELL) {
-                        toRemove.add(ability);
-                    }
-                }
+            // only set spellAbility to null if it has no targets IE: Dance of the Dead bug #7031
+            if (this.getSpellAbility() != null
+                    && this.getSpellAbility().getTargets().isEmpty()) {
+                this.spellAbility = null; // will be set on first getSpellAbility call if card has one.
             }
-            toRemove.forEach(ability -> this.abilities.remove(ability));
         }
-         */
         this.abilities.setControllerId(this.controllerId);
         this.abilities.setSourceId(objectId);
         this.cardType.clear();
@@ -113,9 +124,7 @@ public class PermanentCard extends PermanentImpl {
         if (card instanceof PermanentCard) {
             this.maxLevelCounters = ((PermanentCard) card).maxLevelCounters;
         }
-        this.subtype.clear();
-        this.subtype.addAll(card.getSubtype(game));
-        this.isAllCreatureTypes = card.isAllCreatureTypes();
+        this.subtype.copyFrom(card.getSubtype(game));
         this.supertype.clear();
         supertype.addAll(card.getSuperType());
         this.expansionSetCode = card.getExpansionSetCode();
@@ -154,8 +163,8 @@ public class PermanentCard extends PermanentImpl {
     }
 
     @Override
-    public boolean turnFaceUp(Game game, UUID playerId) {
-        if (super.turnFaceUp(game, playerId)) {
+    public boolean turnFaceUp(Ability source, Game game, UUID playerId) {
+        if (super.turnFaceUp(source, game, playerId)) {
             power.modifyBaseValue(power.getBaseValue());
             toughness.modifyBaseValue(toughness.getBaseValue());
             setManifested(false);
@@ -231,4 +240,8 @@ public class PermanentCard extends PermanentImpl {
         card.setZoneChangeCounter(value, game);
     }
 
+    @Override
+    public Card getMainCard() {
+        return card.getMainCard();
+    }
 }

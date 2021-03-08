@@ -15,7 +15,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetLandPermanent;
 
@@ -49,7 +48,7 @@ public final class WindZendikon extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public WindZendikon(final WindZendikon card) {
+    private WindZendikon(final WindZendikon card) {
         super(card);
     }
 

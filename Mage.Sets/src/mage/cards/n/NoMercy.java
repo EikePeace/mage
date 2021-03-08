@@ -27,7 +27,7 @@ public final class NoMercy extends CardImpl {
         this.addAbility(new NoMercyTriggeredAbility());
     }
 
-    public NoMercy(final NoMercy card) {
+    private NoMercy(final NoMercy card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ public final class NoMercy extends CardImpl {
 
         @Override
         public boolean checkEventType(GameEvent event, Game game) {
-            return event.getType() == EventType.DAMAGED_PLAYER;
+            return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
         }
 
         @Override

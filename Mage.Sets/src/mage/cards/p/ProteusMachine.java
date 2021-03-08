@@ -10,7 +10,6 @@ import mage.abilities.keyword.MorphAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 
@@ -33,7 +32,7 @@ public final class ProteusMachine extends CardImpl {
         this.addAbility(new TurnedFaceUpSourceTriggeredAbility(new BecomesChosenCreatureTypeSourceEffect(false, Duration.Custom)));
     }
 
-    public ProteusMachine(final ProteusMachine card) {
+    private ProteusMachine(final ProteusMachine card) {
         super(card);
     }
 

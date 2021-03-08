@@ -10,8 +10,8 @@ import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.RequirementEffect;
 import mage.abilities.hint.HintUtils;
 import mage.abilities.mana.ActivatedManaAbilityImpl;
-import mage.cards.Card;
-import mage.cards.Cards;
+import mage.abilities.mana.ManaAbility;
+import mage.cards.*;
 import mage.cards.decks.Deck;
 import mage.choices.Choice;
 import mage.choices.ChoiceImpl;
@@ -26,7 +26,7 @@ import mage.game.Game;
 import mage.game.GameImpl;
 import mage.game.combat.CombatGroup;
 import mage.game.draft.Draft;
-import mage.game.events.GameEvent;
+import mage.game.events.DeclareAttackerEvent;
 import mage.game.match.Match;
 import mage.game.permanent.Permanent;
 import mage.game.stack.Spell;
@@ -41,6 +41,7 @@ import mage.target.TargetPermanent;
 import mage.target.common.TargetAnyTarget;
 import mage.target.common.TargetAttackingCreature;
 import mage.target.common.TargetDefender;
+import mage.util.CardUtil;
 import mage.util.GameLog;
 import mage.util.ManaUtil;
 import mage.util.MessageToClient;
@@ -48,9 +49,8 @@ import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 import static mage.constants.PlayerAction.REQUEST_AUTO_ANSWER_RESET_ALL;
@@ -60,6 +60,8 @@ import static mage.constants.PlayerAction.TRIGGER_AUTO_ORDER_RESET_ALL;
  * @author BetaSteward_at_googlemail.com
  */
 public class HumanPlayer extends PlayerImpl {
+
+    private static final boolean ALLOW_USERS_TO_PUT_NON_PLAYABLE_SPELLS_ON_STACK_WORKAROUND = false; // warning, see workaround's info on usage
 
     private transient Boolean responseOpenedForAnswer = false; // can't get response until prepared target (e.g. until send all fire events to all players)
     private final transient PlayerResponse response = new PlayerResponse();
@@ -84,8 +86,8 @@ public class HumanPlayer extends PlayerImpl {
 
     protected boolean holdingPriority;
 
-    protected Queue<PlayerResponse> actionQueue = new LinkedList<>();
-    protected Queue<PlayerResponse> actionQueueSaved = new LinkedList<>();
+    protected ConcurrentLinkedQueue<PlayerResponse> actionQueue = new ConcurrentLinkedQueue<>();
+    protected ConcurrentLinkedQueue<PlayerResponse> actionQueueSaved = new ConcurrentLinkedQueue<>();
     protected int actionIterations = 0;
     protected boolean recordingMacro = false;
     protected boolean macroTriggeredSelectionFlag;
@@ -134,8 +136,8 @@ public class HumanPlayer extends PlayerImpl {
         while (!responseOpenedForAnswer && canRespond()) {
             numTimesWaiting++;
             if (numTimesWaiting >= 300) {
-                // game freezed -- need to report about error and continue to execute
-                String s = "Game freezed in waitResponseOpen for user " + getName() + " (connection problem)";
+                // game frozen -- need to report about error and continue to execute
+                String s = "Game frozen in waitResponseOpen for user " + getName() + " (connection problem)";
                 logger.warn(s);
                 break;
             }
@@ -150,7 +152,7 @@ public class HumanPlayer extends PlayerImpl {
 
     protected boolean pullResponseFromQueue(Game game) {
         if (actionQueue.isEmpty() && actionIterations > 0 && !actionQueueSaved.isEmpty()) {
-            actionQueue = new LinkedList<>(actionQueueSaved);
+            actionQueue = new ConcurrentLinkedQueue<>(actionQueueSaved);
             actionIterations--;
 //            logger.info("MACRO iteration: " + actionIterations);
         }
@@ -297,7 +299,6 @@ public class HumanPlayer extends PlayerImpl {
                 }
             }
         }
-
 
         while (canRespond()) {
             if (messageToClient.getSecondMessage() == null) {
@@ -487,7 +488,7 @@ public class HumanPlayer extends PlayerImpl {
                 required = false;
             }
 
-            List<UUID> chosen = target.getTargets();
+            java.util.List<UUID> chosen = target.getTargets();
             options.put("chosen", (Serializable) chosen);
 
             updateGameStatePriority("choose(5)", game);
@@ -497,22 +498,23 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
                 // selected some target
 
                 // remove selected
-                if (target.getTargets().contains(response.getUUID())) {
-                    target.remove(response.getUUID());
+                if (target.getTargets().contains(responseId)) {
+                    target.remove(responseId);
                     continue;
                 }
 
-                if (!targetIds.contains(response.getUUID())) {
+                if (!targetIds.contains(responseId)) {
                     continue;
                 }
 
                 if (target instanceof TargetPermanent) {
-                    if (((TargetPermanent) target).canTarget(abilityControllerId, response.getUUID(), sourceId, game, false)) {
-                        target.add(response.getUUID(), game);
+                    if (((TargetPermanent) target).canTarget(abilityControllerId, responseId, sourceId, game, false)) {
+                        target.add(responseId, game);
                         if (target.doneChosing()) {
                             return true;
                         }
@@ -520,21 +522,21 @@ public class HumanPlayer extends PlayerImpl {
                 } else {
                     MageObject object = game.getObject(sourceId);
                     if (object instanceof Ability) {
-                        if (target.canTarget(response.getUUID(), (Ability) object, game)) {
-                            if (target.getTargets().contains(response.getUUID())) { // if already included remove it with
-                                target.remove(response.getUUID());
+                        if (target.canTarget(responseId, (Ability) object, game)) {
+                            if (target.getTargets().contains(responseId)) { // if already included remove it with
+                                target.remove(responseId);
                             } else {
-                                target.addTarget(response.getUUID(), (Ability) object, game);
+                                target.addTarget(responseId, (Ability) object, game);
                                 if (target.doneChosing()) {
                                     return true;
                                 }
                             }
                         }
-                    } else if (target.canTarget(response.getUUID(), game)) {
-                        if (target.getTargets().contains(response.getUUID())) { // if already included remove it with
-                            target.remove(response.getUUID());
+                    } else if (target.canTarget(responseId, game)) {
+                        if (target.getTargets().contains(responseId)) { // if already included remove it with
+                            target.remove(responseId);
                         } else {
-                            target.addTarget(response.getUUID(), null, game);
+                            target.addTarget(responseId, null, game);
                             if (target.doneChosing()) {
                                 return true;
                             }
@@ -587,16 +589,17 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
                 // remove selected
-                if (target.getTargets().contains(response.getUUID())) {
-                    target.remove(response.getUUID());
+                if (target.getTargets().contains(responseId)) {
+                    target.remove(responseId);
                     continue;
                 }
 
-                if (possibleTargets.contains(response.getUUID())) {
-                    if (target.canTarget(abilityControllerId, response.getUUID(), source, game)) {
-                        target.addTarget(response.getUUID(), source, game);
+                if (possibleTargets.contains(responseId)) {
+                    if (target.canTarget(abilityControllerId, responseId, source, game)) {
+                        target.addTarget(responseId, source, game);
                         if (target.doneChosing()) {
                             return true;
                         }
@@ -653,9 +656,9 @@ public class HumanPlayer extends PlayerImpl {
             }
 
             Map<String, Serializable> options = getOptions(target, null);
-            List<UUID> chosen = target.getTargets();
+            java.util.List<UUID> chosen = target.getTargets();
             options.put("chosen", (Serializable) chosen);
-            List<UUID> choosable = new ArrayList<>();
+            java.util.List<UUID> choosable = new ArrayList<>();
             for (UUID cardId : cards) {
                 if (target.canTarget(abilityControllerId, cardId, null, cards, game)) {
                     choosable.add(cardId);
@@ -677,12 +680,13 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
-                if (target.canTarget(abilityControllerId, response.getUUID(), null, cards, game)) {
-                    if (target.getTargets().contains(response.getUUID())) { // if already included remove it with
-                        target.remove(response.getUUID());
-                    } else {
-                        target.add(response.getUUID(), game);
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
+                if (target.getTargets().contains(responseId)) { // if already included remove it with
+                    target.remove(responseId);
+                } else {
+                    if (target.canTarget(abilityControllerId, responseId, null, cards, game)) {
+                        target.add(responseId, game);
                         if (target.doneChosing()) {
                             return true;
                         }
@@ -727,9 +731,9 @@ public class HumanPlayer extends PlayerImpl {
             }
 
             Map<String, Serializable> options = getOptions(target, null);
-            List<UUID> chosen = target.getTargets();
+            java.util.List<UUID> chosen = target.getTargets();
             options.put("chosen", (Serializable) chosen);
-            List<UUID> choosable = new ArrayList<>();
+            java.util.List<UUID> choosable = new ArrayList<>();
             for (UUID cardId : cards) {
                 if (target.canTarget(abilityControllerId, cardId, source, cards, game)) {
                     choosable.add(cardId);
@@ -751,11 +755,12 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
-                if (target.getTargets().contains(response.getUUID())) { // if already included remove it
-                    target.remove(response.getUUID());
-                } else if (target.canTarget(abilityControllerId, response.getUUID(), source, cards, game)) {
-                    target.addTarget(response.getUUID(), source, game);
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
+                if (target.getTargets().contains(responseId)) { // if already included remove it
+                    target.remove(responseId);
+                } else if (target.canTarget(abilityControllerId, responseId, source, cards, game)) {
+                    target.addTarget(responseId, source, game);
                     if (target.doneChosing()) {
                         return true;
                     }
@@ -807,9 +812,10 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
-                if (target.canTarget(abilityControllerId, response.getUUID(), source, game)) {
-                    UUID targetId = response.getUUID();
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
+                if (target.canTarget(abilityControllerId, responseId, source, game)) {
+                    UUID targetId = responseId;
                     MageObject targetObject = game.getObject(targetId);
 
                     boolean removeMode = target.getTargets().contains(targetId)
@@ -1037,34 +1043,53 @@ public class HumanPlayer extends PlayerImpl {
                 break;
             }
 
+            UUID responseId = getFixedResponseUUID(game);
             if (response.getString() != null
                     && response.getString().equals("special")) {
-                specialAction(game);
-            } else if (response.getUUID() != null) {
+                activateSpecialAction(game, null);
+            } else if (responseId != null) {
                 boolean result = false;
-                MageObject object = game.getObject(response.getUUID());
+                MageObject object = game.getObject(responseId);
                 if (object != null) {
                     Zone zone = game.getState().getZone(object.getId());
                     if (zone != null) {
                         // look at card or try to cast/activate abilities
+                        LinkedHashMap<UUID, ActivatedAbility> useableAbilities = new LinkedHashMap<>();
+
                         Player actingPlayer = null;
-                        LinkedHashMap<UUID, ActivatedAbility> useableAbilities = null;
                         if (playerId.equals(game.getPriorityPlayerId())) {
                             actingPlayer = this;
                         } else if (getPlayersUnderYourControl().contains(game.getPriorityPlayerId())) {
                             actingPlayer = game.getPlayer(game.getPriorityPlayerId());
                         }
                         if (actingPlayer != null) {
-                            useableAbilities = actingPlayer.getUseableActivatedAbilities(object, zone, game);
+                            useableAbilities = actingPlayer.getPlayableActivatedAbilities(object, zone, game);
+
+                            // GUI: workaround to enable users to put spells on stack without real available mana
+                            // (without highlighting, like it was in old versions before June 2020)
+                            // Reason: some gain ability adds cost modification and other things to spells on stack only,
+                            // e.g. xmage can't find playable ability before put that spell on stack (wtf example: Chief Engineer,
+                            // see ConvokeTest)
+                            // TODO: it's a BAD workaround  -- users can't see that card/ability is broken and will not report to us, AI can't play that ability too
+                            // Enable it on massive broken cards/abilities only or for manual tests
+                            if (ALLOW_USERS_TO_PUT_NON_PLAYABLE_SPELLS_ON_STACK_WORKAROUND) {
+                                if (object instanceof Card) {
+                                    for (Ability ability : ((Card) object).getAbilities(game)) {
+                                        if (ability instanceof SpellAbility && ((SpellAbility) ability).canActivate(actingPlayer.getId(), game).canActivate()
+                                                || ability instanceof PlayLandAbility) {
+                                            useableAbilities.putIfAbsent(ability.getId(), (ActivatedAbility) ability);
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         if (object instanceof Card
                                 && ((Card) object).isFaceDown(game)
-                                && lookAtFaceDownCard((Card) object, game, useableAbilities == null ? 0 : useableAbilities.size())) {
+                                && lookAtFaceDownCard((Card) object, game, useableAbilities.size())) {
                             result = true;
                         } else {
-                            if (useableAbilities != null
-                                    && !useableAbilities.isEmpty()) {
+                            if (!useableAbilities.isEmpty()) {
                                 activateAbility(useableAbilities, object, game);
                                 result = true;
                             }
@@ -1079,6 +1104,21 @@ public class HumanPlayer extends PlayerImpl {
         }
 
         return false;
+    }
+
+    private UUID getFixedResponseUUID(Game game) {
+        // user can clicks on any side of multi/double faces card, but game must process click to main card all the time
+        MageObject object = game.getObject(response.getUUID());
+
+        // mdf cards
+        if (object instanceof ModalDoubleFacesCardHalf) {
+            if (!Zone.BATTLEFIELD.equals(game.getState().getZone(object.getId()))
+                    && !Zone.STACK.equals(game.getState().getZone(object.getId()))) {
+                return ((ModalDoubleFacesCardHalf) object).getMainCard().getId();
+            }
+        }
+
+        return response.getUUID();
     }
 
     private boolean checkPassStep(Game game, HumanPlayer controllingPlayer) {
@@ -1110,7 +1150,7 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public TriggeredAbility chooseTriggeredAbility(List<TriggeredAbility> abilities, Game game) {
+    public TriggeredAbility chooseTriggeredAbility(java.util.List<TriggeredAbility> abilities, Game game) {
         // choose triggered abilitity from list
         if (gameInCheckPlayableState(game)) {
             return null;
@@ -1120,7 +1160,7 @@ public class HumanPlayer extends PlayerImpl {
         boolean autoOrderUse = getControllingPlayersUserData(game).isAutoOrderTrigger();
         while (canRespond()) {
             // try to set trigger auto order
-            List<TriggeredAbility> abilitiesWithNoOrderSet = new ArrayList<>();
+            java.util.List<TriggeredAbility> abilitiesWithNoOrderSet = new ArrayList<>();
             TriggeredAbility abilityOrderLast = null;
             for (TriggeredAbility ability : abilities) {
                 if (triggerAutoOrderAbilityFirst.contains(ability.getOriginalId())) {
@@ -1166,11 +1206,12 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
                 for (TriggeredAbility ability : abilitiesWithNoOrderSet) {
-                    if (ability.getId().equals(response.getUUID())
+                    if (ability.getId().equals(responseId)
                             || (!macroTriggeredSelectionFlag
-                            && ability.getSourceId().equals(response.getUUID()))) {
+                            && ability.getSourceId().equals(responseId))) {
                         if (recordingMacro) {
                             PlayerResponse tResponse = new PlayerResponse();
                             tResponse.setUUID(ability.getSourceId());
@@ -1214,14 +1255,15 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
+            UUID responseId = getFixedResponseUUID(game);
             if (response.getBoolean() != null) {
                 return false;
-            } else if (response.getUUID() != null) {
-                playManaAbilities(abilityToCast, unpaid, game);
+            } else if (responseId != null) {
+                playManaAbilities(responseId, abilityToCast, unpaid, game);
             } else if (response.getString() != null
                     && response.getString().equals("special")) {
                 if (unpaid instanceof ManaCostsImpl) {
-                    specialManaAction(unpaid, game);
+                    activateSpecialAction(game, unpaid);
                 }
             } else if (response.getManaType() != null) {
                 // this mana type can be paid once from pool
@@ -1330,25 +1372,36 @@ public class HumanPlayer extends PlayerImpl {
         return xValue;
     }
 
-    protected void playManaAbilities(Ability abilityToCast, ManaCost unpaid, Game game) {
+    protected void playManaAbilities(UUID objectId, Ability abilityToCast, ManaCost unpaid, Game game) {
         updateGameStatePriority("playManaAbilities", game);
-        MageObject object = game.getObject(response.getUUID());
+        MageObject object = game.getObject(objectId);
         if (object == null) {
             return;
         }
-        if (AbilityType.SPELL.equals(abilityToCast.getAbilityType())) {
+
+        // GUI: for user's information only - check if mana abilities allows to use here (getUseableManaAbilities already filter it)
+        // Reason: when you use special mana ability then normal mana abilities will be restricted to pay. Users
+        // can't see lands as playable and must know the reason (if they click on land then they get that message)
+        if (abilityToCast.getAbilityType() == AbilityType.SPELL) {
             Spell spell = game.getStack().getSpell(abilityToCast.getSourceId());
-            if (spell != null && !spell.isResolving()
-                    && spell.isDoneActivatingManaAbilities()) {
-                game.informPlayer(this, "You can no longer use activated mana abilities to pay for the current spell. Cancel and recast the spell and activate mana abilities first.");
-                return;
+            boolean haveManaAbilities = object.getAbilities().stream().anyMatch(a -> a instanceof ManaAbility);
+            if (spell != null && !spell.isResolving() && haveManaAbilities) {
+                switch (spell.getCurrentActivatingManaAbilitiesStep()) {
+                    // if you used special mana ability like convoke then normal mana abilities will be restricted to use, see Convoke for details
+                    case BEFORE:
+                    case NORMAL:
+                        break;
+                    case AFTER:
+                        game.informPlayer(this, "You can no longer use activated mana abilities to pay for the current spell (special mana pay already used). Cancel and recast the spell to activate mana abilities first.");
+                        return;
+                }
             }
         }
+
         Zone zone = game.getState().getZone(object.getId());
         if (zone != null) {
             LinkedHashMap<UUID, ActivatedManaAbilityImpl> useableAbilities = getUseableManaAbilities(object, zone, game);
-            if (useableAbilities != null
-                    && !useableAbilities.isEmpty()) {
+            if (!useableAbilities.isEmpty()) {
                 useableAbilities = ManaUtil.tryToAutoPay(unpaid, useableAbilities); // eliminates other abilities if one fits perfectly
                 currentlyUnpaidMana = unpaid;
                 activateAbility(useableAbilities, object, game);
@@ -1367,7 +1420,7 @@ public class HumanPlayer extends PlayerImpl {
         filter.add(new ControllerIdPredicate(attackingPlayerId));
 
         while (canRespond()) {
-            List<UUID> possibleAttackers = new ArrayList<>();
+            java.util.List<UUID> possibleAttackers = new ArrayList<>();
             for (Permanent possibleAttacker : game.getBattlefield().getActivePermanents(filter, attackingPlayerId, game)) {
                 if (possibleAttacker.canAttack(null, game)) {
                     possibleAttackers.add(possibleAttacker.getId());
@@ -1417,6 +1470,7 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
+            UUID responseId = getFixedResponseUUID(game);
             if (response.getString() != null
                     && response.getString().equals("special")) { // All attack
                 setStoredBookmark(game.bookmarkState());
@@ -1428,8 +1482,7 @@ public class HumanPlayer extends PlayerImpl {
                 }
                 for (Permanent attacker : game.getBattlefield().getAllActivePermanents(filterCreatureForCombat, getId(), game)) {
                     if (game.getContinuousEffects().checkIfThereArePayCostToAttackBlockEffects(
-                            GameEvent.getEvent(GameEvent.EventType.DECLARE_ATTACKER,
-                                    attackedDefender, attacker.getId(), attacker.getControllerId()), game)) {
+                            new DeclareAttackerEvent(attackedDefender, attacker.getId(), attacker.getControllerId()), game)) {
                         continue;
                     }
                     // if attacker needs a specific defender to attack so select that one instead
@@ -1451,8 +1504,8 @@ public class HumanPlayer extends PlayerImpl {
                 if (checkIfAttackersValid(game)) {
                     return;
                 }
-            } else if (response.getUUID() != null) {
-                Permanent attacker = game.getPermanent(response.getUUID());
+            } else if (responseId != null) {
+                Permanent attacker = game.getPermanent(responseId);
                 if (attacker != null) {
                     if (filterCreatureForCombat.match(attacker, null, playerId, game)) {
                         selectDefender(game.getCombat().getDefenders(), attacker.getId(), game);
@@ -1524,8 +1577,7 @@ public class HumanPlayer extends PlayerImpl {
                 for (Permanent attacker : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, getId(), game)) {
 
                     if (game.getContinuousEffects().checkIfThereArePayCostToAttackBlockEffects(
-                            GameEvent.getEvent(GameEvent.EventType.DECLARE_ATTACKER,
-                                    forcedToAttackId, attacker.getId(), attacker.getControllerId()), game)) {
+                            new DeclareAttackerEvent(forcedToAttackId, attacker.getId(), attacker.getControllerId()), game)) {
                         continue;
                     }
                     // if attacker needs a specific defender to attack so select that one instead
@@ -1597,13 +1649,7 @@ public class HumanPlayer extends PlayerImpl {
                 }
             }
             if (chooseTarget(Outcome.Damage, target, null, game)) {
-                UUID defenderId = response.getUUID();
-                for (Player player : game.getPlayers().values()) {
-                    if (player.getId().equals(response.getUUID())) {
-                        defenderId = player.getId(); // get the correct player object
-                        break;
-                    }
-                }
+                UUID defenderId = getFixedResponseUUID(game);
                 declareAttacker(attackerId, defenderId, game, true);
                 return true;
             }
@@ -1615,13 +1661,13 @@ public class HumanPlayer extends PlayerImpl {
         TargetDefender target = new TargetDefender(defenders, null);
         target.setNotTarget(true); // player or planswalker hexproof does not prevent attacking a player
         if (chooseTarget(Outcome.Damage, target, null, game)) {
-            return response.getUUID();
+            return getFixedResponseUUID(game);
         }
         return null;
     }
 
     @Override
-    public void selectBlockers(Game game, UUID defendingPlayerId) {
+    public void selectBlockers(Ability source, Game game, UUID defendingPlayerId) {
         if (gameInCheckPlayableState(game)) {
             return;
         }
@@ -1650,7 +1696,7 @@ public class HumanPlayer extends PlayerImpl {
             prepareForResponse(game);
             if (!isExecutingMacro()) {
                 Map<String, Serializable> options = new HashMap<>();
-                List<UUID> possibleBlockers = game.getBattlefield().getActivePermanents(filter, playerId, game).stream()
+                java.util.List<UUID> possibleBlockers = game.getBattlefield().getActivePermanents(filter, playerId, game).stream()
                         .map(p -> p.getId())
                         .collect(Collectors.toList());
                 options.put(Constants.Option.POSSIBLE_BLOCKERS, (Serializable) possibleBlockers);
@@ -1658,12 +1704,13 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
+            UUID responseId = getFixedResponseUUID(game);
             if (response.getBoolean() != null) {
                 return;
             } else if (response.getInteger() != null) {
                 return;
-            } else if (response.getUUID() != null) {
-                Permanent blocker = game.getPermanent(response.getUUID());
+            } else if (responseId != null) {
+                Permanent blocker = game.getPermanent(responseId);
                 if (blocker != null) {
                     boolean removeBlocker = false;
                     // does not block yet and can block or can block more attackers
@@ -1683,7 +1730,7 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public UUID chooseAttackerOrder(List<Permanent> attackers, Game game) {
+    public UUID chooseAttackerOrder(java.util.List<Permanent> attackers, Game game) {
         if (gameInCheckPlayableState(game)) {
             return null;
         }
@@ -1696,9 +1743,10 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
                 for (Permanent perm : attackers) {
-                    if (perm.getId().equals(response.getUUID())) {
+                    if (perm.getId().equals(responseId)) {
                         return perm.getId();
                     }
                 }
@@ -1708,7 +1756,7 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public UUID chooseBlockerOrder(List<Permanent> blockers, CombatGroup combatGroup, List<UUID> blockerOrder, Game game) {
+    public UUID chooseBlockerOrder(java.util.List<Permanent> blockers, CombatGroup combatGroup, java.util.List<UUID> blockerOrder, Game game) {
         if (gameInCheckPlayableState(game)) {
             return null;
         }
@@ -1721,9 +1769,10 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
                 for (Permanent perm : blockers) {
-                    if (perm.getId().equals(response.getUUID())) {
+                    if (perm.getId().equals(responseId)) {
                         return perm.getId();
                     }
                 }
@@ -1761,14 +1810,15 @@ public class HumanPlayer extends PlayerImpl {
         }
         waitForResponse(game);
 
+        UUID responseId = getFixedResponseUUID(game);
         if (response.getBoolean() != null) {
             // do nothing
-        } else if (response.getUUID() != null) {
-            CombatGroup group = game.getCombat().findGroup(response.getUUID());
+        } else if (responseId != null) {
+            CombatGroup group = game.getCombat().findGroup(responseId);
             if (group != null) {
                 // check if already blocked, if not add
                 if (!group.getBlockers().contains(blockerId)) {
-                    declareBlocker(defenderId, blockerId, response.getUUID(), game);
+                    declareBlocker(defenderId, blockerId, responseId, game);
                 } else { // else remove from block
                     game.getCombat().removeBlockerGromGroup(blockerId, group, game);
                 }
@@ -1777,7 +1827,7 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public void assignDamage(int damage, List<UUID> targets, String singleTargetName, UUID sourceId, Game game) {
+    public void assignDamage(int damage, java.util.List<UUID> targets, String singleTargetName, UUID attackerId, Ability source, Game game) {
         updateGameStatePriority("assignDamage", game);
         int remainingDamage = damage;
         while (remainingDamage > 0 && canRespond()) {
@@ -1786,17 +1836,17 @@ public class HumanPlayer extends PlayerImpl {
             if (singleTargetName != null) {
                 target.setTargetName(singleTargetName);
             }
-            choose(Outcome.Damage, target, sourceId, game);
+            choose(Outcome.Damage, target, source.getSourceId(), game);
             if (targets.isEmpty() || targets.contains(target.getFirstTarget())) {
                 int damageAmount = getAmount(0, remainingDamage, "Select amount", game);
                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                 if (permanent != null) {
-                    permanent.damage(damageAmount, sourceId, game, false, true);
+                    permanent.damage(damageAmount, attackerId, source, game, false, true);
                     remainingDamage -= damageAmount;
                 } else {
                     Player player = game.getPlayer(target.getFirstTarget());
                     if (player != null) {
-                        player.damage(damageAmount, sourceId, game);
+                        player.damage(damageAmount, attackerId, source, game);
                         remainingDamage -= damageAmount;
                     }
                 }
@@ -1841,11 +1891,17 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public void pickCard(List<Card> cards, Deck deck, Draft draft) {
+    public void pickCard(java.util.List<Card> cards, Deck deck, Draft draft) {
         draft.firePickCardEvent(playerId);
     }
 
-    protected void specialAction(Game game) {
+    /**
+     * Activate special action (normal or mana)
+     *
+     * @param game
+     * @param unpaidForManaAction - set unpaid for mana actions like convoke
+     */
+    protected void activateSpecialAction(Game game, ManaCost unpaidForManaAction) {
         if (gameInCheckPlayableState(game)) {
             return;
         }
@@ -1854,7 +1910,7 @@ public class HumanPlayer extends PlayerImpl {
             return;
         }
 
-        Map<UUID, SpecialAction> specialActions = game.getState().getSpecialActions().getControlledBy(playerId, false);
+        Map<UUID, SpecialAction> specialActions = game.getState().getSpecialActions().getControlledBy(playerId, unpaidForManaAction != null);
         if (!specialActions.isEmpty()) {
 
             updateGameStatePriority("specialAction", game);
@@ -1864,39 +1920,14 @@ public class HumanPlayer extends PlayerImpl {
             }
             waitForResponse(game);
 
-            if (response.getUUID() != null) {
-                if (specialActions.containsKey(response.getUUID())) {
-                    activateAbility(specialActions.get(response.getUUID()), game);
-                }
-            }
-        }
-    }
-
-    protected void specialManaAction(ManaCost unpaid, Game game) {
-        if (gameInCheckPlayableState(game)) {
-            return;
-        }
-
-        if (!canRespond()) {
-            return;
-        }
-
-        Map<UUID, SpecialAction> specialActions = game.getState().getSpecialActions().getControlledBy(playerId, true);
-        if (!specialActions.isEmpty()) {
-            updateGameStatePriority("specialAction", game);
-            prepareForResponse(game);
-            if (!isExecutingMacro()) {
-                game.fireGetChoiceEvent(playerId, name, null, new ArrayList<>(specialActions.values()));
-            }
-            waitForResponse(game);
-
-            if (response.getUUID() != null) {
-                if (specialActions.containsKey(response.getUUID())) {
-                    SpecialAction specialAction = specialActions.get(response.getUUID());
-                    if (specialAction != null) {
-                        specialAction.setUnpaidMana(unpaid);
-                        activateAbility(specialActions.get(response.getUUID()), game);
+            UUID responseId = getFixedResponseUUID(game);
+            if (responseId != null) {
+                if (specialActions.containsKey(responseId)) {
+                    SpecialAction specialAction = specialActions.get(responseId);
+                    if (unpaidForManaAction != null) {
+                        specialAction.setUnpaidMana(unpaidForManaAction);
                     }
+                    activateAbility(specialAction, game);
                 }
             }
         }
@@ -1952,70 +1983,50 @@ public class HumanPlayer extends PlayerImpl {
         }
         waitForResponse(game);
 
-        if (response.getUUID() != null && isInGame()) {
-            if (abilities.containsKey(response.getUUID())) {
-                activateAbility(abilities.get(response.getUUID()), game);
+        UUID responseId = getFixedResponseUUID(game);
+        if (responseId != null) {
+            if (abilities.containsKey(responseId)) {
+                activateAbility(abilities.get(responseId), game);
             }
         }
     }
 
+    /**
+     * Hide ability picker dialog on one available ability to activate
+     *
+     * @param ability
+     * @param game
+     * @return
+     */
     private boolean suppressAbilityPicker(ActivatedAbility ability, Game game) {
         if (getControllingPlayersUserData(game).isShowAbilityPickerForced()) {
+            // user activated an ability picker in preferences
+
+            // force to show ability picker for double faces cards in hand/commander/exile and other zones
+            Card mainCard = game.getCard(CardUtil.getMainCardId(game, ability.getSourceId()));
+            if (mainCard != null && !Zone.BATTLEFIELD.equals(game.getState().getZone(mainCard.getId()))) {
+                if (mainCard instanceof SplitCard
+                        || mainCard instanceof AdventureCard
+                        || mainCard instanceof ModalDoubleFacesCard) {
+                    return false;
+                }
+            }
+
+            // hide on land play
             if (ability instanceof PlayLandAbility) {
                 return true;
             }
+
+            // hide on alternative cost activated
             if (!getCastSourceIdWithAlternateMana().contains(ability.getSourceId())
                     && ability.getManaCostsToPay().convertedManaCost() > 0) {
                 return true;
             }
+
+            // hide on mana activate and show all other
             return ability instanceof ActivatedManaAbilityImpl;
         }
         return true;
-    }
-
-    @Override
-    public SpellAbility chooseSpellAbilityForCast(SpellAbility ability, Game game, boolean noMana) {
-        if (gameInCheckPlayableState(game)) {
-            return null;
-        }
-
-        // TODO: add canRespond cycle?
-        if (!canRespond()) {
-            return null;
-        }
-
-        switch (ability.getSpellAbilityType()) {
-            case SPLIT:
-            case SPLIT_FUSED:
-            case SPLIT_AFTERMATH:
-                MageObject object = game.getObject(ability.getSourceId());
-                if (object != null) {
-                    String message = "Choose ability to cast" + (noMana ? " for FREE" : "") + "<br>" + object.getLogName();
-                    LinkedHashMap<UUID, ActivatedAbility> useableAbilities = getSpellAbilities(playerId, object, game.getState().getZone(object.getId()), game);
-                    if (useableAbilities != null
-                            && useableAbilities.size() == 1) {
-                        return (SpellAbility) useableAbilities.values().iterator().next();
-                    } else if (useableAbilities != null
-                            && !useableAbilities.isEmpty()) {
-
-                        updateGameStatePriority("chooseSpellAbilityForCast", game);
-                        prepareForResponse(game);
-                        if (!isExecutingMacro()) {
-                            game.fireGetChoiceEvent(playerId, message, object, new ArrayList<>(useableAbilities.values()));
-                        }
-                        waitForResponse(game);
-
-                        if (response.getUUID() != null) {
-                            if (useableAbilities.containsKey(response.getUUID())) {
-                                return (SpellAbility) useableAbilities.get(response.getUUID());
-                            }
-                        }
-                    }
-                }
-                return null;
-            default:
-                return ability;
-        }
     }
 
     @Override
@@ -2029,7 +2040,7 @@ public class HumanPlayer extends PlayerImpl {
             return null;
         }
 
-        MageObject object = game.getObject(card.getId());
+        MageObject object = game.getObject(card.getId()); // must be object to find real abilities (example: commander)
         if (object != null) {
             String message = "Choose ability to cast" + (nonMana ? " for FREE" : "") + "<br>" + object.getLogName();
             LinkedHashMap<UUID, ActivatedAbility> useableAbilities = getSpellAbilities(playerId, object, game.getState().getZone(object.getId()), game);
@@ -2046,13 +2057,16 @@ public class HumanPlayer extends PlayerImpl {
                 }
                 waitForResponse(game);
 
-                if (response.getUUID() != null) {
-                    if (useableAbilities.containsKey(response.getUUID())) {
-                        return (SpellAbility) useableAbilities.get(response.getUUID());
+                UUID responseId = getFixedResponseUUID(game);
+                if (responseId != null) {
+                    if (useableAbilities.containsKey(responseId)) {
+                        return (SpellAbility) useableAbilities.get(responseId);
                     }
                 }
             }
         }
+
+        // default ability (example: on disconnect or cancel)
         return card.getSpellAbility();
     }
 
@@ -2089,12 +2103,15 @@ public class HumanPlayer extends PlayerImpl {
                 if (mode.getTargets().canChoose(source.getSourceId(), source.getControllerId(), game)) { // and needed targets have to be available
                     String modeText = mode.getEffects().getText(mode);
                     if (obj != null) {
-                        modeText = modeText.replace("{source}", obj.getName()).replace("{this}", obj.getName());
+                        modeText = modeText.replace("{this}", obj.getName());
                     }
                     if (modes.isEachModeMoreThanOnce()) {
                         if (timesSelected > 0) {
                             modeText = "(selected " + timesSelected + "x) " + modeText;
                         }
+                    }
+                    if (!modeText.isEmpty()) {
+                        modeText = Character.toUpperCase(modeText.charAt(0)) + modeText.substring(1);
                     }
                     modeMap.put(mode.getId(), modeIndex + ". " + modeText);
                 }
@@ -2111,7 +2128,7 @@ public class HumanPlayer extends PlayerImpl {
                 boolean done = false;
                 while (!done && canRespond()) {
 
-                    String message = "Choose mode (selected " + modes.getSelectedModes().size() + " of " + modes.getMaxModes()
+                    String message = "Choose mode (selected " + modes.getSelectedModes().size() + " of " + modes.getMaxModes(game, source)
                             + ", min " + modes.getMinModes() + ")";
                     if (obj != null) {
                         message = message + "<br>" + obj.getLogName();
@@ -2124,9 +2141,10 @@ public class HumanPlayer extends PlayerImpl {
                     }
                     waitForResponse(game);
 
-                    if (response.getUUID() != null) {
+                    UUID responseId = getFixedResponseUUID(game);
+                    if (responseId != null) {
                         for (Mode mode : modes.getAvailableModes(source, game)) {
-                            if (mode.getId().equals(response.getUUID())) {
+                            if (mode.getId().equals(responseId)) {
                                 // TODO: add checks on 2x selects (cheaters can rewrite client side code and select same mode multiple times)
                                 // reason: wrong setup eachModeMoreThanOnce and eachModeOnlyOnce in many cards
                                 return mode;
@@ -2134,20 +2152,21 @@ public class HumanPlayer extends PlayerImpl {
                         }
 
                         // end choice by done option in ability pickup dialog
-                        if (canEndChoice && Modes.CHOOSE_OPTION_DONE_ID.equals(response.getUUID())) {
+                        if (canEndChoice && Modes.CHOOSE_OPTION_DONE_ID.equals(responseId)) {
                             done = true;
                         }
 
                         // cancel choice (remove all selections)
-                        if (Modes.CHOOSE_OPTION_CANCEL_ID.equals(response.getUUID())) {
-                            modes.getSelectedModes().clear();
-                            return null;
+                        if (Modes.CHOOSE_OPTION_CANCEL_ID.equals(responseId)) {
+                            modes.clearSelectedModes();
                         }
                     } else if (canEndChoice) {
                         // end choice by done button in feedback panel
                         // disable after done option implemented
                         // done = true;
                     }
+
+                    // triggered abilities can't be skipped by cancel or wrong answer
                     if (source.getAbilityType() != AbilityType.TRIGGERED) {
                         done = true;
                     }
@@ -2160,7 +2179,7 @@ public class HumanPlayer extends PlayerImpl {
     }
 
     @Override
-    public boolean choosePile(Outcome outcome, String message, List<? extends Card> pile1, List<? extends Card> pile2, Game game) {
+    public boolean choosePile(Outcome outcome, String message, java.util.List<? extends Card> pile1, java.util.List<? extends Card> pile2, Game game) {
         if (gameInCheckPlayableState(game)) {
             return true;
         }

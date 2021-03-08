@@ -44,7 +44,7 @@ public final class SkyshipPlunderer extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SkyshipPlunderer(final SkyshipPlunderer card) {
+    private SkyshipPlunderer(final SkyshipPlunderer card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class SkyshipPlundererEffect extends OneShotEffect {
                     } else {
                         counterToAdd = new Counter(counter.getName());
                     }
-                    player.addCounters(counterToAdd, game);
+                    player.addCounters(counterToAdd, source.getControllerId(), source, game);
                 }
                 return true;
             }
@@ -95,7 +95,7 @@ class SkyshipPlundererEffect extends OneShotEffect {
                     } else {
                         counterToAdd = new Counter(counter.getName());
                     }
-                    permanent.addCounters(counterToAdd, source, game);
+                    permanent.addCounters(counterToAdd, source.getControllerId(), source, game);
                 }
             }
             return true;

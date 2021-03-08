@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards.a;
 
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.ContinuousEffect;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.GainControlTargetEffect;
@@ -43,10 +38,10 @@ public final class AuraThief extends CardImpl {
         
         // When Aura Thief dies, you gain control of all enchantments. You don't get
         // to move Auras.
-        this.addAbility(new DiesTriggeredAbility(new AuraThiefDiesTriggeredEffect()));
+        this.addAbility(new DiesSourceTriggeredAbility(new AuraThiefDiesTriggeredEffect()));
     }
     
-    public AuraThief(final AuraThief card) {
+    private AuraThief(final AuraThief card) {
         super(card);
     }
     

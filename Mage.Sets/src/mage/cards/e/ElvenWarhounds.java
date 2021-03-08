@@ -19,7 +19,7 @@ public final class ElvenWarhounds extends CardImpl {
 
     public ElvenWarhounds(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{3}{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
 
@@ -29,7 +29,7 @@ public final class ElvenWarhounds extends CardImpl {
         this.addAbility(new BecomesBlockedByCreatureTriggeredAbility(effect,  false));
     }
 
-    public ElvenWarhounds(final ElvenWarhounds card) {
+    private ElvenWarhounds(final ElvenWarhounds card) {
         super(card);
     }
 

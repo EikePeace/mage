@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import java.util.UUID;
@@ -34,15 +33,17 @@ public final class GriffinGuide extends CardImpl {
         this.getSpellAbility().addEffect(new AttachEffect(Outcome.AddAbility));
         Ability ability = new EnchantAbility(auraTarget.getTargetName());
         this.addAbility(ability);
+
         // Enchanted creature gets +2/+2 and has flying.
         ability = new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostEnchantedEffect(2, 2, Duration.WhileOnBattlefield));
         ability.addEffect(new GainAbilityAttachedEffect(FlyingAbility.getInstance(), AttachmentType.AURA, Duration.WhileOnBattlefield, "and has flying"));
         this.addAbility(ability);
+
         // When enchanted creature dies, create a 2/2 white Griffin creature token with flying.
         this.addAbility(new DiesAttachedTriggeredAbility(new CreateTokenEffect(new GriffinToken()), "enchanted creature"));
     }
 
-    public GriffinGuide(final GriffinGuide card) {
+    private GriffinGuide(final GriffinGuide card) {
         super(card);
     }
 

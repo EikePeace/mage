@@ -29,7 +29,7 @@ public final class CoercivePortal extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new CoercivePortalEffect(), TargetController.YOU, false));
     }
 
-    public CoercivePortal(final CoercivePortal card) {
+    private CoercivePortal(final CoercivePortal card) {
         super(card);
     }
 
@@ -77,7 +77,7 @@ class CoercivePortalEffect extends OneShotEffect {
                 new SacrificeSourceEffect().apply(game, source);
                 new DestroyAllEffect(new FilterNonlandPermanent()).apply(game, source);
             } else {
-                controller.drawCards(1, game);
+                controller.drawCards(1, source, game);
             }
             return true;
         }

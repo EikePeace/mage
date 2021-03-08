@@ -1,4 +1,3 @@
-
 package mage.cards.c;
 
 import java.util.HashSet;
@@ -16,6 +15,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
+import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.permanent.token.ZombieToken;
@@ -43,7 +43,7 @@ public final class CurseOfDisturbance extends CardImpl {
         this.addAbility(new EnchantedPlayerAttackedTriggeredAbility(new CurseOfDisturbanceEffect()));
     }
 
-    public CurseOfDisturbance(final CurseOfDisturbance card) {
+    private CurseOfDisturbance(final CurseOfDisturbance card) {
         super(card);
     }
 
@@ -72,7 +72,12 @@ class CurseOfDisturbanceEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        // In the case that the enchantment is blinked
+        Permanent enchantment = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+        if (enchantment == null) {
+            // It was not blinked, use the standard method
+            enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        }
         if (enchantment != null) {
             Player enchantedPlayer = game.getPlayer(enchantment.getAttachedTo());
             if (enchantedPlayer != null) {

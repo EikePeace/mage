@@ -51,7 +51,7 @@ public final class DarkIntimations extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(Zone.GRAVEYARD, new DarkIntimationsGraveyardEffect(), filter, false, true));
     }
 
-    public DarkIntimations(final DarkIntimations card) {
+    private DarkIntimations(final DarkIntimations card) {
         super(card);
     }
 
@@ -101,7 +101,7 @@ class DarkIntimationsEffect extends OneShotEffect {
             Player player = game.getPlayer(playerId);
             if (player != null) {
                 TargetPermanent target = new TargetPermanent(1, 1, filter, true);
-                if (target.canChoose(player.getId(), game)) {
+                if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                     player.chooseTarget(Outcome.Sacrifice, target, source, game);
                     perms.addAll(target.getTargets());
                 }
@@ -110,13 +110,13 @@ class DarkIntimationsEffect extends OneShotEffect {
         for (UUID permID : perms) {
             Permanent permanent = game.getPermanent(permID);
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
             }
         }
         for (UUID playerId : game.getOpponents(source.getControllerId())) {
             Player player = game.getPlayer(playerId);
             if (player != null) {
-                player.discardOne(false, source, game);
+                player.discardOne(false, false, source, game);
             }
         }
         TargetCardInYourGraveyard target = new TargetCardInYourGraveyard(filterCard);
@@ -128,7 +128,7 @@ class DarkIntimationsEffect extends OneShotEffect {
             }
             controller.moveCards(card, Zone.HAND, source, game);
         }
-        controller.drawCards(1, game);
+        controller.drawCards(1, source, game);
         return true;
     }
 }
@@ -201,7 +201,7 @@ class DarkIntimationsReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Permanent creature = ((EntersTheBattlefieldEvent) event).getTarget();
         if (creature != null) {
-            creature.addCounters(CounterType.LOYALTY.createInstance(), source, game);
+            creature.addCounters(CounterType.LOYALTY.createInstance(), source.getControllerId(), source, game);
         }
         return false;
     }

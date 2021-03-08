@@ -39,10 +39,9 @@ public final class FleshBlood extends SplitCard {
         getRightHalfCard().getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
         getRightHalfCard().getSpellAbility().addTarget(new TargetAnyTarget());
         getRightHalfCard().getSpellAbility().addEffect(new BloodEffect());
-
     }
 
-    public FleshBlood(final FleshBlood card) {
+    private FleshBlood(final FleshBlood card) {
         super(card);
     }
 
@@ -65,19 +64,20 @@ class FleshEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
+        Player player = game.getPlayer(source.getControllerId());
         Card targetCard = game.getCard(source.getFirstTarget());
-        if (targetCard != null) {
-            int power = targetCard.getPower().getValue();
-            targetCard.moveToExile(null, null, source.getSourceId(), game);
-            if (power > 0) {
-                Permanent targetCreature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
-                if (targetCreature != null) {
-                    targetCreature.addCounters(CounterType.P1P1.createInstance(power), source, game);
-                }
-            }
-            return true;
+        if (player == null || targetCard == null) {
+            return false;
         }
-        return false;
+        int power = targetCard.getPower().getValue();
+        player.moveCards(targetCard, Zone.EXILED, source, game);
+        if (power > 0) {
+            Permanent targetCreature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
+            if (targetCreature != null) {
+                targetCreature.addCounters(CounterType.P1P1.createInstance(power), source.getControllerId(), source, game);
+            }
+        }
+        return true;
     }
 
     @Override
@@ -107,12 +107,12 @@ class BloodEffect extends OneShotEffect {
 
         Permanent targetCreature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (sourcePermanent != null && targetCreature != null) {
-            targetCreature.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), game, false, true);
+            targetCreature.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), source, game, false, true);
             return true;
         }
         Player targetPlayer = game.getPlayer(source.getTargets().get(1).getFirstTarget());
         if (sourcePermanent != null && targetPlayer != null) {
-            targetPlayer.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), game);
+            targetPlayer.damage(sourcePermanent.getPower().getValue(), sourcePermanent.getId(), source, game);
             return true;
         }
         return false;

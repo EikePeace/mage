@@ -7,9 +7,8 @@ import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.filter.FilterAbility;
 import mage.filter.FilterStackObject;
-import mage.filter.predicate.mageobject.NumberOfTargetsPredicate;
+import mage.filter.predicate.other.NumberOfTargetsPredicate;
 import mage.target.common.TargetActivatedAbility;
 
 /**
@@ -35,7 +34,7 @@ public final class Reroute extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public Reroute(final Reroute card) {
+    private Reroute(final Reroute card) {
         super(card);
     }
 

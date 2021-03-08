@@ -9,7 +9,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.counters.CounterType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterControlledCreaturePermanent;
 
 /**
  *
@@ -25,7 +24,7 @@ public final class TitaniasBoon extends CardImpl {
 		this.getSpellAbility().addEffect(new AddCountersAllEffect(CounterType.P1P1.createInstance(), StaticFilters.FILTER_PERMANENT_CREATURE_CONTROLLED));
     }
 
-    public TitaniasBoon(final TitaniasBoon card) {
+    private TitaniasBoon(final TitaniasBoon card) {
         super(card);
     }
 

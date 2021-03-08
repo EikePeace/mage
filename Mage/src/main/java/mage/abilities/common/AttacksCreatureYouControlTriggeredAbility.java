@@ -44,6 +44,7 @@ public class AttacksCreatureYouControlTriggeredAbility extends TriggeredAbilityI
         super(ability);
         this.filter = ability.filter;
         this.setTargetPointer = ability.setTargetPointer;
+        this.once = ability.once;
     }
 
     public void setOnce(boolean once) {
@@ -60,7 +61,7 @@ public class AttacksCreatureYouControlTriggeredAbility extends TriggeredAbilityI
         Permanent sourcePermanent = game.getPermanent(event.getSourceId());
         if (sourcePermanent != null && filter.match(sourcePermanent, sourceId, controllerId, game)) {
             if (setTargetPointer) {
-                this.getEffects().setTargetPointer(new FixedTarget(event.getSourceId()));
+                this.getEffects().setTargetPointer(new FixedTarget(event.getSourceId(), game));
             }
             return true;
         }
@@ -76,12 +77,12 @@ public class AttacksCreatureYouControlTriggeredAbility extends TriggeredAbilityI
     public String getRule() {
         String an;
         String who = filter.getMessage();
-        if (who.startsWith("another")) {
+        if (who.startsWith("another") || who.startsWith("a ")) {
             an = "";
-        } else if (who.startsWith("a")) {
-            an = "an";
+        } else if (who.length() > 0 && "aeiou".contains(who.charAt(0) + "")) {
+            an = "an ";
         } else {
-            an = "a";
+            an = "a ";
         }
 
         return "When" + (once ? "" : "ever")

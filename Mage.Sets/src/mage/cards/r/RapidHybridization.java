@@ -29,7 +29,7 @@ public final class RapidHybridization extends CardImpl {
         this.getSpellAbility().addEffect(new RapidHybridizationEffect());
     }
 
-    public RapidHybridization(final RapidHybridization card) {
+    private RapidHybridization(final RapidHybridization card) {
         super(card);
     }
 
@@ -57,10 +57,10 @@ class RapidHybridizationEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(targetPointer.getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             FrogLizardToken token = new FrogLizardToken();
-            token.putOntoBattlefield(1, game, source.getSourceId(), permanent.getControllerId());
+            token.putOntoBattlefield(1, game, source, permanent.getControllerId());
         }
         return true;
     }

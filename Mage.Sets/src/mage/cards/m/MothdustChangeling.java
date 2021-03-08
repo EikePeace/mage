@@ -36,11 +36,11 @@ public final class MothdustChangeling extends CardImpl {
 
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainAbilitySourceEffect(FlyingAbility.getInstance(), Duration.EndOfTurn), new TapTargetCost(new TargetControlledPermanent(filter))));
     }
 
-    public MothdustChangeling(final MothdustChangeling card) {
+    private MothdustChangeling(final MothdustChangeling card) {
         super(card);
     }
 

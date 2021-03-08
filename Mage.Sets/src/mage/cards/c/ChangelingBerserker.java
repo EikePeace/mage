@@ -24,7 +24,7 @@ public final class ChangelingBerserker extends CardImpl {
         this.toughness = new MageInt(3);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         
         // Haste
         this.addAbility(HasteAbility.getInstance());
@@ -33,7 +33,7 @@ public final class ChangelingBerserker extends CardImpl {
         this.addAbility(new ChampionAbility(this, true));
     }
 
-    public ChangelingBerserker(final ChangelingBerserker card) {
+    private ChangelingBerserker(final ChangelingBerserker card) {
         super(card);
     }
 

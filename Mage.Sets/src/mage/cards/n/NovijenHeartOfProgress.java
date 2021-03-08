@@ -38,7 +38,7 @@ public final class NovijenHeartOfProgress extends CardImpl {
         this.addAbility(ability);
     }
 
-    public NovijenHeartOfProgress(final NovijenHeartOfProgress card) {
+    private NovijenHeartOfProgress(final NovijenHeartOfProgress card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class NovijenHeartOfProgressEffect extends OneShotEffect {
 
     public NovijenHeartOfProgressEffect() {
         super(Outcome.BoostCreature);
-        staticText = "put a +1/+1 counter on each creature that came into play this turn";
+        staticText = "put a +1/+1 counter on each creature that entered the battlefield this turn";
     }
 
     public NovijenHeartOfProgressEffect(final NovijenHeartOfProgressEffect effect) {
@@ -71,7 +71,7 @@ class NovijenHeartOfProgressEffect extends OneShotEffect {
         if (controller != null && sourceObject != null) {
             for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
                 if (permanent.getTurnsOnBattlefield() == 0) {
-                    permanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+                    permanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                     game.informPlayers(sourceObject.getLogName() + ": " + controller.getLogName() + " puts a +1/+1 counter on " + permanent.getLogName());
                 }
             }

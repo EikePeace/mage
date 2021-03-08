@@ -18,8 +18,7 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetControlledCreaturePermanent;
@@ -33,7 +32,7 @@ public final class CytoplastRootKin extends CardImpl {
     private static final FilterControlledCreaturePermanent filter = new FilterControlledCreaturePermanent("other creature you control that has a +1/+1 counter on it");
     static {
         filter.add(AnotherPredicate.instance);
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public CytoplastRootKin(UUID ownerId, CardSetInfo setInfo) {
@@ -55,7 +54,7 @@ public final class CytoplastRootKin extends CardImpl {
         this.addAbility(ability);
     }
 
-    public CytoplastRootKin(final CytoplastRootKin card) {
+    private CytoplastRootKin(final CytoplastRootKin card) {
         super(card);
     }
 
@@ -89,8 +88,8 @@ class CytoplastRootKinEffect extends OneShotEffect {
                 && targetPermanent != null
                 && !sourcePermanent.getId().equals(targetPermanent.getId())
                 && targetPermanent.getCounters(game).getCount(CounterType.P1P1) > 0) {
-            targetPermanent.removeCounters(CounterType.P1P1.createInstance(), game);
-            sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source, game);
+            targetPermanent.removeCounters(CounterType.P1P1.createInstance(), source, game);
+            sourcePermanent.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
             return true;
         }
         return false;

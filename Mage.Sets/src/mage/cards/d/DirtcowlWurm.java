@@ -31,7 +31,7 @@ public final class DirtcowlWurm extends CardImpl {
         this.addAbility(new DirtcowlWurmTriggeredAbility());
     }
 
-    public DirtcowlWurm(final DirtcowlWurm card) {
+    private DirtcowlWurm(final DirtcowlWurm card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class DirtcowlWurmTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.LAND_PLAYED;
+        return event.getType() == GameEvent.EventType.LAND_PLAYED;
     }
 
     @Override

@@ -45,7 +45,7 @@ public final class ExclusionRitual extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ExclusionRitualReplacementEffect()));
     }
 
-    public ExclusionRitual(final ExclusionRitual card) {
+    private ExclusionRitual(final ExclusionRitual card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ExclusionRitualImprintEffect extends OneShotEffect {
         Permanent targetPermanent = game.getPermanent(targetPointer.getFirst(game, source));
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && sourcePermanent != null && targetPermanent != null) {
-            controller.moveCardToExileWithInfo(targetPermanent, getId(), sourcePermanent.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true);
+            controller.moveCardToExileWithInfo(targetPermanent, getId(), sourcePermanent.getIdName(), source, game, Zone.BATTLEFIELD, true);
             sourcePermanent.imprint(targetPermanent.getId(), game);
         }
         return true;

@@ -1,7 +1,7 @@
 package mage.cards.g;
 
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.GodEternalDiesTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
@@ -9,13 +9,10 @@ import mage.abilities.effects.ReplacementEffectImpl;
 import mage.abilities.effects.common.cost.SpellCostReductionSourceEffect;
 import mage.abilities.hint.HintUtils;
 import mage.abilities.keyword.FlyingAbility;
-import mage.cards.Card;
-import mage.cards.CardImpl;
-import mage.cards.CardSetInfo;
+import mage.cards.*;
 import mage.constants.*;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.watchers.common.CardsAmountDrawnThisTurnWatcher;
@@ -48,7 +45,7 @@ public final class GodEternalKefnet extends CardImpl {
         this.addAbility(new GodEternalDiesTriggeredAbility());
     }
 
-    public GodEternalKefnet(final GodEternalKefnet card) {
+    private GodEternalKefnet(final GodEternalKefnet card) {
         super(card);
     }
 
@@ -93,13 +90,23 @@ class GodEternalKefnetDrawCardReplacementEffect extends ReplacementEffectImpl {
         you.setTopCardRevealed(true);
 
         // cast copy
-        if (topCard.isInstantOrSorcery() && you.chooseUse(outcome, "Would you like to copy " + topCard.getName()
-                + " and cast it {2} less?", source, game)) {
+        if (topCard.isInstantOrSorcery()
+                && you.chooseUse(outcome, "Would you like to copy " + topCard.getName() + " and cast it for {2} less?", source, game)) {
             Card blueprint = topCard.copy();
-            blueprint.addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+            if (blueprint instanceof SplitCard) {
+                ((SplitCard) blueprint).getLeftHalfCard().addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+                ((SplitCard) blueprint).getRightHalfCard().addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+            } else if (blueprint instanceof ModalDoubleFacesCard) {
+                ((ModalDoubleFacesCard) blueprint).getLeftHalfCard().addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+                ((ModalDoubleFacesCard) blueprint).getRightHalfCard().addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+            } else {
+                blueprint.addAbility(new SimpleStaticAbility(Zone.ALL, new SpellCostReductionSourceEffect(2)));
+            }
             Card copiedCard = game.copyCard(blueprint, source, source.getControllerId());
-            you.moveCardToHandWithInfo(copiedCard, source.getSourceId(), game, true); // The copy is created in and cast from your hand.
-            you.cast(copiedCard.getSpellAbility(), game, false, new MageObjectReference(source.getSourceObject(game), game));
+            you.moveCardToHandWithInfo(copiedCard, source, game, true); // The copy is created in and cast from your hand. (2019-05-03)
+            game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), Boolean.TRUE);
+            you.cast(you.chooseAbilityForCast(copiedCard, game, false), game, false, new ApprovingObject(source, game));
+            game.getState().setValue("PlayFromNotOwnHandZone" + copiedCard.getId(), null);
         }
 
         // draw (return false for default draw)
@@ -108,7 +115,7 @@ class GodEternalKefnetDrawCardReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DRAW_CARD;
+        return event.getType() == GameEvent.EventType.DRAW_CARD;
     }
 
     String getAppliedMark(Game game, Ability source) {
@@ -154,4 +161,3 @@ class GodEternalKefnetDrawCardReplacementEffect extends ReplacementEffectImpl {
     }
 
 }
-

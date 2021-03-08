@@ -29,7 +29,7 @@ public final class HonorablePassage extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public HonorablePassage(final HonorablePassage card) {
+    private HonorablePassage(final HonorablePassage card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class HonorablePassageEffect extends PreventNextDamageFromChosenSourceToTargetEf
                 if (sourceControllerId != null) {
                     Player sourceController = game.getPlayer(sourceControllerId);
                     if (sourceController != null) {
-                        sourceController.damage(damage, source.getSourceId(), game);
+                        sourceController.damage(damage, source.getSourceId(), source, game);
                     }
                 }
             }

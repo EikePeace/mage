@@ -42,7 +42,7 @@ public final class AlhammarretHighArbiter extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new EntersBattlefieldEffect(new AlhammarretHighArbiterEffect(), "")));
     }
 
-    public AlhammarretHighArbiter(final AlhammarretHighArbiter card) {
+    private AlhammarretHighArbiter(final AlhammarretHighArbiter card) {
         super(card);
     }
 
@@ -147,7 +147,7 @@ class AlhammarretHighArbiterCantCastEffect extends ContinuousRuleModifyingEffect
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL_LATE;
+        return event.getType() == GameEvent.EventType.CAST_SPELL_LATE;
     }
 
     @Override

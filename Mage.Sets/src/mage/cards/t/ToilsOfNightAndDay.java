@@ -31,7 +31,7 @@ public final class ToilsOfNightAndDay extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPermanent(0, 2, new FilterPermanent(), false));
     }
 
-    public ToilsOfNightAndDay(final ToilsOfNightAndDay card) {
+    private ToilsOfNightAndDay(final ToilsOfNightAndDay card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ public final class ToilsOfNightAndDay extends CardImpl {
                     Permanent permanent = game.getPermanent(targetId);
                     if (permanent != null) {
                         if (player.chooseUse(Outcome.Tap, "Tap " + permanent.getName() + '?', source, game)) {
-                            permanent.tap(game);
+                            permanent.tap(source, game);
                         } else if (player.chooseUse(Outcome.Untap, "Untap " + permanent.getName() + '?', source, game)) {
                             permanent.untap(game);
                         }

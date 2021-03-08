@@ -8,9 +8,9 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterImpl;
 import mage.filter.FilterInPlay;
-import mage.filter.predicate.mageobject.FromSetPredicate;
+import mage.filter.predicate.other.FromSetPredicate;
 import mage.game.Game;
-import mage.game.events.GameEvent;
+import mage.game.events.CopiedStackObjectEvent;
 import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.target.Target;
@@ -80,8 +80,9 @@ public abstract class CopySpellForEachItCouldTargetEffect<T extends MageItem> ex
                 return false;
             }
 
-            // collect objects that can be targeted
-            Spell copy = spell.copySpell(source.getControllerId());
+            // TODO: add support if multiple copies? See Twinning Staff
+            // generate copies for each possible target, but do not put it to stack (must choose targets in custom order later)
+            Spell copy = spell.copySpell(game, source, source.getControllerId());
             modifyCopy(copy, game, source);
             Target sampleTarget = targetsToBeChanged.iterator().next().getTarget(copy);
             sampleTarget.setNotTarget(true);
@@ -93,7 +94,8 @@ public abstract class CopySpellForEachItCouldTargetEffect<T extends MageItem> ex
                     obj = game.getPlayer(objId);
                 }
                 if (obj != null) {
-                    copy = spell.copySpell(source.getControllerId());
+                    // TODO: add support if multiple copies? See Twinning Staff
+                    copy = spell.copySpell(game, source, source.getControllerId());
                     try {
                         modifyCopy(copy, (T) obj, game, source);
                         if (!filter.match((T) obj, source.getSourceId(), actingPlayer.getId(), game)) {
@@ -135,37 +137,43 @@ public abstract class CopySpellForEachItCouldTargetEffect<T extends MageItem> ex
                 }
             }
 
-            // allow the copies' controller to choose the order that they go on the stack
+            // allows controller of the copies to choose spells order on stack (by using targeting GUI)
             for (Player player : game.getPlayers().values()) {
                 if (playerTargetCopyMap.containsKey(player.getId())) {
                     Map<UUID, Spell> targetCopyMap = playerTargetCopyMap.get(player.getId());
                     if (targetCopyMap != null) {
                         while (!targetCopyMap.isEmpty()) {
+                            // all checks must be make for new copied spell, not original (controller can be changed)
+                            Spell spellSample = targetCopyMap.values().stream().findFirst().get();
                             FilterInPlay<T> setFilter = filter.copy();
-                            setFilter.add(new FromSetPredicate(targetCopyMap.keySet()));
+                            setFilter.add(new FromSetPredicate(targetCopyMap.keySet())); // allows only unselected targets
                             Target target = new TargetWithAdditionalFilter(sampleTarget, setFilter);
                             target.setNotTarget(false); // it is targeted, not chosen
-                            target.setMinNumberOfTargets(0);
+                            target.setMinNumberOfTargets(0); // if not selected then it uses first target (see below), same for AI
                             target.setMaxNumberOfTargets(1);
-                            target.setTargetName(filter.getMessage() + " that " + spell.getLogName()
+                            target.setTargetName(filter.getMessage() + " that " + spellSample.getLogName()
                                     + " could target (" + targetCopyMap.size() + " remaining)");
-                            // shortcut if there's only one possible target remaining
+
                             if (targetCopyMap.size() > 1
-                                    && target.canChoose(spell.getId(), player.getId(), game)) {
+                                    && target.canChoose(spellSample.getId(), player.getId(), game)) {
                                 // The original "source" is not applicable here due to the spell being a copy.  ie: Zada, Hedron Grinder
-                                player.chooseTarget(Outcome.Neutral, target, spell.getSpellAbility(), game); // not source, but the spell that is copied
+                                Outcome outcome = spellSample.getSpellAbility().getAllEffects().getOutcome(spellSample.getSpellAbility());
+                                player.chooseTarget(outcome, target, spellSample.getSpellAbility(), game); // not source, but the spell that is copied
                             }
+
                             Collection<UUID> chosenIds = target.getTargets();
                             if (chosenIds.isEmpty()) {
+                                // uses first target on cancel/non-selected
                                 chosenIds = targetCopyMap.keySet();
                             }
                             List<UUID> toDelete = new ArrayList<>();
                             for (UUID chosenId : chosenIds) {
                                 Spell chosenCopy = targetCopyMap.get(chosenId);
                                 if (chosenCopy != null) {
+                                    // COPY DONE, can put to stack
+                                    chosenCopy.setZone(Zone.STACK, game);
                                     game.getStack().push(chosenCopy);
-                                    game.fireEvent(new GameEvent(GameEvent.EventType.COPIED_STACKOBJECT,
-                                            chosenCopy.getId(), spell.getId(), source.getControllerId()));
+                                    game.fireEvent(new CopiedStackObjectEvent(spell, chosenCopy, source.getControllerId()));
                                     toDelete.add(chosenId);
                                     madeACopy = true;
                                 }
@@ -450,6 +458,6 @@ class TargetWithAdditionalFilter<T extends MageItem> extends TargetImpl {
                 }
             }
         }
-        return sb.toString();
+        return sb.toString().trim();
     }
 }

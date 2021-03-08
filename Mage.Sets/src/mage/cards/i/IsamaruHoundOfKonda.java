@@ -19,13 +19,13 @@ public final class IsamaruHoundOfKonda extends CardImpl {
     public IsamaruHoundOfKonda(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{W}");
         this.addSuperType(SuperType.LEGENDARY);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
     }
 
-    public IsamaruHoundOfKonda(final IsamaruHoundOfKonda card) {
+    private IsamaruHoundOfKonda(final IsamaruHoundOfKonda card) {
         super(card);
     }
 

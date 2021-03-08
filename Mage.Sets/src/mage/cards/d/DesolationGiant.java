@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class DesolationGiant extends CardImpl {
             new DestroyAllEffect(filter2), KickedCondition.instance, "destroy all other creatures you control. If it was kicked, destroy all other creatures instead.")));
 }
 
-    public DesolationGiant(final DesolationGiant card) {
+    private DesolationGiant(final DesolationGiant card) {
         super(card);
     }
 

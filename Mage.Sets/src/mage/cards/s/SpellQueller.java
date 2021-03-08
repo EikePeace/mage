@@ -3,9 +3,9 @@ package mage.cards.s;
 
 import java.util.Set;
 import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
 import mage.MageObject;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.common.LeavesBattlefieldTriggeredAbility;
@@ -63,7 +63,7 @@ public final class SpellQueller extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public SpellQueller(final SpellQueller card) {
+    private SpellQueller(final SpellQueller card) {
         super(card);
     }
 
@@ -141,7 +141,7 @@ class SpellQuellerLeavesEffect extends OneShotEffect {
                         Player cardOwner = game.getPlayer(card.getOwnerId());
                         if (cardOwner != null) {
                             if (cardOwner.chooseUse(Outcome.PlayForFree, "Cast " + card.getLogName() + " without paying cost?", source, game)) {
-                                cardOwner.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                                cardOwner.cast(card.getSpellAbility(), game, true, new ApprovingObject(source, game));
                             }
                         }
                     }

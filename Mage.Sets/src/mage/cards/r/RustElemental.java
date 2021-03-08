@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledArtifactPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
@@ -37,7 +37,7 @@ public final class RustElemental extends CardImpl {
         this.addAbility(new OnEventTriggeredAbility(GameEvent.EventType.UPKEEP_STEP_PRE, "beginning of your upkeep", new RustElementalEffect(), false));
     }
 
-    public RustElemental(final RustElemental card) {
+    private RustElemental(final RustElemental card) {
         super(card);
     }
 
@@ -83,11 +83,11 @@ class RustElementalEffect extends OneShotEffect {
                     Permanent artifactSacrifice = game.getPermanent(target.getFirstTarget());
                     if (artifactSacrifice != null) {
                         // sacrifice the chosen artifact
-                        artifactSacrifice.sacrifice(source.getSourceId(), game);
+                        artifactSacrifice.sacrifice(source, game);
                     }
                 } else {
-                    sourceObject.tap(game);
-                    controller.damage(4, source.getSourceId(), game);
+                    sourceObject.tap(source, game);
+                    controller.damage(4, source.getSourceId(), source, game);
                 }
             }
             return true;

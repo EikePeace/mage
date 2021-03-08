@@ -32,7 +32,7 @@ public final class ManaEchoes extends CardImpl {
                 new ManaEchoesEffect(), new FilterCreaturePermanent("a creature"), true, SetTargetPointer.PERMANENT, ""));
     }
 
-    public ManaEchoes(final ManaEchoes card) {
+    private ManaEchoes(final ManaEchoes card) {
         super(card);
     }
 
@@ -61,11 +61,11 @@ class ManaEchoesEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
-        Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (controller != null && permanent != null) {
             int foundCreatures = 0;
             for (Permanent perm : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
-                if (permanent.shareSubtypes(perm, game)) {
+                if (permanent.shareCreatureTypes(game, perm)) {
                     foundCreatures++;
                 }
             }

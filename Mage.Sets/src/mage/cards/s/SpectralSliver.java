@@ -32,11 +32,11 @@ public final class SpectralSliver extends CardImpl {
         this.toughness = new MageInt(2);
 
         // All Sliver creatures have "{2}: This creature gets +1/+1 until end of turn."
-        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 1, Duration.EndOfTurn), new ManaCostsImpl("{2}"));
+        Ability ability = new SimpleActivatedAbility(Zone.BATTLEFIELD, new BoostSourceEffect(1, 1, Duration.EndOfTurn).setText("this creature gets +1/+1 until end of turn"), new ManaCostsImpl("{2}"));
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(ability, Duration.WhileOnBattlefield, StaticFilters.FILTER_PERMANENT_CREATURE_SLIVERS)));
     }
 
-    public SpectralSliver(final SpectralSliver card) {
+    private SpectralSliver(final SpectralSliver card) {
         super(card);
     }
 

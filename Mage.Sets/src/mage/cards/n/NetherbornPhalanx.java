@@ -36,7 +36,7 @@ public final class NetherbornPhalanx extends CardImpl {
         this.addAbility(new TransmuteAbility("{1}{B}{B}"));
     }
 
-    public NetherbornPhalanx(final NetherbornPhalanx card) {
+    private NetherbornPhalanx(final NetherbornPhalanx card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class NetherbornPhalanxEffect extends OneShotEffect {
                 if (count > 0) {
                     Player opponent = game.getPlayer(playerId);
                     if (opponent != null) {
-                        opponent.loseLife(count, game, false);
+                        opponent.loseLife(count, game, source, false);
                         return true;
                     }
                 }

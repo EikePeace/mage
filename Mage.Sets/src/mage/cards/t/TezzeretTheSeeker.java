@@ -47,7 +47,7 @@ public final class TezzeretTheSeeker extends CardImpl {
         this.addAbility(new LoyaltyAbility(new TezzeretTheSeekerEffect3(), -5));
     }
 
-    public TezzeretTheSeeker(final TezzeretTheSeeker card) {
+    private TezzeretTheSeeker(final TezzeretTheSeeker card) {
         super(card);
     }
 
@@ -134,7 +134,6 @@ class TezzeretTheSeekerEffect3 extends ContinuousEffectImpl {
                             if (!permanent.isCreature()) {
                                 permanent.addCardType(CardType.CREATURE);
                             }
-                            permanent.getSubtype(game).clear();
                         }
                         break;
                     case PTChangingEffects_7:

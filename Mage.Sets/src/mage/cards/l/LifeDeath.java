@@ -2,7 +2,6 @@
 package mage.cards.l;
 
 import java.util.UUID;
-import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.BecomesCreatureAllEffect;
@@ -17,8 +16,6 @@ import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.game.Game;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.players.Player;
 import mage.target.Target;
@@ -47,7 +44,7 @@ public final class LifeDeath extends SplitCard {
 
     }
 
-    public LifeDeath(final LifeDeath card) {
+    private LifeDeath(final LifeDeath card) {
         super(card);
     }
 
@@ -82,7 +79,7 @@ class DeathEffect extends OneShotEffect {
             if (game.getState().getZone(creatureCard.getId()) == Zone.GRAVEYARD) {
                 controller.moveCards(creatureCard, Zone.BATTLEFIELD, source, game);
             }
-            controller.loseLife(creatureCard.getConvertedManaCost(), game, false);
+            controller.loseLife(creatureCard.getConvertedManaCost(), game, source, false);
             return true;
         }
         return false;

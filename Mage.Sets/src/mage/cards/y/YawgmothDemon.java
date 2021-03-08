@@ -37,7 +37,7 @@ public final class YawgmothDemon extends CardImpl {
         this.addAbility(ability);
     }
 
-    public YawgmothDemon(final YawgmothDemon card) {
+    private YawgmothDemon(final YawgmothDemon card) {
         super(card);
     }
 
@@ -77,8 +77,8 @@ class YawgmothDemonEffect extends OneShotEffect {
             if (!artifactSacrificed) {
                 Permanent sourceObject = (Permanent) source.getSourceObjectIfItStillExists(game);
                 if (sourceObject != null) {
-                    sourceObject.tap(game);
-                    controller.damage(2, source.getSourceId(), game);
+                    sourceObject.tap(source, game);
+                    controller.damage(2, source.getSourceId(), source, game);
                 }
             }
             return true;

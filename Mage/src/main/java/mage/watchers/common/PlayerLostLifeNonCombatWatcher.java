@@ -8,7 +8,6 @@ import mage.watchers.Watcher;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 /*
@@ -28,6 +27,7 @@ public class PlayerLostLifeNonCombatWatcher extends Watcher {
 
     @Override
     public void watch(GameEvent event, Game game) {
+        // non combat lose life
         if (event.getType() == GameEvent.EventType.LOST_LIFE && !event.getFlag()) {
             UUID playerId = event.getPlayerId();
             if (playerId != null) {

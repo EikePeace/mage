@@ -36,7 +36,7 @@ public final class Quicken extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(1));
     }
 
-    public Quicken(final Quicken card) {
+    private Quicken(final Quicken card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class QuickenAsThoughEffect extends AsThoughEffectImpl {
 
     public QuickenAsThoughEffect() {
         super(AsThoughEffectType.CAST_AS_INSTANT, Duration.EndOfTurn, Outcome.Benefit);
-        staticText = "The next sorcery card you cast this turn can be cast as though it had flash";
+        staticText = "The next sorcery spell you cast this turn can be cast as though it had flash";
     }
 
     public QuickenAsThoughEffect(final QuickenAsThoughEffect effect) {

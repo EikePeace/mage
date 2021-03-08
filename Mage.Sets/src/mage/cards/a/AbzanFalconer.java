@@ -13,7 +13,6 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -25,7 +24,7 @@ public final class AbzanFalconer extends CardImpl {
     static {
         filter.add(CardType.CREATURE.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
     }
 
     public AbzanFalconer(UUID ownerId, CardSetInfo setInfo) {
@@ -43,7 +42,7 @@ public final class AbzanFalconer extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAllEffect(FlyingAbility.getInstance(), Duration.WhileOnBattlefield, filter, "Each creature you control with a +1/+1 counter on it has flying")));
     }
 
-    public AbzanFalconer(final AbzanFalconer card) {
+    private AbzanFalconer(final AbzanFalconer card) {
         super(card);
     }
 

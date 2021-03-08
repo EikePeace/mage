@@ -70,8 +70,8 @@ class KrenkoTinStreetKingpinEffect extends OneShotEffect {
             return false;
         }
         new AddCountersSourceEffect(CounterType.P1P1.createInstance()).apply(game, source);
-        game.applyEffects();
+        game.getState().processAction(game);
         int xValue = permanent.getPower().getValue();
-        return new CreateTokenEffect(new GoblinToken("WAR"), xValue).apply(game, source);
+        return new CreateTokenEffect(new GoblinToken(), xValue).apply(game, source);
     }
 }

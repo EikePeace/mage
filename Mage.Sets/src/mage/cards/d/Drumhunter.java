@@ -39,7 +39,7 @@ public final class Drumhunter extends CardImpl {
         this.addAbility(new ColorlessManaAbility());
     }
 
-    public Drumhunter(final Drumhunter card) {
+    private Drumhunter(final Drumhunter card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class DrumHunterTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.END_TURN_STEP_PRE;
+        return event.getType() == GameEvent.EventType.END_TURN_STEP_PRE;
     }
 
     @Override

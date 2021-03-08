@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.Target;
 import mage.target.TargetPermanent;
 
@@ -47,7 +47,7 @@ public final class FiendHunter extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public FiendHunter(final FiendHunter card) {
+    private FiendHunter(final FiendHunter card) {
         super(card);
     }
 

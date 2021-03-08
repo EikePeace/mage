@@ -74,8 +74,8 @@ public class LookLibraryTopCardTargetPlayerEffect extends OneShotEffect {
             player.lookAtCards(sourceObject.getIdName(), cards, game);
             if (putToGraveyard) {
                 for (Card card : cards.getCards(game)) {
-                    if (player.chooseUse(outcome, "Do you wish to put card into the player's graveyard?", source, game)) {
-                        player.moveCardToGraveyardWithInfo(card, source.getSourceId(), game, Zone.LIBRARY);
+                    if (player.chooseUse(outcome, "Put that card into its owner's graveyard?", source, game)) {
+                        player.moveCardToGraveyardWithInfo(card, source, game, Zone.LIBRARY);
                     } else {
                         game.informPlayers(player.getLogName() + " puts the card back on top of the library.");
                     }
@@ -107,7 +107,7 @@ public class LookLibraryTopCardTargetPlayerEffect extends OneShotEffect {
             } else {
                 sb.append("that card");
             }
-            sb.append(" into that player's graveyard");
+            sb.append(" into their graveyard");
         }
         if (mayShuffleAfter) {
             sb.append(". You may then have that player shuffle that library");

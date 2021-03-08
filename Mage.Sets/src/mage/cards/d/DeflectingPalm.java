@@ -30,7 +30,7 @@ public final class DeflectingPalm extends CardImpl {
         this.getSpellAbility().addEffect(new DeflectingPalmEffect());
     }
 
-    public DeflectingPalm(final DeflectingPalm card) {
+    private DeflectingPalm(final DeflectingPalm card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class DeflectingPalmEffect extends PreventionEffectImpl {
             if (objectControllerId != null) {
                 Player objectController = game.getPlayer(objectControllerId);
                 if (objectController != null) {
-                    objectController.damage(preventionData.getPreventedDamage(), source.getSourceId(), game);
+                    objectController.damage(preventionData.getPreventedDamage(), source.getSourceId(), source, game);
                 }
             }
         }

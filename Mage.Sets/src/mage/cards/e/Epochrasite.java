@@ -5,10 +5,10 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.condition.InvertCondition;
-import mage.abilities.condition.common.CastFromHandSourceCondition;
+import mage.abilities.condition.common.CastFromHandSourcePermanentCondition;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.GainSuspendEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -41,15 +41,15 @@ public final class Epochrasite extends CardImpl {
         // Epochrasite enters the battlefield with three +1/+1 counters on it if you didn't cast it from your hand.
         this.addAbility(new EntersBattlefieldAbility(
                     new AddCountersSourceEffect(CounterType.P1P1.createInstance(3)),
-                    new InvertCondition(CastFromHandSourceCondition.instance),
+                    new InvertCondition(CastFromHandSourcePermanentCondition.instance),
                     "{this} enters the battlefield with three +1/+1 counters on it if you didn't cast it from your hand",""), 
                 new CastFromHandWatcher());
 
         // When Epochrasite dies, exile it with three time counters on it and it gains suspend.
-        this.addAbility(new DiesTriggeredAbility(new EpochrasiteEffect()));
+        this.addAbility(new DiesSourceTriggeredAbility(new EpochrasiteEffect()));
     }
 
-    public Epochrasite(final Epochrasite card) {
+    private Epochrasite(final Epochrasite card) {
         super(card);
     }
 
@@ -82,8 +82,8 @@ class EpochrasiteEffect extends OneShotEffect {
         if (controller != null && card != null) {
             if (game.getState().getZone(card.getId()) == Zone.GRAVEYARD) {
                 UUID exileId = SuspendAbility.getSuspendExileId(controller.getId(), game);
-                controller.moveCardToExileWithInfo(card, exileId, "Suspended cards of " + controller.getName(), source.getSourceId(), game, Zone.GRAVEYARD, true);
-                card.addCounters(CounterType.TIME.createInstance(3), source, game);
+                controller.moveCardToExileWithInfo(card, exileId, "Suspended cards of " + controller.getName(), source, game, Zone.GRAVEYARD, true);
+                card.addCounters(CounterType.TIME.createInstance(3), source.getControllerId(), source, game);
                 game.addEffect(new GainSuspendEffect(new MageObjectReference(card, game)), source);
             }
             return true;

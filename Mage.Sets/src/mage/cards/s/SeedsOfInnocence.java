@@ -27,7 +27,7 @@ public final class SeedsOfInnocence extends CardImpl {
 
     }
 
-    public SeedsOfInnocence(final SeedsOfInnocence card) {
+    private SeedsOfInnocence(final SeedsOfInnocence card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class SeedsOfInnocenceEffect extends OneShotEffect {
             for (Permanent artifact : game.getState().getBattlefield().getActivePermanents(new FilterArtifactPermanent(), controller.getId(), game)) {
                 Player artifactController = game.getPlayer(artifact.getControllerId());
                 int cmc = artifact.getConvertedManaCost();
-                if (artifact.destroy(source.getSourceId(), game, true)) {
+                if (artifact.destroy(source, game, true)) {
                     if(artifactController != null) {
                         artifactController.gainLife(cmc, game, source);
                     }

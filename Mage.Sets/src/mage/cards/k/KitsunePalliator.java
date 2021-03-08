@@ -36,7 +36,7 @@ public final class KitsunePalliator extends CardImpl {
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new KitsunePalliatorEffect(), new TapSourceCost()));
     }
 
-    public KitsunePalliator(final KitsunePalliator card) {
+    private KitsunePalliator(final KitsunePalliator card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class KitsunePalliatorEffect extends OneShotEffect {
 
         List<Permanent> permanents = game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
         }
         for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {

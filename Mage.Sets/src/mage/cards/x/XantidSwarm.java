@@ -41,7 +41,7 @@ public final class XantidSwarm extends CardImpl {
         this.addAbility(ability);
     }
 
-    public XantidSwarm(final XantidSwarm card) {
+    private XantidSwarm(final XantidSwarm card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class XantidSwarmTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

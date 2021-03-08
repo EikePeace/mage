@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.FilterStackObject;
 import mage.filter.common.FilterControlledLandPermanent;
-import mage.filter.predicate.other.TargetsPermanentPredicate;
+import mage.filter.predicate.mageobject.TargetsPermanentPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.game.stack.StackObject;
@@ -40,7 +40,7 @@ public final class TeferisResponse extends CardImpl {
         this.getSpellAbility().addEffect(new DrawCardSourceControllerEffect(2));
     }
 
-    public TeferisResponse(final TeferisResponse card) {
+    private TeferisResponse(final TeferisResponse card) {
         super(card);
     }
 
@@ -70,12 +70,12 @@ class TeferisResponseEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         UUID targetId = source.getFirstTarget();
         StackObject stackObject = game.getStack().getStackObject(targetId);
-        if (targetId != null && game.getStack().counter(targetId, source.getSourceId(), game)) {
+        if (targetId != null && game.getStack().counter(targetId, source, game)) {
             UUID permanentId = stackObject.getSourceId();
             if (permanentId != null) {
                 Permanent usedPermanent = game.getPermanent(permanentId);
                 if (usedPermanent != null) {
-                    usedPermanent.destroy(source.getSourceId(), game, false);
+                    usedPermanent.destroy(source, game, false);
                 }
             }
             return true;

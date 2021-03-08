@@ -26,7 +26,7 @@ public final class BloodHound extends CardImpl {
     public BloodHound(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{R}");
 
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
 
@@ -73,7 +73,9 @@ class BloodHoundTriggeredAbility extends TriggeredAbilityImpl {
     public boolean checkTrigger(GameEvent event, Game game) {
         if (event.getTargetId().equals(this.getControllerId()) && event.getAmount() > 0) {
             this.getEffects().clear();
-            this.addEffect(new AddCountersSourceEffect(CounterType.P1P1.createInstance(event.getAmount())));
+            if (event.getAmount() > 0) {
+                this.addEffect(new AddCountersSourceEffect(CounterType.P1P1.createInstance(event.getAmount())));
+            }
             return true;
         }
         return false;

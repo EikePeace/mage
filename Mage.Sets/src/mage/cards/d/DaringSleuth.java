@@ -36,7 +36,7 @@ public final class DaringSleuth extends CardImpl {
         this.addAbility(new DaringSleuthTriggeredAbility());
     }
 
-    public DaringSleuth(final DaringSleuth card) {
+    private DaringSleuth(final DaringSleuth card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class DaringSleuthTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SACRIFICED_PERMANENT;
+        return event.getType() == GameEvent.EventType.SACRIFICED_PERMANENT;
     }
 
     @Override

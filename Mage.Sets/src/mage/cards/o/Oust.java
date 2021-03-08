@@ -26,7 +26,7 @@ public final class Oust extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public Oust(final Oust card) {
+    private Oust(final Oust card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class OustEffect extends OneShotEffect {
             if (owner == null || controller == null) {
                 return false;
             }
-            owner.putCardOnTopXOfLibrary(permanent, game, source, 2);
+            owner.putCardOnTopXOfLibrary(permanent, game, source, 2, true);
             controller.gainLife(3, game, source);
         }
         return true;

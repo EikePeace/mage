@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -47,7 +47,7 @@ public final class BalthorTheStout extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BalthorTheStout(final BalthorTheStout card) {
+    private BalthorTheStout(final BalthorTheStout card) {
         super(card);
     }
 

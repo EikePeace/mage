@@ -34,7 +34,7 @@ public final class UnmooredEgo extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public UnmooredEgo(final UnmooredEgo card) {
+    private UnmooredEgo(final UnmooredEgo card) {
         super(card);
     }
 
@@ -111,7 +111,7 @@ class UnmooredEgoEffect extends OneShotEffect {
 
                 if (numberOfCardsExiledFromHand > 0) {
                     game.getState().applyEffects(game);
-                    targetPlayer.drawCards(numberOfCardsExiledFromHand, game);
+                    targetPlayer.drawCards(numberOfCardsExiledFromHand, source, game);
                 }
             }
 

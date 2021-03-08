@@ -15,7 +15,7 @@ import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.PowerPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class GarruksPackleader extends CardImpl {
                 Zone.BATTLEFIELD, new DrawCardSourceControllerEffect(1), filter, true));
     }
 
-    public GarruksPackleader(final GarruksPackleader card) {
+    private GarruksPackleader(final GarruksPackleader card) {
         super(card);
     }
 

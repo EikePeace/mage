@@ -29,7 +29,7 @@ public final class GravenCairns extends CardImpl {
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 0, 0, 1, 0, 0, 0), new ManaCostsImpl("{B/R}"));
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 1, 0, 0, 0, 0), new ManaCostsImpl("{B/R}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 
@@ -38,7 +38,7 @@ public final class GravenCairns extends CardImpl {
         this.addAbility(ability);          
     }
 
-    public GravenCairns(final GravenCairns card) {
+    private GravenCairns(final GravenCairns card) {
         super(card);
     }
 

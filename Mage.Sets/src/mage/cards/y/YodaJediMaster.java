@@ -22,7 +22,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.command.emblems.YodaEmblem;
 import mage.game.permanent.Permanent;
@@ -65,7 +65,7 @@ public final class YodaJediMaster extends CardImpl {
 
     }
 
-    public YodaJediMaster(final YodaJediMaster card) {
+    private YodaJediMaster(final YodaJediMaster card) {
         super(card);
     }
 
@@ -91,7 +91,7 @@ class YodaJediMasterEffect extends OneShotEffect {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
         Permanent sourcePermanent = game.getPermanentOrLKIBattlefield(source.getSourceId());
         if (permanent != null && sourcePermanent != null) {
-            if (permanent.moveToExile(source.getSourceId(), sourcePermanent.getName(), source.getSourceId(), game)) {
+            if (permanent.moveToExile(source.getSourceId(), sourcePermanent.getName(), source, game)) {
                 //create delayed triggered ability
                 Effect effect = new ReturnToBattlefieldUnderYourControlTargetEffect();
                 effect.setText("Return that card to the battlefield under your control at the beginning of your next end step");

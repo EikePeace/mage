@@ -3,7 +3,7 @@ package mage.cards.c;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.choices.ChoiceColor;
@@ -36,7 +36,7 @@ public final class CarpetOfFlowers extends CardImpl {
         this.addAbility(new CarpetOfFlowersTriggeredAbility());
     }
 
-    public CarpetOfFlowers(final CarpetOfFlowers card) {
+    private CarpetOfFlowers(final CarpetOfFlowers card) {
         super(card);
     }
 
@@ -64,8 +64,8 @@ class CarpetOfFlowersTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.PRECOMBAT_MAIN_PHASE_PRE
-                || event.getType() == EventType.POSTCOMBAT_MAIN_PHASE_PRE;
+        return event.getType() == GameEvent.EventType.PRECOMBAT_MAIN_PHASE_PRE
+                || event.getType() == GameEvent.EventType.POSTCOMBAT_MAIN_PHASE_PRE;
     }
 
     @Override

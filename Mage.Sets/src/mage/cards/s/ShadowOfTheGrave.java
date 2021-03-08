@@ -29,7 +29,7 @@ public final class ShadowOfTheGrave extends CardImpl {
 
     }
 
-    public ShadowOfTheGrave(final ShadowOfTheGrave card) {
+    private ShadowOfTheGrave(final ShadowOfTheGrave card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class ShadowOfTheGraveEffect extends OneShotEffect {
             for (Card card : watcher.getCardsCycledOrDiscardedThisTurn(controller.getId()).getCards(game)) {
                 if (game.getState().getZone(card.getId()) == Zone.GRAVEYARD //must come from their graveyard
                         && card.isOwnedBy(controller.getId())) {  //confirm ownership, but it should not be possible to get not ownwd cards here
-                    controller.moveCardToHandWithInfo(card, source.getId(), game, true);
+                    controller.moveCardToHandWithInfo(card, source, game, true);
                 }
             }
             return true;

@@ -32,7 +32,7 @@ public final class Recall extends CardImpl {
         this.getSpellAbility().addEffect(ExileSpellEffect.getInstance());
     }
 
-    public Recall(final Recall card) {
+    private Recall(final Recall card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class RecallEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             // Discard X cards
-            Cards cardsDiscarded = controller.discard(source.getManaCostsToPay().getX(), false, source, game);
+            Cards cardsDiscarded = controller.discard(source.getManaCostsToPay().getX(), false, false, source, game);
             if (!cardsDiscarded.isEmpty()) {
                 // then return a card from your graveyard to your hand for each card discarded this way
                 TargetCardInYourGraveyard target = new TargetCardInYourGraveyard(cardsDiscarded.size(), new FilterCard());

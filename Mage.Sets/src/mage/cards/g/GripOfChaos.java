@@ -1,4 +1,3 @@
-
 package mage.cards.g;
 
 import java.util.Iterator;
@@ -35,7 +34,7 @@ public final class GripOfChaos extends CardImpl {
         this.addAbility(new GripOfChaosTriggeredAbility());
     }
 
-    public GripOfChaos(final GripOfChaos card) {
+    private GripOfChaos(final GripOfChaos card) {
         super(card);
     }
 
@@ -57,10 +56,10 @@ class GripOfChaosTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST
-                || event.getType() == EventType.ACTIVATED_ABILITY
-                || event.getType() == EventType.TRIGGERED_ABILITY
-                || event.getType() == EventType.COPIED_STACKOBJECT;
+        return event.getType() == GameEvent.EventType.SPELL_CAST
+                || event.getType() == GameEvent.EventType.ACTIVATED_ABILITY
+                || event.getType() == GameEvent.EventType.TRIGGERED_ABILITY
+                || event.getType() == GameEvent.EventType.COPIED_STACKOBJECT;
     }
 
     @Override
@@ -126,7 +125,7 @@ class GripOfChaosEffect extends OneShotEffect {
                 Mode mode = stackObject.getStackAbility().getModes().get(modeId);
                 for (Target target : mode.getTargets()) {
                     UUID oldTargetId = target.getFirstTarget();
-                    Set<UUID> possibleTargets = target.possibleTargets(stackObject.getId(), stackObject.getControllerId(), game);
+                    Set<UUID> possibleTargets = target.possibleTargets(stackObject.getSourceId(), stackObject.getControllerId(), game);
                     if (possibleTargets.contains(stackObject.getId())) { // The stackObject can't target itself
                         possibleTargets.remove(stackObject.getId());
                     }

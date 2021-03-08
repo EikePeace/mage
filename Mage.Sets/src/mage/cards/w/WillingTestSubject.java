@@ -6,7 +6,6 @@ import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.effects.common.RollDiceEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
@@ -46,7 +45,7 @@ public final class WillingTestSubject extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WillingTestSubject(final WillingTestSubject card) {
+    private WillingTestSubject(final WillingTestSubject card) {
         super(card);
     }
 

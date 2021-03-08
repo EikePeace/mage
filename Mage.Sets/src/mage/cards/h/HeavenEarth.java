@@ -5,7 +5,6 @@ import mage.abilities.dynamicvalue.common.ManacostVariableValue;
 import mage.abilities.effects.common.DamageAllEffect;
 import mage.abilities.keyword.AftermathAbility;
 import mage.abilities.keyword.FlyingAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -42,7 +41,7 @@ public final class HeavenEarth extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(new DamageAllEffect(ManacostVariableValue.instance, filterWithouFlying));
     }
 
-    public HeavenEarth(final HeavenEarth card) {
+    private HeavenEarth(final HeavenEarth card) {
         super(card);
     }
 

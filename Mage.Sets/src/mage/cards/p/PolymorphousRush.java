@@ -1,7 +1,5 @@
-
 package mage.cards.p;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.abilityword.StriveAbility;
 import mage.abilities.effects.OneShotEffect;
@@ -17,18 +15,17 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.Target;
 import mage.target.common.TargetCreaturePermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
+
+import java.util.UUID;
 
 /**
- *
  * @author LevelX2
  */
 public final class PolymorphousRush extends CardImpl {
 
-
-
     public PolymorphousRush(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{2}{U}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{2}{U}");
 
         // Strive - Polymorphous Rush costs {1}{U} more to cast for each target beyond the first.
         this.addAbility(new StriveAbility("{1}{U}"));
@@ -39,7 +36,7 @@ public final class PolymorphousRush extends CardImpl {
 
     }
 
-    public PolymorphousRush(final PolymorphousRush card) {
+    private PolymorphousRush(final PolymorphousRush card) {
         super(card);
     }
 
@@ -78,7 +75,7 @@ class PolymorphousRushCopyEffect extends OneShotEffect {
                     for (UUID copyToId : getTargetPointer().getTargets(game, source)) {
                         Permanent copyToCreature = game.getPermanent(copyToId);
                         if (copyToCreature != null) {
-                            game.copyPermanent(Duration.EndOfTurn, copyFromCreature, copyToId, source, new EmptyApplyToPermanent());
+                            game.copyPermanent(Duration.EndOfTurn, copyFromCreature, copyToId, source, new EmptyCopyApplier());
                         }
                     }
                 }

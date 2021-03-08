@@ -26,8 +26,9 @@ public final class CommandersInsignia extends CardImpl {
 
         // Creatures you control get +1/+1 for each time you've cast your commander from the command zone this game.
         this.addAbility(new SimpleStaticAbility(new BoostControlledEffect(
-                CommandersInsigniaValue.instance, CommandersInsigniaValue.instance, Duration.WhileOnBattlefield
-        ).setText("Creatures you control get +1/+1 for each time you've cast your commander from the command zone this game.")));
+                        CommandersInsigniaValue.instance, CommandersInsigniaValue.instance, Duration.WhileOnBattlefield
+                ).setText("Creatures you control get +1/+1 for each time you've cast your commander from the command zone this game.")),
+                new CommanderPlaysCountWatcher());
     }
 
     private CommandersInsignia(final CommandersInsignia card) {
@@ -51,7 +52,7 @@ enum CommandersInsigniaValue implements DynamicValue {
             return 0;
         }
         return game
-                .getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER)
+                .getCommandersIds(player, CommanderCardType.COMMANDER_OR_OATHBREAKER, false)
                 .stream()
                 .mapToInt(watcher::getPlaysCount)
                 .sum();

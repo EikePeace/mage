@@ -1,6 +1,5 @@
 package mage.abilities.effects.common;
 
-import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
 import mage.abilities.effects.common.cost.CostModificationEffectImpl;
@@ -9,13 +8,20 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.common.FilterControlledPermanent;
 import mage.game.Game;
+import mage.util.CardUtil;
 
+/**
+ *     702.40. Affinity
+        702.40a Affinity is a static ability that functions while the spell with affinity is on the stack. 
+                “Affinity for [text]” means “This spell costs you {1} less to cast for each [text] you control.”
+        702.40b If a spell has multiple instances of affinity, each of them applies. 
+ */
 public class AffinityEffect extends CostModificationEffectImpl {
-    
+
     private final FilterControlledPermanent filter;
 
     public AffinityEffect(FilterControlledPermanent affinityFilter) {
-        super(Duration.Custom, Outcome.Benefit, CostModificationType.REDUCE_COST);
+        super(Duration.WhileOnStack, Outcome.Benefit, CostModificationType.REDUCE_COST);
         this.filter = affinityFilter;
         staticText = "Affinity for " + filter.getMessage();
     }
@@ -27,20 +33,10 @@ public class AffinityEffect extends CostModificationEffectImpl {
 
     @Override
     public boolean apply(Game game, Ability source, Ability abilityToModify) {
-        SpellAbility spellAbility = (SpellAbility)abilityToModify;
-        Mana mana = spellAbility.getManaCostsToPay().getMana();
-        if (mana.getGeneric() > 0) {
-            // the following works with Sen Triplets and in multiplayer games
-            int count = game.getBattlefield().getActivePermanents(filter, abilityToModify.getControllerId(), source.getId(), game).size();
-            int newCount = mana.getGeneric() - count;
-            if (newCount < 0) {
-                newCount = 0;
-            }
-            mana.setGeneric(newCount);
-            spellAbility.getManaCostsToPay().load(mana.toString());
-            return true;
-        }
-        return false;
+        // abilityToModify.getControllerId() works with Sen Triplets and in multiplayer games, see https://github.com/magefree/mage/issues/5931
+        int count = game.getBattlefield().getActivePermanents(filter, abilityToModify.getControllerId(), source.getId(), game).size();
+        CardUtil.reduceCost(abilityToModify, count);
+        return true;
     }
 
     @Override

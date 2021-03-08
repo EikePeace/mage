@@ -1,4 +1,3 @@
-
 package mage.client.game;
 
 import mage.client.SessionHandler;
@@ -6,7 +5,9 @@ import mage.client.components.MageTextArea;
 import mage.client.constants.Constants;
 import mage.client.dialog.PreferencesDialog;
 import mage.client.game.FeedbackPanel.FeedbackMode;
+import mage.client.util.AppUtil;
 import mage.client.util.GUISizeHelper;
+import mage.client.util.audio.AudioManager;
 import mage.constants.TurnPhase;
 
 import javax.swing.*;
@@ -14,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static mage.client.game.FeedbackPanel.FeedbackMode.QUESTION;
@@ -62,6 +64,22 @@ public class HelperPanel extends JPanel {
     private UUID gameId;
     private boolean gameNeedFeedback = false;
     private TurnPhase gameTurnPhase = null;
+
+    private Timer needFeedbackTimer;
+
+    {
+        // start timer to inform user about needed feedback (example: inform by sound play)
+        needFeedbackTimer = new Timer(100, evt -> SwingUtilities.invokeLater(() -> {
+            needFeedbackTimer.stop();
+            if (!AppUtil.isAppActive() || !AppUtil.isGameActive(this.gameId)) {
+                // sound notification
+                AudioManager.playFeedbackNeeded();
+                // tray notification (baloon + icon blinking)
+                //MageTray.instance.displayMessage("Game needs your action.");
+                //MageTray.instance.blink();
+            }
+        }));
+    }
 
     public HelperPanel() {
         initComponents();
@@ -168,13 +186,13 @@ public class HelperPanel extends JPanel {
 
         MouseListener checkPopupAdapter = new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent me) {
-                checkPopupMenu(me);
+            public void mousePressed(MouseEvent e) {
+                checkPopupMenu(e);
             }
 
             @Override
-            public void mouseReleased(MouseEvent me) {
-                checkPopupMenu(me);
+            public void mouseReleased(MouseEvent e) {
+                checkPopupMenu(e);
             }
 
         };
@@ -212,26 +230,26 @@ public class HelperPanel extends JPanel {
         dialogTextArea.addMouseListener(new MouseAdapter() {
 
             @Override
-            public void mouseEntered(MouseEvent me) {
+            public void mouseEntered(MouseEvent e) {
                 ToolTipManager.sharedInstance().setDismissDelay(100 * 1000);
                 UIManager.put("info", Color.DARK_GRAY);
             }
 
             @Override
-            public void mouseExited(MouseEvent me) {
+            public void mouseExited(MouseEvent e) {
                 ToolTipManager.sharedInstance().setDismissDelay(Constants.TOOLTIPS_DELAY_MS);
                 UIManager.put("info", tooltipBackground);
             }
         });
     }
 
-    private void checkPopupMenu(MouseEvent me) {
-        if (me.isPopupTrigger()
+    private void checkPopupMenu(MouseEvent e) {
+        if (e.isPopupTrigger()
                 && originalId != null) { // only Yes/No requests from abilities can be automated
-            JButton source = (JButton) me.getSource();
+            JButton source = (JButton) e.getSource();
             if (source.getActionCommand().startsWith(QUESTION.toString())) {
-                showPopupMenu(me.getComponent(), source.getActionCommand());
-                me.consume();
+                showPopupMenu(e.getComponent(), source.getActionCommand());
+                e.consume();
             }
         }
     }
@@ -296,7 +314,7 @@ public class HelperPanel extends JPanel {
 
     public void autoSizeButtonsAndFeedbackState() {
         // two mode: same size for small texts (flow), different size for long texts (grid)
-        // plus colorize feedback panel on player's priority
+        // also colorize feedback panel on player's priority and enable sound notification
 
         int BUTTONS_H_GAP = 15;
         Color ACTIVE_FEEDBACK_BACKGROUND_COLOR_MAIN = new Color(0, 0, 255, 50);
@@ -308,7 +326,7 @@ public class HelperPanel extends JPanel {
         this.buttonGrid.setLayout(new FlowLayout(FlowLayout.CENTER, BUTTONS_H_GAP, 0));
         this.buttonGrid.setPreferredSize(null);
 
-        java.util.List<JButton> buttons = new ArrayList<>();
+        List<JButton> buttons = new ArrayList<>();
         if (this.btnSpecial.isVisible()) {
             buttons.add(this.btnSpecial);
         }
@@ -324,6 +342,10 @@ public class HelperPanel extends JPanel {
 
         // color panel on player's feedback waiting
         if (this.gameNeedFeedback) {
+
+            // start notification sound timer
+            this.needFeedbackTimer.restart();
+
             // wait player's action
             switch (FEEDBACK_COLORIZING_MODE) {
                 case Constants.BATTLEFIELD_FEEDBACK_COLORIZING_MODE_DISABLE:
@@ -361,6 +383,9 @@ public class HelperPanel extends JPanel {
                     break;
             }
         } else {
+            // stop notification sound timer
+            this.needFeedbackTimer.stop();
+
             // inform about other players
             this.mainPanel.setOpaque(false);
         }

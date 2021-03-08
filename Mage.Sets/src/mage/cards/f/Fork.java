@@ -1,4 +1,3 @@
-
 package mage.cards.f;
 
 import mage.abilities.Ability;
@@ -8,8 +7,11 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Outcome;
+import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.Game;
+import mage.game.events.CopiedStackObjectEvent;
+import mage.game.events.CopyStackObjectEvent;
 import mage.game.events.GameEvent;
 import mage.game.stack.Spell;
 import mage.players.Player;
@@ -18,14 +20,13 @@ import mage.target.TargetSpell;
 import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class Fork extends CardImpl {
 
 
     public Fork(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.INSTANT},"{R}{R}");
+        super(ownerId, setInfo, new CardType[]{CardType.INSTANT}, "{R}{R}");
 
         // Copy target instant or sorcery spell, except that the copy is red. You may choose new targets for the copy.
         this.getSpellAbility().addEffect(new ForkEffect());
@@ -33,7 +34,7 @@ public final class Fork extends CardImpl {
 
     }
 
-    public Fork(final Fork card) {
+    private Fork(final Fork card) {
         super(card);
     }
 
@@ -59,11 +60,17 @@ class ForkEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Spell spell = game.getStack().getSpell(targetPointer.getFirst(game, source));
         if (spell != null && controller != null) {
-            Spell copy = spell.copySpell(source.getControllerId());
+            // TODO: add support if multiple copies? See Twinning Staff
+            GameEvent gameEvent = new CopyStackObjectEvent(source, spell, source.getControllerId(), 1);
+            if (game.replaceEvent(gameEvent)) {
+                return false;
+            }
+            Spell copy = spell.copySpell(game, source, source.getControllerId());
             copy.getColor(game).setRed(true);
+            copy.setZone(Zone.STACK, game);
             game.getStack().push(copy);
             copy.chooseNewTargets(game, controller.getId());
-            game.fireEvent(new GameEvent(GameEvent.EventType.COPIED_STACKOBJECT, copy.getId(), spell.getId(), source.getControllerId()));
+            game.fireEvent(new CopiedStackObjectEvent(spell, copy, source.getControllerId()));
             return true;
         }
         return false;

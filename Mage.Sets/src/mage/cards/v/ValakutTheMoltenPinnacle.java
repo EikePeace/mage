@@ -44,7 +44,7 @@ public final class ValakutTheMoltenPinnacle extends CardImpl {
 
     }
 
-    public ValakutTheMoltenPinnacle(final ValakutTheMoltenPinnacle card) {
+    private ValakutTheMoltenPinnacle(final ValakutTheMoltenPinnacle card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class ValakutTheMoltenPinnacleTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ENTERS_THE_BATTLEFIELD;
+        return event.getType() == GameEvent.EventType.ENTERS_THE_BATTLEFIELD;
     }
 
     @Override

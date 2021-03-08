@@ -9,7 +9,6 @@ import mage.abilities.effects.common.continuous.BoostTargetEffect;
 import mage.abilities.effects.common.continuous.GainAbilityTargetEffect;
 import mage.abilities.keyword.AftermathAbility;
 import mage.abilities.keyword.DoubleStrikeAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -36,7 +35,7 @@ public final class OnwardVictory extends SplitCard {
         getRightHalfCard().getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public OnwardVictory(final OnwardVictory card) {
+    private OnwardVictory(final OnwardVictory card) {
         super(card);
     }
 

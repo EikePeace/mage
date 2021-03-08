@@ -26,7 +26,7 @@ public final class EgoErasure extends CardImpl {
         this.subtype.add(SubType.SHAPESHIFTER);
 
         // Changeling
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
 
         //Creatures target player controls get -2/+0 and lose all creature types until end of turn.
         this.getSpellAbility().addEffect(new EgoErasureBoostEffect());
@@ -34,7 +34,7 @@ public final class EgoErasure extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public EgoErasure(final EgoErasure card) {
+    private EgoErasure(final EgoErasure card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class EgoErasureLoseEffect extends ContinuousEffectImpl {
         for (Iterator<MageObjectReference> it = affectedObjectList.iterator(); it.hasNext(); ) {
             Permanent permanent = it.next().getPermanent(game);
             if (permanent != null) {
-                permanent.getSubtype(game).retainAll(SubType.getLandTypes());
+                permanent.removeAllCreatureTypes(game);
             } else {
                 it.remove();
             }

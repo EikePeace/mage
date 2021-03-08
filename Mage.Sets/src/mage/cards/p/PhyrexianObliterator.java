@@ -39,7 +39,7 @@ public final class PhyrexianObliterator extends CardImpl {
         this.addAbility(new PhyrexianObliteratorTriggeredAbility());
     }
 
-    public PhyrexianObliterator(final PhyrexianObliterator card) {
+    private PhyrexianObliterator(final PhyrexianObliterator card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class PhyrexianObliteratorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

@@ -45,7 +45,7 @@ public final class FalkenrathAristocrat extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FalkenrathAristocrat(final FalkenrathAristocrat card) {
+    private FalkenrathAristocrat(final FalkenrathAristocrat card) {
         super(card);
     }
 
@@ -78,7 +78,7 @@ class FalkenrathAristocratEffect extends OneShotEffect {
                 Permanent sacrificedCreature = ((SacrificeTargetCost) cost).getPermanents().get(0);
                 Permanent sourceCreature = game.getPermanent(source.getSourceId());
                 if (sacrificedCreature.hasSubtype(SubType.HUMAN, game) && sourceCreature != null) {
-                    sourceCreature.addCounters(CounterType.P1P1.createInstance(), source, game);
+                    sourceCreature.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
                     break;
                 }
             }

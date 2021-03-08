@@ -40,7 +40,7 @@ public final class ChancellorOfTheDross extends CardImpl {
         this.addAbility(LifelinkAbility.getInstance());
     }
 
-    public ChancellorOfTheDross(final ChancellorOfTheDross card) {
+    private ChancellorOfTheDross(final ChancellorOfTheDross card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class ChancellorOfTheDrossDelayedTriggeredAbility extends DelayedTriggeredAbilit
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.UPKEEP_STEP_PRE;
+        return event.getType() == GameEvent.EventType.UPKEEP_STEP_PRE;
     }
 
     @Override
@@ -90,7 +90,7 @@ class ChancellorOfTheDrossEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         int loseLife = 0;
         for (UUID opponentId : game.getOpponents(source.getControllerId())) {
-            loseLife += game.getPlayer(opponentId).loseLife(3, game, false);
+            loseLife += game.getPlayer(opponentId).loseLife(3, game, source, false);
         }
         if (loseLife > 0) {
             game.getPlayer(source.getControllerId()).gainLife(loseLife, game, source);

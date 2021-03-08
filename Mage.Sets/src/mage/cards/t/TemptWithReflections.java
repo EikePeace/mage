@@ -31,7 +31,7 @@ public final class TemptWithReflections extends CardImpl {
         this.getSpellAbility().addTarget(new TargetControlledCreaturePermanent());
     }
 
-    public TemptWithReflections(final TemptWithReflections card) {
+    private TemptWithReflections(final TemptWithReflections card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class TemptWithReflectionsEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) {
             Effect effect = new CreateTokenCopyTargetEffect();
             effect.setTargetPointer(getTargetPointer());
@@ -81,7 +81,7 @@ class TemptWithReflectionsEffect extends OneShotEffect {
                     game.informPlayers((player.getLogName() + decision + permanent.getName()));
                 }
                 player = playerList.getNext(game, false);
-            } while (!player.getId().equals(game.getActivePlayerId()));
+            } while (player != null && !player.getId().equals(game.getActivePlayerId()));
 
             for (UUID playerId : playersSaidYes) {
                 effect = new CreateTokenCopyTargetEffect(playerId);

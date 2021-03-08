@@ -1,5 +1,6 @@
 package mage.cards.b;
 
+import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
@@ -12,8 +13,6 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetAnyTarget;
 import mage.target.common.TargetDiscard;
-
-import java.util.UUID;
 
 /**
  * @author LevelX2
@@ -28,7 +27,7 @@ public final class BlastOfGenius extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public BlastOfGenius(final BlastOfGenius card) {
+    private BlastOfGenius(final BlastOfGenius card) {
         super(card);
     }
 
@@ -43,7 +42,7 @@ class BlastOfGeniusEffect extends OneShotEffect {
 
     public BlastOfGeniusEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Choose any target. Draw three cards and discard a card. Blast of Genius deals damage equal to the converted mana cost of the discard card to that permanent or player";
+        this.staticText = "Choose any target. Draw three cards and discard a card. {this} deals damage equal to the converted mana cost of the discard card to that permanent or player";
     }
 
     public BlastOfGeniusEffect(final BlastOfGeniusEffect effect) {
@@ -59,22 +58,22 @@ class BlastOfGeniusEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(3, game);
+            player.drawCards(3, source, game);
             TargetDiscard target = new TargetDiscard(player.getId());
             if (target.canChoose(source.getSourceId(), player.getId(), game)) {
                 player.choose(Outcome.Discard, target, source.getSourceId(), game);
                 Card card = player.getHand().get(target.getFirstTarget(), game);
                 if (card != null) {
-                    player.discard(card, source, game);
+                    player.discard(card, false, source, game);
                     int damage = card.getConvertedManaCost();
                     Permanent creature = game.getPermanent(this.getTargetPointer().getFirst(game, source));
                     if (creature != null) {
-                        creature.damage(damage, source.getSourceId(), game, false, true);
+                        creature.damage(damage, source.getSourceId(), source, game, false, true);
                         return true;
                     }
                     Player targetPlayer = game.getPlayer(this.getTargetPointer().getFirst(game, source));
                     if (targetPlayer != null) {
-                        targetPlayer.damage(damage, source.getSourceId(), game);
+                        targetPlayer.damage(damage, source.getSourceId(), source, game);
                         return true;
                     }
                 }

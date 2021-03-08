@@ -37,7 +37,7 @@ public final class SpitefulShadows extends CardImpl {
                 false, SetTargetPointer.PERMANENT));
     }
 
-    public SpitefulShadows(final SpitefulShadows card) {
+    private SpitefulShadows(final SpitefulShadows card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class SpitefulShadowsEffect extends OneShotEffect {
             if (permanent != null) {
                 Player player = game.getPlayer(permanent.getControllerId());
                 if (player != null) {
-                    player.damage(damageAmount, permanent.getId(), game);
+                    player.damage(damageAmount, permanent.getId(), source, game);
                     return true;
                 }
             }

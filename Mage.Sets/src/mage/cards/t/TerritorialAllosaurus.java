@@ -14,7 +14,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class TerritorialAllosaurus extends CardImpl {
         this.addAbility(conditionalAbility);
     }
 
-    public TerritorialAllosaurus(final TerritorialAllosaurus card) {
+    private TerritorialAllosaurus(final TerritorialAllosaurus card) {
         super(card);
     }
 

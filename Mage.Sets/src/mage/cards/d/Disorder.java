@@ -35,7 +35,7 @@ public final class Disorder extends CardImpl {
         this.getSpellAbility().addEffect(new DisorderEffect());
     }
 
-    public Disorder(final Disorder card) {
+    private Disorder(final Disorder card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class DisorderEffect extends OneShotEffect {
             filter.add(new ControllerIdPredicate(player.getId()));
             filter.add(new ColorPredicate(ObjectColor.WHITE));
             if (game.getBattlefield().count(filter, source.getSourceId(), source.getControllerId(), game) > 0) {
-                player.damage(2, source.getSourceId(), game);
+                player.damage(2, source.getSourceId(), source, game);
             }
         }
         return true;

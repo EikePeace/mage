@@ -32,7 +32,7 @@ public final class IncreasingDevotion extends CardImpl {
         this.addAbility(new FlashbackAbility(new ManaCostsImpl("{7}{W}{W}"), TimingRule.SORCERY));
     }
 
-    public IncreasingDevotion(final IncreasingDevotion card) {
+    private IncreasingDevotion(final IncreasingDevotion card) {
         super(card);
     }
 
@@ -63,7 +63,7 @@ class IncreasingDevotionEffect extends OneShotEffect {
             if (spell.getFromZone() == Zone.GRAVEYARD) {
                 amount = 10;
             }
-            token.putOntoBattlefield(amount, game, source.getSourceId(), source.getControllerId());
+            token.putOntoBattlefield(amount, game, source, source.getControllerId());
             return true;
         }
         return false;

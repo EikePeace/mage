@@ -16,7 +16,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class BastionProtector extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BastionProtector(final BastionProtector card) {
+    private BastionProtector(final BastionProtector card) {
         super(card);
     }
 

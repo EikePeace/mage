@@ -30,7 +30,7 @@ public final class DarkTemper extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public DarkTemper(final DarkTemper card) {
+    private DarkTemper(final DarkTemper card) {
         super(card);
     }
 
@@ -67,9 +67,9 @@ class DarkTemperEffect extends OneShotEffect {
         filter.add(new ColorPredicate(ObjectColor.BLACK));
 
         if (game.getBattlefield().countAll(filter, source.getControllerId(), game) == 0) {
-            permanent.damage(2, source.getSourceId(), game, false, true);
+            permanent.damage(2, source.getSourceId(), source, game, false, true);
         } else {
-            permanent.destroy(source.getSourceId(), game, false);
+            permanent.destroy(source, game, false);
         }
         return true;
     }

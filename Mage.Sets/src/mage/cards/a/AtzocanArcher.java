@@ -13,7 +13,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -47,7 +47,7 @@ public final class AtzocanArcher extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AtzocanArcher(final AtzocanArcher card) {
+    private AtzocanArcher(final AtzocanArcher card) {
         super(card);
     }
 

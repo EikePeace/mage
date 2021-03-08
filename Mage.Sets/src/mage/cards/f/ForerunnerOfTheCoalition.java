@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterBySubtypeCard;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -50,7 +50,7 @@ public final class ForerunnerOfTheCoalition extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ForerunnerOfTheCoalition(final ForerunnerOfTheCoalition card) {
+    private ForerunnerOfTheCoalition(final ForerunnerOfTheCoalition card) {
         super(card);
     }
 

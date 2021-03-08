@@ -4,7 +4,7 @@ package mage.cards.h;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.ExileSourceEffect;
 import mage.abilities.keyword.FlyingAbility;
@@ -32,12 +32,12 @@ public final class HauntedAngel extends CardImpl {
         // Flying
         this.addAbility(FlyingAbility.getInstance());
         // When Haunted Angel dies, exile Haunted Angel and each other player creates a 3/3 black Angel creature token with flying.
-        Ability ability = new DiesTriggeredAbility(new ExileSourceEffect());
+        Ability ability = new DiesSourceTriggeredAbility(new ExileSourceEffect());
         ability.addEffect(new HauntedAngelEffect());
         this.addAbility(ability);
     }
 
-    public HauntedAngel(final HauntedAngel card) {
+    private HauntedAngel(final HauntedAngel card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class HauntedAngelEffect extends OneShotEffect {
         HauntedAngelToken token = new HauntedAngelToken();
         for (UUID playerId : game.getState().getPlayersInRange(controllerId, game)) {
             if (!playerId.equals(controllerId)) {
-                token.putOntoBattlefield(1, game, source.getSourceId(), playerId);
+                token.putOntoBattlefield(1, game, source, playerId);
             }
         }
         return true;

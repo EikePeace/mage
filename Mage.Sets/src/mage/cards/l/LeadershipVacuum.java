@@ -11,7 +11,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -52,7 +52,7 @@ class LeadershipVacuumEffect extends OneShotEffect {
 
     LeadershipVacuumEffect() {
         super(Outcome.Detriment);
-        staticText = "Target player returns each commander they control from the battlefield to the command zone.";
+        staticText = "Target player returns each commander they control from the battlefield to the command zone";
     }
 
     private LeadershipVacuumEffect(final LeadershipVacuumEffect effect) {

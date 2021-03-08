@@ -40,7 +40,7 @@ public final class KeldonFirebombers extends CardImpl {
 
     }
 
-    public KeldonFirebombers(final KeldonFirebombers card) {
+    private KeldonFirebombers(final KeldonFirebombers card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class KeldonFirebombersEffect extends OneShotEffect {
             }
         }
         for (Permanent land : landsToSacrifice) {
-            land.sacrifice(source.getSourceId(), game);
+            land.sacrifice(source, game);
         }
         return true;
     }

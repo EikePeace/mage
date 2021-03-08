@@ -4,7 +4,7 @@ import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTappedAbility;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -88,13 +88,13 @@ class EmpoweredAutogeneratorManaEffect extends ManaEffect {
         if (game == null) {
             return mana;
         }
-        game.applyEffects();
+        game.getState().processAction(game);
         Permanent sourcePermanent = game.getState().getPermanent(source.getSourceId());
         if (sourcePermanent == null) {
             return mana;
         }
 
-        sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
+        sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source.getControllerId(), source, game);
         int counters = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE);
         if (counters == 0) {
             return mana;

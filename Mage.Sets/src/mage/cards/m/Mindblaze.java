@@ -38,7 +38,7 @@ public final class Mindblaze extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public Mindblaze(final Mindblaze card) {
+    private Mindblaze(final Mindblaze card) {
         super(card);
     }
 
@@ -93,7 +93,7 @@ class MindblazeEffect extends OneShotEffect {
             filter.add(new NamePredicate(cardChoice.getChoice()));
             int count = Integer.parseInt(numberChoice.getChoice());
             if (player.getLibrary().count(filter, game) == count) {
-                player.damage(8, source.getSourceId(), game.copy());
+                player.damage(8, source.getSourceId(), source, game);
             }
             player.shuffleLibrary(source, game);
             return true;

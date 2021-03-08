@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class RandomPlayer extends ComputerPlayer {
 
-    private boolean isSimulatedPlayer;
+    private final boolean isSimulatedPlayer;
     private int actionCount = 0;
 
     protected PassAbility pass = new PassAbility();
@@ -73,7 +73,7 @@ public class RandomPlayer extends ComputerPlayer {
     }
 
     private Ability getAction(Game game) {
-        List<Ability> playables = getPlayableAbilities(game);
+        List<ActivatedAbility> playables = getPlayableAbilities(game);
         Ability ability;
         while (true) {
             if (playables.size() == 1) {
@@ -115,15 +115,15 @@ public class RandomPlayer extends ComputerPlayer {
         return ability;
     }
 
-    protected List<Ability> getPlayableAbilities(Game game) {
-        List<Ability> playables = getPlayable(game, true);
+    protected List<ActivatedAbility> getPlayableAbilities(Game game) {
+        List<ActivatedAbility> playables = getPlayable(game, true);
         playables.add(pass);
         return playables;
     }
 
     @Override
     public boolean triggerAbility(TriggeredAbility source, Game game) {
-        if (source != null && source.canChooseTarget(game)) {
+        if (source != null && source.canChooseTarget(game, playerId)) {
             Ability ability;
             List<Ability> options = getPlayableOptions(source, game);
             if (options.isEmpty()) {
@@ -138,7 +138,7 @@ public class RandomPlayer extends ComputerPlayer {
             if (ability.isUsesStack()) {
                 game.getStack().push(new StackAbility(ability, playerId));
                 if (ability.activate(game, false)) {
-                    game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability.getSourceId(), ability.getControllerId()));
+                    game.fireEvent(new GameEvent(GameEvent.EventType.TRIGGERED_ABILITY, ability.getId(), ability, ability.getControllerId()));
                     actionCount++;
                     return true;
                 }
@@ -178,7 +178,7 @@ public class RandomPlayer extends ComputerPlayer {
     }
 
     @Override
-    public void selectBlockers(Game game, UUID defendingPlayerId) {
+    public void selectBlockers(Ability source, Game game, UUID defendingPlayerId) {
         int numGroups = game.getCombat().getGroups().size();
         if (numGroups == 0) {
             return;
@@ -373,7 +373,7 @@ public class RandomPlayer extends ComputerPlayer {
     }
 
     @Override
-    public void assignDamage(int damage, List<UUID> targets, String singleTargetName, UUID sourceId, Game game) {
+    public void assignDamage(int damage, List<UUID> targets, String singleTargetName, UUID attackerId, Ability source, Game game) {
         int remainingDamage = damage;
         UUID targetId;
         int amount;
@@ -387,12 +387,12 @@ public class RandomPlayer extends ComputerPlayer {
             }
             Permanent permanent = game.getPermanent(targetId);
             if (permanent != null) {
-                permanent.damage(amount, sourceId, game, false, true);
+                permanent.damage(amount, attackerId, source, game, false, true);
                 remainingDamage -= amount;
             } else {
                 Player player = game.getPlayer(targetId);
                 if (player != null) {
-                    player.damage(amount, sourceId, game);
+                    player.damage(amount, attackerId, source, game);
                     remainingDamage -= amount;
                 }
             }

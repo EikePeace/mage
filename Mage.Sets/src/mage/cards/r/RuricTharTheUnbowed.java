@@ -49,7 +49,7 @@ public final class RuricTharTheUnbowed extends CardImpl {
         this.addAbility(new RuricTharTheUnbowedAbility());
     }
 
-    public RuricTharTheUnbowed(final RuricTharTheUnbowed card) {
+    private RuricTharTheUnbowed(final RuricTharTheUnbowed card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class RuricTharTheUnbowedAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

@@ -1,4 +1,3 @@
-
 package mage.cards.t;
 
 import java.util.UUID;
@@ -38,7 +37,7 @@ public final class TemporalAperture extends CardImpl {
 
     }
 
-    public TemporalAperture(final TemporalAperture card) {
+    private TemporalAperture(final TemporalAperture card) {
         super(card);
     }
 
@@ -121,11 +120,8 @@ class TemporalApertureTopCardCastEffect extends AsThoughEffectImpl {
                 if (controller != null
                         && game.getState().getZone(objectId) == Zone.LIBRARY) {
                     if (controller.getLibrary().getFromTop(game).equals(card)) {
-                        if (objectCard == card
-                                && objectCard.getSpellAbility() != null
-                                && objectCard.getSpellAbility().spellCanBeActivatedRegularlyNow(controller.getId(), game)
-                                || objectCard.isLand()) {
-                            controller.setCastSourceIdWithAlternateMana(objectId, null, null);
+                        if (objectCard == card && (objectCard.getSpellAbility() != null || objectCard.isLand())) { // only if castable or land
+                            allowCardToPlayWithoutMana(objectId, source, affectedControllerId, game);
                             return true;
                         }
                     }

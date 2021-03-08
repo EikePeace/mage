@@ -39,7 +39,7 @@ public final class PhyrexianDelver extends CardImpl {
         this.addAbility(ability);
     }
 
-    public PhyrexianDelver(final PhyrexianDelver card) {
+    private PhyrexianDelver(final PhyrexianDelver card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class PhyrexianDelverEffect extends OneShotEffect {
             if (game.getState().getZone(creatureCard.getId()) == Zone.GRAVEYARD) {
                 result = controller.moveCards(creatureCard, Zone.BATTLEFIELD, source, game);
             }
-            controller.loseLife(creatureCard.getConvertedManaCost(), game, false);
+            controller.loseLife(creatureCard.getConvertedManaCost(), game, source, false);
             return result;
         }
         return false;

@@ -2,7 +2,6 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.InfoEffect;
@@ -32,7 +31,7 @@ public final class SamiteSanctuary extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SamiteSanctuary(final SamiteSanctuary card) {
+    private SamiteSanctuary(final SamiteSanctuary card) {
         super(card);
     }
 

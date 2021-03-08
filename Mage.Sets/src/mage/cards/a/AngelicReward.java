@@ -1,17 +1,12 @@
 package mage.cards.a;
 
 import mage.abilities.Ability;
-import mage.abilities.common.EntersBattlefieldTappedAbility;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.costs.common.SacrificeSourceCost;
 import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.continuous.BoostEnchantedEffect;
 import mage.abilities.effects.common.continuous.GainAbilityAttachedEffect;
 import mage.abilities.keyword.EnchantAbility;
 import mage.abilities.keyword.FlyingAbility;
-import mage.abilities.keyword.TotemArmorAbility;
-import mage.abilities.mana.AnyColorManaAbility;
-import mage.abilities.mana.WhiteManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
@@ -42,7 +37,7 @@ public final class AngelicReward extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new GainAbilityAttachedEffect(FlyingAbility.getInstance(), AttachmentType.AURA)));
     }
 
-    public AngelicReward(final AngelicReward card) {
+    private AngelicReward(final AngelicReward card) {
         super(card);
     }
 

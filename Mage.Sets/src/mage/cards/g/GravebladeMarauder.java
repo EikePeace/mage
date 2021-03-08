@@ -35,7 +35,7 @@ public final class GravebladeMarauder extends CardImpl {
         this.addAbility(new DealsCombatDamageToAPlayerTriggeredAbility(new GravebladeMarauderEffect(), false, true));
     }
 
-    public GravebladeMarauder(final GravebladeMarauder card) {
+    private GravebladeMarauder(final GravebladeMarauder card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class GravebladeMarauderEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(getTargetPointer().getFirst(game, source));
         Player controller = game.getPlayer(source.getControllerId());
         if (targetPlayer != null && controller != null) {
-            targetPlayer.loseLife(controller.getGraveyard().count(StaticFilters.FILTER_CARD_CREATURE, game), game, false);
+            targetPlayer.loseLife(controller.getGraveyard().count(StaticFilters.FILTER_CARD_CREATURE, game), game, source, false);
             return true;
         }
         return false;

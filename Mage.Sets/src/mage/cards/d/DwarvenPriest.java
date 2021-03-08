@@ -25,10 +25,10 @@ public final class DwarvenPriest extends CardImpl {
         this.toughness = new MageInt(4);
 
         // When Dwarven Priest enters the battlefield, you gain 1 life for each creature you control.
-        this.addAbility(new EntersBattlefieldTriggeredAbility(new GainLifeEffect(CreaturesYouControlCount.instance)));
+        this.addAbility(new EntersBattlefieldTriggeredAbility(new GainLifeEffect(CreaturesYouControlCount.instance).setText("you gain 1 life for each creature you control")));
     }
 
-    public DwarvenPriest(final DwarvenPriest card) {
+    private DwarvenPriest(final DwarvenPriest card) {
         super(card);
     }
 

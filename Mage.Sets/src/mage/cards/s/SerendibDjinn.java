@@ -41,7 +41,7 @@ public final class SerendibDjinn extends CardImpl {
                 new SacrificeSourceEffect()));
     }
 
-    public SerendibDjinn(final SerendibDjinn card) {
+    private SerendibDjinn(final SerendibDjinn card) {
         super(card);
     }
 
@@ -76,9 +76,9 @@ class SerendibDjinnEffect extends OneShotEffect {
                 controller.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                 if (permanent != null) {
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                     if (permanent.hasSubtype(SubType.ISLAND, game)) {
-                        controller.damage(3, source.getSourceId(), game);
+                        controller.damage(3, source.getSourceId(), source, game);
                     }
                 }
             }

@@ -13,12 +13,10 @@ import mage.constants.Duration;
 import mage.constants.Outcome;
 import mage.filter.FilterCard;
 import mage.game.Game;
-import mage.game.stack.Spell;
 import mage.players.Player;
 import mage.util.CardUtil;
 
 /**
- *
  * @author LevelX2
  */
 public class SpellsCostReductionAllEffect extends CostModificationEffectImpl {
@@ -123,13 +121,9 @@ public class SpellsCostReductionAllEffect extends CostModificationEffectImpl {
             return false;
         }
         if (abilityToModify instanceof SpellAbility) {
-            Spell spell = (Spell) game.getStack().getStackObject(abilityToModify.getId());
-            if (spell != null) {
-                return this.filter.match(spell, game) && selectedByRuntimeData(spell, source, game);
-            } else {
-                // used at least for flashback ability because Flashback ability doesn't use stack
-                Card sourceCard = game.getCard(abilityToModify.getSourceId());
-                return sourceCard != null && this.filter.match(sourceCard, game) && selectedByRuntimeData(sourceCard, source, game);
+            Card spellCard = ((SpellAbility) abilityToModify).getCharacteristics(game);
+            if (spellCard != null) {
+                return this.filter.match(spellCard, game) && selectedByRuntimeData(spellCard, source, game);
             }
         }
         return false;

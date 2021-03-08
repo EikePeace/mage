@@ -38,7 +38,7 @@ public final class SwanSong extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell(filter));
     }
 
-    public SwanSong(final SwanSong card) {
+    private SwanSong(final SwanSong card) {
         super(card);
     }
 
@@ -69,12 +69,12 @@ class SwanSongEffect extends OneShotEffect {
         boolean countered = false;
         for (UUID targetId : targetPointer.getTargets(game, source)) {
             Spell spell = game.getStack().getSpell(targetId);
-            if (game.getStack().counter(targetId, source.getSourceId(), game)) {
+            if (game.getStack().counter(targetId, source, game)) {
                 countered = true;
             }
             if (spell != null) {
                 Token token = new SwanSongBirdToken();
-                token.putOntoBattlefield(1, game, source.getSourceId(), spell.getControllerId());
+                token.putOntoBattlefield(1, game, source, spell.getControllerId());
             }
         }
         return countered;

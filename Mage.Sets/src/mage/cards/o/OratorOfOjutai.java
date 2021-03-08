@@ -65,7 +65,7 @@ public final class OratorOfOjutai extends CardImpl {
         }
     }
 
-    public OratorOfOjutai(final OratorOfOjutai card) {
+    private OratorOfOjutai(final OratorOfOjutai card) {
         super(card);
     }
 
@@ -136,7 +136,7 @@ class OratorOfOjutaiEffect extends OneShotEffect {
             if (sourcePermanent != null) {
                 DragonOnTheBattlefieldWhileSpellWasCastWatcher watcher = game.getState().getWatcher(DragonOnTheBattlefieldWhileSpellWasCastWatcher.class);
                 if (watcher != null && watcher.castWithConditionTrue(sourcePermanent.getSpellAbility().getId())) {
-                    controller.drawCards(1, game);
+                    controller.drawCards(1, source, game);
                     return true;
                 }
             }

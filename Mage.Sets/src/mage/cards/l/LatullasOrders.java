@@ -47,7 +47,7 @@ public final class LatullasOrders extends CardImpl {
         this.addAbility(new LatullasOrdersTriggeredAbility());
     }
 
-    public LatullasOrders(final LatullasOrders card) {
+    private LatullasOrders(final LatullasOrders card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class LatullasOrdersTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

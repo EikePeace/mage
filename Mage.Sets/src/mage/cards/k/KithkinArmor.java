@@ -2,6 +2,7 @@ package mage.cards.k;
 
 import java.util.UUID;
 import mage.constants.SubType;
+import mage.game.events.DamageEvent;
 import mage.target.common.TargetCreaturePermanent;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -20,7 +21,6 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.game.Game;
-import mage.game.events.DamageCreatureEvent;
 import mage.game.events.GameEvent;
 import mage.game.permanent.Permanent;
 import mage.target.TargetSource;
@@ -77,12 +77,12 @@ class KithkinArmorCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
-        Permanent permanent = game.getPermanent(sourceId);
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
+        Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
             // store attached to information due to getLastInfo being completely fubared
             game.getState().setValue(ability.getSourceId().toString() + "attachedToPermanent", permanent.getAttachedTo());
-            paid = permanent.sacrifice(sourceId, game);
+            paid = permanent.sacrifice(source, game);
             if (!paid) {
                 game.getState().setValue(ability.getSourceId().toString() + "attachedToPermanent", null);
             }
@@ -91,10 +91,9 @@ class KithkinArmorCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        Permanent permanent = game.getPermanent(sourceId);
-        return permanent != null
-                && game.getPlayer(controllerId).canPaySacrificeCost(permanent, sourceId, controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        Permanent permanent = game.getPermanent(source.getSourceId());
+        return permanent != null && game.getPlayer(controllerId).canPaySacrificeCost(permanent, source, controllerId, game);
     }
 
     @Override
@@ -156,11 +155,11 @@ class KithkinArmorPreventionEffect extends PreventionEffectImpl {
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         if (super.applies(event, source, game)
-                && event instanceof DamageCreatureEvent
+                && event instanceof DamageEvent
                 && event.getAmount() > 0
                 && !this.used) {
             UUID enchantedCreatureId = (UUID) game.getState().getValue(source.getSourceId().toString() + "attachedToPermanent");
-            DamageCreatureEvent damageEvent = (DamageCreatureEvent) event;
+            DamageEvent damageEvent = (DamageEvent) event;
             if (enchantedCreatureId != null
                     && event.getTargetId().equals(enchantedCreatureId)
                     && damageEvent.getSourceId().equals(source.getFirstTarget()))      {

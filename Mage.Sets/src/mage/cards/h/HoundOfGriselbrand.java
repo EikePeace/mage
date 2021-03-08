@@ -19,7 +19,7 @@ public final class HoundOfGriselbrand extends CardImpl {
     public HoundOfGriselbrand(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{R}{R}");
         this.subtype.add(SubType.ELEMENTAL);
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
 
         this.power = new MageInt(2);
         this.toughness = new MageInt(2);
@@ -28,7 +28,7 @@ public final class HoundOfGriselbrand extends CardImpl {
         this.addAbility(new UndyingAbility());
     }
 
-    public HoundOfGriselbrand(final HoundOfGriselbrand card) {
+    private HoundOfGriselbrand(final HoundOfGriselbrand card) {
         super(card);
     }
 

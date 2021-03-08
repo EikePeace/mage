@@ -14,7 +14,7 @@ import mage.cards.CardsImpl;
 import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -39,7 +39,7 @@ public final class SpyNetwork extends CardImpl {
         this.getSpellAbility().addTarget(new TargetPlayer());
     }
 
-    public SpyNetwork(final SpyNetwork card) {
+    private SpyNetwork(final SpyNetwork card) {
         super(card);
     }
 
@@ -109,7 +109,7 @@ class SpyNetworkFaceDownEffect extends OneShotEffect {
             if (target.canChoose(source.getSourceId(), controller.getId(), game)) {
                 while (controller.chooseUse(outcome, "Look at a face down creature controlled by " + player.getLogName() + "?", source, game)) {
                     target.clearChosen();
-                    while (!target.isChosen() && target.canChoose(controller.getId(), game) && controller.canRespond()) {
+                    while (!target.isChosen() && target.canChoose(source.getSourceId(), controller.getId(), game) && controller.canRespond()) {
                         controller.chooseTarget(outcome, target, source, game);
                     }
                     Permanent faceDownCreature = game.getPermanent(target.getFirstTarget());

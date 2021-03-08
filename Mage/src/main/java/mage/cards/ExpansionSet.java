@@ -1,19 +1,21 @@
 package mage.cards;
 
-import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.keyword.PartnerWithAbility;
 import mage.cards.repository.CardCriteria;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
+import mage.collation.BoosterCollator;
 import mage.constants.Rarity;
 import mage.constants.SetType;
 import mage.util.CardUtil;
 import mage.util.RandomUtil;
 import org.apache.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author BetaSteward_at_googlemail.com
@@ -26,7 +28,7 @@ public abstract class ExpansionSet implements Serializable {
     public static final CardGraphicInfo FULL_ART_BFZ_VARIOUS = new CardGraphicInfo(FrameStyle.BFZ_FULL_ART_BASIC, true);
     public static final CardGraphicInfo FULL_ART_ZEN_VARIOUS = new CardGraphicInfo(FrameStyle.ZEN_FULL_ART_BASIC, true);
 
-    public class SetCardInfo implements Serializable {
+    public static class SetCardInfo implements Serializable {
 
         private final String name;
         private final String cardNumber;
@@ -77,6 +79,12 @@ public abstract class ExpansionSet implements Serializable {
         public CardGraphicInfo getGraphicInfo() {
             return this.graphicInfo;
         }
+
+        public boolean isFullArt() {
+            return this.graphicInfo != null
+                    && this.graphicInfo.getFrameStyle() != null
+                    && this.graphicInfo.getFrameStyle().isFullArt();
+        }
     }
 
     protected final List<SetCardInfo> cards = new ArrayList<>();
@@ -86,6 +94,7 @@ public abstract class ExpansionSet implements Serializable {
     protected Date releaseDate;
     protected ExpansionSet parentSet;
     protected SetType setType;
+    protected BoosterCollator boosterCollator;
 
     // TODO: 03.10.2018, hasBasicLands can be removed someday -- it's uses to optimize lands search in deck generation and lands adding (search all available lands from sets)
     protected boolean hasBasicLands = true;
@@ -102,7 +111,7 @@ public abstract class ExpansionSet implements Serializable {
     protected int numBoosterUncommon;
     protected int numBoosterRare;
     protected int numBoosterDoubleFaced; // -1 = include normally 0 = exclude  1-n = include explicit
-    protected int ratioBoosterMythic;
+    protected double ratioBoosterMythic;
     protected boolean hasPartnerMechanic = false;
 
     protected boolean needsLegendCreature = false;
@@ -114,14 +123,23 @@ public abstract class ExpansionSet implements Serializable {
     protected int maxCardNumberInBooster; // used to omit cards with collector numbers beyond the regular cards in a set for boosters
 
     protected final EnumMap<Rarity, List<CardInfo>> savedCards;
+    protected final Map<String, CardInfo> inBoosterMap = new HashMap<>();
 
     public ExpansionSet(String name, String code, Date releaseDate, SetType setType) {
+        this(name, code, releaseDate, setType, null);
+    }
+
+    public ExpansionSet(String name, String code, Date releaseDate, SetType setType, BoosterCollator boosterCollator) {
         this.name = name;
         this.code = code;
         this.releaseDate = releaseDate;
         this.setType = setType;
         this.maxCardNumberInBooster = Integer.MAX_VALUE;
         savedCards = new EnumMap<>(Rarity.class);
+        this.boosterCollator = boosterCollator;
+        if (this.boosterCollator != null) {
+            this.boosterCollator.shuffle();
+        }
     }
 
     public String getName() {
@@ -134,6 +152,12 @@ public abstract class ExpansionSet implements Serializable {
 
     public Date getReleaseDate() {
         return releaseDate;
+    }
+
+    public int getReleaseYear() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(this.getReleaseDate());
+        return cal.get(Calendar.YEAR);
     }
 
     public ExpansionSet getParentSet() {
@@ -228,6 +252,9 @@ public abstract class ExpansionSet implements Serializable {
     }
 
     public List<Card> createBooster() {
+        if (boosterCollator != null) {
+            return createBoosterUsingCollator();
+        }
 
         for (int i = 0; i < 100; i++) {//don't want to somehow loop forever
 
@@ -248,6 +275,30 @@ public abstract class ExpansionSet implements Serializable {
         // return random booster if can't do valid
         logger.error(String.format("Can't generate valid booster for set [%s - %s]", this.getCode(), this.getName()));
         return tryBooster();
+    }
+
+    public void shuffleCollator() {
+        if (boosterCollator != null) {
+            boosterCollator.shuffle();
+        }
+    }
+
+    private List<Card> createBoosterUsingCollator() {
+        if (inBoosterMap.isEmpty()) {
+            CardCriteria criteria = new CardCriteria();
+            criteria.setCodes(code);
+            CardRepository
+                    .instance
+                    .findCards(criteria)
+                    .stream()
+                    .forEach(cardInfo -> inBoosterMap.put(cardInfo.getCardNumber(), cardInfo));
+        }
+        return boosterCollator
+                .makeBooster()
+                .stream()
+                .map(inBoosterMap::get)
+                .map(CardInfo::getCard)
+                .collect(Collectors.toList());
     }
 
     protected boolean boosterIsValid(List<Card> booster) {
@@ -321,6 +372,10 @@ public abstract class ExpansionSet implements Serializable {
         return true;
     }
 
+    private boolean checkMythic() {
+        return ratioBoosterMythic > 0 && ratioBoosterMythic * RandomUtil.nextDouble() <= 1;
+    }
+
     public List<Card> createPartnerBooster() {
 
         List<Card> booster = new ArrayList<>();
@@ -357,7 +412,7 @@ public abstract class ExpansionSet implements Serializable {
         List<CardInfo> rares = getCardsByRarity(Rarity.RARE);
         List<CardInfo> mythics = getCardsByRarity(Rarity.MYTHIC);
         for (int i = 0; i < numBoosterRare; i++) {
-            if (ratioBoosterMythic > 0 && RandomUtil.nextInt(ratioBoosterMythic) == 0) {
+            if (checkMythic()) {
                 while (true) {
                     addToBooster(booster, mythics);
                     int check = addMissingPartner(booster, partnerAllowed, -1, 1);
@@ -424,7 +479,7 @@ public abstract class ExpansionSet implements Serializable {
             addToBooster(booster, commons);
         }
 
-        if (numSpecialCommons > 0) { // e.g. used to conditionaly replace common cards in the booster
+        if (numSpecialCommons > 0) { // e.g. used to conditionally replace common cards in the booster
             addSpecialCommon(booster, numSpecialCommons);
         }
 
@@ -436,7 +491,7 @@ public abstract class ExpansionSet implements Serializable {
         List<CardInfo> rares = getCardsByRarity(Rarity.RARE);
         List<CardInfo> mythics = getCardsByRarity(Rarity.MYTHIC);
         for (int i = 0; i < numBoosterRare; i++) {
-            if (ratioBoosterMythic > 0 && RandomUtil.nextInt(ratioBoosterMythic) == 0) {
+            if (checkMythic()) {
                 addToBooster(booster, mythics);
             } else {
                 addToBooster(booster, rares);
@@ -507,56 +562,44 @@ public abstract class ExpansionSet implements Serializable {
 
         List<CardInfo> specialMythic = getSpecialMythic();
         specialCards += specialMythic.size();
+
         List<CardInfo> specialRare = getSpecialRare();
         specialCards += specialRare.size();
+
         List<CardInfo> specialUncommon = getSpecialUncommon();
         specialCards += specialUncommon.size();
-        List<CardInfo> specialCommon = getSpecialCommon();
 
+        List<CardInfo> specialCommon = getSpecialCommon();
         specialCards += specialCommon.size();
 
         if (specialCards > 0) {
             for (int i = 0; i < numBoosterSpecial; i++) {
-                if (RandomUtil.nextInt(15) < 10) {
-                    if (!specialCommon.isEmpty()) {
-                        addToBooster(booster, specialCommon);
-                    } else {
-                        i--;
-                    }
+                if (!specialCommon.isEmpty()
+                        && RandomUtil.nextInt(15) < 10) {
+                    addToBooster(booster, specialCommon);
                     continue;
                 }
-                if (RandomUtil.nextInt(4) < 3) {
-                    if (!specialUncommon.isEmpty()) {
-                        addToBooster(booster, specialUncommon);
-                    } else {
-                        i--;
-                    }
+                if (!specialUncommon.isEmpty()
+                        && RandomUtil.nextInt(4) < 3) {
+                    addToBooster(booster, specialUncommon);
                     continue;
                 }
-                if (RandomUtil.nextInt(8) < 7) {
-                    if (!specialRare.isEmpty()) {
-                        addToBooster(booster, specialRare);
-                    } else {
-                        i--;
-                    }
+                if (!specialRare.isEmpty()
+                        && RandomUtil.nextInt(8) < 7) {
+                    addToBooster(booster, specialRare);
                     continue;
                 }
                 if (!specialMythic.isEmpty()) {
-                    if (!specialBonus.isEmpty()) {
-                        if (RandomUtil.nextInt(3) < 2) {
-                            addToBooster(booster, specialMythic);
-                            continue;
-                        }
-                    } else {
+                    if (specialBonus.isEmpty() || RandomUtil.nextInt(3) < 2) {
                         addToBooster(booster, specialMythic);
                         continue;
                     }
-                } else {
-                    i--;
                 }
                 if (!specialBonus.isEmpty()) {
                     addToBooster(booster, specialBonus);
+                    continue;
                 }
+                i--;
             }
         }
     }

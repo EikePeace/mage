@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import mage.MageInt;
@@ -11,8 +10,8 @@ import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.filter.FilterCard;
 import mage.game.Game;
 import mage.players.Player;
@@ -24,7 +23,6 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- *
  * @author jeffwadsworth
  */
 public final class ScytheSpecter extends CardImpl {
@@ -44,7 +42,7 @@ public final class ScytheSpecter extends CardImpl {
 
     }
 
-    public ScytheSpecter(final ScytheSpecter card) {
+    private ScytheSpecter(final ScytheSpecter card) {
         super(card);
     }
 
@@ -80,13 +78,7 @@ class ScytheSpecterEffect extends OneShotEffect {
                     opponent.chooseTarget(Outcome.Discard, target, source, game);
                     Card targetCard = game.getCard(target.getFirstTarget());
                     if (targetCard != null) {
-                        if (targetCard.isSplitCard()) { //check Split Cards
-                            if (targetCard.getSecondCardFace().getConvertedManaCost() < targetCard.getConvertedManaCost()) {
-                                currentCMC = targetCard.getConvertedManaCost();
-                            }
-                        } else {
-                            currentCMC = targetCard.getConvertedManaCost();
-                        }
+                        currentCMC = targetCard.getConvertedManaCost();
                         if (highestCMC <= currentCMC) {
                             highestCMC = currentCMC;
                         }
@@ -97,7 +89,7 @@ class ScytheSpecterEffect extends OneShotEffect {
             for (UUID opponentId : cardDiscarded.keySet()) {//discard must happen simultaneously
                 Player player = game.getPlayer(opponentId);
                 if (player != null
-                        && player.discard(cardDiscarded.get(opponentId), source, game)) {
+                        && player.discard(cardDiscarded.get(opponentId), false, source, game)) {
                     discardedCheck.put(opponentId, 1);//note that a card was discarded
                 }
             }
@@ -108,7 +100,7 @@ class ScytheSpecterEffect extends OneShotEffect {
                     Player opponent = game.getPlayer(playerId);
                     if (opponent != null
                             && discardedCheck.get(playerId) == 1) {//check that card was discarded
-                        opponent.loseLife(highestCMC, game, false);
+                        opponent.loseLife(highestCMC, game, source, false);
                     }
                 }
             }

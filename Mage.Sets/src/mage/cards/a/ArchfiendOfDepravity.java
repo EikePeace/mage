@@ -40,7 +40,7 @@ public final class ArchfiendOfDepravity extends CardImpl {
         this.addAbility(new BeginningOfEndStepTriggeredAbility(new ArchfiendOfDepravityEffect(), TargetController.OPPONENT, false));
     }
 
-    public ArchfiendOfDepravity(final ArchfiendOfDepravity card) {
+    private ArchfiendOfDepravity(final ArchfiendOfDepravity card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class ArchfiendOfDepravityEffect extends OneShotEffect {
                 }
             }
             for (Permanent creature : creaturesToSacrifice) {
-                creature.sacrifice(source.getSourceId(), game);
+                creature.sacrifice(source, game);
             }
             return true;
         }

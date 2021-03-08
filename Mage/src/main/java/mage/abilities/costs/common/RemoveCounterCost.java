@@ -23,10 +23,10 @@ import java.util.UUID;
  */
 public class RemoveCounterCost extends CostImpl {
 
-    private TargetPermanent target;
+    protected TargetPermanent target;
     private String name;
     private CounterType counterTypeToRemove;
-    private int countersToRemove;
+    protected int countersToRemove;
 
     public RemoveCounterCost(TargetPermanent target) {
         this(target, null);
@@ -53,7 +53,7 @@ public class RemoveCounterCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         paid = false;
         int countersRemoved = 0;
         Player controller = game.getPlayer(controllerId);
@@ -62,7 +62,7 @@ public class RemoveCounterCost extends CostImpl {
                 return paid = true;
             }
             target.clearChosen();
-            if (target.choose(Outcome.UnboostCreature, controllerId, sourceId, game)) {
+            if (target.choose(Outcome.UnboostCreature, controllerId, source.getSourceId(), game)) {
                 for (UUID targetId : target.getTargets()) {
                     Permanent permanent = game.getPermanent(targetId);
                     if (permanent != null) {
@@ -100,7 +100,7 @@ public class RemoveCounterCost extends CostImpl {
                                     numberOfCountersSelected = controller.getAmount(1, Math.min(countersLeft, countersOnPermanent),
                                             new StringBuilder("Remove how many counters from ").append(permanent.getIdName()).toString(), game);
                                 }
-                                permanent.removeCounters(counterName, numberOfCountersSelected, game);
+                                permanent.removeCounters(counterName, numberOfCountersSelected, source, game);
                                 countersRemoved += numberOfCountersSelected;
                                 if (!game.isSimulation()) {
                                     game.informPlayers(new StringBuilder(controller.getLogName())
@@ -123,15 +123,16 @@ public class RemoveCounterCost extends CostImpl {
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return target.canChoose(controllerId, game);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return target.canChoose(source.getSourceId(), controllerId, game);
     }
 
     private String setText() {
         StringBuilder sb = new StringBuilder("Remove ");
-        sb.append(CardUtil.numberToText(countersToRemove, "a")).append(' ');
         if (counterTypeToRemove != null) {
-            sb.append(counterTypeToRemove.getName());
+            sb.append(CardUtil.numberToText(countersToRemove, counterTypeToRemove.getArticle())).append(' ').append(counterTypeToRemove.getName());
+        } else {
+            sb.append(CardUtil.numberToText(countersToRemove, "a"));
         }
         sb.append(countersToRemove == 1 ? " counter from " : " counters from ").append(target.getMaxNumberOfTargets() == 1 ? "a " : "").append(target.getTargetName());
         return sb.toString();

@@ -1,11 +1,3 @@
-
-
-/*
- * BigCard.java
- *
- * Created on Jan 18, 2010, 3:21:33 PM
- */
-
 package mage.client.cards;
 
 import java.awt.Dimension;
@@ -16,8 +8,6 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.UUID;
 import javax.swing.JComponent;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 import static mage.client.constants.Constants.CONTENT_MAX_XOFFSET;
 import static mage.client.constants.Constants.FRAME_MAX_HEIGHT;
 import static mage.client.constants.Constants.FRAME_MAX_WIDTH;
@@ -29,6 +19,7 @@ import mage.client.util.ImageHelper;
 import mage.constants.EnlargeMode;
 import org.jdesktop.swingx.JXPanel;
 import mage.client.util.TransformedImageCache;
+import org.mage.card.arcane.UI;
 
 /**
  * Class for displaying big image of the card
@@ -62,6 +53,9 @@ public class BigCard extends JComponent {
         setOpaque(true);
         this.scrollPane.setOpaque(true);
         this.scrollPane.setVisible(false);
+        
+        UI.setHTMLEditorKit(text);
+        text.setEditable(false);
     }
 
     private void initBounds(boolean rotated) {
@@ -69,8 +63,8 @@ public class BigCard extends JComponent {
         if (rotated) {
             scrollPane.setBounds(50, 50, 100, 100);
         } else {
-            scrollPane.setBounds(this.getWidth()*1000/17777,this.getWidth()*1000/1100,
-                                 this.getWidth()*1000/1142,this.getWidth()*1000/2539);
+            scrollPane.setBounds(this.getWidth()*1000/17777,this.getWidth()*1000/1150,
+                                 this.getWidth()*1000/1130,this.getWidth()*1000/2100);
         }
     }
 
@@ -95,8 +89,14 @@ public class BigCard extends JComponent {
             synchronized (this) {
                 source = null;
                 hue = 0.000f;
-            }
-            drawText(strings);
+            } 
+            StringBuilder displayedText = new StringBuilder();
+            for (String textLine: strings) {
+                if (textLine != null && !textLine.replace(".", "").trim().isEmpty()) {
+                    displayedText.append("<p style='margin: 2px'>").append(textLine).append("</p>");
+                }                
+            }        
+            this.text.setText(displayedText.toString());
             repaint();
         }
     }
@@ -107,19 +107,6 @@ public class BigCard extends JComponent {
 
     public void resetCardId() {
         this.cardId = null;
-    }
-
-    private void drawText(java.util.List<String> strings) {
-        text.setText("");
-        StyledDocument doc = text.getStyledDocument();
-
-        try {
-            for (String line : strings) {
-                doc.insertString(doc.getLength(), line + '\n', doc.getStyle("regular"));
-            }
-        } catch (BadLocationException ble) {
-        }
-        text.setCaretPosition(0);
     }
 
     @Override
@@ -169,21 +156,19 @@ public class BigCard extends JComponent {
         setFocusable(false);
         setMinimumSize(new Dimension(FRAME_MAX_WIDTH, FRAME_MAX_HEIGHT));
         setName("bigCardPanel"); // NOI18N
-        setOpaque(false);
         setPreferredSize(getMinimumSize());
         setLayout(null);
 
+        scrollPane.setBackground(new java.awt.Color(220, 220, 220));
         scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setOpaque(false);
+        scrollPane.setViewportBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        text.setEditable(false);
         text.setFocusable(false);
-        text.setOpaque(false);
         scrollPane.setViewportView(text);
 
         add(scrollPane);
-        scrollPane.setBounds(20, 230, 210, 120);
+        scrollPane.setBounds(20, 220, 210, 130);
         scrollPane.setBounds(new Rectangle(CONTENT_MAX_XOFFSET, TEXT_MAX_YOFFSET, TEXT_MAX_WIDTH, TEXT_MAX_HEIGHT));
     }// </editor-fold>//GEN-END:initComponents
 

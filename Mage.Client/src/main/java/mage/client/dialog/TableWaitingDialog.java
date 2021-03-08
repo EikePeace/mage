@@ -1,10 +1,3 @@
-
-
- /*
- * TableWaitingDialog.java
- *
- * Created on Dec 16, 2009, 10:27:44 AM
- */
 package mage.client.dialog;
 
 import java.awt.Dimension;
@@ -40,6 +33,8 @@ import static mage.client.dialog.PreferencesDialog.KEY_TABLE_WAITING_COLUMNS_WID
 import static mage.client.dialog.PreferencesDialog.KEY_TABLES_DIVIDER_LOCATION_4;
 
 /**
+ * App GUI: waiting other players before join to a table
+ *
  * @author BetaSteward_at_googlemail.com
  */
 public class TableWaitingDialog extends MageDialog {
@@ -456,9 +451,7 @@ class UpdateSeatsTask extends SwingWorker<Void, TableView> {
     protected void done() {
         try {
             get();
-        } catch (InterruptedException ex) {
-            logger.fatal("Update Seats Task error", ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             logger.fatal("Update Seats Task error", ex);
         } catch (CancellationException ex) {
         }

@@ -48,16 +48,16 @@ public final class OutlawHolocron extends CardImpl {
         // {T}, Remove two charge counters from Outlaw Holocron: Add BR or RG.cost = new RemoveCountersSourceCost(CounterType.CHARGE.createInstance(2));
         cost = new RemoveCountersSourceCost(CounterType.CHARGE.createInstance(2));
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 0, 0, 0, 1, 0, 0, 0), new TapSourceCost());
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 1, 0, 0, 0, 0), new TapSourceCost());
         ability.addCost(cost);
         this.addAbility(ability);
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(1, 1, 0, 0, 0, 0, 0, 0), new TapSourceCost());
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 0, 1, 1, 0, 0, 0), new TapSourceCost());
         ability.addCost(cost);
         this.addAbility(ability);
     }
 
-    public OutlawHolocron(final OutlawHolocron card) {
+    private OutlawHolocron(final OutlawHolocron card) {
         super(card);
     }
 

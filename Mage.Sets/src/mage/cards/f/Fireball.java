@@ -30,7 +30,7 @@ public final class Fireball extends CardImpl {
         this.getSpellAbility().setCostAdjuster(FireballAdjuster.instance);
     }
 
-    public Fireball(final Fireball card) {
+    private Fireball(final Fireball card) {
         super(card);
     }
 
@@ -73,11 +73,11 @@ class FireballEffect extends OneShotEffect {
                 for (UUID targetId : targetPointer.getTargets(game, source)) {
                     Permanent permanent = game.getPermanent(targetId);
                     if (permanent != null) {
-                        permanent.damage(damagePer, source.getSourceId(), game, false, true);
+                        permanent.damage(damagePer, source.getSourceId(), source, game, false, true);
                     } else {
                         Player player = game.getPlayer(targetId);
                         if (player != null) {
-                            player.damage(damagePer, source.getSourceId(), game);
+                            player.damage(damagePer, source.getSourceId(), source, game);
                         }
                     }
                 }

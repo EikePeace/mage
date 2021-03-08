@@ -12,7 +12,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -42,7 +42,7 @@ public final class LiegeOfThePit extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{B}{B}{B}{B}")));
     }
 
-    public LiegeOfThePit(final LiegeOfThePit card) {
+    private LiegeOfThePit(final LiegeOfThePit card) {
         super(card);
     }
 
@@ -88,11 +88,11 @@ class LiegeOfThePitEffect extends OneShotEffect {
             player.choose(Outcome.Sacrifice, target, source.getSourceId(), game);
             Permanent permanent = game.getPermanent(target.getFirstTarget());
             if (permanent != null) {
-                permanent.sacrifice(source.getSourceId(), game);
+                permanent.sacrifice(source, game);
                 return true;
             }
         } else {
-            player.damage(7, source.getSourceId(), game);
+            player.damage(7, source.getSourceId(), source, game);
             return true;
         }
         return false;

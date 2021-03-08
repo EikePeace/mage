@@ -41,7 +41,7 @@ public final class NotionThief extends CardImpl {
 
     }
 
-    public NotionThief(final NotionThief card) {
+    private NotionThief(final NotionThief card) {
         super(card);
     }
 
@@ -76,7 +76,7 @@ class NotionThiefReplacementEffect extends ReplacementEffectImpl {
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(1, game, event.getAppliedEffects());
+            player.drawCards(1, source, game, event);
         }
         return true;
     }

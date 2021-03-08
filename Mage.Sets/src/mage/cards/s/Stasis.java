@@ -2,7 +2,6 @@
 package mage.cards.s;
 
 import java.util.UUID;
-import mage.abilities.Ability;
 import mage.abilities.common.BeginningOfUpkeepTriggeredAbility;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.costs.mana.ManaCostsImpl;
@@ -31,7 +30,7 @@ public final class Stasis extends CardImpl {
 
     }
 
-    public Stasis(final Stasis card) {
+    private Stasis(final Stasis card) {
         super(card);
     }
 

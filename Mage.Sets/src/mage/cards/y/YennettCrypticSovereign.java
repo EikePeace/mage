@@ -1,27 +1,27 @@
 package mage.cards.y;
 
-import java.util.UUID;
+import mage.ApprovingObject;
 import mage.MageInt;
-import mage.MageObjectReference;
 import mage.abilities.Ability;
 import mage.abilities.common.AttacksTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
-import mage.constants.SubType;
-import mage.constants.SuperType;
 import mage.abilities.keyword.FlyingAbility;
-import mage.abilities.keyword.VigilanceAbility;
 import mage.abilities.keyword.MenaceAbility;
+import mage.abilities.keyword.VigilanceAbility;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.CardsImpl;
 import mage.constants.CardType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
+import mage.constants.SuperType;
 import mage.game.Game;
 import mage.players.Player;
 
+import java.util.UUID;
+
 /**
- *
  * @author TheElk801
  */
 public final class YennettCrypticSovereign extends CardImpl {
@@ -50,7 +50,7 @@ public final class YennettCrypticSovereign extends CardImpl {
         ));
     }
 
-    public YennettCrypticSovereign(final YennettCrypticSovereign card) {
+    private YennettCrypticSovereign(final YennettCrypticSovereign card) {
         super(card);
     }
 
@@ -64,10 +64,10 @@ class YennettCrypticSovereignEffect extends OneShotEffect {
 
     public YennettCrypticSovereignEffect() {
         super(Outcome.Benefit);
-        this.staticText = "reveal the top card of your library. "
-                + "If that card's converted mana cost is odd, "
-                + "you may cast it without paying its mana cost. "
-                + "Otherwise, draw a card";
+        this.staticText = "reveal the top card of your library. " +
+                "You may cast it without paying its mana cost " +
+                "if its converted mana cost is odd. " +
+                "If you don't cast it, draw a card.";
     }
 
     public YennettCrypticSovereignEffect(final YennettCrypticSovereignEffect effect) {
@@ -92,17 +92,17 @@ class YennettCrypticSovereignEffect extends OneShotEffect {
         player.revealCards(source, new CardsImpl(card), game);
         if (card.getConvertedManaCost() % 2 == 1) {
             if (player.chooseUse(outcome, "Cast " + card.getLogName() + " without paying its mana cost?", source, game)) {
-                player.cast(card.getSpellAbility(), game, true, new MageObjectReference(source.getSourceObject(game), game));
+                player.cast(card.getSpellAbility(), game, true, new ApprovingObject(source, game));
             } else {
                 /*
                 7/13/2018 | If the revealed card doesn’t have an odd converted mana cost or if that card does but you 
                 choose not to cast it, you draw a card. Keep in mind that revealing a card doesn’t cause it to change 
                 zones. This means that the card you draw will be the card you revealed.
                  */
-                player.drawCards(1, game);
+                player.drawCards(1, source, game);
             }
         } else {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
         }
         return true;
     }

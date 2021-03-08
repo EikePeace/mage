@@ -34,7 +34,7 @@ public final class SpreadingPlague extends CardImpl {
 
     }
 
-    public SpreadingPlague(final SpreadingPlague card) {
+    private SpreadingPlague(final SpreadingPlague card) {
         super(card);
     }
 
@@ -63,13 +63,13 @@ class SpreadingPlagueEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent creature = game.getPermanentOrLKIBattlefield(targetPointer.getFirst(game, source));
+        Permanent creature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (creature != null) {
             ObjectColor color = creature.getColor(game);
             for (Permanent permanent : game.getBattlefield().getActivePermanents(FILTER, source.getControllerId(), game)) {
                 if (permanent.getColor(game).shares(color)
                         && !Objects.equals(permanent, creature)) {
-                    permanent.destroy(source.getSourceId(), game, true);
+                    permanent.destroy(source, game, true);
                 }
             }
             return true;

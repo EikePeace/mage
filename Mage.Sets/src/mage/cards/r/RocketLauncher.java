@@ -40,7 +40,7 @@ public final class RocketLauncher extends CardImpl {
         this.addAbility(ability, watcher);
     }
 
-    public RocketLauncher(final RocketLauncher card) {
+    private RocketLauncher(final RocketLauncher card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class RocketLauncherWatcher extends Watcher {
             changedControllerOR1stTurn = false;
         }
         if (event.getType() == GameEvent.EventType.LOST_CONTROL &&
-                Objects.equals(event.getSourceId(), cardId)) {
+                Objects.equals(event.getTargetId(), cardId)) {
             changedControllerOR1stTurn = true;
         }
     }

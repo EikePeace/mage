@@ -34,7 +34,7 @@ public final class SlateStreetRuffian extends CardImpl {
         this.addAbility(new BecomesBlockedByCreatureTriggeredAbility(new SlateStreetRuffianDiscardEffect(), false));
     }
 
-    public SlateStreetRuffian(final SlateStreetRuffian card) {
+    private SlateStreetRuffian(final SlateStreetRuffian card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class SlateStreetRuffianDiscardEffect extends OneShotEffect {
         if (blockingCreature != null) {
             Player opponent = game.getPlayer(blockingCreature.getControllerId());
             if (opponent != null) {
-                opponent.discard(1, false, source, game);
+                opponent.discard(1, false, false, source, game);
                 return true;
             }
         }

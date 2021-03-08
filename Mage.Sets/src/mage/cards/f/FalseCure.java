@@ -29,7 +29,7 @@ public final class FalseCure extends CardImpl {
         this.getSpellAbility().addEffect(new CreateDelayedTriggeredAbilityEffect(new FalseCureTriggeredAbility()));
     }
 
-    public FalseCure(final FalseCure card) {
+    private FalseCure(final FalseCure card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class FalseCureTriggeredAbility extends DelayedTriggeredAbility {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.GAINED_LIFE;
+        return event.getType() == GameEvent.EventType.GAINED_LIFE;
     }
     
     @Override

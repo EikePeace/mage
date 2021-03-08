@@ -33,7 +33,7 @@ public final class JoragaInvocation extends CardImpl {
 
     }
 
-    public JoragaInvocation(final JoragaInvocation card) {
+    private JoragaInvocation(final JoragaInvocation card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class JoragaInvocationEffect extends OneShotEffect {
         if (controller != null) {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, game)) {
                 ContinuousEffect effect = new MustBeBlockedByAtLeastOneTargetEffect();
-                effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                effect.setTargetPointer(new FixedTarget(permanent, game));
                 game.addEffect(effect, source);
             }
             return true;

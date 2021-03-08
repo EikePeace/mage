@@ -57,7 +57,7 @@ public final class Imprison extends CardImpl {
         this.addAbility(new AttacksOrBlocksEnchantedTriggeredAbility(Zone.BATTLEFIELD, new DoIfCostPaid(new ImprisonUnblockEffect(), new DestroySourceEffect(), new ManaCostsImpl("1"))));
     }
 
-    public Imprison(final Imprison card) {
+    private Imprison(final Imprison card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class ImprisonTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ACTIVATED_ABILITY;
+        return event.getType() == GameEvent.EventType.ACTIVATED_ABILITY;
     }
 
     @Override
@@ -137,11 +137,11 @@ class ImprisonUnblockEffect extends OneShotEffect {
                 if (permanent.isCreature()) {
                     
                     // Tap the creature
-                    permanent.tap(game);
+                    permanent.tap(source, game);
     
                     // Remove it from combat
                     Effect effect = new RemoveFromCombatTargetEffect();
-                    effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                    effect.setTargetPointer(new FixedTarget(permanent, game));
                     effect.apply(game, source);
     
                     // Make blocked creatures unblocked

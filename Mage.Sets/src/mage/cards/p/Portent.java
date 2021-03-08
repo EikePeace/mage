@@ -33,7 +33,7 @@ public final class Portent extends CardImpl {
         this.getSpellAbility().addEffect(new CreateDelayedTriggeredAbilityEffect(new AtTheBeginOfNextUpkeepDelayedTriggeredAbility(new DrawCardSourceControllerEffect(1)), false));
     }
 
-    public Portent(final Portent card) {
+    private Portent(final Portent card) {
         super(card);
     }
 
@@ -47,7 +47,7 @@ class PortentEffect extends OneShotEffect {
 
     public PortentEffect() {
         super(Outcome.DrawCard);
-        this.staticText = "look at the top three cards of target player's library, then put them back in any order. You may have that player shuffle their library.";
+        this.staticText = "look at the top three cards of target player's library, then put them back in any order. You may have that player shuffle their library";
     }
 
     public PortentEffect(final PortentEffect effect) {

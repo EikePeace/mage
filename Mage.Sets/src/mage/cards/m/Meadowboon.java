@@ -40,7 +40,7 @@ public final class Meadowboon extends CardImpl {
         this.addAbility(new EvokeAbility(this, "{3}{W}"));
     }
 
-    public Meadowboon(final Meadowboon card) {
+    private Meadowboon(final Meadowboon card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class MeadowboonEffect extends OneShotEffect {
         Player target = game.getPlayer(source.getFirstTarget());
         if (target != null) {
             for (Permanent p : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, target.getId(), game)) {
-                p.addCounters(CounterType.P1P1.createInstance(), source, game);
+                p.addCounters(CounterType.P1P1.createInstance(), source.getControllerId(), source, game);
             }
             return true;
         }

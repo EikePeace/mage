@@ -12,6 +12,7 @@ import com.j256.ormlite.support.DatabaseConnection;
 import com.j256.ormlite.table.TableUtils;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
+import mage.constants.SetType;
 import mage.constants.SuperType;
 import mage.game.events.Listener;
 import mage.util.RandomUtil;
@@ -33,12 +34,21 @@ public enum CardRepository {
     private static final String JDBC_URL = "jdbc:h2:file:./db/cards.h2;AUTO_SERVER=TRUE";
     private static final String VERSION_ENTITY_NAME = "card";
     // raise this if db structure was changed
-    private static final long CARD_DB_VERSION = 52;
+    private static final long CARD_DB_VERSION = 53;
     // raise this if new cards were added to the server
-    private static final long CARD_CONTENT_VERSION = 4611686018427387905L;
+    private static final long CARD_CONTENT_VERSION = 238;
     private Dao<CardInfo, Object> cardDao;
     private Set<String> classNames;
-    private RepositoryEventSource eventSource = new RepositoryEventSource();
+    private final RepositoryEventSource eventSource = new RepositoryEventSource();
+
+    public static final Set<String> snowLandSetCodes = new HashSet<>(Arrays.asList(
+            "CSP",
+            "MH1",
+            "SLD",
+            "ME2",
+            "ICE",
+            "KHM"
+    ));
 
     CardRepository() {
         File file = new File("db");
@@ -57,7 +67,6 @@ public enum CardRepository {
 
             TableUtils.createTableIfNotExists(connectionSource, CardInfo.class);
             cardDao = DaoManager.createDao(connectionSource, CardInfo.class);
-
             eventSource.fireRepositoryDbLoaded();
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error creating card repository - ", ex);
@@ -136,16 +145,10 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting names from DB : " + ex);
@@ -153,21 +156,39 @@ public enum CardRepository {
         return names;
     }
 
+    private void addNewNames(CardInfo card, Set<String> namesList) {
+        // require before call: qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName"...);
+
+        // normal names
+        int result = card.getName().indexOf(" // ");
+        if (result > 0) {
+            namesList.add(card.getName().substring(0, result));
+            namesList.add(card.getName().substring(result + 4));
+        } else {
+            namesList.add(card.getName());
+        }
+
+        // additional names from double side cards
+        if (card.getSecondSideName() != null && !card.getSecondSideName().isEmpty()) {
+            namesList.add(card.getSecondSideName());
+        }
+        if (card.getModalDoubleFacesSecondSideName() != null && !card.getModalDoubleFacesSecondSideName().isEmpty()) {
+            namesList.add(card.getModalDoubleFacesSecondSideName());
+        }
+        if (card.getFlipCardName() != null && !card.getFlipCardName().isEmpty()) {
+            namesList.add(card.getFlipCardName());
+        }
+    }
+
     public Set<String> getNonLandNames() {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             qb.where().not().like("types", new SelectArg('%' + CardType.LAND.name() + '%'));
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting non-land names from DB : " + ex);
@@ -176,18 +197,15 @@ public enum CardRepository {
         return names;
     }
 
-    public Boolean haveSnowLands(String setCode) {
-        return setCode.equals("CSP")
-                || setCode.equals("MH1")
-                || setCode.equals("ME2")
-                || setCode.equals("ICE");
+    public static Boolean haveSnowLands(String setCode) {
+        return snowLandSetCodes.contains(setCode);
     }
 
     public Set<String> getNonbasicLandNames() {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             Where where = qb.where();
             where.and(
                     where.not().like("supertypes", '%' + SuperType.BASIC.name() + '%'),
@@ -195,13 +213,7 @@ public enum CardRepository {
             );
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting non-land names from DB : " + ex);
@@ -214,17 +226,11 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             qb.where().not().like("supertypes", new SelectArg('%' + SuperType.BASIC.name() + '%'));
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting non-land names from DB : " + ex);
@@ -237,17 +243,11 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             qb.where().like("types", new SelectArg('%' + CardType.CREATURE.name() + '%'));
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting creature names from DB : " + ex);
@@ -260,17 +260,11 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             qb.where().like("types", new SelectArg('%' + CardType.ARTIFACT.name() + '%'));
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting artifact names from DB : " + ex);
@@ -283,7 +277,7 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             Where where = qb.where();
             where.and(
                     where.not().like("types", '%' + CardType.CREATURE.name() + '%'),
@@ -291,13 +285,7 @@ public enum CardRepository {
             );
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting non-land and non-creature names from DB : " + ex);
@@ -309,7 +297,7 @@ public enum CardRepository {
         Set<String> names = new TreeSet<>();
         try {
             QueryBuilder<CardInfo, Object> qb = cardDao.queryBuilder();
-            qb.distinct().selectColumns("name");
+            qb.distinct().selectColumns("name", "modalDoubleFacesSecondSideName", "secondSideName", "flipCardName");
             Where where = qb.where();
             where.and(
                     where.not().like("types", '%' + CardType.ARTIFACT.name() + '%'),
@@ -317,13 +305,7 @@ public enum CardRepository {
             );
             List<CardInfo> results = cardDao.query(qb.prepare());
             for (CardInfo card : results) {
-                int result = card.getName().indexOf(" // ");
-                if (result > 0) {
-                    names.add(card.getName().substring(0, result));
-                    names.add(card.getName().substring(result + 4));
-                } else {
-                    names.add(card.getName());
-                }
+                addNewNames(card, names);
             }
         } catch (SQLException ex) {
             Logger.getLogger(CardRepository.class).error("Error getting non-artifact non-land names from DB : " + ex);
@@ -333,11 +315,22 @@ public enum CardRepository {
     }
 
     public CardInfo findCard(String setCode, String cardNumber) {
+        return findCard(setCode, cardNumber, true);
+    }
+
+    public CardInfo findCard(String setCode, String cardNumber, boolean ignoreNightCards) {
         try {
             QueryBuilder<CardInfo, Object> queryBuilder = cardDao.queryBuilder();
-            queryBuilder.limit(1L).where().eq("setCode", new SelectArg(setCode))
-                    .and().eq("cardNumber", new SelectArg(cardNumber))
-                    .and().eq("nightCard", new SelectArg(false));
+            if (ignoreNightCards) {
+                queryBuilder.limit(1L).where()
+                        .eq("setCode", new SelectArg(setCode))
+                        .and().eq("cardNumber", new SelectArg(cardNumber))
+                        .and().eq("nightCard", new SelectArg(false));
+            } else {
+                queryBuilder.limit(1L).where()
+                        .eq("setCode", new SelectArg(setCode))
+                        .and().eq("cardNumber", new SelectArg(cardNumber));
+            }
             List<CardInfo> result = cardDao.query(queryBuilder.prepare());
             if (!result.isEmpty()) {
                 return result.get(0);
@@ -393,14 +386,21 @@ public enum CardRepository {
     }
 
     public CardInfo findPreferedCoreExpansionCard(String name, boolean caseInsensitive, String preferedSetCode) {
-
         List<CardInfo> cards;
         if (caseInsensitive) {
             cards = findCardsCaseInsensitive(name);
         } else {
             cards = findCards(name);
         }
+        return findPreferedOrLatestCard(cards, preferedSetCode);
+    }
 
+    public CardInfo findPreferedCoreExpansionCardByClassName(String canonicalClassName, String preferedSetCode) {
+        List<CardInfo> cards = findCardsByClass(canonicalClassName);
+        return findPreferedOrLatestCard(cards, preferedSetCode);
+    }
+
+    private CardInfo findPreferedOrLatestCard(List<CardInfo> cards, String preferedSetCode) {
         if (!cards.isEmpty()) {
             Date lastReleaseDate = null;
             Date lastExpansionDate = null;
@@ -456,11 +456,21 @@ public enum CardRepository {
         return Collections.emptyList();
     }
 
+    public List<CardInfo> findCardsByClass(String canonicalClassName) {
+        try {
+            QueryBuilder<CardInfo, Object> queryBuilder = cardDao.queryBuilder();
+            queryBuilder.where().eq("className", new SelectArg(canonicalClassName));
+            return cardDao.query(queryBuilder.prepare());
+        } catch (SQLException ex) {
+        }
+        return Collections.emptyList();
+    }
+
     public List<CardInfo> findCardsCaseInsensitive(String name) {
         try {
             String sqlName = name.toLowerCase(Locale.ENGLISH).replaceAll("'", "''");
             GenericRawResults<CardInfo> rawResults = cardDao.queryRaw(
-                    "select * from " + CardRepository.VERSION_ENTITY_NAME + " where lower(name) = '" + sqlName + '\'',
+                    "select * from " + CardRepository.VERSION_ENTITY_NAME + " where lower_name = '" + sqlName + '\'',
                     cardDao.getRawRowMapper());
             List<CardInfo> result = new ArrayList<>();
             for (CardInfo cardinfo : rawResults) {
@@ -473,6 +483,13 @@ public enum CardRepository {
         return Collections.emptyList();
     }
 
+    /**
+     * Warning, don't use db functions in card's code - it generate heavy db loading in AI simulations. If you
+     * need that feature then check for simulation mode. See https://github.com/magefree/mage/issues/7014
+     *
+     * @param criteria
+     * @return
+     */
     public List<CardInfo> findCards(CardCriteria criteria) {
         try {
             QueryBuilder<CardInfo, Object> queryBuilder = cardDao.queryBuilder();
@@ -483,6 +500,37 @@ public enum CardRepository {
             Logger.getLogger(CardRepository.class).error("Error during execution of card repository query statement", ex);
         }
         return Collections.emptyList();
+    }
+
+    public CardInfo findOldestNonPromoVersionCard(String name) {
+        List<CardInfo> allVersions = this.findCards(name);
+        if (!allVersions.isEmpty()) {
+            allVersions.sort(new OldestNonPromoComparator());
+            return allVersions.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    static class OldestNonPromoComparator implements Comparator<CardInfo> {
+        @Override
+        public int compare(CardInfo a, CardInfo b) {
+            ExpansionInfo aSet = ExpansionRepository.instance.getSetByCode(a.getSetCode());
+            ExpansionInfo bSet = ExpansionRepository.instance.getSetByCode(b.getSetCode());
+            if (aSet.getType() == SetType.PROMOTIONAL && bSet.getType() != SetType.PROMOTIONAL) {
+                return 1;
+            }
+            if (bSet.getType() == SetType.PROMOTIONAL && aSet.getType() != SetType.PROMOTIONAL) {
+                return -1;
+            }
+            if (aSet.getReleaseDate().after(bSet.getReleaseDate())) {
+                return 1;
+            }
+            if (aSet.getReleaseDate().before(bSet.getReleaseDate())) {
+                return -1;
+            }
+            return Integer.compare(a.getCardNumberAsInt(), b.getCardNumberAsInt());
+        }
     }
 
     public long getContentVersionFromDB() {

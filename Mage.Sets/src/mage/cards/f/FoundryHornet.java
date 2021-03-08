@@ -18,7 +18,6 @@ import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 
 /**
  *
@@ -30,7 +29,7 @@ public final class FoundryHornet extends CardImpl {
     private static final FilterCreaturePermanent filterOpponent = new FilterCreaturePermanent();
 
     static {
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
         filterOpponent.add(TargetController.OPPONENT.getControllerPredicate());
     }
 
@@ -51,7 +50,7 @@ public final class FoundryHornet extends CardImpl {
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(ability, new PermanentsOnTheBattlefieldCondition(filter), rule));
     }
 
-    public FoundryHornet(final FoundryHornet card) {
+    private FoundryHornet(final FoundryHornet card) {
         super(card);
     }
 

@@ -15,7 +15,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.AuraCardCanAttachToPermanentId;
+import mage.filter.predicate.card.AuraCardCanAttachToPermanentId;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -50,7 +50,7 @@ public final class IridescentDrake extends CardImpl {
         this.addAbility(ability);
     }
 
-    public IridescentDrake(final IridescentDrake card) {
+    private IridescentDrake(final IridescentDrake card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class IridescentDrakeEffect extends OneShotEffect {
             if (target != null) {
                 game.getState().setValue("attachTo:" + targetAuraCard.getId(), permanent);
                 controller.moveCards(targetAuraCard, Zone.BATTLEFIELD, source, game);
-                return permanent.addAttachment(targetAuraCard.getId(), game);
+                return permanent.addAttachment(targetAuraCard.getId(), source, game);
             }
         }
         return false;

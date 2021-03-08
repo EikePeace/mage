@@ -3,7 +3,7 @@ package mage.cards.j;
 import mage.Mana;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.abilities.mana.SimpleManaAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -37,7 +37,7 @@ public final class JackInTheMox extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JackInTheMox(final JackInTheMox card) {
+    private JackInTheMox(final JackInTheMox card) {
         super(card);
     }
 
@@ -77,11 +77,11 @@ class JackInTheMoxManaEffect extends ManaEffect {
         Player controller = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (controller != null && permanent != null) {
-            int amount = controller.rollDice(game, 6);
+            int amount = controller.rollDice(source, game, 6);
             switch (amount) {
                 case 1:
-                    permanent.sacrifice(source.getSourceId(), game);
-                    controller.loseLife(5, game, false);
+                    permanent.sacrifice(source, game);
+                    controller.loseLife(5, game, source, false);
                     break;
                 case 2:
                     mana.add(Mana.WhiteMana(1));

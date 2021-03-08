@@ -38,7 +38,7 @@ public final class PerimeterCaptain extends CardImpl {
         this.addAbility(new PerimeterCaptainTriggeredAbility(new GainLifeEffect(2), true));
     }
 
-    public PerimeterCaptain(final PerimeterCaptain card) {
+    private PerimeterCaptain(final PerimeterCaptain card) {
         super(card);
     }
 
@@ -60,7 +60,7 @@ class PerimeterCaptainTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

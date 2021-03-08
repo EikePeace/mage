@@ -1,4 +1,3 @@
-
 package mage.cards.h;
 
 import mage.ObjectColor;
@@ -37,7 +36,7 @@ public final class HourOfEternity extends CardImpl {
         this.getSpellAbility().setTargetAdjuster(HourOfEternityAdjuster.instance);
     }
 
-    public HourOfEternity(final HourOfEternity card) {
+    private HourOfEternity(final HourOfEternity card) {
         super(card);
     }
 
@@ -91,15 +90,16 @@ class HourOfEternityEffect extends OneShotEffect {
             controller.moveCardsToExile(cardsToExile, source, game, true, null, "");
             for (Card card : cardsToExile) {
                 if (game.getState().getZone(card.getId()) == Zone.EXILED) {
+                    // create token and modify all attributes permanently (without game usage)
                     EmptyToken token = new EmptyToken();
-                    CardUtil.copyTo(token).from(card);
+                    CardUtil.copyTo(token).from(card, game);
                     token.removePTCDA();
                     token.getPower().modifyBaseValue(4);
                     token.getToughness().modifyBaseValue(4);
-                    token.getColor(game).setColor(ObjectColor.BLACK);
-                    token.getSubtype(game).clear();
-                    token.getSubtype(game).add(SubType.ZOMBIE);
-                    token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+                    token.getColor().setColor(ObjectColor.BLACK);
+                    token.removeAllCreatureTypes();
+                    token.addSubType(SubType.ZOMBIE);
+                    token.putOntoBattlefield(1, game, source, source.getControllerId());
                 }
             }
             return true;

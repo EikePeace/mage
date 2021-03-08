@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class KavuMonarch extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), filter2));
     }
 
-    public KavuMonarch(final KavuMonarch card) {
+    private KavuMonarch(final KavuMonarch card) {
         super(card);
     }
 

@@ -14,7 +14,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPermanent;
 
 /**
@@ -51,7 +51,7 @@ public final class TorchCourier extends CardImpl {
         this.addAbility(ability);
     }
 
-    public TorchCourier(final TorchCourier card) {
+    private TorchCourier(final TorchCourier card) {
         super(card);
     }
 

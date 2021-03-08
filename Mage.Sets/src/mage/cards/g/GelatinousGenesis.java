@@ -25,7 +25,7 @@ public final class GelatinousGenesis extends CardImpl {
         this.getSpellAbility().addEffect(new GelatinousGenesisEffect());
     }
 
-    public GelatinousGenesis(final GelatinousGenesis card) {
+    private GelatinousGenesis(final GelatinousGenesis card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class GelatinousGenesisEffect extends OneShotEffect {
         OozeToken oozeToken = new OozeToken();
         oozeToken.getPower().modifyBaseValue(count);
         oozeToken.getToughness().modifyBaseValue(count);
-        oozeToken.putOntoBattlefield(count, game, source.getSourceId(), source.getControllerId());
+        oozeToken.putOntoBattlefield(count, game, source, source.getControllerId());
         return true;
     }
 

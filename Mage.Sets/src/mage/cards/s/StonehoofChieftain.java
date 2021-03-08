@@ -16,7 +16,7 @@ import mage.constants.Duration;
 import mage.constants.SetTargetPointer;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -54,7 +54,7 @@ public final class StonehoofChieftain extends CardImpl {
         this.addAbility(ability);
     }
 
-    public StonehoofChieftain(final StonehoofChieftain card) {
+    private StonehoofChieftain(final StonehoofChieftain card) {
         super(card);
     }
 

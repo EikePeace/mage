@@ -14,7 +14,6 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.game.Game;
 import mage.players.Player;
-import mage.target.common.TargetOpponent;
 import mage.target.common.TargetOpponentOrPlaneswalker;
 import mage.target.targetpointer.FixedTarget;
 
@@ -33,7 +32,7 @@ public final class RakdossReturn extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponentOrPlaneswalker());
     }
 
-    public RakdossReturn(final RakdossReturn card) {
+    private RakdossReturn(final RakdossReturn card) {
         super(card);
     }
 

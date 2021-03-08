@@ -5,7 +5,6 @@ import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.condition.common.SourceOnBattlefieldCondition;
 import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
@@ -26,6 +25,7 @@ import mage.target.common.TargetArtifactPermanent;
 import mage.util.CardUtil;
 
 import java.util.UUID;
+import mage.abilities.condition.common.SourceRemainsInZoneCondition;
 
 /**
  * @author L_J
@@ -47,7 +47,7 @@ public final class ScarwoodBandits extends CardImpl {
                 new DoUnlessAnyOpponentPaysEffect(
                         new ConditionalContinuousEffect(
                                 new GainControlTargetEffect(Duration.Custom, true),
-                                SourceOnBattlefieldCondition.instance,
+                                new SourceRemainsInZoneCondition(Zone.BATTLEFIELD),
                                 "gain control of target artifact for as long as {this} remains on the battlefield"),
                         new GenericManaCost(2)),
                 new ManaCostsImpl("{2}{G}"));
@@ -56,7 +56,7 @@ public final class ScarwoodBandits extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScarwoodBandits(final ScarwoodBandits card) {
+    private ScarwoodBandits(final ScarwoodBandits card) {
         super(card);
     }
 
@@ -114,10 +114,10 @@ class DoUnlessAnyOpponentPaysEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null && player.canRespond()
                         && !player.equals(controller)
-                        && cost.canPay(source, source.getSourceId(), player.getId(), game)
+                        && cost.canPay(source, source, player.getId(), game)
                         && player.chooseUse(Outcome.Benefit, message, source, game)) {
                     cost.clearPaid();
-                    if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                    if (cost.pay(source, game, source, player.getId(), false, null)) {
                         if (!game.isSimulation()) {
                             game.informPlayers(player.getLogName() + " pays the cost to prevent the effect");
                         }

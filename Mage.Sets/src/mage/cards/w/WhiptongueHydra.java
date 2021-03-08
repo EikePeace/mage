@@ -17,7 +17,6 @@ import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.AbilityPredicate;
 import mage.game.Game;
-import mage.game.permanent.Permanent;
 
 /**
  *
@@ -40,7 +39,7 @@ public final class WhiptongueHydra extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new WhiptongueHydraEffect(), false));
     }
 
-    public WhiptongueHydra(final WhiptongueHydra card) {
+    private WhiptongueHydra(final WhiptongueHydra card) {
         super(card);
     }
 
@@ -79,7 +78,7 @@ class WhiptongueHydraEffect extends OneShotEffect {
         destroyedPermanents = game.getBattlefield().getActivePermanents(
                 filter, source.getControllerId(), source.getSourceId(), game
         ).stream().filter(
-                (permanent) -> (permanent.destroy(source.getSourceId(), game, false))
+                (permanent) -> (permanent.destroy(source, game, false))
         ).map((_item) -> 1).reduce(destroyedPermanents, Integer::sum);
         if (destroyedPermanents > 0) {
             return new AddCountersSourceEffect(

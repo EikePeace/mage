@@ -33,7 +33,7 @@ public class DiscardCardYouChooseTargetEffect extends OneShotEffect {
     private static final FilterCard filterOneCard = new FilterCard("one card");
 
     public DiscardCardYouChooseTargetEffect() {
-        this(new FilterCard("a card"));
+        this(StaticFilters.FILTER_CARD_A);
     }
 
     public DiscardCardYouChooseTargetEffect(TargetController targetController) {
@@ -114,7 +114,7 @@ public class DiscardCardYouChooseTargetEffect extends OneShotEffect {
             TargetCard chosenCards = new TargetCard(numberToReveal, numberToReveal, 
                     Zone.HAND, new FilterCard("card in " + player.getName() + "'s hand"));
             chosenCards.setNotTarget(true);
-            if (chosenCards.canChoose(player.getId(), game) 
+            if (chosenCards.canChoose(source.getSourceId(), player.getId(), game)
                     && player.chooseTarget(Outcome.Discard, player.getHand(), chosenCards, source, game)) {
                 if (!chosenCards.getTargets().isEmpty()) {
                     List<UUID> targets = chosenCards.getTargets();
@@ -144,12 +144,7 @@ public class DiscardCardYouChooseTargetEffect extends OneShotEffect {
         if (!controller.choose(Outcome.Benefit, revealedCards, target, game)) {
             return result;
         }
-        for (UUID targetId : target.getTargets()) {
-            Card card = revealedCards.get(targetId, game);
-            if (!player.discard(card, source, game)) {
-                result = false;
-            }
-        }
+        result=!player.discard(new CardsImpl(target.getTargets()),false, source,game).isEmpty();
         return result;
     }
 
@@ -175,7 +170,7 @@ public class DiscardCardYouChooseTargetEffect extends OneShotEffect {
         } else {
             if (numberCardsToReveal instanceof StaticValue) {
                 sb.append(" reveals ");
-                sb.append(CardUtil.numberToText(((StaticValue) numberCardsToReveal).getValue()) + " cards");
+                sb.append(CardUtil.numberToText(((StaticValue) numberCardsToReveal).getValue())).append(" cards");
                 sb.append(" from their hand");
             } else {
                 sb.append(" reveals a number of cards from their hand equal to ");

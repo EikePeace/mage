@@ -4,6 +4,8 @@ import mage.MageObject;
 import mage.abilities.Mode;
 import mage.abilities.Modes;
 import mage.abilities.effects.Effect;
+import mage.abilities.hint.Hint;
+import mage.abilities.hint.HintUtils;
 import mage.cards.Card;
 import mage.constants.AbilityType;
 import mage.constants.CardType;
@@ -25,6 +27,8 @@ public class StackAbilityView extends CardView {
 
     private static final long serialVersionUID = 1L;
 
+    // in GUI: that's view will be replaced by sourceCard, so don't forget to sync settings like
+    // selectable, chooseable, etc. Search by getSourceCard
     private final CardView sourceCard;
 
     public StackAbilityView(Game game, StackAbility ability, String sourceName, CardView sourceCard) {
@@ -40,8 +44,8 @@ public class StackAbilityView extends CardView {
         this.subTypes = ability.getSubtype(game);
         this.superTypes = ability.getSuperType();
         this.color = ability.getColor(game);
-        this.manaCostLeft = ability.getManaCost().getSymbols();
-        this.manaCostRight = new ArrayList<>();
+        this.manaCostLeftStr = String.join("", ability.getManaCostSymbols());
+        this.manaCostRightStr = "";
         this.cardTypes = ability.getCardType();
         this.subTypes = ability.getSubtype(game);
         this.superTypes = ability.getSuperType();
@@ -56,8 +60,8 @@ public class StackAbilityView extends CardView {
             tmpSourceCard.subTypes.clear();
             tmpSourceCard.cardTypes.clear();
             tmpSourceCard.cardTypes.add(CardType.CREATURE);
-            tmpSourceCard.manaCostLeft.clear();
-            tmpSourceCard.manaCostRight.clear();
+            tmpSourceCard.manaCostLeftStr = "";
+            tmpSourceCard.manaCostRightStr = "";
             tmpSourceCard.power = "2";
             tmpSourceCard.toughness = "2";
             nameToShow = "creature without name";
@@ -76,7 +80,7 @@ public class StackAbilityView extends CardView {
         for (UUID modeId : ability.getModes().getSelectedModes()) {
             Mode mode = ability.getModes().get(modeId);
             if (!mode.getTargets().isEmpty()) {
-                setTargets(mode.getTargets());
+                addTargets(mode.getTargets(), mode.getEffects(), ability, game);
             } else {
                 List<UUID> targetList = new ArrayList<>();
                 for (Effect effect : mode.getEffects()) {
@@ -100,19 +104,31 @@ public class StackAbilityView extends CardView {
                             }
                         }
                     }
-
                 }
             }
         }
         if (!names.isEmpty()) {
             getRules().add("<i>Related objects: " + names.toString() + "</i>");
         }
+
         // show for modal ability, which mode was choosen
         if (ability.isModal()) {
             Modes modes = ability.getModes();
             for (UUID modeId : modes.getSelectedModes()) {
                 Mode mode = modes.get(modeId);
                 this.rules.add("<span color='green'><i>Chosen mode: " + mode.getEffects().getText(mode) + "</i></span>");
+            }
+        }
+
+        if (HintUtils.ABILITY_HINTS_ENABLE) {
+            List<String> abilityHints = new ArrayList<>();
+            for (Hint hint : ability.getHints()) {
+                abilityHints.add(hint.getText(game, ability));
+            }
+            // total hints
+            if (!abilityHints.isEmpty()) {
+                rules.add(HintUtils.HINT_START_MARK);
+                HintUtils.appendHints(rules, abilityHints);
             }
         }
     }

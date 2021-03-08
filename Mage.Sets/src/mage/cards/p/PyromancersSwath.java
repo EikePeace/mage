@@ -32,7 +32,7 @@ public final class PyromancersSwath extends CardImpl {
 
     }
 
-    public PyromancersSwath(final PyromancersSwath card) {
+    private PyromancersSwath(final PyromancersSwath card) {
         super(card);
     }
 
@@ -56,9 +56,8 @@ class PyromancersSwathReplacementEffect extends ReplacementEffectImpl {
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
         switch (event.getType()) {
-            case DAMAGE_CREATURE:
+            case DAMAGE_PERMANENT:
             case DAMAGE_PLAYER:
-            case DAMAGE_PLANESWALKER:
                 return true;
             default:
                 return false;
@@ -81,7 +80,7 @@ class PyromancersSwathReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), 2));
+        event.setAmount(CardUtil.overflowInc(event.getAmount(), 2));
         return false;
     }
 

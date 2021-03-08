@@ -30,7 +30,7 @@ public final class MagneticMine extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagneticMine(final MagneticMine card) {
+    private MagneticMine(final MagneticMine card) {
         super(card);
     }
 
@@ -52,7 +52,7 @@ class MagneticMineTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

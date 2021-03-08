@@ -17,7 +17,7 @@ import mage.constants.CardType;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -43,7 +43,7 @@ public final class RelicOfProgenitus extends CardImpl {
         this.addAbility(secondAbility);
     }
 
-    public RelicOfProgenitus(final RelicOfProgenitus card) {
+    private RelicOfProgenitus(final RelicOfProgenitus card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class RelicOfProgenitusEffect extends OneShotEffect {
             if (targetPlayer.chooseTarget(Outcome.Exile, target, source, game)) {
                 Card card = game.getCard(target.getFirstTarget());
                 if (card != null) {
-                    targetPlayer.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.GRAVEYARD, true);
+                    targetPlayer.moveCardToExileWithInfo(card, null, "", source, game, Zone.GRAVEYARD, true);
                 }
                 return true;
             }

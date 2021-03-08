@@ -1,6 +1,5 @@
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.TriggeredAbilityImpl;
@@ -18,16 +17,28 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterControlledPermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.target.common.TargetControlledPermanent;
 
+import java.util.UUID;
+
 /**
- *
  * @author LevelX2
  */
 public final class SlaughterPriestOfMogis extends CardImpl {
+
+    private static final FilterControlledPermanent filter
+            = new FilterControlledPermanent("another creature or an enchantment");
+
+    static {
+        filter.add(Predicates.or(
+                CardType.CREATURE.getPredicate(),
+                CardType.ENCHANTMENT.getPredicate()
+        ));
+        filter.add(AnotherPredicate.instance);
+    }
 
     public SlaughterPriestOfMogis(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{B}{R}");
@@ -41,9 +52,6 @@ public final class SlaughterPriestOfMogis extends CardImpl {
         this.addAbility(new SlaughterPriestOfMogisAbility());
 
         // {2}, Sacrifice another creature or enchantment: Slaughter-Priest of Mogis gains first strike until end of turn.
-        FilterControlledPermanent filter = new FilterControlledPermanent("another creature or enchantment");
-        filter.add(Predicates.or(CardType.CREATURE.getPredicate(), CardType.ENCHANTMENT.getPredicate()));
-        filter.add(AnotherPredicate.instance);
         Ability ability = new SimpleActivatedAbility(
                 new GainAbilitySourceEffect(FirstStrikeAbility.getInstance(), Duration.EndOfTurn),
                 new GenericManaCost(2));

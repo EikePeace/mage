@@ -40,7 +40,7 @@ public final class DraconicRoar extends CardImpl {
         this.getSpellAbility().addWatcher(new DragonOnTheBattlefieldWhileSpellWasCastWatcher());
     }
 
-    public DraconicRoar(final DraconicRoar card) {
+    private DraconicRoar(final DraconicRoar card) {
         super(card);
     }
 
@@ -92,11 +92,11 @@ class DraconicRoarEffect extends OneShotEffect {
         if (controller != null) {
             DragonOnTheBattlefieldWhileSpellWasCastWatcher watcher = game.getState().getWatcher(DragonOnTheBattlefieldWhileSpellWasCastWatcher.class);
             if (watcher != null && watcher.castWithConditionTrue(source.getId())) {
-                Permanent permanent = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+                Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
                 if (permanent != null) {
                     Player player = game.getPlayer(permanent.getControllerId());
                     if (player != null) {
-                        player.damage(3, source.getSourceId(), game);
+                        player.damage(3, source.getSourceId(), source, game);
                     }
                 }
             }

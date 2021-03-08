@@ -34,7 +34,7 @@ public final class FormOfTheDinosaur extends CardImpl {
         this.addAbility(ability);
     }
 
-    public FormOfTheDinosaur(final FormOfTheDinosaur card) {
+    private FormOfTheDinosaur(final FormOfTheDinosaur card) {
         super(card);
     }
 
@@ -66,8 +66,8 @@ class FormOfTheDinosaurEffect extends OneShotEffect {
         if (controller != null) {
             Permanent targetCreature = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (targetCreature != null) {
-                targetCreature.damage(15, source.getSourceId(), game, false, true);
-                controller.damage(targetCreature.getPower().getValue(), targetCreature.getId(), game);
+                targetCreature.damage(15, source.getSourceId(), source, game, false, true);
+                controller.damage(targetCreature.getPower().getValue(), targetCreature.getId(), source, game);
             }
             return true;
         }

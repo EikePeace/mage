@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.mage</groupId>
         <artifactId>mage-root</artifactId>
-        <version>1.4.42</version>
+        <version>1.4.48</version>
     </parent>
 
     <artifactId>mage-verify</artifactId>
@@ -22,6 +22,16 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mage-sets</artifactId>
+            <version>${mage-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mage-server</artifactId>
+            <version>${mage-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mage-client</artifactId>
             <version>${mage-version}</version>
         </dependency>
         <dependency>
@@ -44,14 +54,8 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.9.11</version>
+            <version>0.9.12</version>
         </dependency>
-        <dependency>
-            <groupId>org.mage</groupId>
-            <artifactId>mage-client</artifactId>
-            <version>1.4.42</version>
-        </dependency>
-
     </dependencies>
 
     <build>

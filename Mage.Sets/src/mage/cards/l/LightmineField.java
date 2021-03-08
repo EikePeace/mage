@@ -34,7 +34,7 @@ public final class LightmineField extends CardImpl {
         this.addAbility(new LightmineFieldTriggeredAbility());
     }
 
-    public LightmineField(final LightmineField card) {
+    private LightmineField(final LightmineField card) {
         super(card);
     }
 
@@ -61,7 +61,7 @@ class LightmineFieldTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override
@@ -111,7 +111,7 @@ class LightmineFieldEffect extends OneShotEffect {
                 MageObjectReference attacker = it.next();
                 Permanent creature = attacker.getPermanent(game);
                 if (creature != null) {
-                    creature.damage(damage, source.getSourceId(), game, false, true);
+                    creature.damage(damage, source.getSourceId(), source, game, false, true);
                 }
             }
             return true;

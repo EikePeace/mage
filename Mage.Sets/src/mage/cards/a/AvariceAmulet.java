@@ -54,7 +54,7 @@ public final class AvariceAmulet extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(2)));
     }
 
-    public AvariceAmulet(final AvariceAmulet card) {
+    private AvariceAmulet(final AvariceAmulet card) {
         super(card);
     }
 
@@ -84,7 +84,7 @@ class AvariceAmuletChangeControlEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null) {
-            return permanent.changeControllerId(source.getFirstTarget(), game);
+            return permanent.changeControllerId(source.getFirstTarget(), game, source);
         }
         return false;
     }

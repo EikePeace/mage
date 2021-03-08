@@ -28,7 +28,7 @@ public final class CinderCloud extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public CinderCloud(final CinderCloud card) {
+    private CinderCloud(final CinderCloud card) {
         super(card);
     }
 
@@ -58,8 +58,8 @@ class CinderCloudEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
-        if (permanent != null && permanent.destroy(source.getSourceId(), game, false) && permanent.getColor(game).equals(ObjectColor.WHITE)) {
-            game.applyEffects();
+        if (permanent != null && permanent.destroy(source, game, false) && permanent.getColor(game).equals(ObjectColor.WHITE)) {
+            game.getState().processAction(game);
             if (permanent.getZoneChangeCounter(game) + 1 == game.getState().getZoneChangeCounter(permanent.getId())
                     && game.getState().getZone(permanent.getId()) != Zone.GRAVEYARD) {
                 // A replacement effect has moved the card to another zone as grvayard
@@ -68,7 +68,7 @@ class CinderCloudEffect extends OneShotEffect {
             Player permanentController = game.getPlayer(permanent.getControllerId());
             if (permanentController != null) {
                 int damage = permanent.getPower().getValue();
-                permanentController.damage(damage, source.getSourceId(), game);
+                permanentController.damage(damage, source.getSourceId(), source, game);
             }
         }
         return false;

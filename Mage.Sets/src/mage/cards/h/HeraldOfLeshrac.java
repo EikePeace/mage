@@ -1,7 +1,5 @@
-
 package mage.cards.h;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.LeavesBattlefieldTriggeredAbility;
@@ -17,16 +15,11 @@ import mage.abilities.keyword.CumulativeUpkeepAbility;
 import mage.abilities.keyword.FlyingAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
-import mage.constants.CardType;
-import mage.constants.SubType;
-import mage.constants.Duration;
-import mage.constants.Outcome;
-import mage.constants.TargetController;
-import mage.constants.Zone;
+import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledLandPermanent;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
@@ -34,13 +27,15 @@ import mage.target.Target;
 import mage.target.TargetPermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author emerald000
  */
 public final class HeraldOfLeshrac extends CardImpl {
 
     private static final FilterPermanent filter = new FilterControlledLandPermanent("land you control but don't own");
+
     static {
         filter.add(TargetController.NOT_YOU.getOwnerPredicate());
     }
@@ -65,7 +60,7 @@ public final class HeraldOfLeshrac extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new HeraldOfLeshracLeavesEffect(), false));
     }
 
-    public HeraldOfLeshrac(final HeraldOfLeshrac card) {
+    private HeraldOfLeshrac(final HeraldOfLeshrac card) {
         super(card);
     }
 
@@ -78,6 +73,7 @@ public final class HeraldOfLeshrac extends CardImpl {
 class HeraldOfLeshracCumulativeCost extends CostImpl {
 
     private static final FilterPermanent filter = new FilterLandPermanent("land you don't control");
+
     static {
         filter.add(TargetController.NOT_YOU.getControllerPredicate());
     }
@@ -91,21 +87,21 @@ class HeraldOfLeshracCumulativeCost extends CostImpl {
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         Target target = new TargetPermanent(filter);
-        if (target.choose(Outcome.GainControl, controllerId, sourceId, game)) {
+        if (target.choose(Outcome.GainControl, controllerId, source.getSourceId(), game)) {
             ContinuousEffect effect = new GainControlTargetEffect(Duration.EndOfGame);
             effect.setTargetPointer(new FixedTarget(target.getFirstTarget()));
             game.addEffect(effect, ability);
-            game.applyEffects();
+            game.getState().processAction(game);
             paid = true;
         }
         return paid;
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
-        return game.getBattlefield().contains(filter, controllerId, game, 1);
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
+        return game.getBattlefield().contains(filter, source.getSourceId(), controllerId, game, 1);
     }
 
     @Override
@@ -141,7 +137,7 @@ class HeraldOfLeshracLeavesEffect extends OneShotEffect {
             filter.add(new ControllerIdPredicate(source.getControllerId()));
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 ContinuousEffect effect = new GainControlTargetEffect(Duration.EndOfGame, playerId);
-                effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                effect.setTargetPointer(new FixedTarget(permanent, game));
                 game.addEffect(effect, source);
             }
         }

@@ -56,7 +56,7 @@ public final class ShamanEnKor extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ShamanEnKor(final ShamanEnKor card) {
+    private ShamanEnKor(final ShamanEnKor card) {
         super(card);
     }
 
@@ -95,7 +95,7 @@ class ShamanEnKorRedirectFromTargetEffect extends RedirectionEffect {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE;
+        return event.getType() == EventType.DAMAGE_PERMANENT;
     }
 
     @Override

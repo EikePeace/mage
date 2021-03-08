@@ -27,7 +27,7 @@ public final class ShapeshifterToken extends TokenImpl {
         subtype.add(SubType.SHAPESHIFTER);
         power = new MageInt(2);
         toughness = new MageInt(2);
-        addAbility(ChangelingAbility.getInstance());
+        addAbility(new ChangelingAbility());
     }
 
     public ShapeshifterToken(final ShapeshifterToken token) {

@@ -7,7 +7,6 @@ import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.keyword.ScryEffect;
 import mage.abilities.keyword.AftermathAbility;
 import mage.cards.Card;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -38,7 +37,7 @@ public final class ReasonBelieve extends SplitCard {
 
     }
 
-    public ReasonBelieve(final ReasonBelieve card) {
+    private ReasonBelieve(final ReasonBelieve card) {
         super(card);
     }
 

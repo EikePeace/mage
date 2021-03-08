@@ -7,6 +7,7 @@ import mage.abilities.ActivatedAbilityImpl;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.counter.AddCountersSourceEffect;
+import mage.abilities.hint.common.MonstrousHint;
 import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.counters.CounterType;
@@ -54,6 +55,8 @@ public class MonstrosityAbility extends ActivatedAbilityImpl {
     public MonstrosityAbility(String manaString, int monstrosityValue) {
         super(Zone.BATTLEFIELD, new BecomeMonstrousSourceEffect(monstrosityValue),new ManaCostsImpl(manaString));
         this.monstrosityValue = monstrosityValue;
+
+        this.addHint(MonstrousHint.instance);
     }
 
     public MonstrosityAbility(final MonstrosityAbility ability) {
@@ -100,7 +103,7 @@ class BecomeMonstrousSourceEffect extends OneShotEffect {
             }
             new AddCountersSourceEffect(CounterType.P1P1.createInstance(monstrosityValue)).apply(game, source);
             permanent.setMonstrous(true);
-            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.BECOMES_MONSTROUS, source.getSourceId(), source.getSourceId(), source.getControllerId(), monstrosityValue));
+            game.fireEvent(GameEvent.getEvent(GameEvent.EventType.BECOMES_MONSTROUS, source.getSourceId(), source, source.getControllerId(), monstrosityValue));
             return true;
         }
         return false;
@@ -109,7 +112,7 @@ class BecomeMonstrousSourceEffect extends OneShotEffect {
     private String setText(int monstrosityValue) {
         StringBuilder sb = new StringBuilder("Monstrosity ");
         sb.append(monstrosityValue == Integer.MAX_VALUE ? "X":monstrosityValue)
-                .append(".  <i>(If this creature isn't monstrous, put ")
+                .append(". <i>(If this creature isn't monstrous, put ")
                 .append(monstrosityValue == Integer.MAX_VALUE ? "X":CardUtil.numberToText(monstrosityValue))
                 .append(" +1/+1 counters on it and it becomes monstrous.)</i>").toString();
         return sb.toString();

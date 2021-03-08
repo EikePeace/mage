@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -49,7 +49,7 @@ public final class ForgottenAncient extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(Zone.BATTLEFIELD, new ForgottenAncientEffect(), TargetController.YOU, true));
     }
 
-    public ForgottenAncient(final ForgottenAncient card) {
+    private ForgottenAncient(final ForgottenAncient card) {
         super(card);
     }
 
@@ -130,8 +130,8 @@ public final class ForgottenAncient extends CardImpl {
 
             //Move all the counters for each chosen creature
             for (CounterMovement cm : counterMovements) {
-                sourcePermanent.removeCounters(CounterType.P1P1.createInstance(cm.counters), game);
-                game.getPermanent(cm.target).addCounters(CounterType.P1P1.createInstance(cm.counters), source, game);
+                sourcePermanent.removeCounters(CounterType.P1P1.createInstance(cm.counters), source, game);
+                game.getPermanent(cm.target).addCounters(CounterType.P1P1.createInstance(cm.counters), source.getControllerId(), source, game);
             }
             return true;
         }

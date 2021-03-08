@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 import mage.game.permanent.token.InsectToken;
 
@@ -39,7 +39,7 @@ public final class WirewoodHivemaster extends CardImpl {
         this.addAbility(new EntersBattlefieldAllTriggeredAbility(Zone.BATTLEFIELD, new CreateTokenEffect(new InsectToken(), 1), filter, true));
     }
 
-    public WirewoodHivemaster(final WirewoodHivemaster card) {
+    private WirewoodHivemaster(final WirewoodHivemaster card) {
         super(card);
     }
 

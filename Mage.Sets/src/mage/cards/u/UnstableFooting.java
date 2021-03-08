@@ -42,7 +42,7 @@ public final class UnstableFooting extends CardImpl {
 
     }
 
-    public UnstableFooting(final UnstableFooting card) {
+    private UnstableFooting(final UnstableFooting card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class UnstableFootingEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.PREVENT_DAMAGE;
+        return event.getType() == GameEvent.EventType.PREVENT_DAMAGE;
     }
 
     @Override

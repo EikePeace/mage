@@ -39,7 +39,7 @@ public final class SphinxBoneWand extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SphinxBoneWand(final SphinxBoneWand card) {
+    private SphinxBoneWand(final SphinxBoneWand card) {
         super(card);
     }
 
@@ -69,16 +69,16 @@ class SphinxBoneWandEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent sourcePermanent = game.getPermanent(source.getSourceId());
         if (sourcePermanent != null) {
-            sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
+            sourcePermanent.addCounters(CounterType.CHARGE.createInstance(), source.getControllerId(), source, game);
             int amount = sourcePermanent.getCounters(game).getCount(CounterType.CHARGE);
 
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
-                permanent.damage(amount, source.getSourceId(), game, false, true);
+                permanent.damage(amount, source.getSourceId(), source, game, false, true);
             }
             Player player = game.getPlayer(source.getFirstTarget());
             if (player != null) {
-                player.damage(amount, source.getSourceId(), game);
+                player.damage(amount, source.getSourceId(), source, game);
             }
 
             return true;

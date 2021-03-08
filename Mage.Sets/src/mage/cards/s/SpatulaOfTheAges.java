@@ -16,7 +16,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterPermanentCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.other.ExpansionSetPredicate;
+import mage.filter.predicate.card.ExpansionSetPredicate;
 
 /**
  *
@@ -44,7 +44,7 @@ public final class SpatulaOfTheAges extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SpatulaOfTheAges(final SpatulaOfTheAges card) {
+    private SpatulaOfTheAges(final SpatulaOfTheAges card) {
         super(card);
     }
 

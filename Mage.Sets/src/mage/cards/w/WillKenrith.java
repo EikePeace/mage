@@ -65,7 +65,7 @@ public final class WillKenrith extends CardImpl {
         this.addAbility(CanBeYourCommanderAbility.getInstance());
     }
 
-    public WillKenrith(final WillKenrith card) {
+    private WillKenrith(final WillKenrith card) {
         super(card);
     }
 
@@ -89,7 +89,7 @@ class WillKenrithCostReductionEffect extends OneShotEffect {
 
     WillKenrithCostReductionEffect() {
         super(Outcome.Benefit);
-        this.staticText = "Until your next turn, instant, sorcery, and planeswalker spells that player casts cost {2} less to cast.";
+        this.staticText = "Until your next turn, instant, sorcery, and planeswalker spells that player casts cost {2} less to cast";
     }
 
     WillKenrithCostReductionEffect(final WillKenrithCostReductionEffect effect) {

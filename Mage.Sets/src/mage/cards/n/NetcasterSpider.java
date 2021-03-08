@@ -37,7 +37,7 @@ public final class NetcasterSpider extends CardImpl {
         this.addAbility(new BlocksCreatureWithFlyingTriggeredAbility(new BoostSourceEffect(2, 0, Duration.EndOfTurn), false));
     }
 
-    public NetcasterSpider(final NetcasterSpider card) {
+    private NetcasterSpider(final NetcasterSpider card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class BlocksCreatureWithFlyingTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.BLOCKER_DECLARED;
+        return event.getType() == GameEvent.EventType.BLOCKER_DECLARED;
     }
 
     @Override

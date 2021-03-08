@@ -3,7 +3,7 @@ package mage.cards.v;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.LoseLifeTargetEffect;
 import mage.abilities.effects.common.SacrificeEffect;
 import mage.abilities.effects.common.discard.DiscardTargetEffect;
@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.FilterOpponent;
 import mage.filter.StaticFilters;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.target.Target;
 import mage.target.common.TargetOpponent;
 
@@ -34,7 +34,7 @@ public final class VindictiveLich extends CardImpl {
         // When Vindictive Lich dies, choose one or more. Each mode must target a different player.
 
         // * Target opponent sacrifices a creature.
-        Ability ability = new DiesTriggeredAbility(new SacrificeEffect(StaticFilters.FILTER_PERMANENT_CREATURE, 1, "target opponent"));
+        Ability ability = new DiesSourceTriggeredAbility(new SacrificeEffect(StaticFilters.FILTER_PERMANENT_CREATURE, 1, "target opponent"));
         ability.getModes().setMinModes(1);
         ability.getModes().setMaxModes(3);
         ability.getModes().setEachModeOnlyOnce(true);
@@ -67,7 +67,7 @@ public final class VindictiveLich extends CardImpl {
         this.addAbility(ability);
     }
 
-    public VindictiveLich(final VindictiveLich card) {
+    private VindictiveLich(final VindictiveLich card) {
         super(card);
     }
 

@@ -1,8 +1,3 @@
-/*
- * CardSelector.java
- *
- * Created on Feb 18, 2010, 2:49:03 PM
- */
 package mage.client.deckeditor;
 
 import mage.MageObject;
@@ -10,6 +5,7 @@ import mage.ObjectColor;
 import mage.cards.Card;
 import mage.cards.ExpansionSet;
 import mage.cards.Sets;
+import mage.cards.decks.PennyDreadfulLegalityUtil;
 import mage.cards.repository.*;
 import mage.client.MageFrame;
 import mage.client.cards.*;
@@ -26,20 +22,22 @@ import mage.filter.predicate.Predicate;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.mageobject.ColorlessPredicate;
-import mage.filter.predicate.other.CardTextPredicate;
-import mage.filter.predicate.other.ExpansionSetPredicate;
+import mage.filter.predicate.card.CardTextPredicate;
+import mage.filter.predicate.card.ExpansionSetPredicate;
 import mage.game.events.Listener;
 import mage.view.CardView;
 import mage.view.CardsView;
+import org.apache.log4j.Logger;
 import org.mage.card.arcane.ManaSymbolsCellRenderer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.*;
 
 import static mage.client.dialog.PreferencesDialog.*;
 
@@ -47,6 +45,8 @@ import static mage.client.dialog.PreferencesDialog.*;
  * @author BetaSteward_at_googlemail.com, nantuko
  */
 public class CardSelector extends javax.swing.JPanel implements ComponentListener, DragCardTarget {
+
+    private static final Logger logger = Logger.getLogger(CardSelector.class);
 
     private final java.util.List<Card> cards = new ArrayList<>();
     private BigCard bigCard;
@@ -205,9 +205,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         this.btnExpansionSearch.setVisible(false);
         this.limited = true;
         this.cards.clear();
-        for (Card card : sideboard) {
-            this.cards.add(card);
-        }
+        this.cards.addAll(sideboard);
         filterCards();
     }
 
@@ -299,6 +297,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         criteria.white(this.tbWhite.isSelected());
         criteria.colorless(this.tbColorless.isSelected());
 
+        // if you add new type filter then sync it with CardType
         if (this.tbLand.isSelected()) {
             criteria.types(CardType.LAND);
         }
@@ -320,8 +319,6 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         if (this.tbPlaneswalkers.isSelected()) {
             criteria.types(CardType.PLANESWALKER);
         }
-        // criteria.types(CardType.TRIBAL);
-        // criteria.types(CardType.CONSPIRACY);
 
         if (this.tbCommon.isSelected()) {
             criteria.rarities(Rarity.COMMON);
@@ -420,11 +417,15 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         FilterCard filter = buildFilter();
         MageFrame.getDesktop().setCursor(new Cursor(Cursor.WAIT_CURSOR));
         try {
+
+            // debug
+            //debugObjectMemorySize("Old cards size", this.currentView.getCardsStore());
+            this.currentView.clearCardsStoreBeforeUpdate();
+
             java.util.List<Card> filteredCards = new ArrayList<>();
 
-            boolean chkPD = chkPennyDreadful.isSelected();
-            if (chkPD) {
-                generatePennyDreadfulHash();
+            if (chkPennyDreadful.isSelected() && pdAllowed.isEmpty()) {
+                pdAllowed.putAll(PennyDreadfulLegalityUtil.getLegalCardList());
             }
 
             if (limited) {
@@ -435,25 +436,49 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
                 }
             } else {
                 java.util.List<CardInfo> foundCards = CardRepository.instance.findCards(buildCriteria());
+
                 for (CardInfo cardInfo : foundCards) {
-                    Card card = cardInfo.getMockCard();
-                    if (filter.match(card, null)) {
-                        if (chkPD) {
-                            if (!pdAllowed.containsKey(card.getName())) {
-                                continue;
-                            }
+                    // filter by penny
+                    if (chkPennyDreadful.isSelected()) {
+                        if (!pdAllowed.containsKey(cardInfo.getName())) {
+                            continue;
                         }
-                        filteredCards.add(card);
                     }
+                    // filter by settings
+                    Card card = cardInfo.getMockCard();
+                    if (!filter.match(card, null)) {
+                        continue;
+                    }
+                    // found
+                    filteredCards.add(card);
                 }
             }
+
+            // force to list mode on too much cards
             if (currentView instanceof CardGrid && filteredCards.size() > CardGrid.MAX_IMAGES) {
                 this.toggleViewMode();
             }
+
+            // debug
+            //debugObjectMemorySize("New cards size", filteredCards);
+
             this.currentView.loadCards(new CardsView(filteredCards), sortSetting, bigCard, null, false);
             this.cardCount.setText(String.valueOf(filteredCards.size()));
         } finally {
             MageFrame.getDesktop().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }
+
+    private void debugObjectMemorySize(String name, Object object) {
+        // just debug code, don't use it in production
+        // need 2x memory to find a size
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(object);
+            logger.info(name + ": " + baos.size());
+        } catch (Throwable e) {
+            logger.fatal("Can't find object size: " + e.getMessage(), e);
         }
     }
 
@@ -476,22 +501,6 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
                 cards.remove(card);
                 break;
             }
-        }
-    }
-
-    public void generatePennyDreadfulHash() {
-        if (pdAllowed.size() > 0) {
-            return;
-        }
-
-        Properties properties = new Properties();
-        try {
-            properties.load(CardSelector.class.getResourceAsStream("pennydreadful.properties"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        for (final Entry<Object, Object> entry : properties.entrySet()) {
-            pdAllowed.put((String) entry.getKey(), 1);
         }
     }
 
@@ -712,7 +721,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
         tbColor.add(chkPennyDreadful);
 
         btnBooster.setText("Open Booster");
-        btnBooster.setToolTipText("(CURRENTLY NOT WORKING) Generates a booster of the selected set and adds the cards to the card selector.");
+        btnBooster.setToolTipText("Generates a booster of the selected set and adds the cards to the card selector.");
         btnBooster.setFocusable(false);
         btnBooster.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnBooster.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -1237,6 +1246,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
                 this.limited = true;
                 cards.clear();
             }
+            // accumulate boosters in one list
             ExpansionSet expansionSet = Sets.getInstance().get(sets.get(0));
             if (expansionSet != null) {
                 java.util.List<Card> booster = expansionSet.createBooster();
@@ -1292,7 +1302,8 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
             java.util.List<Integer> indexes = asList(n);
             Collections.reverse(indexes);
             for (Integer index : indexes) {
-                mainModel.doubleClick(index);
+                // normal double click emulation
+                mainModel.doubleClick(index, null, false);
             }
             //if (!mode.equals(Constants.DeckEditorMode.Constructed))
             if (limited) {
@@ -1307,7 +1318,8 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
             java.util.List<Integer> indexes = asList(n);
             Collections.reverse(indexes);
             for (Integer index : indexes) {
-                mainModel.altDoubleClick(index);
+                // ALT double click emulation
+                mainModel.doubleClick(index, null, true);
             }
             //if (!mode.equals(Constants.DeckEditorMode.Constructed))
             if (limited) {
@@ -1557,7 +1569,7 @@ public class CardSelector extends javax.swing.JPanel implements ComponentListene
     private javax.swing.JToggleButton tbWhite;
     // End of variables declaration//GEN-END:variables
 
-    private final mage.client.cards.CardGrid cardGrid;
+    private final mage.client.cards.CardGrid cardGrid; // grid for piles view mode (example: selected cards in drafting)
 
     @Override
     public void componentResized(ComponentEvent e) {

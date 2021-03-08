@@ -36,7 +36,7 @@ public final class ApexOfPower extends CardImpl {
         this.getSpellAbility().addEffect(new ApexOfPowerManaEffect());
     }
 
-    public ApexOfPower(final ApexOfPower card) {
+    private ApexOfPower(final ApexOfPower card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class ApexOfPowerSpellEffect extends OneShotEffect {
                 continue;
             }
             ContinuousEffect effect = new PlayFromNotOwnHandZoneTargetEffect(Zone.EXILED, Duration.EndOfTurn);
-            effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+            effect.setTargetPointer(new FixedTarget(card, game));
             game.addEffect(effect, source);
         }
         return true;

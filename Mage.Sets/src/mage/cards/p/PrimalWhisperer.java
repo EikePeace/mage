@@ -15,7 +15,7 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.other.FaceDownPredicate;
+import mage.filter.predicate.card.FaceDownPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class PrimalWhisperer extends CardImpl {
         this.addAbility(new MorphAbility(this, new ManaCostsImpl("{3}{G}")));
     }
 
-    public PrimalWhisperer(final PrimalWhisperer card) {
+    private PrimalWhisperer(final PrimalWhisperer card) {
         super(card);
     }
 

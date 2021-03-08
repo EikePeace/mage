@@ -34,7 +34,7 @@ public final class GoblinPsychopath extends CardImpl {
         this.addAbility(new AttacksOrBlocksTriggeredAbility(new GoblinPsychopathEffect(), false));
     }
 
-    public GoblinPsychopath(final GoblinPsychopath card) {
+    private GoblinPsychopath(final GoblinPsychopath card) {
         super(card);
     }
 
@@ -70,8 +70,7 @@ class GoblinPsychopathEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE
-                || event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT
                 || event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
 
@@ -98,7 +97,7 @@ class GoblinPsychopathEffect extends ReplacementEffectImpl {
             return false;
         }
         // TODO: make this redirect damage from all blockers
-        controller.damage(event.getAmount(), source.getSourceId(), game);
+        controller.damage(event.getAmount(), source.getSourceId(), source, game);
         String sourceLogName = game.getObject(source.getSourceId()).getLogName() + ": ";
         game.informPlayers(sourceLogName + "Redirected " + event.getAmount() + " damage to " + controller.getLogName());
         this.discard();

@@ -1,6 +1,5 @@
 package mage.abilities.effects.common.continuous;
 
-import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.ActivatedAbility;
 import mage.abilities.Mode;
@@ -16,8 +15,9 @@ import mage.players.Player;
 import mage.target.Target;
 import mage.util.CardUtil;
 
+import java.util.UUID;
+
 /**
- *
  * @author BetaSteward_at_googlemail.com
  */
 public class GainControlTargetEffect extends ContinuousEffectImpl {
@@ -31,17 +31,15 @@ public class GainControlTargetEffect extends ContinuousEffectImpl {
     }
 
     /**
-     *
      * @param duration
      * @param fixedControl Controlling player is fixed even if the controller of
-     * the ability changes later
+     *                     the ability changes later
      */
     public GainControlTargetEffect(Duration duration, boolean fixedControl) {
         this(duration, fixedControl, null);
     }
 
     /**
-     *
      * @param duration
      * @param controllingPlayerId Player that controls the target creature
      */
@@ -85,19 +83,13 @@ public class GainControlTargetEffect extends ContinuousEffectImpl {
                 if (permanent != null) {
                     oneTargetStillExists = true;
                     if (!permanent.isControlledBy(controllingPlayerId)) {
-                        GameEvent loseControlEvent = GameEvent.getEvent(GameEvent.EventType.LOSE_CONTROL, permanentId, source.getId(), permanent.getControllerId());
-                        if (game.replaceEvent(loseControlEvent)) {
-                            return false;
-                        }
                         boolean controlChanged = false;
                         if (controllingPlayerId != null) {
-                            if (permanent.changeControllerId(controllingPlayerId, game)) {
-                                permanent.getAbilities().setControllerId(controllingPlayerId);
+                            if (permanent.changeControllerId(controllingPlayerId, game, source)) {
                                 controlChanged = true;
                             }
                         } else {
-                            if (permanent.changeControllerId(source.getControllerId(), game)) {
-                                permanent.getAbilities().setControllerId(source.getControllerId());
+                            if (permanent.changeControllerId(source.getControllerId(), game, source)) {
                                 controlChanged = true;
                             }
                         }
@@ -112,8 +104,7 @@ public class GainControlTargetEffect extends ContinuousEffectImpl {
                 }
             }
             // no valid target exists and the controller is no longer in the game, effect can be discarded
-            if (!oneTargetStillExists
-                    || !controller.isInGame()) {
+            if (!oneTargetStillExists || !controller.isInGame()) {
                 discard();
             }
             firstControlChange = false;

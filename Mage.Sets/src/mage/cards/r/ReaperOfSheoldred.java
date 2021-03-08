@@ -39,7 +39,7 @@ public final class ReaperOfSheoldred extends CardImpl {
         this.addAbility(new ReaperOfSheoldredTriggeredAbility());
     }
 
-    public ReaperOfSheoldred(final ReaperOfSheoldred card) {
+    private ReaperOfSheoldred(final ReaperOfSheoldred card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ReaperOfSheoldredTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGED_PERMANENT;
     }
 
     @Override

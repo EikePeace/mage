@@ -1,4 +1,3 @@
-
 package mage.abilities.costs;
 
 import java.util.ArrayList;
@@ -52,7 +51,15 @@ public class CostsImpl<T extends Cost> extends ArrayList<T> implements Costs<T> 
         for (T cost : this) {
             String textCost = cost.getText();
             if (textCost != null && !textCost.isEmpty()) {
-                sbText.append(Character.toUpperCase(textCost.charAt(0))).append(textCost.substring(1)).append(", ");
+                if (textCost.startsWith("and")) {
+                    if (sbText.length() > 1) {
+                        // Remove "," from previous cost
+                        sbText.deleteCharAt(sbText.length() - 2);
+                    }
+                    sbText.append(textCost).append(", ");
+                } else {
+                    sbText.append(Character.toUpperCase(textCost.charAt(0))).append(textCost.substring(1)).append(", ");
+                }
             }
         }
         if (sbText.length() > 1) {
@@ -62,9 +69,9 @@ public class CostsImpl<T extends Cost> extends ArrayList<T> implements Costs<T> 
     }
 
     @Override
-    public boolean canPay(Ability ability, UUID sourceId, UUID controllerId, Game game) {
+    public boolean canPay(Ability ability, Ability source, UUID controllerId, Game game) {
         for (T cost : this) {
-            if (!cost.canPay(ability, sourceId, controllerId, game)) {
+            if (!cost.canPay(ability, source, controllerId, game)) {
                 return false;
             }
         }
@@ -72,16 +79,16 @@ public class CostsImpl<T extends Cost> extends ArrayList<T> implements Costs<T> 
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana) {
-        return pay(ability, game, sourceId, controllerId, noMana, this);
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana) {
+        return pay(ability, game, source, controllerId, noMana, this);
     }
 
     @Override
-    public boolean pay(Ability ability, Game game, UUID sourceId, UUID controllerId, boolean noMana, Cost costToPay) {
+    public boolean pay(Ability ability, Game game, Ability source, UUID controllerId, boolean noMana, Cost costToPay) {
         if (this.size() > 0) {
             while (!isPaid()) {
                 T cost = getFirstUnpaid();
-                if (!cost.pay(ability, game, sourceId, controllerId, noMana, costToPay)) {
+                if (!cost.pay(ability, game, source, controllerId, noMana, costToPay)) {
                     return false;
                 }
             }
@@ -161,5 +168,4 @@ public class CostsImpl<T extends Cost> extends ArrayList<T> implements Costs<T> 
     public Costs<T> copy() {
         return new CostsImpl(this);
     }
-
 }

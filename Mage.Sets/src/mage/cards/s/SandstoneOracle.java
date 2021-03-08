@@ -36,7 +36,7 @@ public final class SandstoneOracle extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SandstoneOracleEffect()));
     }
 
-    public SandstoneOracle(final SandstoneOracle card) {
+    private SandstoneOracle(final SandstoneOracle card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class SandstoneOracleEffect extends OneShotEffect {
                     game.informPlayers(sourceObject.getLogName() + ": " + controller.getLogName() + " has chosen " + opponent.getLogName());
                     int cardsDiff = opponent.getHand().size() - controller.getHand().size();
                     if (cardsDiff > 0) {
-                        controller.drawCards(cardsDiff, game);
+                        controller.drawCards(cardsDiff, source, game);
                     }
                 }
             }

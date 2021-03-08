@@ -1,7 +1,5 @@
-
 package mage.cards.f;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.effects.ContinuousRuleModifyingEffectImpl;
@@ -9,7 +7,6 @@ import mage.abilities.effects.Effect;
 import mage.abilities.effects.common.ChooseACardNameEffect;
 import mage.abilities.effects.common.ReturnToHandTargetEffect;
 import mage.abilities.keyword.AftermathAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -20,6 +17,9 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.GameEvent.EventType;
 import mage.target.TargetSpell;
+import mage.util.CardUtil;
+
+import java.util.UUID;
 
 /**
  * @author spjspj
@@ -44,7 +44,7 @@ public final class FailureComply extends SplitCard {
         getRightHalfCard().getSpellAbility().addEffect(new ComplyCantCastEffect());
     }
 
-    public FailureComply(final FailureComply card) {
+    private FailureComply(final FailureComply card) {
         super(card);
     }
 
@@ -73,16 +73,16 @@ class ComplyCantCastEffect extends ContinuousRuleModifyingEffectImpl {
     @Override
     public String getInfoMessage(Ability source, GameEvent event, Game game) {
         MageObject mageObject = game.getObject(source.getSourceId());
-        if (mageObject != null) {
-            String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
-            return "You may not cast a card named " + cardName + " (" + mageObject.getIdName() + ").";
+        String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
+        if (mageObject != null && cardName != null) {
+            return "You can't cast a card named " + cardName + " (" + mageObject.getIdName() + ").";
         }
         return null;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.CAST_SPELL_LATE;
+        return event.getType() == GameEvent.EventType.CAST_SPELL_LATE;
     }
 
     @Override
@@ -90,9 +90,7 @@ class ComplyCantCastEffect extends ContinuousRuleModifyingEffectImpl {
         String cardName = (String) game.getState().getValue(source.getSourceId().toString() + ChooseACardNameEffect.INFO_KEY);
         if (game.getOpponents(source.getControllerId()).contains(event.getPlayerId())) {
             MageObject object = game.getObject(event.getSourceId());
-            if (object != null && object.getName().equals(cardName)) {
-                return true;
-            }
+            return object != null && CardUtil.haveSameNames(object, cardName, game);
         }
         return false;
     }

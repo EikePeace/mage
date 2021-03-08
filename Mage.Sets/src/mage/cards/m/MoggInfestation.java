@@ -33,7 +33,7 @@ public final class MoggInfestation extends CardImpl {
 
     }
 
-    public MoggInfestation(final MoggInfestation card) {
+    private MoggInfestation(final MoggInfestation card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class MoggInfestationEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null && getTargetPointer().getFirst(game, source) != null) {
             for (Permanent permanent : game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, getTargetPointer().getFirst(game, source), game)) {
-                if (permanent.destroy(source.getSourceId(), game, false)) {
+                if (permanent.destroy(source, game, false)) {
                     if (game.getState().getZone(permanent.getId()) == Zone.GRAVEYARD) { // If a commander is replaced to command zone, the creature does not die
                         Effect effect = new CreateTokenTargetEffect(new GoblinToken(), 2);
                         effect.setTargetPointer(getTargetPointer());

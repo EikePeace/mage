@@ -55,7 +55,7 @@ public final class GremlinMine extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GremlinMine(final GremlinMine card) {
+    private GremlinMine(final GremlinMine card) {
         super(card);
     }
 
@@ -90,7 +90,7 @@ class GremlinMineEffect extends OneShotEffect {
                     choice.getChoices().add(i.toString());
                 }
                 if (player.choose(Outcome.Detriment, choice, game)) {
-                    permanent.removeCounters(CounterType.CHARGE.getName(), Integer.parseInt(choice.getChoice()), game);
+                    permanent.removeCounters(CounterType.CHARGE.getName(), Integer.parseInt(choice.getChoice()), source, game);
                     return true;
                 }
                 return false;

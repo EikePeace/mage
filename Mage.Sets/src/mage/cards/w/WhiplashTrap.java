@@ -31,12 +31,12 @@ public final class WhiplashTrap extends CardImpl {
         this.addAbility(new AlternativeCostSourceAbility(new ManaCostsImpl("{U}"), WhiplashTrapCondition.instance), new PermanentsEnteredBattlefieldWatcher());
 
         // Return two target creatures to their owners' hands.
-        this.getSpellAbility().addEffect(new ReturnToHandTargetEffect());
+        this.getSpellAbility().addEffect(new ReturnToHandTargetEffect().setText("return two target creatures to their owners' hands"));
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(2));
 
     }
 
-    public WhiplashTrap(final WhiplashTrap card) {
+    private WhiplashTrap(final WhiplashTrap card) {
         super(card);
     }
 

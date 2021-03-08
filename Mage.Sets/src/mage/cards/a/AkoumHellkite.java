@@ -42,7 +42,7 @@ public final class AkoumHellkite extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AkoumHellkite(final AkoumHellkite card) {
+    private AkoumHellkite(final AkoumHellkite card) {
         super(card);
     }
 
@@ -115,22 +115,22 @@ class AkoumHellkiteDamageEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent land = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+        Permanent land = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         Player player = game.getPlayer(source.getFirstTarget());
         if (land != null && player != null) {
             if (land.hasSubtype(SubType.MOUNTAIN, game)) {
-                player.damage(2, source.getSourceId(), game);
+                player.damage(2, source.getSourceId(), source, game);
             } else {
-                player.damage(1, source.getSourceId(), game);
+                player.damage(1, source.getSourceId(), source, game);
             }
             return true;
         }
         Permanent permanent = game.getPermanent(source.getFirstTarget());
         if (land != null && permanent != null) {
             if (land.hasSubtype(SubType.MOUNTAIN, game)) {
-                permanent.damage(2, source.getSourceId(), game);
+                permanent.damage(2, source.getSourceId(), source, game);
             } else {
-                permanent.damage(1, source.getSourceId(), game);
+                permanent.damage(1, source.getSourceId(), source, game);
             }
             return true;
         }

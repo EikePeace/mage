@@ -37,10 +37,10 @@ public final class ScreechingSliver extends CardImpl {
 
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD,
                 new GainAbilityAllEffect(ability, Duration.WhileOnBattlefield,
-                        allSliversFilter, "All Slivers have \"{T}: Target player puts the top card of their library into their graveyard.\"")));
+                        allSliversFilter, "All Slivers have \"{T}: Target player mills a card.\"")));
     }
 
-    public ScreechingSliver(final ScreechingSliver card) {
+    private ScreechingSliver(final ScreechingSliver card) {
         super(card);
     }
 

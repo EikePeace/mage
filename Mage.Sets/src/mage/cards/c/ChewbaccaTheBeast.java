@@ -11,7 +11,7 @@ import mage.constants.*;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -47,7 +47,7 @@ public final class ChewbaccaTheBeast extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ChewbaccaTheBeast(final ChewbaccaTheBeast card) {
+    private ChewbaccaTheBeast(final ChewbaccaTheBeast card) {
         super(card);
     }
 

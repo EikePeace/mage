@@ -18,8 +18,6 @@ import mage.filter.FilterPermanent;
 import mage.filter.common.FilterLandPermanent;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
 import mage.game.Game;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.players.Player;
 import mage.target.TargetPlayer;
@@ -47,7 +45,7 @@ public final class JolraelEmpressOfBeasts extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JolraelEmpressOfBeasts(final JolraelEmpressOfBeasts card) {
+    private JolraelEmpressOfBeasts(final JolraelEmpressOfBeasts card) {
         super(card);
     }
 

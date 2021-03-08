@@ -16,7 +16,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
 import mage.game.Game;
-import mage.game.permanent.token.YoungPyromancerElementalToken;
+import mage.game.permanent.token.RedElementalToken;
 import mage.players.Player;
 
 import java.util.UUID;
@@ -40,7 +40,7 @@ public final class SeasonedPyromancer extends CardImpl {
         // {3}{R}{R}, Exile Seasoned Pyromancer from your graveyard: Create two 1/1 red Elemental creature tokens.
         Ability ability = new SimpleActivatedAbility(
                 Zone.GRAVEYARD,
-                new CreateTokenEffect(new YoungPyromancerElementalToken(), 2),
+                new CreateTokenEffect(new RedElementalToken(), 2),
                 new ManaCostsImpl("{3}{R}{R}")
         );
         ability.addCost(new ExileSourceFromGraveCost());
@@ -82,15 +82,13 @@ class SeasonedPyromancerEffect extends OneShotEffect {
             return false;
         }
         int nonlands = player
-                .discard(2, false, source, game)
+                .discard(2, false, false, source, game)
                 .count(StaticFilters.FILTER_CARD_NON_LAND, game);
-        player.drawCards(2, game);
+        player.drawCards(2, source, game);
         if (nonlands == 0) {
             return true;
         }
-        new YoungPyromancerElementalToken().putOntoBattlefield(
-                nonlands, game, source.getSourceId(), source.getControllerId()
-        );
+        new RedElementalToken().putOntoBattlefield(nonlands, game, source, source.getControllerId());
         return true;
     }
 }

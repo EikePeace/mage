@@ -34,7 +34,7 @@ public final class TreasureNabber extends CardImpl {
         this.addAbility(new TreasureNabberAbility());
     }
 
-    public TreasureNabber(final TreasureNabber card) {
+    private TreasureNabber(final TreasureNabber card) {
         super(card);
     }
 
@@ -56,7 +56,10 @@ class TreasureNabberAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TAPPED_FOR_MANA;
+        if (game.inCheckPlayableState()) {
+            return false;
+        }
+        return event.getType() == GameEvent.EventType.TAPPED_FOR_MANA;
     }
 
     @Override
@@ -64,7 +67,7 @@ class TreasureNabberAbility extends TriggeredAbilityImpl {
         if (game.getOpponents(controllerId).contains(event.getPlayerId())) {
             Permanent permanent = game.getPermanent(event.getSourceId());
             if (permanent != null && permanent.isArtifact()) {
-                getEffects().get(0).setTargetPointer(new FixedTarget(permanent.getId()));
+                getEffects().get(0).setTargetPointer(new FixedTarget(permanent, game));
                 return true;
             }
         }
@@ -106,7 +109,7 @@ class TreasureNabberEffect extends ContinuousEffectImpl {
         Permanent permanent = game.getPermanent(getTargetPointer().getFirst(game, source));
 
         if (permanent != null) {
-            permanent.changeControllerId(source.getControllerId(), game);
+            permanent.changeControllerId(source.getControllerId(), game, source);
             return true;
         }
         return false;

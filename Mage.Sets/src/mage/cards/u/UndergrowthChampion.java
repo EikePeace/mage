@@ -40,7 +40,7 @@ public final class UndergrowthChampion extends CardImpl {
         this.addAbility(new LandfallAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), false));
     }
 
-    public UndergrowthChampion(final UndergrowthChampion card) {
+    private UndergrowthChampion(final UndergrowthChampion card) {
         super(card);
     }
 
@@ -96,7 +96,7 @@ class UndergrowthChampionPreventionEffect extends PreventionEffectImpl {
             if(removeCounter && permanent.getCounters(game).containsKey(CounterType.P1P1)) {
                 preventDamageAction(event, source, game);
                 StringBuilder sb = new StringBuilder(permanent.getName()).append(": ");
-                permanent.removeCounters(CounterType.P1P1.createInstance(), game);
+                permanent.removeCounters(CounterType.P1P1.createInstance(), source, game);
                 sb.append("Removed a +1/+1 counter ");
                 game.informPlayers(sb.toString());
             }

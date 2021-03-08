@@ -13,7 +13,7 @@ import mage.constants.Outcome;
 import mage.constants.SubType;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 /**
  *
@@ -31,7 +31,7 @@ public final class PermeatingMass extends CardImpl {
         this.addAbility(new DealsCombatDamageToACreatureTriggeredAbility(new PermeatingMassEffect(), false, true));
     }
 
-    public PermeatingMass(final PermeatingMass card) {
+    private PermeatingMass(final PermeatingMass card) {
         super(card);
     }
 
@@ -59,11 +59,11 @@ class PermeatingMassEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability ability) {
-        Permanent copyTo = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, ability));
+        Permanent copyTo = game.getPermanent(getTargetPointer().getFirst(game, ability));
         if (copyTo != null) {
             Permanent copyFrom = ability.getSourcePermanentOrLKI(game);
             if (copyFrom != null) {
-                game.copyPermanent(Duration.Custom, copyFrom, copyTo.getId(), ability, new EmptyApplyToPermanent());
+                game.copyPermanent(Duration.Custom, copyFrom, copyTo.getId(), ability, new EmptyCopyApplier());
             }
         }
         return true;

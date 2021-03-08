@@ -15,12 +15,11 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.other.OwnerIdPredicate;
+import mage.filter.predicate.card.OwnerIdPredicate;
 import mage.filter.predicate.permanent.UnblockedPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.target.common.TargetCardInOpponentsGraveyard;
 
 /**
@@ -52,7 +51,7 @@ public final class Skullsnatcher extends CardImpl {
         this.addAbility(new SkullsnatcherTriggeredAbility(effect));
     }
 
-    public Skullsnatcher(final Skullsnatcher card) {
+    private Skullsnatcher(final Skullsnatcher card) {
         super(card);
     }
 
@@ -79,7 +78,7 @@ class SkullsnatcherTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

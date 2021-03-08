@@ -64,7 +64,7 @@ public final class SupremeLeaderSnoke extends CardImpl {
         this.addAbility(ability3);
     }
 
-    public SupremeLeaderSnoke(final SupremeLeaderSnoke card) {
+    private SupremeLeaderSnoke(final SupremeLeaderSnoke card) {
         super(card);
     }
 
@@ -95,10 +95,10 @@ enum SupremeLeaderSnokeAdjuster implements TargetAdjuster {
 class OpponentNoncombatLostLifeCount implements DynamicValue {
 
     @Override
-    public int calculate(Game game, Ability source, Effect effect) {
+    public int calculate(Game game, Ability sourceAbility, Effect effect) {
         PlayerLostLifeNonCombatWatcher watcher = game.getState().getWatcher(PlayerLostLifeNonCombatWatcher.class);
         if(watcher != null) {
-            return watcher.getAllOppLifeLost(source.getControllerId(), game);
+            return watcher.getAllOppLifeLost(sourceAbility.getControllerId(), game);
         }
         return 0;
     }
@@ -137,7 +137,7 @@ class SupremeLeaderSnokeCounterEffect extends OneShotEffect {
             if (amount > 0) {
                 Counter counterToAdd = counter.copy();
                 counterToAdd.add(amount - counter.getCount());
-                permanent.addCounters(counterToAdd, source, game);
+                permanent.addCounters(counterToAdd, source.getControllerId(), source, game);
             }
         }
         return true;

@@ -37,7 +37,7 @@ public final class Pandemonium extends CardImpl {
         this.addAbility(ability);
     }
 
-    public Pandemonium(final Pandemonium card) {
+    private Pandemonium(final Pandemonium card) {
         super(card);
     }
 
@@ -80,15 +80,15 @@ class PandemoniumEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
-            Permanent enteringCreature = game.getPermanentOrLKIBattlefield(getTargetPointer().getFirst(game, source));
+            Permanent enteringCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (enteringCreature != null) {
                 Permanent targetPermanent = game.getPermanent(source.getTargets().getFirstTarget());
                 if (targetPermanent != null) {
-                    targetPermanent.damage(enteringCreature.getPower().getValue(), enteringCreature.getId(), game, false, true);
+                    targetPermanent.damage(enteringCreature.getPower().getValue(), enteringCreature.getId(), source, game, false, true);
                 } else {
                     Player targetPlayer = game.getPlayer(source.getTargets().getFirstTarget());
                     if (targetPlayer != null) {
-                        targetPlayer.damage(enteringCreature.getPower().getValue(), enteringCreature.getId(), game);
+                        targetPlayer.damage(enteringCreature.getPower().getValue(), enteringCreature.getId(), source, game);
                     }
                 }
                 return true;

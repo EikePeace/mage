@@ -24,11 +24,11 @@ public final class WarSpikeChangeling extends CardImpl {
 
         this.power = new MageInt(3);
         this.toughness = new MageInt(3);
-        this.addAbility(ChangelingAbility.getInstance());
+        this.addAbility(new ChangelingAbility());
         this.addAbility(new SimpleActivatedAbility(Zone.BATTLEFIELD, new GainAbilitySourceEffect(FirstStrikeAbility.getInstance(), Duration.EndOfTurn), new ColoredManaCost(ColoredManaSymbol.R)));
     }
 
-    public WarSpikeChangeling(final WarSpikeChangeling card) {
+    private WarSpikeChangeling(final WarSpikeChangeling card) {
         super(card);
     }
 

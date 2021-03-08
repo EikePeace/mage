@@ -4,7 +4,7 @@ package mage.cards.s;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.Card;
@@ -36,10 +36,10 @@ public final class SummonersEgg extends CardImpl {
         // Imprint - When Summoner's Egg enters the battlefield, you may exile a card from your hand face down.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new SummonersEggImprintEffect(), true, "<i>Imprint</i> &mdash; "));
         // When Summoner's Egg dies, turn the exiled card face up. If it's a creature card, put it onto the battlefield under your control.
-        this.addAbility(new DiesTriggeredAbility(new SummonersEggPutOntoBattlefieldEffect()));
+        this.addAbility(new DiesSourceTriggeredAbility(new SummonersEggPutOntoBattlefieldEffect()));
     }
 
-    public SummonersEgg(final SummonersEgg card) {
+    private SummonersEgg(final SummonersEgg card) {
         super(card);
     }
 
@@ -117,7 +117,7 @@ class SummonersEggPutOntoBattlefieldEffect extends OneShotEffect {
                 Card imprintedCard = game.getCard(SummonersEgg.getImprinted().get(0));
                 if (imprintedCard != null && game.getState().getZone(imprintedCard.getId()) == Zone.EXILED) {
                     //turn the exiled card face up.
-                    imprintedCard.turnFaceUp(game, source.getControllerId());
+                    imprintedCard.turnFaceUp(source, game, source.getControllerId());
                     //If it's a creature card,
                     if (imprintedCard.isCreature()) {
                         //put it onto the battlefield under your control

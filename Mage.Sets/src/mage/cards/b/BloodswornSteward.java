@@ -17,7 +17,7 @@ import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CommanderPredicate;
+import mage.filter.predicate.mageobject.CommanderPredicate;
 
 /**
  *
@@ -47,7 +47,7 @@ public final class BloodswornSteward extends CardImpl {
         this.addAbility(ability);
     }
 
-    public BloodswornSteward(final BloodswornSteward card) {
+    private BloodswornSteward(final BloodswornSteward card) {
         super(card);
     }
 

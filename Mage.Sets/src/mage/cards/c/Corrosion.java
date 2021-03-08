@@ -41,7 +41,7 @@ public final class Corrosion extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new CorrosionRemoveCountersEffect(), false)); 
     }
 
-    public Corrosion(final Corrosion card) {
+    private Corrosion(final Corrosion card) {
         super(card);
     }
 
@@ -78,13 +78,13 @@ class CorrosionUpkeepEffect extends OneShotEffect {
             // put a rust counter on each artifact target opponent controls
             if (targetPlayer != null) {
                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filter, targetPlayer.getId(), game)) {
-                    permanent.addCounters(CounterType.RUST.createInstance(), source, game);
+                    permanent.addCounters(CounterType.RUST.createInstance(), source.getControllerId(), source, game);
                 }
             }
             // destroy each artifact with converted mana cost less than or equal to the number of rust counters on it
             for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), source.getSourceId(), game)) {
                 if (permanent.getConvertedManaCost() <= permanent.getCounters(game).getCount(CounterType.RUST)) {
-                    permanent.destroy(source.getSourceId(), game, true);
+                    permanent.destroy(source, game, true);
                 }
             }
             return true;
@@ -112,7 +112,7 @@ class CorrosionRemoveCountersEffect extends OneShotEffect {
     @Override
     public boolean apply(Game game, Ability source) {
         for (Permanent permanent : game.getBattlefield().getAllActivePermanents()) {
-            permanent.removeCounters(CounterType.RUST.createInstance(permanent.getCounters(game).getCount(CounterType.RUST)), game);
+            permanent.removeCounters(CounterType.RUST.createInstance(permanent.getCounters(game).getCount(CounterType.RUST)), source, game);
         }
         return true;
     }

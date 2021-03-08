@@ -21,7 +21,7 @@ import mage.constants.Zone;
 import mage.filter.common.FilterPermanentCard;
 import mage.filter.predicate.Predicates;
 import mage.filter.predicate.mageobject.NamePredicate;
-import mage.filter.predicate.other.ExpansionSetPredicate;
+import mage.filter.predicate.card.ExpansionSetPredicate;
 
 /**
  *
@@ -62,7 +62,7 @@ public final class EverythingamajigB extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EverythingamajigB(final EverythingamajigB card) {
+    private EverythingamajigB(final EverythingamajigB card) {
         super(card);
     }
 

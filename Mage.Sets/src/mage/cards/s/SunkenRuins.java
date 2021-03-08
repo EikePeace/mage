@@ -28,7 +28,7 @@ public final class SunkenRuins extends CardImpl {
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 
-        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 0, 1, 0, 1, 0, 0, 0), new ManaCostsImpl("{U/B}"));
+        ability = new SimpleManaAbility(Zone.BATTLEFIELD, new Mana(0, 1, 1, 0, 0, 0, 0, 0), new ManaCostsImpl("{U/B}"));
         ability.addCost(new TapSourceCost());
         this.addAbility(ability);
 
@@ -37,7 +37,7 @@ public final class SunkenRuins extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SunkenRuins(final SunkenRuins card) {
+    private SunkenRuins(final SunkenRuins card) {
         super(card);
     }
 

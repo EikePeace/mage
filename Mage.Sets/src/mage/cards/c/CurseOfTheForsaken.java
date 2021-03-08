@@ -42,7 +42,7 @@ public final class CurseOfTheForsaken extends CardImpl {
 
     }
 
-    public CurseOfTheForsaken(final CurseOfTheForsaken card) {
+    private CurseOfTheForsaken(final CurseOfTheForsaken card) {
         super(card);
     }
 
@@ -68,7 +68,7 @@ class CurseOfTheForsakenTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

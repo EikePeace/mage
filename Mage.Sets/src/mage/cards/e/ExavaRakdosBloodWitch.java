@@ -13,8 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -26,7 +25,7 @@ public final class ExavaRakdosBloodWitch extends CardImpl {
     static {
         filter.add(CardType.CREATURE.getPredicate());
         filter.add(TargetController.YOU.getControllerPredicate());
-        filter.add(new CounterPredicate(CounterType.P1P1));
+        filter.add(CounterType.P1P1.getPredicate());
         filter.add(AnotherPredicate.instance);
     }
 
@@ -51,7 +50,7 @@ public final class ExavaRakdosBloodWitch extends CardImpl {
 
     }
 
-    public ExavaRakdosBloodWitch(final ExavaRakdosBloodWitch card) {
+    private ExavaRakdosBloodWitch(final ExavaRakdosBloodWitch card) {
         super(card);
     }
 

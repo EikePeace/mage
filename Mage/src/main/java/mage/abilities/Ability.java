@@ -9,6 +9,7 @@ import mage.abilities.costs.mana.ManaCosts;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.Effects;
 import mage.abilities.hint.Hint;
+import mage.abilities.icon.CardIcon;
 import mage.constants.*;
 import mage.game.Controllable;
 import mage.game.Game;
@@ -21,8 +22,11 @@ import mage.target.targetadjustment.TargetAdjuster;
 import mage.watchers.Watcher;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import mage.MageIdentifier;
+import mage.abilities.costs.common.TapSourceCost;
 
 /**
  * Practically everything in the game is started from an Ability. This interface
@@ -84,6 +88,8 @@ public interface Ability extends Controllable, Serializable {
     /**
      * Gets the id of the object which put this ability in motion.
      *
+     * WARNING, MageSingleton abilities contains dirty data here, so you can't use sourceId with it
+     *
      * @return The {@link java.util.UUID} of the object this ability is
      * associated with.
      */
@@ -120,6 +126,14 @@ public interface Ability extends Controllable, Serializable {
      */
     ManaCosts<ManaCost> getManaCosts();
 
+    default List<String> getManaCostSymbols() {
+        List<String> symbols = new ArrayList<>();
+        for (ManaCost cost : getManaCosts()) {
+            symbols.add(cost.getText());
+        }
+        return symbols;
+    }
+
     /**
      * Gets all the {@link ManaCosts} that must be paid before activating this
      * ability. These costs should be modified by any modification effects
@@ -136,23 +150,6 @@ public interface Ability extends Controllable, Serializable {
      * @param cost The {@link ManaCost} to add.
      */
     void addManaCost(ManaCost cost);
-
-    /**
-     * TODO Method is unused, keep it around?
-     * <p>
-     * Gets all costs that are optional to this ability. These costs can be paid
-     * in addition to other costs to have other effects put into place.
-     *
-     * @return All {@link Costs} that can be paid above and beyond other costs.
-     */
-    Costs<Cost> getOptionalCosts();
-
-    /**
-     * Adds a {@link Cost} that is optional to this ability.
-     *
-     * @param cost The {@link Cost} to add to the optional costs.
-     */
-    void addOptionalCost(Cost cost);
 
     /**
      * Retrieves the effects that are put into the place by the resolution of
@@ -190,12 +187,18 @@ public interface Ability extends Controllable, Serializable {
 
     /**
      * Retrieves all targets that must be satisfied before this ability is put
-     * onto the stack.
+     * onto the stack. Warning, return targets from first/current mode only.
      *
      * @return All {@link Targets} that must be satisfied before this ability is
      * put onto the stack.
      */
     Targets getTargets();
+
+    /**
+     * Retrieves all selected targets, read only. Multi-modes return different targets.
+     * Works on stack only (after real cast/activate)
+     */
+    Targets getAllSelectedTargets();
 
     /**
      * Retrieves the {@link Target} located at the 0th index in the
@@ -319,7 +322,7 @@ public interface Ability extends Controllable, Serializable {
 
     Modes getModes();
 
-    boolean canChooseTarget(Game game);
+    boolean canChooseTarget(Game game, UUID playerId);
 
     /**
      * Gets the list of sub-abilities associated with this ability.
@@ -360,6 +363,19 @@ public interface Ability extends Controllable, Serializable {
      * @return
      */
     boolean hasSourceObjectAbility(Game game, MageObject source, GameEvent event);
+    
+    /**
+     * Returns true if the ability has a tap itself in their costs
+     * @return 
+     */
+    default boolean hasTapCost() {
+        for (Cost cost : this.getCosts()) {
+            if (cost instanceof TapSourceCost) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns true if this ability has to be shown as topmost of all the rules
@@ -447,7 +463,7 @@ public interface Ability extends Controllable, Serializable {
      *
      * @param abilityWord
      */
-    void setAbilityWord(AbilityWord abilityWord);
+    Ability setAbilityWord(AbilityWord abilityWord);
 
     /**
      * Creates the message about the ability casting/triggering/activating to
@@ -519,7 +535,23 @@ public interface Ability extends Controllable, Serializable {
 
     Ability addHint(Hint hint);
 
+    List<CardIcon> getIcons();
+
+    Ability addIcon(CardIcon cardIcon);
+
     Ability addCustomOutcome(Outcome customOutcome);
 
     Outcome getCustomOutcome();
+
+    /**
+     * For mtg's instances search, see rules example in 112.10b
+     *
+     * @param ability
+     * @return
+     */
+    boolean isSameInstance(Ability ability);
+    
+    MageIdentifier getIdentifier(); 
+
+    AbilityImpl setIdentifier(MageIdentifier mageIdentifier);
 }

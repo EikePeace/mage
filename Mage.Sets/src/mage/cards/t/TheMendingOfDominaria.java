@@ -5,7 +5,7 @@ import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.SagaAbility;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveControllerEffect;
+import mage.abilities.effects.common.MillCardsControllerEffect;
 import mage.cards.Card;
 import mage.constants.SubType;
 import mage.cards.CardImpl;
@@ -42,7 +42,7 @@ public final class TheMendingOfDominaria extends CardImpl {
         this.addAbility(sagaAbility);
     }
 
-    public TheMendingOfDominaria(final TheMendingOfDominaria card) {
+    private TheMendingOfDominaria(final TheMendingOfDominaria card) {
         super(card);
     }
 
@@ -56,7 +56,7 @@ class TheMendingOfDominariaFirstEffect extends OneShotEffect {
 
     public TheMendingOfDominariaFirstEffect() {
         super(Outcome.ReturnToHand);
-        this.staticText = "Put the top two cards of your library into your graveyard, then you may return a creature card from your graveyard to your hand";
+        this.staticText = "Mill two cards, then you may return a creature card from your graveyard to your hand";
     }
 
     public TheMendingOfDominariaFirstEffect(final TheMendingOfDominariaFirstEffect effect) {
@@ -74,7 +74,7 @@ class TheMendingOfDominariaFirstEffect extends OneShotEffect {
         if (controller == null) {
             return false;
         }
-        new PutTopCardOfLibraryIntoGraveControllerEffect(2).apply(game, source);
+        new MillCardsControllerEffect(2).apply(game, source);
         TargetCardInYourGraveyard target = new TargetCardInYourGraveyard(StaticFilters.FILTER_CARD_CREATURE_YOUR_GRAVEYARD);
         target.setNotTarget(true);
         if (target.canChoose(source.getSourceId(), source.getControllerId(), game)
@@ -114,7 +114,7 @@ class TheMendingOfDominariaSecondEffect extends OneShotEffect {
                     Zone.BATTLEFIELD, source, game, false, false, false, null
             );
             for (Card card : controller.getGraveyard().getCards(game)) {
-                controller.moveCardToLibraryWithInfo(card, source.getSourceId(), game, Zone.GRAVEYARD, true, true);
+                controller.moveCardToLibraryWithInfo(card, source, game, Zone.GRAVEYARD, true, true);
             }
             controller.shuffleLibrary(source, game);
         }

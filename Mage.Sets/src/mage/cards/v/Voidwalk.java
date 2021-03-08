@@ -1,7 +1,5 @@
-
 package mage.cards.v;
 
-import java.util.UUID;
 import mage.MageObject;
 import mage.abilities.Ability;
 import mage.abilities.common.delayed.AtTheBeginOfNextEndStepDelayedTriggeredAbility;
@@ -20,8 +18,9 @@ import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author jeffwadsworth
  */
 public final class Voidwalk extends CardImpl {
@@ -37,7 +36,7 @@ public final class Voidwalk extends CardImpl {
         this.getSpellAbility().addEffect(new CipherEffect());
     }
 
-    public Voidwalk(final Voidwalk card) {
+    private Voidwalk(final Voidwalk card) {
         super(card);
     }
 
@@ -64,9 +63,9 @@ class VoidwalkEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         MageObject sourceObject = game.getObject(source.getSourceId());
         if (controller != null && permanent != null && sourceObject != null) {
-            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourceObject.getIdName(), source.getSourceId(), game, Zone.BATTLEFIELD, true)) {
+            if (controller.moveCardToExileWithInfo(permanent, source.getSourceId(), sourceObject.getIdName(), source, game, Zone.BATTLEFIELD, true)) {
                 //create delayed triggered ability
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                 effect.setText("Return that card to the battlefield under its owner's control at the beginning of the next end step");
                 effect.setTargetPointer(new FixedTarget(source.getFirstTarget(), game));
                 game.addDelayedTriggeredAbility(new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect), source);

@@ -53,7 +53,7 @@ public final class Paroxysm extends CardImpl {
                 false, false, "At the beginning of the upkeep of enchanted creature's controller, "));
     }
 
-    public Paroxysm(final Paroxysm card) {
+    private Paroxysm(final Paroxysm card) {
         super(card);
     }
 
@@ -94,7 +94,7 @@ class ParoxysmEffect extends OneShotEffect {
                         Cards cards = new CardsImpl(revealCardFromTop);
                         controllerOfCreature.revealCards(source, cards, game);
                         if (revealCardFromTop.isLand()) {
-                            creatureAttachedTo.destroy(source.getSourceId(), game, false);
+                            creatureAttachedTo.destroy(source, game, false);
                         } else {
                             ContinuousEffect effect = new BoostTargetEffect(3, 3, Duration.EndOfTurn);
                             effect.setTargetPointer(new FixedTarget(creatureAttachedTo.getId()));

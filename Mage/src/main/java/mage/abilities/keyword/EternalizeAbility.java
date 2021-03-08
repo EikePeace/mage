@@ -1,4 +1,3 @@
-
 package mage.abilities.keyword;
 
 import mage.ObjectColor;
@@ -19,7 +18,6 @@ import mage.players.Player;
 import mage.util.CardUtil;
 
 /**
- *
  * @author igoudt
  */
 public class EternalizeAbility extends ActivatedAbilityImpl {
@@ -58,7 +56,7 @@ public class EternalizeAbility extends ActivatedAbilityImpl {
         StringBuilder sb = new StringBuilder("Eternalize ").append(cost.getText());
         sb.append(" <i>(").append(cost.getText());
         sb.append(", Exile this card from your graveyard: Create a token that's a copy of it, except it's a 4/4 black Zombie ");
-        for (SubType subtype : card.getSubtype(null)) {
+        for (SubType subtype : card.getSubtype()) {
             sb.append(subtype).append(" ");
         }
         sb.append(" with no mana cost. Eternalize only as a sorcery.)</i>");
@@ -91,18 +89,18 @@ class EternalizeEffect extends OneShotEffect {
         if (controller == null) {
             return false;
         }
+
+        // create token and modify all attributes permanently (without game usage)
         EmptyToken token = new EmptyToken();
-        CardUtil.copyTo(token).from(card); // needed so that entersBattlefied triggered abilities see the attributes (e.g. Master Biomancer)
-        token.getColor(game).setColor(ObjectColor.BLACK);
-        if (!token.hasSubtype(SubType.ZOMBIE, game)) {
-            token.getSubtype(game).add(0, SubType.ZOMBIE);
-        }
+        CardUtil.copyTo(token).from(card, game); // needed so that entersBattlefied triggered abilities see the attributes (e.g. Master Biomancer)
+        token.getColor().setColor(ObjectColor.BLACK);
+        token.addSubType(SubType.ZOMBIE);
         token.getManaCost().clear();
         token.removePTCDA();
         token.getPower().modifyBaseValue(4);
         token.getToughness().modifyBaseValue(4);
-        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.ETERNALIZED_CREATURE, token.getId(), source.getSourceId(), controller.getId()));
-        token.putOntoBattlefield(1, game, source.getSourceId(), controller.getId(), false, false, null);
+        game.fireEvent(GameEvent.getEvent(GameEvent.EventType.ETERNALIZED_CREATURE, token.getId(), source, controller.getId()));
+        token.putOntoBattlefield(1, game, source, controller.getId(), false, false, null);
         // Probably it makes sense to remove also the Eternalize ability (it's not shown on the token cards).
         // Also it can never get active or? But it's not mentioned in the reminder text.
         return true;

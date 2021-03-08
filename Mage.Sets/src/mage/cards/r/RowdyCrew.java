@@ -40,7 +40,7 @@ public final class RowdyCrew extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new RowdyCrewEffect()));
     }
 
-    public RowdyCrew(final RowdyCrew card) {
+    private RowdyCrew(final RowdyCrew card) {
         super(card);
     }
 
@@ -71,17 +71,17 @@ class RowdyCrewEffect extends OneShotEffect {
         Permanent creature = game.getPermanent(source.getSourceId());
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(3, game);
+            player.drawCards(3, source, game);
             Cards cards = new CardsImpl();
             int cardsInHand = player.getHand().size();
             switch (cardsInHand) {
                 case 0:
                     break;
                 case 1:
-                    player.discard(1, true, source, game);
+                    player.discard(1, true, false, source, game);
                     break;
                 default:
-                    cards = player.discard(2, true, source, game);
+                    cards = player.discard(2, true, false, source, game);
             }
             if (creature != null && cardsInHand > 1) {
                 for (CardType type : CardType.values()) {
@@ -90,7 +90,7 @@ class RowdyCrewEffect extends OneShotEffect {
                         if (game.getCard(cardId).getCardType().contains(type)) {
                             count++;
                             if (count > 1) {
-                                creature.addCounters(CounterType.P1P1.createInstance(2), source, game);
+                                creature.addCounters(CounterType.P1P1.createInstance(2), source.getControllerId(), source, game);
                                 return true;
                             }
                         }

@@ -30,7 +30,7 @@ public final class CircleOfFlame extends CardImpl {
         this.addAbility(new CircleOfFlameTriggeredAbility());
     }
 
-    public CircleOfFlame(final CircleOfFlame card) {
+    private CircleOfFlame(final CircleOfFlame card) {
         super(card);
     }
 
@@ -57,7 +57,7 @@ class CircleOfFlameTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

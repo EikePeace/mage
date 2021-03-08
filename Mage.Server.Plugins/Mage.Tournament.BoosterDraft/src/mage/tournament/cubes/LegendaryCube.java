@@ -1,18 +1,16 @@
-
 package mage.tournament.cubes;
 
 import mage.game.draft.DraftCube;
 
 /**
- *
  * @author fireshoes
  */
 
 public class LegendaryCube extends DraftCube {
-    
-public LegendaryCube() {
-    super("Legendary Cube (598 cards)"); // http://magic.wizards.com/en/MTGO/articles/archive/legendary-cube-cardlist-2015-11-09
-    
+
+    public LegendaryCube() {
+        super("Legendary Cube"); // http://magic.wizards.com/en/MTGO/articles/archive/legendary-cube-cardlist-2015-11-09
+
         cubeCards.add(new CardIdentity("Aboshan, Cephalid Emperor", ""));
         cubeCards.add(new CardIdentity("Absorb Vis", ""));
         cubeCards.add(new CardIdentity("Akroma's Memorial", ""));
@@ -267,7 +265,7 @@ public LegendaryCube() {
         cubeCards.add(new CardIdentity("Kolaghan's Command", ""));
         cubeCards.add(new CardIdentity("Kolaghan, the Storm's Fury", ""));
         cubeCards.add(new CardIdentity("Konda's Banner", ""));
-        cubeCards.add(new CardIdentity("Kongming, 'Sleeping Dragon'", ""));
+        cubeCards.add(new CardIdentity("Kongming, \"Sleeping Dragon\"", ""));
         cubeCards.add(new CardIdentity("Kozilek, Butcher of Truth", ""));
         cubeCards.add(new CardIdentity("Krenko, Mob Boss", ""));
         cubeCards.add(new CardIdentity("Kresh the Bloodbraided", ""));
@@ -611,5 +609,5 @@ public LegendaryCube() {
         cubeCards.add(new CardIdentity("Zirilan of the Claw", ""));
         cubeCards.add(new CardIdentity("Zurgo Bellstriker", ""));
         cubeCards.add(new CardIdentity("Zurgo Helmsmasher", ""));
-    }    
+    }
 }

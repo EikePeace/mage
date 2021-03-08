@@ -55,7 +55,7 @@ public final class HedronFieldPurists extends LevelerCard {
         setMaxLevelCounters(5);
     }
 
-    public HedronFieldPurists(final HedronFieldPurists card) {
+    private HedronFieldPurists(final HedronFieldPurists card) {
         super(card);
     }
 
@@ -88,9 +88,9 @@ class HedronFieldPuristsEffect extends PreventionEffectImpl {
             return super.applies(event, source, game);
         }
 
-        if (event.getType() == GameEvent.EventType.DAMAGE_CREATURE) {
+        if (event.getType() == GameEvent.EventType.DAMAGE_PERMANENT) {
             Permanent permanent = game.getPermanent(event.getTargetId());
-            if (permanent != null && permanent.isControlledBy(source.getControllerId())) {
+            if (permanent != null && permanent.isCreature() && permanent.isControlledBy(source.getControllerId())) {
                 return super.applies(event, source, game);
             }
         }

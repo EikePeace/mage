@@ -12,7 +12,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.Target;
 import mage.target.TargetPermanent;
 
@@ -38,7 +38,7 @@ public final class JourneyToNowhere extends CardImpl {
         this.addAbility(ability2);
     }
 
-    public JourneyToNowhere(final JourneyToNowhere card) {
+    private JourneyToNowhere(final JourneyToNowhere card) {
         super(card);
     }
 

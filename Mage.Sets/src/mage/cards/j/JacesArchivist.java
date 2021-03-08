@@ -38,7 +38,7 @@ public final class JacesArchivist extends CardImpl {
         this.addAbility(ability);
     }
 
-    public JacesArchivist(final JacesArchivist card) {
+    private JacesArchivist(final JacesArchivist card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class JacesArchivistEffect extends OneShotEffect {
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
-                    Cards discardedCards = player.discard(player.getHand().size(), false, source, game);
+                    Cards discardedCards = player.discard(player.getHand().size(), false, false, source, game);
                     if (discardedCards.size() > maxDiscarded) {
                         maxDiscarded = discardedCards.size();
                     }
@@ -77,7 +77,7 @@ class JacesArchivistEffect extends OneShotEffect {
             for (UUID playerId : game.getState().getPlayersInRange(controller.getId(), game)) {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
-                    player.drawCards(maxDiscarded, game);
+                    player.drawCards(maxDiscarded, source, game);
                 }
             }
         }

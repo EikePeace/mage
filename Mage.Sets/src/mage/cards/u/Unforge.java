@@ -37,7 +37,7 @@ public final class Unforge extends CardImpl {
         getSpellAbility().addEffect(new UnforgeEffect());
     }
 
-    public Unforge(final Unforge card) {
+    private Unforge(final Unforge card) {
         super(card);
     }
 
@@ -61,11 +61,11 @@ class UnforgeEffect extends OneShotEffect{
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent equipment = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent equipment = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if(equipment != null){
             Permanent creature = game.getPermanent(equipment.getAttachedTo());
             if(creature != null){
-              creature.damage(2, source.getId(), game, false, true);
+              creature.damage(2, source.getSourceId(), source, game, false, true);
               return true;
             }
         }

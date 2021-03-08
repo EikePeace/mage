@@ -5,7 +5,6 @@ import mage.MageObject;
 import mage.abilities.Abilities;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
-import mage.abilities.costs.Cost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.ManaCostsImpl;
 import mage.abilities.effects.common.UntapTargetEffect;
@@ -43,7 +42,7 @@ public final class MagewrightsStone extends CardImpl {
         this.addAbility(ability);
     }
 
-    public MagewrightsStone(final MagewrightsStone card) {
+    private MagewrightsStone(final MagewrightsStone card) {
         super(card);
     }
 
@@ -66,10 +65,8 @@ class HasAbilityWithTapSymbolPredicate implements Predicate<MageObject> {
 
         for (Ability ability : abilities) {
             if ((ability.getAbilityType() == AbilityType.ACTIVATED || ability.getAbilityType() == AbilityType.MANA) && !ability.getCosts().isEmpty()) {
-                for (Cost cost : ability.getCosts()) {
-                    if (cost instanceof TapSourceCost) {
+                if (ability.hasTapCost()) {
                         return true;
-                    }
                 }
             }
         }

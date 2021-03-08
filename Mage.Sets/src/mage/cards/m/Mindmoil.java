@@ -26,7 +26,7 @@ public final class Mindmoil extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new MindmoilEffect(), false));
     }
 
-    public Mindmoil(final Mindmoil card) {
+    private Mindmoil(final Mindmoil card) {
         super(card);
     }
 
@@ -53,7 +53,7 @@ class MindmoilEffect extends OneShotEffect {
         if (you != null) {
             int count = you.getHand().size();
             you.putCardsOnBottomOfLibrary(you.getHand(), game, source, true);
-            you.drawCards(count, game);
+            you.drawCards(count, source, game);
         }
         return true;
     }

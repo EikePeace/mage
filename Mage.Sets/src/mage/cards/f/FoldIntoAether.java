@@ -30,7 +30,7 @@ public final class FoldIntoAether extends CardImpl {
         this.getSpellAbility().addTarget(new TargetSpell());
     }
 
-    public FoldIntoAether(final FoldIntoAether card) {
+    private FoldIntoAether(final FoldIntoAether card) {
         super(card);
     }
 
@@ -64,7 +64,7 @@ class FoldIntoAetherEffect extends OneShotEffect {
         if (stackObject != null) {
             spellController = game.getPlayer(stackObject.getControllerId());
         }
-        if (game.getStack().counter(targetId, source.getSourceId(), game)) {
+        if (game.getStack().counter(targetId, source, game)) {
             TargetCardInHand target = new TargetCardInHand(StaticFilters.FILTER_CARD_CREATURE);
             if (spellController != null
                     && target.canChoose(source.getSourceId(), spellController.getId(), game)

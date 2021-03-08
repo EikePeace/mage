@@ -44,7 +44,7 @@ public final class OpalineSliver extends CardImpl {
                 filter, "All Slivers have \"Whenever this permanent becomes the target of a spell an opponent controls, you may draw a card.\"")));
     }
 
-    public OpalineSliver(final OpalineSliver card) {
+    private OpalineSliver(final OpalineSliver card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class OpalineSliverTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
 
     @Override

@@ -43,7 +43,7 @@ public final class RideDown extends CardImpl {
 
     }
 
-    public RideDown(final RideDown card) {
+    private RideDown(final RideDown card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class RideDownEffect extends OneShotEffect {
                         break;
                     }
                 }
-                blockingCreature.destroy(source.getSourceId(), game, false);
+                blockingCreature.destroy(source, game, false);
             }
             return true;
         }

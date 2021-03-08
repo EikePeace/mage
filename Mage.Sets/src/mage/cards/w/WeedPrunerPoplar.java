@@ -13,7 +13,7 @@ import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.TargetController;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -41,7 +41,7 @@ public final class WeedPrunerPoplar extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WeedPrunerPoplar(final WeedPrunerPoplar card) {
+    private WeedPrunerPoplar(final WeedPrunerPoplar card) {
         super(card);
     }
 

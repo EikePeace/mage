@@ -6,7 +6,7 @@ import mage.abilities.Ability;
 import mage.abilities.common.SimpleStaticAbility;
 import mage.abilities.effects.Effect;
 import mage.abilities.effects.ReplacementEffectImpl;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveTargetEffect;
+import mage.abilities.effects.common.MillCardsTargetEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
@@ -29,7 +29,7 @@ public final class ChainsOfMephistopheles extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ChainsOfMephistophelesReplacementEffect()), new CardsDrawnDuringDrawStepWatcher());
     }
 
-    public ChainsOfMephistopheles(final ChainsOfMephistopheles card) {
+    private ChainsOfMephistopheles(final ChainsOfMephistopheles card) {
         super(card);
     }
 
@@ -43,7 +43,7 @@ class ChainsOfMephistophelesReplacementEffect extends ReplacementEffectImpl {
 
     public ChainsOfMephistophelesReplacementEffect() {
         super(Duration.WhileOnBattlefield, Outcome.Benefit);
-        staticText = "If a player would draw a card except the first one they draw in their draw step each turn, that player discards a card instead. If the player discards a card this way, they draw a card. If the player doesn't discard a card this way, they put the top card of their library into their graveyard";
+        staticText = "If a player would draw a card except the first one they draw in each of their draw steps, that player discards a card instead. If the player discards a card this way, they draw a card. If the player doesn't discard a card this way, they mill a card";
     }
 
     public ChainsOfMephistophelesReplacementEffect(final ChainsOfMephistophelesReplacementEffect effect) {
@@ -66,13 +66,13 @@ class ChainsOfMephistophelesReplacementEffect extends ReplacementEffectImpl {
         if (player != null) {
             if (player.getHand().isEmpty()) {
                 // they put the top card of their library into their graveyard
-                Effect effect = new PutTopCardOfLibraryIntoGraveTargetEffect(1);
+                Effect effect = new MillCardsTargetEffect(1);
                 effect.setTargetPointer(new FixedTarget(event.getPlayerId()));
                 effect.apply(game, source);
                 return true;
             } else  {
                 // discards a card instead. If the player discards a card this way, they draw a card.
-                player.discard(1, false, source, game);
+                player.discard(1, false, false, source, game);
                 return false; // because player draws a card, the draw event is kept
             }
         }

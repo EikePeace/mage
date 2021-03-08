@@ -12,7 +12,7 @@ import mage.constants.SubType;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -38,7 +38,7 @@ public final class ChampionOfTheParish extends CardImpl {
         this.addAbility(new EntersBattlefieldControlledTriggeredAbility(new AddCountersSourceEffect(CounterType.P1P1.createInstance()), filter));
     }
 
-    public ChampionOfTheParish(final ChampionOfTheParish card) {
+    private ChampionOfTheParish(final ChampionOfTheParish card) {
         super(card);
     }
 

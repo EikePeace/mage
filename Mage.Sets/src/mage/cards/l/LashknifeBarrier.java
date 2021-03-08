@@ -32,7 +32,7 @@ public final class LashknifeBarrier extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new LashknifeBarrierEffect()));
     }
 
-    public LashknifeBarrier(final LashknifeBarrier card) {
+    private LashknifeBarrier(final LashknifeBarrier card) {
         super(card);
     }
 
@@ -71,13 +71,13 @@ class LashknifeBarrierEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGE_CREATURE;
+        return event.getType() == EventType.DAMAGE_PERMANENT;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
         Permanent creature = game.getPermanent(event.getTargetId());
-        return creature != null && creature.isControlledBy(source.getControllerId());
+        return creature != null && creature.isPlaneswalker() && creature.isControlledBy(source.getControllerId());
     }
 
 }

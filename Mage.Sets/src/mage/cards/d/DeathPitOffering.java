@@ -37,7 +37,7 @@ public final class DeathPitOffering extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostAllEffect(2, 2, Duration.WhileOnBattlefield, filter, false)));
     }
 
-    public DeathPitOffering(final DeathPitOffering card) {
+    private DeathPitOffering(final DeathPitOffering card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class DeathPitOfferingEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         List<Permanent> permanents = game.getBattlefield().getAllActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game);
         for (Permanent permanent : permanents) {
-            permanent.sacrifice(source.getSourceId(), game);
+            permanent.sacrifice(source, game);
         }
         return true;
     }

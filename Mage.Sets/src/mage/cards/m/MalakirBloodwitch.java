@@ -38,7 +38,7 @@ public final class MalakirBloodwitch extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new MalakirBloodwitchEffect(), false));
     }
 
-    public MalakirBloodwitch(final MalakirBloodwitch card) {
+    private MalakirBloodwitch(final MalakirBloodwitch card) {
         super(card);
     }
 
@@ -80,7 +80,7 @@ class MalakirBloodwitchEffect extends OneShotEffect {
         for (UUID opponentUuid : opponents) {
             Player opponent = game.getPlayer(opponentUuid);
             if (opponent != null) {
-                total += opponent.loseLife(amount, game, false);
+                total += opponent.loseLife(amount, game, source, false);
             }
         }
         if (total > 0) {

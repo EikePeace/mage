@@ -51,7 +51,7 @@ public final class StonehewerGiant extends CardImpl {
 
     }
 
-    public StonehewerGiant(final StonehewerGiant card) {
+    private StonehewerGiant(final StonehewerGiant card) {
         super(card);
     }
 
@@ -96,7 +96,7 @@ class StonehewerGiantEffect extends OneShotEffect {
                 targetCreature.setNotTarget(true);
                 if (equipment != null && controller.choose(Outcome.BoostCreature, targetCreature, source.getSourceId(), game)) {
                     Permanent permanent = game.getPermanent(targetCreature.getFirstTarget());
-                    permanent.addAttachment(equipment.getId(), game);
+                    permanent.addAttachment(equipment.getId(), source, game);
                 }
             }
         }

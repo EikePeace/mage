@@ -15,10 +15,8 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent.EventType;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
@@ -55,7 +53,7 @@ public final class BombSquad extends CardImpl {
         this.addAbility(new BombSquadTriggeredAbility());
     }
 
-    public BombSquad(final BombSquad card) {
+    private BombSquad(final BombSquad card) {
         super(card);
     }
 
@@ -84,7 +82,7 @@ class BombSquadTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_ADDED;
+        return event.getType() == GameEvent.EventType.COUNTER_ADDED;
     }
 
     @Override
@@ -94,7 +92,7 @@ class BombSquadTriggeredAbility extends TriggeredAbilityImpl {
             if (permanent != null && filter.match(permanent, game)) {
                 if (4 <= permanent.getCounters(game).getCount(CounterType.FUSE)) {
                     for (Effect effect : this.getEffects()) {
-                        effect.setTargetPointer(new FixedTarget(permanent.getId()));
+                        effect.setTargetPointer(new FixedTarget(permanent, game));
                     }
                     return true;
                 }
@@ -129,8 +127,8 @@ class BombSquadDamgeEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent creature = game.getPermanent(this.getTargetPointer().getFirst(game, source));
         if (creature != null) {
-            creature.removeCounters(CounterType.FUSE.getName(), creature.getCounters(game).getCount(CounterType.FUSE), game);
-            creature.destroy(source.getSourceId(), game, false);
+            creature.removeCounters(CounterType.FUSE.getName(), creature.getCounters(game).getCount(CounterType.FUSE), source, game);
+            creature.destroy(source, game, false);
         }
         if (creature == null) {
             creature = (Permanent) game.getLastKnownInformation(this.getTargetPointer().getFirst(game, source), Zone.BATTLEFIELD);
@@ -138,7 +136,7 @@ class BombSquadDamgeEffect extends OneShotEffect {
         if (creature != null) {
             Player controller = game.getPlayer(creature.getControllerId());
             if (controller != null) {
-                controller.damage(4, source.getSourceId(), game);
+                controller.damage(4, source.getSourceId(), source, game);
                 return true;
             }
         }
@@ -152,7 +150,7 @@ class BombSquadBeginningEffect extends OneShotEffect {
     private static final FilterCreaturePermanent filter = new FilterCreaturePermanent("creature with a fuse counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.FUSE));
+        filter.add(CounterType.FUSE.getPredicate());
     }
 
     public BombSquadBeginningEffect() {
@@ -176,7 +174,7 @@ class BombSquadBeginningEffect extends OneShotEffect {
             return false;
         }
         for (Permanent permanent : game.getBattlefield().getActivePermanents(filter, source.getControllerId(), game)) {
-            permanent.addCounters(CounterType.FUSE.createInstance(), source, game);
+            permanent.addCounters(CounterType.FUSE.createInstance(), source.getControllerId(), source, game);
 
             game.informPlayers(card.getName() + " puts a fuse counter on " + permanent.getName());
         }

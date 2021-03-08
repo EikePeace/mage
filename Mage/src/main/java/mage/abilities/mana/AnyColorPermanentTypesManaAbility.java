@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.abilities.mana;
 
 import mage.Mana;
 import mage.ObjectColor;
 import mage.abilities.Ability;
 import mage.abilities.costs.common.TapSourceCost;
-import mage.abilities.effects.common.ManaEffect;
+import mage.abilities.effects.mana.ManaEffect;
 import mage.choices.Choice;
 import mage.choices.ChoiceColor;
 import mage.constants.ColoredManaSymbol;

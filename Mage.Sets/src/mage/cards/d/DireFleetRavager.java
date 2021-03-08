@@ -41,7 +41,7 @@ public final class DireFleetRavager extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new DireFleetRavagerEffect()));
     }
 
-    public DireFleetRavager(final DireFleetRavager card) {
+    private DireFleetRavager(final DireFleetRavager card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class DireFleetRavagerEffect extends OneShotEffect {
                 Player player = game.getPlayer(playerId);
                 if (player != null) {
                     int lifeToLose = (int) Math.ceil(player.getLife() / 3.0);
-                    player.loseLife(lifeToLose, game, false);
+                    player.loseLife(lifeToLose, game, source, false);
                 }
             }
             return true;

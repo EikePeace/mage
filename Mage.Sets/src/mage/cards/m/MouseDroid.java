@@ -2,7 +2,7 @@ package mage.cards.m;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.abilities.keyword.RepairAbility;
 import mage.constants.SubType;
@@ -24,13 +24,13 @@ public final class MouseDroid extends CardImpl {
         this.toughness = new MageInt(1);
 
         // When Mouse Droid dies, draw a card.
-        this.addAbility(new DiesTriggeredAbility(new DrawCardSourceControllerEffect(1)));
+        this.addAbility(new DiesSourceTriggeredAbility(new DrawCardSourceControllerEffect(1)));
 
         // Repair 3
         this.addAbility(new RepairAbility(3));
     }
 
-    public MouseDroid(final MouseDroid card) {
+    private MouseDroid(final MouseDroid card) {
         super(card);
     }
 

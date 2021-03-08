@@ -26,7 +26,7 @@ public final class OrimsPrayer extends CardImpl {
         this.addAbility(new OrimsPrayerTriggeredAbility());
     }
 
-    public OrimsPrayer(final OrimsPrayer card) {
+    private OrimsPrayer(final OrimsPrayer card) {
         super(card);
     }
 
@@ -37,8 +37,6 @@ public final class OrimsPrayer extends CardImpl {
 }
 
 class OrimsPrayerTriggeredAbility extends TriggeredAbilityImpl {
-
-    int numberAttackingController = 0;
 
     public OrimsPrayerTriggeredAbility() {
         super(Zone.BATTLEFIELD, null);
@@ -55,7 +53,7 @@ class OrimsPrayerTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DECLARED_ATTACKERS;
+        return event.getType() == GameEvent.EventType.DECLARED_ATTACKERS;
     }
 
     @Override
@@ -65,6 +63,7 @@ class OrimsPrayerTriggeredAbility extends TriggeredAbilityImpl {
         if (controller == null) {
             return false;
         }
+        int numberAttackingController = 0;
         for (UUID attackersId : game.getCombat().getAttackers()) {
             Permanent attackingCreature = game.getPermanent(attackersId);
             if (attackingCreature != null

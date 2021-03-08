@@ -8,7 +8,6 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.filter.StaticFilters;
-import mage.filter.common.FilterBasicLandCard;
 import mage.target.common.TargetCardInLibrary;
 
 /**
@@ -27,7 +26,7 @@ public final class NissasExpedition extends CardImpl {
         this.getSpellAbility().addEffect(new SearchLibraryPutInPlayEffect(new TargetCardInLibrary(0,2, StaticFilters.FILTER_CARD_BASIC_LAND), true, true));
     }
 
-    public NissasExpedition(final NissasExpedition card) {
+    private NissasExpedition(final NissasExpedition card) {
         super(card);
     }
 

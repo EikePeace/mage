@@ -18,7 +18,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.targetpointer.FixedTarget;
@@ -57,7 +57,7 @@ public final class KarrthusTyrantOfJund extends CardImpl {
         
     }
 
-    public KarrthusTyrantOfJund(final KarrthusTyrantOfJund card) {
+    private KarrthusTyrantOfJund(final KarrthusTyrantOfJund card) {
         super(card);
     }
 
@@ -123,7 +123,7 @@ class KarrthusControlEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent dragon = game.getPermanent(targetPointer.getFirst(game, source));
         if (dragon != null && controllerId != null) {
-            return dragon.changeControllerId(controllerId, game);
+            return dragon.changeControllerId(controllerId, game, source);
         }
         return false;
     }

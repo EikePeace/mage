@@ -26,7 +26,7 @@ public final class PhyrexianRebirth extends CardImpl {
         this.getSpellAbility().addEffect(new PhyrexianRebirthEffect());
     }
 
-    public PhyrexianRebirth(final PhyrexianRebirth card) {
+    private PhyrexianRebirth(final PhyrexianRebirth card) {
         super(card);
     }
 
@@ -50,12 +50,12 @@ public final class PhyrexianRebirth extends CardImpl {
         public boolean apply(Game game, Ability source) {
             int count = 0;
             for (Permanent permanent : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, source.getControllerId(), game)) {
-                count += permanent.destroy(source.getSourceId(), game, false) ? 1 : 0;
+                count += permanent.destroy(source, game, false) ? 1 : 0;
             }
             PhyrexianRebirthHorrorToken horrorToken = new PhyrexianRebirthHorrorToken();
             horrorToken.getPower().modifyBaseValue(count);
             horrorToken.getToughness().modifyBaseValue(count);
-            horrorToken.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId());
+            horrorToken.putOntoBattlefield(1, game, source, source.getControllerId());
             return true;
         }
 

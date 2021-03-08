@@ -19,7 +19,6 @@ import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledPlaneswalkerPermanent;
-import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
 import mage.filter.common.FilterInstantOrSorceryCard;
 import mage.filter.predicate.mageobject.ColorPredicate;
 import mage.filter.predicate.mageobject.ConvertedManaCostPredicate;
@@ -27,8 +26,8 @@ import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.game.events.ZoneChangeEvent;
 import mage.game.permanent.Permanent;
+import mage.game.permanent.token.RedElementalToken;
 import mage.game.permanent.token.Token;
-import mage.game.permanent.token.YoungPyromancerElementalToken;
 import mage.players.Player;
 import mage.target.common.TargetCardInYourGraveyard;
 import mage.target.targetpointer.FixedTarget;
@@ -100,8 +99,8 @@ class ChandraAcolyteOfFlameEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Token token = new YoungPyromancerElementalToken();
-        token.putOntoBattlefield(2, game, source.getSourceId(), source.getControllerId());
+        Token token = new RedElementalToken();
+        token.putOntoBattlefield(2, game, source, source.getControllerId());
 
         token.getLastAddedTokenIds().stream().forEach(permId -> {
             Permanent permanent = game.getPermanent(permId);
@@ -148,7 +147,7 @@ class ChandraAcolyteOfFlameGraveyardEffect extends OneShotEffect {
         Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
         if (card != null) {
             ContinuousEffect effect = new ChandraAcolyteOfFlameCastFromGraveyardEffect();
-            effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+            effect.setTargetPointer(new FixedTarget(card, game));
             game.addEffect(effect, source);
             effect = new ChandraAcolyteOfFlameReplacementEffect(card.getId());
             game.addEffect(effect, source);
@@ -206,12 +205,7 @@ class ChandraAcolyteOfFlameReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        Player controller = game.getPlayer(source.getControllerId());
-        Card card = game.getCard(this.cardId);
-        if (controller != null && card != null) {
-            controller.moveCardToExileWithInfo(card, null, "", source.getSourceId(), game, Zone.STACK, true);
-            return true;
-        }
+        ((ZoneChangeEvent) event).setToZone(Zone.EXILED);
         return false;
     }
 

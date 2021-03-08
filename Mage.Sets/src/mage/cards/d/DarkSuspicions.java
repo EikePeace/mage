@@ -26,7 +26,7 @@ public final class DarkSuspicions extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new DarkSuspicionsEffect(), TargetController.OPPONENT, false));
     }
 
-    public DarkSuspicions(final DarkSuspicions card) {
+    private DarkSuspicions(final DarkSuspicions card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class DarkSuspicionsEffect extends OneShotEffect {
         if (controller != null && opponent != null) {
             int xValue = opponent.getHand().size() - controller.getHand().size();
             if (xValue > 0) {
-                opponent.loseLife(xValue, game, false);
+                opponent.loseLife(xValue, game, source, false);
             }
             return true;
         }

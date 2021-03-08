@@ -1,4 +1,3 @@
-
 package mage.cards.t;
 
 import java.util.UUID;
@@ -43,7 +42,7 @@ public final class TreacherousLink extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new TreacherousLinkEffect()));
     }
 
-    public TreacherousLink(final TreacherousLink card) {
+    private TreacherousLink(final TreacherousLink card) {
         super(card);
     }
 
@@ -71,7 +70,7 @@ class TreacherousLinkEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
 
     @Override
@@ -90,13 +89,18 @@ class TreacherousLinkEffect extends ReplacementEffectImpl {
         if (controller == null) {
             return false;
         }
-        controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
+        controller.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), damageEvent.getAppliedEffects());
         return true;
     }
 
     @Override
     public boolean applies(GameEvent event, Ability source, Game game) {
-        Permanent enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        // In the case that the enchantment is blinked
+        Permanent enchantment = (Permanent) game.getLastKnownInformation(source.getSourceId(), Zone.BATTLEFIELD);
+        if (enchantment == null) {
+            // It was not blinked, use the standard method
+            enchantment = game.getPermanentOrLKIBattlefield(source.getSourceId());
+        }
         Player controller = game.getPlayer(source.getControllerId());
         DamageEvent damageEvent = (DamageEvent) event;
         if (controller != null && enchantment != null) {

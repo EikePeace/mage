@@ -28,7 +28,7 @@ public final class WretchedBanquet extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent());
     }
 
-    public WretchedBanquet(final WretchedBanquet card) {
+    private WretchedBanquet(final WretchedBanquet card) {
         super(card);
     }
 
@@ -70,7 +70,7 @@ class WretchedBanquetEffect extends OneShotEffect {
         }
 
         if (targetCreature.getPower().getValue() <= minPower) {
-            targetCreature.destroy(source.getSourceId(), game, false);
+            targetCreature.destroy(source, game, false);
             return true;
         }
         return false;

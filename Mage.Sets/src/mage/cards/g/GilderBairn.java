@@ -40,7 +40,7 @@ public final class GilderBairn extends CardImpl {
 
     }
 
-    public GilderBairn(final GilderBairn card) {
+    private GilderBairn(final GilderBairn card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class GilderBairnEffect extends OneShotEffect {
         if (target != null) {
             for (Counter counter : target.getCounters(game).values()) {
                 Counter newCounter = new Counter(counter.getName(), counter.getCount());
-                target.addCounters(newCounter, source, game);
+                target.addCounters(newCounter, source.getControllerId(), source, game);
             }
         }
         return false;

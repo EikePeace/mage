@@ -20,8 +20,8 @@ import mage.filter.predicate.permanent.TappedPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
+import mage.target.TargetPlayer;
 import mage.target.common.TargetCreaturePermanent;
-import mage.target.common.TargetOpponent;
 
 import java.util.UUID;
 
@@ -49,7 +49,7 @@ public final class AnaBattlemage extends CardImpl {
         this.addAbility(kickerAbility);
         // When Ana Battlemage enters the battlefield, if it was kicked with its {2}{U} kicker, target player discards three cards.
         TriggeredAbility ability = new EntersBattlefieldTriggeredAbility(new DiscardTargetEffect(3));
-        ability.addTarget(new TargetOpponent());
+        ability.addTarget(new TargetPlayer());
         this.addAbility(new ConditionalInterveningIfTriggeredAbility(ability, new KickedCostCondition("{2}{U}"),
                 "When {this} enters the battlefield, if it was kicked with its {2}{U} kicker, target player discards three cards."));
         // When Ana Battlemage enters the battlefield, if it was kicked with its {1}{B} kicker, tap target untapped creature and that creature deals damage equal to its power to its controller.
@@ -59,7 +59,7 @@ public final class AnaBattlemage extends CardImpl {
                 "When {this} enters the battlefield, if it was kicked with its {1}{B} kicker, tap target untapped creature and that creature deals damage equal to its power to its controller."));
     }
 
-    public AnaBattlemage(final AnaBattlemage card) {
+    private AnaBattlemage(final AnaBattlemage card) {
         super(card);
     }
 
@@ -90,10 +90,10 @@ class AnaBattlemageKickerEffect extends OneShotEffect {
         boolean applied = false;
         Permanent targetCreature = game.getPermanent(targetPointer.getFirst(game, source));
         if (targetCreature != null) {
-            applied = targetCreature.tap(game);
+            applied = targetCreature.tap(source, game);
             Player controller = game.getPlayer(targetCreature.getControllerId());
             if (controller != null) {
-                controller.damage(targetCreature.getPower().getValue(), source.getSourceId(), game);
+                controller.damage(targetCreature.getPower().getValue(), source.getSourceId(), source, game);
                 applied = true;
             }
         }

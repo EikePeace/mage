@@ -1,4 +1,3 @@
-
 package mage.cards.s;
 
 import java.util.UUID;
@@ -14,7 +13,6 @@ import mage.constants.AsThoughEffectType;
 import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
-import mage.constants.Zone;
 import mage.game.Game;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
@@ -34,7 +32,7 @@ public final class StolenGoods extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public StolenGoods(final StolenGoods card) {
+    private StolenGoods(final StolenGoods card) {
         super(card);
     }
 
@@ -74,7 +72,7 @@ class StolenGoodsEffect extends OneShotEffect {
 
             if (card != null) {
                 ContinuousEffect effect = new StolenGoodsCastFromExileEffect();
-                effect.setTargetPointer(new FixedTarget(card.getId(), card.getZoneChangeCounter(game)));
+                effect.setTargetPointer(new FixedTarget(card, game));
                 game.addEffect(effect, source);
             }
             return true;
@@ -105,17 +103,11 @@ class StolenGoodsCastFromExileEffect extends AsThoughEffectImpl {
     }
 
     @Override
-    public boolean applies(UUID sourceId, Ability source, UUID affectedControllerId, Game game) {
-        if (sourceId != null && sourceId.equals(getTargetPointer().getFirst(game, source))
+    public boolean applies(UUID objectId, Ability source, UUID affectedControllerId, Game game) {
+        if (objectId != null && objectId.equals(getTargetPointer().getFirst(game, source))
                 && affectedControllerId.equals(source.getControllerId())) {
-            Card card = game.getCard(sourceId);
-            if (card != null && game.getState().getZone(sourceId) == Zone.EXILED) {
-                Player player = game.getPlayer(affectedControllerId);
-                if (player != null) {
-                    player.setCastSourceIdWithAlternateMana(sourceId, null, card.getSpellAbility().getCosts());
-                    return true;
-                }
-            }
+            allowCardToPlayWithoutMana(objectId, source, affectedControllerId, game);
+            return true;
         }
         return false;
     }

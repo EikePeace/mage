@@ -2,7 +2,7 @@ package mage.cards.t;
 
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.common.EntersBattlefieldAbility;
 import mage.abilities.dynamicvalue.DynamicValue;
 import mage.abilities.dynamicvalue.common.SourcePermanentPowerCount;
@@ -42,10 +42,10 @@ public final class ThoughtSponge extends CardImpl {
                 CounterType.P1P1.createInstance(), ThoughtSpongeValue.instance, false
         ), "with a number of +1/+1 counters on it equal to " +
                 "the greatest number of cards an opponent has drawn this turn"
-        ), new CardsDrawnThisTurnWatcher());
+        ));
 
         // When Thought Sponge dies, draw cards equal to its power.
-        this.addAbility(new DiesTriggeredAbility(
+        this.addAbility(new DiesSourceTriggeredAbility(
                 new DrawCardSourceControllerEffect(xValue).setText("draw cards equal to its power")
         ));
     }

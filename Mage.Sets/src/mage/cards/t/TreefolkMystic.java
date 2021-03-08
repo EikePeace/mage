@@ -6,7 +6,7 @@ import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.Mode;
-import mage.abilities.common.BlocksOrBecomesBlockedTriggeredAbility;
+import mage.abilities.common.BlocksOrBecomesBlockedSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -30,10 +30,10 @@ public final class TreefolkMystic extends CardImpl {
         this.toughness = new MageInt(4);
 
         // Whenever Treefolk Mystic blocks or becomes blocked by a creature, destroy all Auras attached to that creature.
-        this.addAbility(new BlocksOrBecomesBlockedTriggeredAbility(new TreefolkMysticEffect(), false));
+        this.addAbility(new BlocksOrBecomesBlockedSourceTriggeredAbility(new TreefolkMysticEffect(), false));
     }
 
-    public TreefolkMystic(final TreefolkMystic card) {
+    private TreefolkMystic(final TreefolkMystic card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class TreefolkMysticEffect extends OneShotEffect {
             for (UUID uuid : attachments) {
                 Permanent aura = game.getPermanent(uuid);
                 if (aura != null && aura.hasSubtype(SubType.AURA, game)) {
-                    aura.destroy(source.getSourceId(), game, false);
+                    aura.destroy(source, game, false);
                 }
             }
         }

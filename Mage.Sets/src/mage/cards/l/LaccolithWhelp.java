@@ -4,7 +4,7 @@ package mage.cards.l;
 import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
-import mage.abilities.common.BecomesBlockedTriggeredAbility;
+import mage.abilities.common.BecomesBlockedSourceTriggeredAbility;
 import mage.abilities.effects.OneShotEffect;
 import mage.abilities.effects.common.continuous.AssignNoCombatDamageSourceEffect;
 import mage.cards.CardImpl;
@@ -16,7 +16,6 @@ import mage.constants.Outcome;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
-import mage.players.Player;
 import mage.target.common.TargetCreaturePermanent;
 
 /**
@@ -32,13 +31,13 @@ public final class LaccolithWhelp extends CardImpl {
         this.toughness = new MageInt(1);
 
         // Whenever Laccolith Grunt becomes blocked, you may have it deal damage equal to its power to target creature. If you do, Laccolith Grunt assigns no combat damage this turn.
-        Ability ability = new BecomesBlockedTriggeredAbility(new LaccolithEffect().setText("you may have it deal damage equal to its power to target creature"), true);
+        Ability ability = new BecomesBlockedSourceTriggeredAbility(new LaccolithEffect().setText("you may have it deal damage equal to its power to target creature"), true);
         ability.addEffect(new AssignNoCombatDamageSourceEffect(Duration.EndOfTurn, true));
         ability.addTarget(new TargetCreaturePermanent());
         this.addAbility(ability);
     }
 
-    public LaccolithWhelp(final LaccolithWhelp card) {
+    private LaccolithWhelp(final LaccolithWhelp card) {
         super(card);
     }
 
@@ -71,7 +70,7 @@ public final class LaccolithWhelp extends CardImpl {
     
             Permanent permanent = game.getPermanent(source.getFirstTarget());
             if (permanent != null) {
-                permanent.damage(damage, sourcePermanent.getId(), game, false, true);
+                permanent.damage(damage, sourcePermanent.getId(), source, game, false, true);
                 return true;
             }
             return false;

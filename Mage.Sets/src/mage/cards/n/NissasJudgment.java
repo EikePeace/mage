@@ -13,7 +13,6 @@ import mage.constants.Outcome;
 import mage.constants.TargetController;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -46,7 +45,7 @@ public final class NissasJudgment extends CardImpl {
         getSpellAbility().addEffect(effect);
     }
 
-    public NissasJudgment(final NissasJudgment card) {
+    private NissasJudgment(final NissasJudgment card) {
         super(card);
     }
 
@@ -63,7 +62,7 @@ class NissasJudgmentEffect extends OneShotEffect {
 
     static {
         filter.add(TargetController.OPPONENT.getControllerPredicate());
-        filterWithCounter.add(new CounterPredicate(CounterType.P1P1));
+        filterWithCounter.add(CounterType.P1P1.getPredicate());
     }
 
     public NissasJudgmentEffect() {
@@ -88,7 +87,7 @@ class NissasJudgmentEffect extends OneShotEffect {
             if (targetCreature != null) {
                 for (Permanent permanent : game.getBattlefield().getAllActivePermanents(filterWithCounter, controller.getId(), game)) {
                     if (permanent.getPower().getValue() > 0) {
-                        targetCreature.damage(permanent.getPower().getValue(), permanent.getId(), game, false, true);
+                        targetCreature.damage(permanent.getPower().getValue(), permanent.getId(), source, game, false, true);
                     }
                 }
             }

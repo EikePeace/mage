@@ -11,7 +11,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -39,7 +39,7 @@ public final class SliverLegion extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostAllEffect(new PermanentsOnBattlefieldCount(countfilter) , new PermanentsOnBattlefieldCount(countfilter), Duration.WhileOnBattlefield, filter, false)));
     }
 
-    public SliverLegion(final SliverLegion card) {
+    private SliverLegion(final SliverLegion card) {
         super(card);
     }
 

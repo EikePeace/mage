@@ -1,7 +1,5 @@
-
 package mage.cards.s;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.SimpleActivatedAbility;
@@ -17,14 +15,15 @@ import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.common.TargetOpponent;
 
+import java.util.UUID;
+
 /**
- *
  * @author Ketsuban
  */
 public final class SoldeviSentry extends CardImpl {
 
     public SoldeviSentry(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId, setInfo, new CardType[] { CardType.ARTIFACT, CardType.CREATURE }, "{1}");
+        super(ownerId, setInfo, new CardType[]{CardType.ARTIFACT, CardType.CREATURE}, "{1}");
         this.subtype.add(SubType.SOLDIER);
         this.power = new MageInt(1);
         this.toughness = new MageInt(1);
@@ -36,7 +35,7 @@ public final class SoldeviSentry extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SoldeviSentry(final SoldeviSentry card) {
+    private SoldeviSentry(final SoldeviSentry card) {
         super(card);
     }
 
@@ -53,10 +52,10 @@ class SoldeviSentryEffect extends RegenerateSourceEffect {
         //20110204 - 701.11
         Player opponent = game.getPlayer(source.getFirstTarget());
         Permanent permanent = game.getPermanent(source.getSourceId());
-        if (permanent != null && permanent.regenerate(this.getId(), game)) {
+        if (permanent != null && permanent.regenerate(source, game)) {
             if (opponent != null) {
                 if (opponent.chooseUse(Outcome.DrawCard, "Draw a card?", source, game)) {
-                    opponent.drawCards(1, game);
+                    opponent.drawCards(1, source, game);
                 }
             }
             this.used = true;

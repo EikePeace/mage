@@ -15,7 +15,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.ColorPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.TargetPlayer;
 
 /**
@@ -46,7 +46,7 @@ public final class SagesRowDenizen extends CardImpl {
         this.addAbility(ability);
     }
 
-    public SagesRowDenizen(final SagesRowDenizen card) {
+    private SagesRowDenizen(final SagesRowDenizen card) {
         super(card);
     }
 

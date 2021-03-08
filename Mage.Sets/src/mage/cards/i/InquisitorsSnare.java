@@ -35,7 +35,7 @@ public final class InquisitorsSnare extends CardImpl {
 
     }
 
-    public InquisitorsSnare(final InquisitorsSnare card) {
+    private InquisitorsSnare(final InquisitorsSnare card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class InquisitorsSnareEffect extends OneShotEffect {
             filter.add(new PermanentIdPredicate(targetCreature.getId()));
             game.addEffect(new PreventAllDamageByAllPermanentsEffect(filter, Duration.EndOfTurn, false), source);
             if (targetCreature.getColor(game).isBlack() || targetCreature.getColor(game).isRed()) {
-                return targetCreature.destroy(source.getSourceId(), game, false);
+                return targetCreature.destroy(source, game, false);
             }
         }
         return false;

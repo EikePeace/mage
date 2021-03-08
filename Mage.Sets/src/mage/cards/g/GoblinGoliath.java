@@ -44,7 +44,7 @@ public final class GoblinGoliath extends CardImpl {
         this.addAbility(ability);
     }
 
-    public GoblinGoliath(final GoblinGoliath card) {
+    private GoblinGoliath(final GoblinGoliath card) {
         super(card);
     }
 
@@ -99,7 +99,7 @@ class GoblinGoliathDamageEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        event.setAmount(CardUtil.addWithOverflowCheck(event.getAmount(), event.getAmount()));
+        event.setAmount(CardUtil.overflowMultiply(event.getAmount(), 2));
         return false;
     }
 }

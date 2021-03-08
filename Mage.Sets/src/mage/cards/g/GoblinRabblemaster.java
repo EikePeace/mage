@@ -16,7 +16,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.AttackingPredicate;
 import mage.game.permanent.token.GoblinToken;
 import mage.watchers.common.AttackedThisTurnWatcher;
@@ -57,7 +57,7 @@ public final class GoblinRabblemaster extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new BoostSourceEffect(new PermanentsOnBattlefieldCount(attackingFilter), StaticValue.get(0), Duration.EndOfTurn, true), false));
     }
 
-    public GoblinRabblemaster(final GoblinRabblemaster card) {
+    private GoblinRabblemaster(final GoblinRabblemaster card) {
         super(card);
     }
 

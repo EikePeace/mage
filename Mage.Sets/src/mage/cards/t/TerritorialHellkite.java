@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import mage.MageInt;
 import mage.MageObjectReference;
@@ -54,7 +53,7 @@ public final class TerritorialHellkite extends CardImpl {
         this.addAbility(new BeginningOfCombatTriggeredAbility(new AttackIfAbleTargetRandoOpponentSourceEffect(), TargetController.YOU, false), new AttackedLastCombatWatcher());
     }
 
-    public TerritorialHellkite(final TerritorialHellkite card) {
+    private TerritorialHellkite(final TerritorialHellkite card) {
         super(card);
     }
 
@@ -141,7 +140,7 @@ class AttackIfAbleTargetRandoOpponentSourceEffect extends OneShotEffect {
                 }
             } else {
                 game.informPlayers(sourcePermanent.getLogName() + " can't attack an opponent it didn't attack last combat.");
-                sourcePermanent.tap(game);
+                sourcePermanent.tap(source, game);
             }
             return true;
         }

@@ -18,7 +18,6 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterLandPermanent;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetLandPermanent;
@@ -33,7 +32,7 @@ public final class MineLayer extends CardImpl {
     private static final FilterLandPermanent filter = new FilterLandPermanent("land with a mine counter on it");
 
     static {
-        filter.add(new CounterPredicate(CounterType.MINE));
+        filter.add(CounterType.MINE.getPredicate());
     }
 
     public MineLayer(UUID ownerId, CardSetInfo setInfo) {
@@ -56,7 +55,7 @@ public final class MineLayer extends CardImpl {
         this.addAbility(new LeavesBattlefieldTriggeredAbility(new RemoveAllMineCountersEffect(), false));
     }
 
-    public MineLayer(final MineLayer card) {
+    private MineLayer(final MineLayer card) {
         super(card);
     }
 
@@ -88,7 +87,7 @@ class RemoveAllMineCountersEffect extends OneShotEffect {
             if (permanent != null) {
                 int numToRemove = permanent.getCounters(game).getCount(CounterType.MINE);
                 if (numToRemove > 0) {
-                    permanent.removeCounters(CounterType.MINE.getName(), numToRemove, game);
+                    permanent.removeCounters(CounterType.MINE.getName(), numToRemove, source, game);
                 }
             }
         }

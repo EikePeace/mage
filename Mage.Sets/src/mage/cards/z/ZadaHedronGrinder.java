@@ -39,7 +39,7 @@ public final class ZadaHedronGrinder extends CardImpl {
 
     }
 
-    public ZadaHedronGrinder(final ZadaHedronGrinder card) {
+    private ZadaHedronGrinder(final ZadaHedronGrinder card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class ZadaHedronGrinderTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

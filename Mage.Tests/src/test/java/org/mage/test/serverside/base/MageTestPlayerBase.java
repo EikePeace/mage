@@ -1,9 +1,18 @@
 package org.mage.test.serverside.base;
 
+import mage.MageInt;
 import mage.abilities.Abilities;
 import mage.abilities.AbilitiesImpl;
 import mage.abilities.Ability;
 import mage.abilities.SpellAbility;
+import mage.abilities.common.SimpleActivatedAbility;
+import mage.abilities.common.SimpleStaticAbility;
+import mage.abilities.costs.mana.ManaCostsImpl;
+import mage.abilities.effects.Effect;
+import mage.abilities.effects.common.DamageTargetEffect;
+import mage.abilities.effects.common.DestroyTargetEffect;
+import mage.abilities.effects.common.cost.SpellsCostIncreasingAllEffect;
+import mage.abilities.effects.common.cost.SpellsCostReductionAllEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -11,16 +20,22 @@ import mage.cards.decks.DeckCardLists;
 import mage.cards.repository.CardInfo;
 import mage.cards.repository.CardRepository;
 import mage.constants.*;
+import mage.filter.StaticFilters;
 import mage.game.Game;
 import mage.game.match.MatchType;
 import mage.game.permanent.PermanentCard;
 import mage.game.tournament.TournamentType;
 import mage.players.Player;
 import mage.server.game.GameFactory;
-import mage.server.util.ConfigSettings;
+import mage.server.managers.ConfigSettings;
+import mage.server.util.ConfigFactory;
+import mage.server.util.ConfigWrapper;
 import mage.server.util.PluginClassLoader;
 import mage.server.util.config.GamePlugin;
 import mage.server.util.config.Plugin;
+import mage.target.TargetPermanent;
+import mage.target.common.TargetAnyTarget;
+import mage.util.CardUtil;
 import mage.util.Copier;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -31,6 +46,7 @@ import org.mage.test.player.TestPlayer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,8 +120,10 @@ public abstract class MageTestPlayerBase {
         Logger.getRootLogger().setLevel(Level.DEBUG);
         logger.debug("Starting MAGE tests");
         logger.debug("Logging level: " + logger.getLevel());
+        logger.debug("Default charset: " + Charset.defaultCharset());
+
         deleteSavedGames();
-        ConfigSettings config = ConfigSettings.instance;
+        ConfigSettings config = new ConfigWrapper(ConfigFactory.loadFromFile("config/config.xml"));
         for (GamePlugin plugin : config.getGameTypes()) {
             GameFactory.instance.addGameType(plugin.getName(), loadGameType(plugin), loadPlugin(plugin));
         }
@@ -141,7 +159,6 @@ public abstract class MageTestPlayerBase {
     private static TournamentType loadTournamentType(GamePlugin plugin) {
         try {
             classLoader.addURL(new File(pluginFolder + '/' + plugin.getJar()).toURI().toURL());
-            logger.info("Loading tournament type: " + plugin.getClassName());
             return (TournamentType) Class.forName(plugin.getTypeName(), true, classLoader).getConstructor().newInstance();
         } catch (ClassNotFoundException ex) {
             logger.warn("Tournament type not found:" + plugin.getJar() + " - check plugin folder");
@@ -236,14 +253,15 @@ public abstract class MageTestPlayerBase {
                 } else {
                     for (int i = 0; i < amount; i++) {
                         CardInfo cardInfo = CardRepository.instance.findCard(cardName);
-                        Card card = cardInfo != null ? cardInfo.getCard() : null;
-                        if (card != null) {
+                        Card newCard = cardInfo != null ? cardInfo.getCard() : null;
+                        if (newCard != null) {
                             if (gameZone == Zone.BATTLEFIELD) {
-                                PermanentCard p = new PermanentCard(card, null, currentGame);
+                                Card permCard = CardUtil.getDefaultCardSideForBattlefield(newCard);
+                                PermanentCard p = new PermanentCard(permCard, null, currentGame);
                                 p.setTapped(tapped);
                                 perms.add(p);
                             } else {
-                                cards.add(card);
+                                cards.add(newCard);
                             }
                         } else {
                             logger.fatal("Couldn't find a card: " + cardName);
@@ -351,6 +369,13 @@ public abstract class MageTestPlayerBase {
         return new TestPlayer(new TestComputerPlayer(name, rangeOfInfluence));
     }
 
+    /**
+     * Raise error on any miss choices/targets setup in tests (if AI try to make decision itself instead of user defined actions)
+     * If you want to disable mana auto-payment (e.g. to simulate user clicks on mana pool or special mana) then call
+     * disableManaAutoPayment()
+     *
+     * @param enable
+     */
     protected void setStrictChooseMode(boolean enable) {
         if (playerA != null) playerA.setChooseStrictMode(enable);
         if (playerB != null) playerB.setChooseStrictMode(enable);
@@ -372,39 +397,101 @@ public abstract class MageTestPlayerBase {
 
     protected void addCustomCardWithAbility(String customName, TestPlayer controllerPlayer, Ability ability, SpellAbility spellAbility,
                                             CardType cardType, String spellCost, Zone putAtZone) {
+        addCustomCardWithAbility(customName, controllerPlayer, ability, spellAbility, cardType, spellCost, putAtZone, null);
+    }
+
+    protected void addCustomCardWithAbility(String customName, TestPlayer controllerPlayer, Ability ability, SpellAbility spellAbility,
+                                            CardType cardType, String spellCost, Zone putAtZone, SubType... additionalSubTypes) {
         CustomTestCard.clearCustomAbilities(customName);
         CustomTestCard.addCustomAbility(customName, spellAbility, ability);
+        CustomTestCard.clearAdditionalSubtypes(customName);
+        CustomTestCard.addAdditionalSubtypes(customName, additionalSubTypes);
 
         CardSetInfo testSet = new CardSetInfo(customName, "custom", "123", Rarity.COMMON);
-        PermanentCard card = new PermanentCard(new CustomTestCard(controllerPlayer.getId(), testSet, cardType, spellCost), controllerPlayer.getId(), currentGame);
+        Card newCard = new CustomTestCard(controllerPlayer.getId(), testSet, cardType, spellCost);
+        Card permCard = CardUtil.getDefaultCardSideForBattlefield(newCard);
+        PermanentCard permanent = new PermanentCard(permCard, controllerPlayer.getId(), currentGame);
 
         switch (putAtZone) {
             case BATTLEFIELD:
-                getBattlefieldCards(controllerPlayer).add(card);
+                getBattlefieldCards(controllerPlayer).add(permanent);
                 break;
             case GRAVEYARD:
-                getGraveCards(controllerPlayer).add(card);
+                getGraveCards(controllerPlayer).add(newCard);
                 break;
             case HAND:
-                getHandCards(controllerPlayer).add(card);
+                getHandCards(controllerPlayer).add(newCard);
                 break;
             case LIBRARY:
-                getLibraryCards(controllerPlayer).add(card);
+                getLibraryCards(controllerPlayer).add(newCard);
                 break;
             case COMMAND:
-                getCommandCards(controllerPlayer).add(card);
+                getCommandCards(controllerPlayer).add(newCard);
                 break;
             default:
                 Assert.fail("Unsupported zone: " + putAtZone);
         }
+    }
+
+    /**
+     * Add cost modification effect to the game (all cast cost will be increaded or decreased for controller)
+     *
+     * @param controller
+     * @param modificationAmount
+     */
+    protected void addCustomEffect_SpellCostModification(TestPlayer controller, int modificationAmount) {
+        Effect effect;
+        if (modificationAmount >= 0) {
+            effect = new SpellsCostIncreasingAllEffect(modificationAmount, StaticFilters.FILTER_CARD, TargetController.YOU);
+        } else {
+            effect = new SpellsCostReductionAllEffect(StaticFilters.FILTER_CARD, -1 * modificationAmount, false, true);
+        }
+
+        addCustomCardWithAbility(
+                "cost modification " + controller.getName(),
+                controller,
+                new SimpleStaticAbility(effect)
+        );
+    }
+
+    /**
+     * Add target damage ability that can be called by text: "target damage xxx"
+     *
+     * @param controller
+     * @param damageAmount
+     */
+    protected void addCustomEffect_TargetDamage(TestPlayer controller, int damageAmount) {
+        Ability ability = new SimpleActivatedAbility(new DamageTargetEffect(damageAmount).setText("target damage " + damageAmount), new ManaCostsImpl(""));
+        ability.addTarget(new TargetAnyTarget());
+        addCustomCardWithAbility(
+                "target damage " + damageAmount + " for " + controller.getName(),
+                controller,
+                ability
+        );
+    }
+
+    /**
+     * Add target destroy ability that can be called by text "target destroy"
+     *
+     * @param controller
+     */
+    protected void addCustomEffect_DestroyTarget(TestPlayer controller) {
+        Ability ability = new SimpleActivatedAbility(new DestroyTargetEffect().setText("target destroy"), new ManaCostsImpl(""));
+        ability.addTarget(new TargetPermanent());
+        addCustomCardWithAbility(
+                "target destroy for " + controller.getName(),
+                controller,
+                ability
+        );
     }
 }
 
 // custom card with global abilities list to init (can contains abilities per card name)
 class CustomTestCard extends CardImpl {
 
-    static private Map<String, Abilities<Ability>> abilitiesList = new HashMap<>(); // card name -> abilities
-    static private Map<String, SpellAbility> spellAbilitiesList = new HashMap<>(); // card name -> spell ability
+    static private final Map<String, Abilities<Ability>> abilitiesList = new HashMap<>(); // card name -> abilities
+    static private final Map<String, SpellAbility> spellAbilitiesList = new HashMap<>(); // card name -> spell ability
+    static private final Map<String, Set<SubType>> subTypesList = new HashMap<>(); // card name -> additional subtypes
 
     static void addCustomAbility(String cardName, SpellAbility spellAbility, Ability ability) {
         if (!abilitiesList.containsKey(cardName)) {
@@ -421,6 +508,16 @@ class CustomTestCard extends CardImpl {
         spellAbilitiesList.remove(cardName);
     }
 
+    static void addAdditionalSubtypes(String cardName, SubType... subtypes) {
+        if (subtypes != null) {
+            subTypesList.computeIfAbsent(cardName, s -> new HashSet<>()).addAll(Arrays.asList(subtypes.clone()));
+        }
+    }
+
+    static void clearAdditionalSubtypes(String cardName) {
+        subTypesList.remove(cardName);
+    }
+
     CustomTestCard(UUID ownerId, CardSetInfo setInfo, CardType cardType, String spellCost) {
         super(ownerId, setInfo, new CardType[]{cardType}, spellCost);
 
@@ -433,6 +530,17 @@ class CustomTestCard extends CardImpl {
             for (Ability ability : extraAbitilies) {
                 this.addAbility(ability.copy());
             }
+        }
+
+        Set<SubType> subTypeSet = subTypesList.get(setInfo.getName());
+        if (subTypeSet != null) {
+            for (SubType subType : subTypeSet) {
+                this.subtype.add(subType);
+            }
+        }
+        if (cardType == CardType.CREATURE) {
+            this.power = new MageInt(1);
+            this.toughness = new MageInt(1);
         }
     }
 

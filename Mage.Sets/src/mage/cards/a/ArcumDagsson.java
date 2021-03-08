@@ -48,7 +48,7 @@ public final class ArcumDagsson extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ArcumDagsson(final ArcumDagsson card) {
+    private ArcumDagsson(final ArcumDagsson card) {
         super(card);
     }
 
@@ -86,7 +86,7 @@ class ArcumDagssonEffect extends OneShotEffect {
         if (artifactCreature != null) {
             Player player = game.getPlayer(artifactCreature.getControllerId());
             if (player != null) {
-                artifactCreature.sacrifice(source.getSourceId(), game);
+                artifactCreature.sacrifice(source, game);
                 if (player.chooseUse(Outcome.PutCardInPlay, "Search your library for a noncreature artifact card?", source, game)) {
                     TargetCardInLibrary target = new TargetCardInLibrary(filter);
                     if (player.searchLibrary(target, source, game)) {

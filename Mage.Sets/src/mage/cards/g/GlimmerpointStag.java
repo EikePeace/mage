@@ -1,7 +1,5 @@
-
 package mage.cards.g;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.Ability;
 import mage.abilities.common.EntersBattlefieldTriggeredAbility;
@@ -13,19 +11,20 @@ import mage.abilities.keyword.VigilanceAbility;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
-import mage.constants.SubType;
 import mage.constants.Outcome;
+import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
 import mage.target.targetpointer.FixedTarget;
 
+import java.util.UUID;
+
 /**
- *
  * @author maurer.it_at_gmail.com
  */
 public final class GlimmerpointStag extends CardImpl {
@@ -37,7 +36,7 @@ public final class GlimmerpointStag extends CardImpl {
     }
 
     public GlimmerpointStag(UUID ownerId, CardSetInfo setInfo) {
-        super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{W}{W}");
+        super(ownerId, setInfo, new CardType[]{CardType.CREATURE}, "{2}{W}{W}");
         this.subtype.add(SubType.ELK);
 
         this.power = new MageInt(3);
@@ -52,7 +51,7 @@ public final class GlimmerpointStag extends CardImpl {
         this.addAbility(etbAbility);
     }
 
-    public GlimmerpointStag(final GlimmerpointStag card) {
+    private GlimmerpointStag(final GlimmerpointStag card) {
         super(card);
     }
 
@@ -84,7 +83,7 @@ class GlimmerpointStagEffect extends OneShotEffect {
                 int zcc = permanent.getZoneChangeCounter(game);
                 controller.moveCards(permanent, Zone.EXILED, source, game);
                 //create delayed triggered ability
-                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect();
+                Effect effect = new ReturnToBattlefieldUnderOwnerControlTargetEffect(false, false);
                 effect.setTargetPointer(new FixedTarget(permanent.getId(), zcc + 1));
                 AtTheBeginOfNextEndStepDelayedTriggeredAbility delayedAbility = new AtTheBeginOfNextEndStepDelayedTriggeredAbility(effect);
                 game.addDelayedTriggeredAbility(delayedAbility, source);

@@ -33,7 +33,7 @@ public final class KessigCagebreakers extends CardImpl {
         this.addAbility(new AttacksTriggeredAbility(new KessigCagebreakersEffect(), false));
     }
 
-    public KessigCagebreakers(final KessigCagebreakers card) {
+    private KessigCagebreakers(final KessigCagebreakers card) {
         super(card);
     }
 
@@ -66,7 +66,7 @@ class KessigCagebreakersEffect extends OneShotEffect {
             WolfToken token = new WolfToken();
             int count = player.getGraveyard().count(StaticFilters.FILTER_CARD_CREATURE, game);
             for (int i = 0; i < count; i++) {
-                token.putOntoBattlefield(1, game, source.getSourceId(), source.getControllerId(), true, true);
+                token.putOntoBattlefield(1, game, source, source.getControllerId(), true, true);
             }
             return true;
         }

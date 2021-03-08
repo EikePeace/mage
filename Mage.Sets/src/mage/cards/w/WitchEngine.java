@@ -45,7 +45,7 @@ public final class WitchEngine extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WitchEngine(final WitchEngine card) {
+    private WitchEngine(final WitchEngine card) {
         super(card);
     }
 
@@ -75,7 +75,7 @@ class WitchEngineEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = (Permanent) source.getSourceObjectIfItStillExists(game);
         if (permanent != null) {
-            return permanent.changeControllerId(source.getFirstTarget(), game);
+            return permanent.changeControllerId(source.getFirstTarget(), game, source);
         } else {
             discard();
         }

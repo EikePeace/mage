@@ -13,8 +13,9 @@ import java.util.*;
 import java.util.List;
 
 /**
- * @author JayDi85
- * @author Salco
+ * App GUI: fast search in the combobox, uses in deck editor (sets choosing)
+ *
+ * @author Salco, JayDi85
  */
 
 public class PickCheckBoxDialog extends MageDialog {
@@ -96,13 +97,10 @@ public class PickCheckBoxDialog extends MageDialog {
 
         // sorting
         if (choice.isSortEnabled()) {
-            Collections.sort(this.allItems, new Comparator<KeyValueItem>() {
-                @Override
-                public int compare(KeyValueItem o1, KeyValueItem o2) {
-                    Integer n1 = choice.getSortData().get(o1.getKey());
-                    Integer n2 = choice.getSortData().get(o2.getKey());
-                    return n1.compareTo(n2);
-                }
+            this.allItems.sort((o1, o2) -> {
+                Integer n1 = choice.getSortData().get(o1.getKey());
+                Integer n2 = choice.getSortData().get(o2.getKey());
+                return n1.compareTo(n2);
             });
         }
 
@@ -230,12 +228,12 @@ public class PickCheckBoxDialog extends MageDialog {
         if (filter == null) {
             filter = "";
         }
-        filter = filter.toLowerCase();
+        filter = filter.toLowerCase(Locale.ENGLISH);
 
         this.dataModel.clear();
         this.m_dataModel.clear();
         for (KeyValueItem item : this.allItems) {
-            if (!choice.isSearchEnabled() || item.Value.toLowerCase().contains(filter)) {
+            if (!choice.isSearchEnabled() || item.Value.toLowerCase(Locale.ENGLISH).contains(filter)) {
                 this.dataModel.addElement(item);
                 this.m_dataModel.addElement(item.getObjectValue());
             }

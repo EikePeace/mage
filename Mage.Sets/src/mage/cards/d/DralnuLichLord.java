@@ -19,7 +19,7 @@ import mage.filter.FilterCard;
 import mage.filter.FilterPermanent;
 import mage.filter.predicate.Predicates;
 import mage.game.Game;
-import mage.game.events.DamageCreatureEvent;
+import mage.game.events.DamageEvent;
 import mage.game.events.GameEvent;
 import mage.target.common.TargetCardInYourGraveyard;
 
@@ -54,7 +54,7 @@ public final class DralnuLichLord extends CardImpl {
         this.addAbility(ability);
     }
 
-    public DralnuLichLord(final DralnuLichLord card) {
+    private DralnuLichLord(final DralnuLichLord card) {
         super(card);
     }
 
@@ -76,14 +76,14 @@ class DralnuLichLordReplacementEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean replaceEvent(GameEvent event, Ability source, Game game) {
-        DamageCreatureEvent damageEvent = (DamageCreatureEvent) event;
+        DamageEvent damageEvent = (DamageEvent) event;
         new SacrificeControllerEffect(new FilterPermanent(), damageEvent.getAmount(), "").apply(game, source);
         return true;
     }
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE;
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT;
     }
     
     @Override

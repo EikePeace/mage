@@ -65,7 +65,7 @@ public final class SwordOfTheParuns extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(3)));
     }
 
-    public SwordOfTheParuns(final SwordOfTheParuns card) {
+    private SwordOfTheParuns(final SwordOfTheParuns card) {
         super(card);
     }
 
@@ -102,7 +102,7 @@ class MayTapOrUntapAttachedEffect extends OneShotEffect {
                     }
                 } else {
                     if (player.chooseUse(Outcome.Tap, "Tap equipped creature?", source, game)) {
-                        equipedCreature.tap(game);
+                        equipedCreature.tap(source, game);
                     }
                 }
                 return true;

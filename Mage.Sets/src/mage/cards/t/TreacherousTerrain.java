@@ -31,7 +31,7 @@ public final class TreacherousTerrain extends CardImpl {
         this.addAbility(new BasicLandcyclingAbility(new ManaCostsImpl("{2}")));
     }
 
-    public TreacherousTerrain(final TreacherousTerrain card) {
+    private TreacherousTerrain(final TreacherousTerrain card) {
         super(card);
     }
 
@@ -65,7 +65,7 @@ class TreacherousTerrainEffect extends OneShotEffect {
                     }
                 }
                 if (amount > 0) {
-                    player.damage(amount, source.getSourceId(), game);
+                    player.damage(amount, source.getSourceId(), source, game);
                 }
             }
         }

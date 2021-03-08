@@ -29,7 +29,7 @@ public final class CovenantOfMinds extends CardImpl {
         this.getSpellAbility().addTarget(new TargetOpponent());
     }
 
-    public CovenantOfMinds(final CovenantOfMinds card) {
+    private CovenantOfMinds(final CovenantOfMinds card) {
         super(card);
     }
 
@@ -74,12 +74,12 @@ class CovenantOfMindsEffect extends OneShotEffect {
                 player.moveCards(cards, Zone.HAND, source, game);
             } else {
                 player.moveCards(cards, Zone.GRAVEYARD, source, game);
-                player.drawCards(5, game);
+                player.drawCards(5, source, game);
             }
 
         } else {
             if (!opponent.chooseUse(Outcome.Benefit, player.getLogName() + "'s library is empty? Do you want them to draw five cards?", source, game)) {
-                player.drawCards(5, game);
+                player.drawCards(5, source, game);
             }
         }
 

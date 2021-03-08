@@ -15,7 +15,7 @@ import mage.constants.*;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreatureOrPlaneswalkerPermanent;
 import mage.filter.common.FilterPlaneswalkerPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -129,7 +129,7 @@ class NicolBolasDragonGodPlusOneEffect extends OneShotEffect {
         if (player == null) {
             return false;
         }
-        player.drawCards(1, game);
+        player.drawCards(1, source, game);
         Set<Card> cardsOnBattlefield = new LinkedHashSet<>();
         Set<Card> cards = new LinkedHashSet<>();
         for (UUID opponentId : game.getState().getPlayersInRange(player.getId(), game)) {

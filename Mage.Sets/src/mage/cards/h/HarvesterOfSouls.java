@@ -12,7 +12,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.filter.predicate.permanent.TokenPredicate;
 
 /**
@@ -40,7 +40,7 @@ public final class HarvesterOfSouls extends CardImpl {
         this.addAbility(new DiesCreatureTriggeredAbility(new DrawCardSourceControllerEffect(1), true, filter));
     }
 
-    public HarvesterOfSouls(final HarvesterOfSouls card) {
+    private HarvesterOfSouls(final HarvesterOfSouls card) {
         super(card);
     }
 

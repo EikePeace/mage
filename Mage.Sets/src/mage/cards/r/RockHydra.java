@@ -49,7 +49,7 @@ public final class RockHydra extends CardImpl {
         this.addAbility(new ConditionalActivatedAbility(Zone.BATTLEFIELD, new AddCountersSourceEffect(CounterType.P1P1.createInstance(1)), new ManaCostsImpl("{R}{R}{R}"), new IsStepCondition(PhaseStep.UPKEEP), null));
     }
 
-    public RockHydra(final RockHydra card) {
+    private RockHydra(final RockHydra card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ public final class RockHydra extends CardImpl {
             preventDamageAction(event, source, game);
             Permanent permanent = game.getPermanent(source.getSourceId());
             if (permanent != null) {
-                permanent.removeCounters(CounterType.P1P1.createInstance(damage), game); //MTG ruling Rock Hydra loses counters even if the damage isn't prevented
+                permanent.removeCounters(CounterType.P1P1.createInstance(damage), source, game); //MTG ruling Rock Hydra loses counters even if the damage isn't prevented
             }
             return false;
         }

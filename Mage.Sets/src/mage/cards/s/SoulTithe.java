@@ -45,7 +45,7 @@ public final class SoulTithe extends CardImpl {
         this.addAbility(new BeginningOfUpkeepTriggeredAbility(new SoulTitheEffect(), TargetController.CONTROLLER_ATTACHED_TO, false));
     }
 
-    public SoulTithe(final SoulTithe card) {
+    private SoulTithe(final SoulTithe card) {
         super(card);
     }
 
@@ -76,11 +76,11 @@ class SoulTitheEffect extends OneShotEffect {
                 if (player != null) {
                     Cost cost = ManaUtil.createManaCost(permanent.getConvertedManaCost(), true);
                     if (player.chooseUse(Outcome.Benefit, "Pay " + cost.getText() + " for " + permanent.getName() + "? (otherwise you sacrifice it)", source, game)) {
-                        if (cost.pay(source, game, source.getSourceId(), player.getId(), false, null)) {
+                        if (cost.pay(source, game, source, player.getId(), false, null)) {
                             return true;
                         }
                     }
-                    permanent.sacrifice(source.getSourceId(), game);
+                    permanent.sacrifice(source, game);
                     return true;
                 }
             }

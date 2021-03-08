@@ -18,7 +18,7 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.TargetPermanent;
@@ -101,7 +101,7 @@ class PolukranosUnchainedEffect extends OneShotEffect {
             counters = 6;
         }
         List<UUID> appliedEffects = (ArrayList<UUID>) this.getValue("appliedEffects");
-        permanent.addCounters(CounterType.P1P1.createInstance(counters), source, game, appliedEffects);
+        permanent.addCounters(CounterType.P1P1.createInstance(counters), source.getControllerId(), source, game, appliedEffects);
         return true;
     }
 

@@ -18,7 +18,6 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.game.Game;
 import mage.game.events.GameEvent;
-import mage.game.events.GameEvent;
 
 /**
  *
@@ -36,7 +35,7 @@ public final class ForethoughtAmulet extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new ForethoughtAmuletEffect()));
     }
 
-    public ForethoughtAmulet(final ForethoughtAmulet card) {
+    private ForethoughtAmulet(final ForethoughtAmulet card) {
         super(card);
     }
 

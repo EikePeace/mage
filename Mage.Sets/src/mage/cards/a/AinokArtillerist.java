@@ -23,7 +23,7 @@ public final class AinokArtillerist extends CardImpl {
 
     public AinokArtillerist(UUID ownerId, CardSetInfo setInfo) {
         super(ownerId,setInfo,new CardType[]{CardType.CREATURE},"{2}{G}");
-        this.subtype.add(SubType.HOUND);
+        this.subtype.add(SubType.DOG);
         this.subtype.add(SubType.ARCHER);
         this.power = new MageInt(4);
         this.toughness = new MageInt(1);
@@ -34,7 +34,7 @@ public final class AinokArtillerist extends CardImpl {
                 new SourceHasCounterCondition(CounterType.P1P1),"{this} has reach as long as it has a +1/+1 counter on it")));
     }
 
-    public AinokArtillerist(final AinokArtillerist card) {
+    private AinokArtillerist(final AinokArtillerist card) {
         super(card);
     }
 

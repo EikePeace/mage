@@ -13,7 +13,7 @@ import mage.constants.CardType;
 import mage.constants.Duration;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledCreaturePermanent;
 
 /**
@@ -44,7 +44,7 @@ public final class IntrepidProvisioner extends CardImpl {
 
     }
 
-    public IntrepidProvisioner(final IntrepidProvisioner card) {
+    private IntrepidProvisioner(final IntrepidProvisioner card) {
         super(card);
     }
 

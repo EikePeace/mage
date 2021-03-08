@@ -50,7 +50,7 @@ public final class OpalEyeKondasYojimbo extends CardImpl {
 
     }
 
-    public OpalEyeKondasYojimbo(final OpalEyeKondasYojimbo card) {
+    private OpalEyeKondasYojimbo(final OpalEyeKondasYojimbo card) {
         super(card);
     }
 
@@ -83,8 +83,7 @@ class OpalEyeKondasYojimboRedirectionEffect extends ReplacementEffectImpl {
 
     @Override
     public boolean checksEventType(GameEvent event, Game game) {
-        return event.getType() == GameEvent.EventType.DAMAGE_CREATURE ||
-                event.getType() == GameEvent.EventType.DAMAGE_PLANESWALKER ||
+        return event.getType() == GameEvent.EventType.DAMAGE_PERMANENT ||
                 event.getType() == GameEvent.EventType.DAMAGE_PLAYER;
     }
     
@@ -127,7 +126,7 @@ class OpalEyeKondasYojimboRedirectionEffect extends ReplacementEffectImpl {
             game.informPlayers(message.toString());
             // redirect damage
             discard();
-            sourcePermanent.damage(damageEvent.getAmount(), damageEvent.getSourceId(), game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
+            sourcePermanent.damage(damageEvent.getAmount(), damageEvent.getSourceId(), source, game, damageEvent.isCombatDamage(), damageEvent.isPreventable(), event.getAppliedEffects());
             return true;
         }
         return false;

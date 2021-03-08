@@ -19,7 +19,6 @@ import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.permanent.ControllerIdPredicate;
-import mage.filter.predicate.permanent.CounterPredicate;
 import mage.game.Game;
 import mage.game.events.DamagedPlayerEvent;
 import mage.game.events.GameEvent;
@@ -49,7 +48,7 @@ public final class EtrataTheSilencer extends CardImpl {
         this.addAbility(new EtrataTheSilencerTriggeredAbility());
     }
 
-    public EtrataTheSilencer(final EtrataTheSilencer card) {
+    private EtrataTheSilencer(final EtrataTheSilencer card) {
         super(card);
     }
 
@@ -111,7 +110,7 @@ class EtrataTheSilencerEffect extends OneShotEffect {
     private static final FilterCard filter = new FilterCard();
 
     static {
-        filter.add(new CounterPredicate(CounterType.HIT));
+        filter.add(CounterType.HIT.getPredicate());
     }
 
     public EtrataTheSilencerEffect() {
@@ -141,7 +140,7 @@ class EtrataTheSilencerEffect extends OneShotEffect {
         controller.moveCards(creature, Zone.EXILED, source, game);
         Card card = game.getCard(source.getFirstTarget());
         if (card != null) {
-            card.addCounters(CounterType.HIT.createInstance(), source, game);
+            card.addCounters(CounterType.HIT.createInstance(), source.getControllerId(), source, game);
         }
         int cardsFound = 0;
         cardsFound = game.getExile().getAllCards(game).stream().filter((exiledCard) -> (exiledCard.getCounters(game).getCount(CounterType.HIT) >= 1

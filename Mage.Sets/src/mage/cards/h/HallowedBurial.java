@@ -28,7 +28,7 @@ public final class HallowedBurial extends CardImpl {
 
     }
 
-    public HallowedBurial(final HallowedBurial card) {
+    private HallowedBurial(final HallowedBurial card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class HallowedBurialEffect extends OneShotEffect {
         Player controller = game.getPlayer(source.getControllerId());
         if (controller != null) {
             for (Permanent creature : game.getBattlefield().getActivePermanents(StaticFilters.FILTER_PERMANENT_CREATURE, controller.getId(), source.getSourceId(), game)) {
-                controller.moveCardToLibraryWithInfo(creature, source.getSourceId(), game, Zone.BATTLEFIELD, false, true);
+                controller.moveCardToLibraryWithInfo(creature, source, game, Zone.BATTLEFIELD, false, true);
             }
             return true;
         }

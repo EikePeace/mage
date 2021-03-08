@@ -52,7 +52,7 @@ public final class RoilingHorror extends CardImpl {
 
     }
 
-    public RoilingHorror(final RoilingHorror card) {
+    private RoilingHorror(final RoilingHorror card) {
         super(card);
     }
 
@@ -83,7 +83,7 @@ class RoilingHorrorTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.COUNTER_REMOVED;
+        return event.getType() == GameEvent.EventType.COUNTER_REMOVED;
     }
 
     @Override

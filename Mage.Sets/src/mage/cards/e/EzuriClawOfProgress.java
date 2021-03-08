@@ -14,7 +14,7 @@ import mage.constants.*;
 import mage.counters.CounterType;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.predicate.mageobject.PowerPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -54,7 +54,7 @@ public final class EzuriClawOfProgress extends CardImpl {
         this.addAbility(ability);
     }
 
-    public EzuriClawOfProgress(final EzuriClawOfProgress card) {
+    private EzuriClawOfProgress(final EzuriClawOfProgress card) {
         super(card);
     }
 
@@ -87,7 +87,7 @@ class EzuriClawOfProgressEffect extends OneShotEffect {
             Permanent target = game.getPermanent(getTargetPointer().getFirst(game, source));
             if (target != null) {
                 int amount = controller.getCounters().getCount(CounterType.EXPERIENCE);
-                target.addCounters(CounterType.P1P1.createInstance(amount), source, game);
+                target.addCounters(CounterType.P1P1.createInstance(amount), source.getControllerId(), source, game);
             }
             return true;
         }

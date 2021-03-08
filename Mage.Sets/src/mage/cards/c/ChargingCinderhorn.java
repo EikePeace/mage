@@ -43,7 +43,7 @@ public final class ChargingCinderhorn extends CardImpl {
         this.addAbility(ability, new AttackedThisTurnWatcher());
     }
 
-    public ChargingCinderhorn(final ChargingCinderhorn card) {
+    private ChargingCinderhorn(final ChargingCinderhorn card) {
         super(card);
     }
 
@@ -85,7 +85,7 @@ class ChargingCinderhornDamageTargetEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent chargingCinderhoof = game.getPermanent(source.getSourceId());
         if (chargingCinderhoof != null) {
-            chargingCinderhoof.addCounters(CounterType.FURY.createInstance(), source, game);
+            chargingCinderhoof.addCounters(CounterType.FURY.createInstance(), source.getControllerId(), source, game);
         } else {
             chargingCinderhoof = game.getPermanentOrLKIBattlefield(source.getSourceId());
         }
@@ -97,7 +97,7 @@ class ChargingCinderhornDamageTargetEffect extends OneShotEffect {
         DynamicValue amount = new CountersSourceCount(CounterType.FURY);
         Player player = game.getPlayer(targetPointer.getFirst(game, source));
         if (player != null) {
-            player.damage(amount.calculate(game, source, this), source.getSourceId(), game);
+            player.damage(amount.calculate(game, source, this), source.getSourceId(), source, game);
             return true;
         }
         return false;

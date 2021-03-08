@@ -56,7 +56,7 @@ public final class TibaltTheFiendBlooded extends CardImpl {
         this.addAbility(new LoyaltyAbility(new TibaltTheFiendBloodedThirdEffect(), -6));
     }
 
-    public TibaltTheFiendBlooded(final TibaltTheFiendBlooded card) {
+    private TibaltTheFiendBlooded(final TibaltTheFiendBlooded card) {
         super(card);
     }
 
@@ -86,9 +86,9 @@ class TibaltTheFiendBloodedFirstEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Player player = game.getPlayer(source.getControllerId());
         if (player != null) {
-            player.drawCards(1, game);
+            player.drawCards(1, source, game);
             Card card = player.getHand().getRandom(game);
-            player.discard(card, source, game);
+            player.discard(card, false, source, game);
             return true;
         }
         return false;
@@ -118,11 +118,11 @@ class TibaltTheFiendBloodedThirdEffect extends OneShotEffect {
             permanent.untap(game);
 
             ContinuousEffect effect = new TibaltTheFiendBloodedControlEffect(source.getControllerId());
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
 
             effect = new GainAbilityTargetEffect(HasteAbility.getInstance(), Duration.EndOfTurn);
-            effect.setTargetPointer(new FixedTarget(permanent.getId()));
+            effect.setTargetPointer(new FixedTarget(permanent, game));
             game.addEffect(effect, source);
         }
         return true;
@@ -152,7 +152,7 @@ class TibaltTheFiendBloodedControlEffect extends ContinuousEffectImpl {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(targetPointer.getFirst(game, source));
         if (permanent != null && controllerId != null) {
-            return permanent.changeControllerId(controllerId, game);
+            return permanent.changeControllerId(controllerId, game, source);
         }
         return false;
     }

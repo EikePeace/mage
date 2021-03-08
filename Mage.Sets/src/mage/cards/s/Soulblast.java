@@ -32,7 +32,7 @@ public final class Soulblast extends CardImpl {
         this.getSpellAbility().addTarget(new TargetAnyTarget());
     }
 
-    public Soulblast(final Soulblast card) {
+    private Soulblast(final Soulblast card) {
         super(card);
     }
 
@@ -71,11 +71,11 @@ class SoulblastEffect extends OneShotEffect {
         if (power > 0) {
             Player player = game.getPlayer(this.getTargetPointer().getFirst(game, source));
             if (player != null) {
-                player.damage(power, source.getSourceId(), game);
+                player.damage(power, source.getSourceId(), source, game);
             } else {
                 Permanent creature = game.getPermanent(this.getTargetPointer().getFirst(game, source));
                 if (creature != null) {
-                    creature.damage(power, source.getSourceId(), game, false, true);
+                    creature.damage(power, source.getSourceId(), source, game, false, true);
                 }
             }
         }

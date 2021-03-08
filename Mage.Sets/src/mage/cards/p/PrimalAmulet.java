@@ -50,7 +50,7 @@ public final class PrimalAmulet extends CardImpl {
         this.addAbility(new SpellCastControllerTriggeredAbility(new PrimalAmuletEffect(), new FilterInstantOrSorcerySpell(), false));
     }
 
-    public PrimalAmulet(final PrimalAmulet card) {
+    private PrimalAmulet(final PrimalAmulet card) {
         super(card);
     }
 
@@ -83,10 +83,10 @@ class PrimalAmuletEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getControllerId());
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null && player != null) {
-            permanent.addCounters(CounterType.CHARGE.createInstance(), source, game);
+            permanent.addCounters(CounterType.CHARGE.createInstance(), source.getControllerId(), source, game);
             int counters = permanent.getCounters(game).getCount(CounterType.CHARGE);
             if (counters > 3 && player.chooseUse(Outcome.Benefit, "Transform this?", source, game)) {
-                permanent.removeCounters("charge", counters, game);
+                permanent.removeCounters("charge", counters, source, game);
                 new TransformSourceEffect(true).apply(game, source);
             }
             return true;

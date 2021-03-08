@@ -20,7 +20,6 @@ import mage.constants.Outcome;
 import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.other.CounterCardPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetArtifactPermanent;
@@ -35,7 +34,7 @@ public final class FuryCharm extends CardImpl {
 
     private static final FilterCard filter = new FilterCard("suspended card");
     static {
-        filter.add(new CounterCardPredicate(CounterType.TIME));
+        filter.add(CounterType.TIME.getPredicate());
         filter.add(new AbilityPredicate(SuspendAbility.class));
     }
 
@@ -65,7 +64,7 @@ public final class FuryCharm extends CardImpl {
         this.getSpellAbility().getModes().addMode(mode);
     }
 
-    public FuryCharm(final FuryCharm card) {
+    private FuryCharm(final FuryCharm card) {
         super(card);
     }
 
@@ -95,12 +94,12 @@ class FuryCharmRemoveCounterEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent permanent = game.getPermanent(this.getTargetPointer().getFirst(game, source));
         if (permanent != null) {
-            permanent.removeCounters(CounterType.TIME.getName(), 2, game);
+            permanent.removeCounters(CounterType.TIME.getName(), 2, source, game);
             return true;
         }
         Card card = game.getCard(this.getTargetPointer().getFirst(game, source));
         if (card != null) {
-            card.removeCounters(CounterType.TIME.getName(), 2, game);
+            card.removeCounters(CounterType.TIME.getName(), 2, source, game);
             return true;
         }
         return false;

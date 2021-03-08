@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.target.common.TargetControlledPermanent;
 
 /**
@@ -42,7 +42,7 @@ public final class DemonlordOfAshmouth extends CardImpl {
         this.addAbility(new UndyingAbility());
     }
 
-    public DemonlordOfAshmouth(final DemonlordOfAshmouth card) {
+    private DemonlordOfAshmouth(final DemonlordOfAshmouth card) {
         super(card);
     }
 

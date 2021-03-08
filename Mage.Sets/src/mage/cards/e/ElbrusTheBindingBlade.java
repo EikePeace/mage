@@ -43,7 +43,7 @@ public final class ElbrusTheBindingBlade extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.AddAbility, new GenericManaCost(1)));
     }
 
-    public ElbrusTheBindingBlade(final ElbrusTheBindingBlade card) {
+    private ElbrusTheBindingBlade(final ElbrusTheBindingBlade card) {
         super(card);
     }
 
@@ -69,7 +69,7 @@ class ElbrusTheBindingBladeEffect extends OneShotEffect {
         if (equipment != null && equipment.getAttachedTo() != null) {
             Permanent attachedTo = game.getPermanent(equipment.getAttachedTo());
             if (attachedTo != null) {
-                attachedTo.removeAttachment(equipment.getId(), game);
+                attachedTo.removeAttachment(equipment.getId(), source, game);
                 equipment.transform(game);
                 game.informPlayers(equipment.getName() + " transforms into " + equipment.getSecondCardFace().getName());
 

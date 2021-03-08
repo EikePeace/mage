@@ -35,7 +35,7 @@ public final class RustmouthOgre extends CardImpl {
         this.addAbility(new RustmouthOgreTriggeredAbility());
     }
 
-    public RustmouthOgre(final RustmouthOgre card) {
+    private RustmouthOgre(final RustmouthOgre card) {
         super(card);
     }
 
@@ -62,7 +62,7 @@ class RustmouthOgreTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.DAMAGED_PLAYER;
+        return event.getType() == GameEvent.EventType.DAMAGED_PLAYER;
     }
 
     @Override

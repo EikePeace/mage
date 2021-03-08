@@ -40,7 +40,7 @@ public final class BoonweaverGiant extends CardImpl {
         this.addAbility(new EntersBattlefieldTriggeredAbility(new BoonweaverGiantEffect(), true));
     }
 
-    public BoonweaverGiant(final BoonweaverGiant card) {
+    private BoonweaverGiant(final BoonweaverGiant card) {
         super(card);
     }
 
@@ -115,7 +115,7 @@ class BoonweaverGiantEffect extends OneShotEffect {
             }
             controller.moveCards(card, Zone.BATTLEFIELD, source, game);
             if (permanent != null) {
-                return permanent.addAttachment(card.getId(), game);
+                return permanent.addAttachment(card.getId(), source, game);
             }
         }
         return true;

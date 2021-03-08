@@ -1,15 +1,15 @@
-
 package mage.cards.r;
 
-import java.util.UUID;
 import mage.MageInt;
 import mage.abilities.common.SimpleStaticAbility;
-import mage.abilities.effects.common.ruleModifying.PlayLandsFromGraveyardEffect;
+import mage.abilities.effects.common.ruleModifying.PlayLandsFromGraveyardControllerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Zone;
+
+import java.util.UUID;
 
 /**
  * @author fireshoes
@@ -24,11 +24,11 @@ public final class RamunapExcavator extends CardImpl {
         this.power = new MageInt(2);
         this.toughness = new MageInt(3);
 
-        // You may play land cards from your graveyard.
-        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayLandsFromGraveyardEffect()));
+        // You may play lands from your graveyard.
+        this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new PlayLandsFromGraveyardControllerEffect()));
     }
 
-    public RamunapExcavator(final RamunapExcavator card) {
+    private RamunapExcavator(final RamunapExcavator card) {
         super(card);
     }
 

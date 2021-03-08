@@ -23,7 +23,7 @@ public final class SyphonSoul extends CardImpl {
         this.getSpellAbility().addEffect(new SyphonSoulEffect());
     }
 
-    public SyphonSoul(final SyphonSoul card) {
+    private SyphonSoul(final SyphonSoul card) {
         super(card);
     }
 
@@ -48,7 +48,7 @@ class SyphonSoulEffect extends OneShotEffect {
         int damageDealt = 0;
         for (UUID playerId : game.getState().getPlayersInRange(source.getControllerId(), game)) {
             if (!playerId.equals(source.getControllerId())) {
-                damageDealt += game.getPlayer(playerId).damage(2, source.getSourceId(), game);
+                damageDealt += game.getPlayer(playerId).damage(2, source.getSourceId(), source, game);
             }
         }
         if (damageDealt > 0) {

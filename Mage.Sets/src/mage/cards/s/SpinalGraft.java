@@ -46,7 +46,7 @@ public final class SpinalGraft extends CardImpl {
         this.addAbility(new SpinalGraftTriggeredAbility());
     }
 
-    public SpinalGraft(final SpinalGraft card) {
+    private SpinalGraft(final SpinalGraft card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class SpinalGraftTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.TARGETED;
+        return event.getType() == GameEvent.EventType.TARGETED;
     }
     
     @Override

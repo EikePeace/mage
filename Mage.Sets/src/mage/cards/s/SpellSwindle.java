@@ -28,7 +28,7 @@ public final class SpellSwindle extends CardImpl {
         this.getSpellAbility().addEffect(new SpellSwindleEffect());
     }
 
-    public SpellSwindle(final SpellSwindle card) {
+    private SpellSwindle(final SpellSwindle card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class SpellSwindleEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         StackObject stackObject = game.getStack().getStackObject(targetPointer.getFirst(game, source));
         if (stackObject != null) {
-            game.getStack().counter(source.getFirstTarget(), source.getSourceId(), game);
+            game.getStack().counter(source.getFirstTarget(), source, game);
             return new CreateTokenEffect(new TreasureToken(), stackObject.getConvertedManaCost()).apply(game, source);
         }
         return false;

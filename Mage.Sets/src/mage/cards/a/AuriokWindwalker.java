@@ -48,7 +48,7 @@ public final class AuriokWindwalker extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AuriokWindwalker(final AuriokWindwalker card) {
+    private AuriokWindwalker(final AuriokWindwalker card) {
         super(card);
     }
 
@@ -79,7 +79,7 @@ class AttachTargetEquipmentEffect extends OneShotEffect {
         Permanent equipment = game.getPermanent(source.getFirstTarget());
         Permanent creature = game.getPermanent(source.getTargets().get(1).getFirstTarget());
         if (creature != null && equipment != null) {
-            return creature.addAttachment(equipment.getId(), game);
+            return creature.addAttachment(equipment.getId(), source, game);
         }
         return false;
     }

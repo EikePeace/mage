@@ -41,7 +41,7 @@ public final class CurseOfPredation extends CardImpl {
         this.addAbility(new CurseOfPredationTriggeredAbility());
     }
 
-    public CurseOfPredation(final CurseOfPredation card) {
+    private CurseOfPredation(final CurseOfPredation card) {
         super(card);
     }
 
@@ -67,7 +67,7 @@ class CurseOfPredationTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ATTACKER_DECLARED;
+        return event.getType() == GameEvent.EventType.ATTACKER_DECLARED;
     }
 
     @Override

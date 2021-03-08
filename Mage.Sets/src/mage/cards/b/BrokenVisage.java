@@ -41,7 +41,7 @@ public final class BrokenVisage extends CardImpl {
         this.getSpellAbility().addTarget(new TargetCreaturePermanent(filter));
     }
 
-    public BrokenVisage(final BrokenVisage card) {
+    private BrokenVisage(final BrokenVisage card) {
         super(card);
     }
 
@@ -69,9 +69,9 @@ class BrokenVisageEffect extends OneShotEffect {
 
     @Override
     public boolean apply(Game game, Ability source) {
-        Permanent permanent = game.getPermanentOrLKIBattlefield(this.getTargetPointer().getFirst(game, source));
+        Permanent permanent = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
         if (permanent != null) { 
-            permanent.destroy(source.getSourceId(), game, true);
+            permanent.destroy(source, game, true);
             CreateTokenEffect effect = new CreateTokenEffect(new BrokenVisageSpiritToken(permanent.getPower().getValue(), permanent.getToughness().getValue()));
             effect.apply(game, source);
             for (UUID tokenId : effect.getLastAddedTokenIds()) {

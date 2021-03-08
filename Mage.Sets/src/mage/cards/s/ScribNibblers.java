@@ -42,7 +42,7 @@ public final class ScribNibblers extends CardImpl {
         this.addAbility(new LandfallAbility(Zone.BATTLEFIELD, new UntapSourceEffect(), true));
     }
 
-    public ScribNibblers(final ScribNibblers card) {
+    private ScribNibblers(final ScribNibblers card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class ScribNibblersEffect extends OneShotEffect {
         Player targetPlayer = game.getPlayer(source.getFirstTarget());
         if (targetPlayer != null && targetPlayer.getLibrary().hasCards()) {
             Card card = targetPlayer.getLibrary().getFromTop(game);
-            card.moveToExile(id, "Scrib Nibblers Exile", source.getSourceId(), game);
+            card.moveToExile(id, "Scrib Nibblers Exile", source, game);
             if (card.isLand() && you != null) {
                 you.gainLife(1, game, source);
                 return true;

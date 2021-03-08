@@ -47,7 +47,7 @@ public final class JarJarBinks extends CardImpl {
         this.addAbility(new BeginningOfCombatTriggeredAbility(new JarJarBinksTapEffect(), TargetController.YOU, false));
     }
 
-    public JarJarBinks(final JarJarBinks card) {
+    private JarJarBinks(final JarJarBinks card) {
         super(card);
     }
 
@@ -109,7 +109,7 @@ class JarJarBinksGainControlSourceEffect extends ContinuousEffectImpl {
         UUID targetOpponent = getTargetPointer().getFirst(game, source);
         Permanent permanent = game.getPermanent(source.getSourceId());
         if (permanent != null && targetOpponent != null) {
-            permanent.changeControllerId(targetOpponent, game);
+            permanent.changeControllerId(targetOpponent, game, source);
         } else {
             // no valid target exists, effect can be discarded
             discard();
@@ -164,7 +164,7 @@ class JarJarBinksTapEffect extends OneShotEffect {
             }
             if (permanentToTap != null) {
                 game.informPlayers(sourcePermanent.getName() + " chosen creature: " + permanentToTap.getName());
-                return permanentToTap.tap(game);
+                return permanentToTap.tap(source, game);
             }
             return true;
         }

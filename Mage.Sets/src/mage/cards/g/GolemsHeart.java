@@ -26,7 +26,7 @@ public final class GolemsHeart extends CardImpl {
         this.addAbility(new GolemsHeartAbility());
     }
 
-    public GolemsHeart(final GolemsHeart card) {
+    private GolemsHeart(final GolemsHeart card) {
         super(card);
     }
 
@@ -54,7 +54,7 @@ class GolemsHeartAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.SPELL_CAST;
+        return event.getType() == GameEvent.EventType.SPELL_CAST;
     }
 
     @Override

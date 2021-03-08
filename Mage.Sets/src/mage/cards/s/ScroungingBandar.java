@@ -17,7 +17,7 @@ import mage.constants.TargetController;
 import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -52,7 +52,7 @@ public final class ScroungingBandar extends CardImpl {
         this.addAbility(ability);
     }
 
-    public ScroungingBandar(final ScroungingBandar card) {
+    private ScroungingBandar(final ScroungingBandar card) {
         super(card);
     }
 
@@ -90,8 +90,8 @@ class ScroungingBandarEffect extends OneShotEffect {
                 if (amountCounters > 0) {
                     int amountToMove = controller.getAmount(0, amountCounters, "How many counters do you want to move?", game);
                     if (amountToMove > 0) {
-                        fromPermanent.removeCounters(CounterType.P1P1.createInstance(amountToMove), game);
-                        toPermanent.addCounters(CounterType.P1P1.createInstance(amountToMove), source, game);
+                        fromPermanent.removeCounters(CounterType.P1P1.createInstance(amountToMove), source, game);
+                        toPermanent.addCounters(CounterType.P1P1.createInstance(amountToMove), source.getControllerId(), source, game);
                     }
                 }
                 return true;

@@ -19,7 +19,7 @@ import mage.game.permanent.Permanent;
 import mage.game.permanent.PermanentCard;
 import mage.players.Player;
 import mage.target.targetpointer.FixedTarget;
-import mage.util.functions.ApplyToPermanent;
+import mage.util.functions.CopyApplier;
 
 /**
  *
@@ -45,7 +45,7 @@ public final class LazavDimirMastermind extends CardImpl {
                 TargetController.OPPONENT, SetTargetPointer.CARD));
     }
 
-    public LazavDimirMastermind(final LazavDimirMastermind card) {
+    private LazavDimirMastermind(final LazavDimirMastermind card) {
         super(card);
     }
 
@@ -59,7 +59,7 @@ class LazavDimirMastermindEffect extends OneShotEffect {
 
     LazavDimirMastermindEffect() {
         super(Outcome.Copy);
-        staticText = "you may have {this} become a copy of that card except its name is Lazav, Dimir Mastermind, it's legendary in addition to its other types, and it has hexproof and this ability";
+        staticText = "you may have {this} become a copy of that card, except its name is Lazav, Dimir Mastermind, it's legendary in addition to its other types, and it has hexproof and this ability";
     }
 
     LazavDimirMastermindEffect(final LazavDimirMastermindEffect effect) {
@@ -82,7 +82,7 @@ class LazavDimirMastermindEffect extends OneShotEffect {
             if (copyFromCard != null) {
                 newBluePrint = new PermanentCard(copyFromCard, source.getControllerId(), game);
                 newBluePrint.assignNewId();
-                ApplyToPermanent applier = new LazavDimirMastermindApplier();
+                CopyApplier applier = new LazavDimirMastermindCopyApplier();
                 applier.apply(game, newBluePrint, source, lazavDimirMastermind.getId());
                 CopyEffect copyEffect = new CopyEffect(Duration.Custom, newBluePrint, lazavDimirMastermind.getId());
                 copyEffect.newId();
@@ -97,31 +97,18 @@ class LazavDimirMastermindEffect extends OneShotEffect {
     }
 }
 
-class LazavDimirMastermindApplier extends ApplyToPermanent {
+class LazavDimirMastermindCopyApplier extends CopyApplier {
 
     @Override
-    public boolean apply(Game game, Permanent permanent, Ability source, UUID copyToObjectId) {
+    public boolean apply(Game game, MageObject blueprint, Ability source, UUID copyToObjectId) {
         Ability ability = new PutCardIntoGraveFromAnywhereAllTriggeredAbility(
                 new LazavDimirMastermindEffect(), true,
                 new FilterCreatureCard("a creature card"),
                 TargetController.OPPONENT, SetTargetPointer.CARD);
-        permanent.getAbilities().add(ability);
-        permanent.setName("Lazav, Dimir Mastermind");
-        permanent.addSuperType(SuperType.LEGENDARY);
-        permanent.getAbilities().add(HexproofAbility.getInstance());
-        return true;
-    }
-
-    @Override
-    public boolean apply(Game game, MageObject mageObject, Ability source, UUID copyToObjectId) {
-        Ability ability = new PutCardIntoGraveFromAnywhereAllTriggeredAbility(
-                new LazavDimirMastermindEffect(), true,
-                new FilterCreatureCard("a creature card"),
-                TargetController.OPPONENT, SetTargetPointer.CARD);
-        mageObject.getAbilities().add(ability);
-        mageObject.setName("Lazav, Dimir Mastermind");
-        mageObject.addSuperType(SuperType.LEGENDARY);
-        mageObject.getAbilities().add(HexproofAbility.getInstance());
+        blueprint.getAbilities().add(ability);
+        blueprint.setName("Lazav, Dimir Mastermind");
+        blueprint.addSuperType(SuperType.LEGENDARY);
+        blueprint.getAbilities().add(HexproofAbility.getInstance());
         return true;
     }
 }

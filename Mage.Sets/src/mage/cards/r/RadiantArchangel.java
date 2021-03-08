@@ -18,7 +18,7 @@ import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.common.FilterCreaturePermanent;
 import mage.filter.predicate.mageobject.AbilityPredicate;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -52,7 +52,7 @@ public final class RadiantArchangel extends CardImpl {
         this.addAbility(new SimpleStaticAbility(Zone.BATTLEFIELD, new BoostSourceEffect(xValue, xValue, Duration.WhileOnBattlefield)));        
     }
 
-    public RadiantArchangel(final RadiantArchangel card) {
+    private RadiantArchangel(final RadiantArchangel card) {
         super(card);
     }
 

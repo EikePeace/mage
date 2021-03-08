@@ -7,7 +7,7 @@ import mage.abilities.costs.common.ExileSourceCost;
 import mage.abilities.costs.common.TapSourceCost;
 import mage.abilities.costs.mana.GenericManaCost;
 import mage.abilities.effects.OneShotEffect;
-import mage.abilities.effects.common.PutTopCardOfLibraryIntoGraveControllerEffect;
+import mage.abilities.effects.common.MillCardsControllerEffect;
 import mage.cards.Card;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -30,7 +30,7 @@ public final class WandOfVertebrae extends CardImpl {
 
         // {T}: Put the top card of your library into your graveyard.
         this.addAbility(new SimpleActivatedAbility(
-                new PutTopCardOfLibraryIntoGraveControllerEffect(1),
+                new MillCardsControllerEffect(1),
                 new TapSourceCost()
         ));
 
@@ -45,7 +45,7 @@ public final class WandOfVertebrae extends CardImpl {
         this.addAbility(ability);
     }
 
-    public WandOfVertebrae(final WandOfVertebrae card) {
+    private WandOfVertebrae(final WandOfVertebrae card) {
         super(card);
     }
 

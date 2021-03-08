@@ -3,7 +3,7 @@ package mage.cards.y;
 
 import java.util.UUID;
 import mage.MageInt;
-import mage.abilities.common.DiesTriggeredAbility;
+import mage.abilities.common.DiesSourceTriggeredAbility;
 import mage.abilities.effects.common.DrawCardSourceControllerEffect;
 import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
@@ -24,10 +24,10 @@ public final class YouthfulScholar extends CardImpl {
         this.toughness = new MageInt(2);
 
         // When Youthful Scholar dies, draw two cards.
-        this.addAbility(new DiesTriggeredAbility(new DrawCardSourceControllerEffect(2), false));
+        this.addAbility(new DiesSourceTriggeredAbility(new DrawCardSourceControllerEffect(2), false));
     }
 
-    public YouthfulScholar(final YouthfulScholar card) {
+    private YouthfulScholar(final YouthfulScholar card) {
         super(card);
     }
 

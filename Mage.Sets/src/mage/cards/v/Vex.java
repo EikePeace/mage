@@ -26,7 +26,7 @@ public final class Vex extends CardImpl {
         getSpellAbility().addEffect(new VexEffect());
     }
 
-    public Vex(final Vex card) {
+    private Vex(final Vex card) {
         super(card);
     }
 
@@ -61,11 +61,11 @@ class VexEffect extends OneShotEffect {
             controller = game.getPlayer(game.getControllerId(targetId));
         }
         if (targetId != null
-                && game.getStack().counter(targetId, source.getSourceId(), game)) {
+                && game.getStack().counter(targetId, source, game)) {
             countered = true;
         }
         if (controller != null) {
-            controller.drawCards(1, game);
+            controller.drawCards(1, source, game);
         }
         return countered;
     }

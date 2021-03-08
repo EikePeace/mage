@@ -9,7 +9,7 @@ import mage.constants.Outcome;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterControlledCreaturePermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.mageobject.AnotherTargetPredicate;
+import mage.filter.predicate.other.AnotherTargetPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.Target;
@@ -89,10 +89,10 @@ class BandTogetherEffect extends OneShotEffect {
         }
 
         if (permanentDamage1 != null) {
-            permanentDest.damage(permanentDamage1.getPower().getValue(), permanentDamage1.getId(), game, false, true);
+            permanentDest.damage(permanentDamage1.getPower().getValue(), permanentDamage1.getId(), source, game, false, true);
         }
         if (permanentDamage2 != null) {
-            permanentDest.damage(permanentDamage2.getPower().getValue(), permanentDamage2.getId(), game, false, true);
+            permanentDest.damage(permanentDamage2.getPower().getValue(), permanentDamage2.getId(), source, game, false, true);
         }
         return true;
     }

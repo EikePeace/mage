@@ -23,7 +23,6 @@ import mage.constants.Zone;
 import mage.counters.CounterType;
 import mage.filter.FilterCard;
 import mage.filter.predicate.Predicates;
-import mage.filter.predicate.other.CounterCardPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
@@ -46,15 +45,17 @@ public final class MairsilThePretender extends CardImpl {
         this.power = new MageInt(4);
         this.toughness = new MageInt(4);
 
-        // When Mairsil, the Pretender enters the battlefield, you may exile an artifact or creature card from your hand or graveyard and put a cage counter on it.
+        // When Mairsil, the Pretender enters the battlefield, you may exile an artifact or creature card from your hand
+        // or graveyard and put a cage counter on it.
         this.addAbility(new EntersBattlefieldTriggeredAbility(new MairsilThePretenderExileEffect(), true));
 
-        // Mairsil, the Pretender has all activated abilities of all cards you own in exile with cage counters on them. You may activate each of those abilities only once each turn.
+        // Mairsil, the Pretender has all activated abilities of all cards you own in exile with cage counters on them. 
+        // You may activate each of those abilities only once each turn.
         Ability ability = new SimpleStaticAbility(Zone.BATTLEFIELD, new MairsilThePretenderGainAbilitiesEffect());
         this.addAbility(ability);
     }
 
-    public MairsilThePretender(final MairsilThePretender card) {
+    private MairsilThePretender(final MairsilThePretender card) {
         super(card);
     }
 
@@ -96,7 +97,7 @@ class MairsilThePretenderExileEffect extends OneShotEffect {
                 Card card = controller.getHand().get(target.getFirstTarget(), game);
                 if (card != null) {
                     controller.moveCards(card, Zone.EXILED, source, game);
-                    card.addCounters(CounterType.CAGE.createInstance(), source, game);
+                    card.addCounters(CounterType.CAGE.createInstance(), source.getControllerId(), source, game);
                 }
             } else {
                 Target target = new TargetCardInYourGraveyard(0, 1, filter);
@@ -104,7 +105,7 @@ class MairsilThePretenderExileEffect extends OneShotEffect {
                 Card card = controller.getGraveyard().get(target.getFirstTarget(), game);
                 if (card != null) {
                     controller.moveCards(card, Zone.EXILED, source, game);
-                    card.addCounters(CounterType.CAGE.createInstance(), source, game);
+                    card.addCounters(CounterType.CAGE.createInstance(), source.getControllerId(), source, game);
                 }
             }
             return true;
@@ -118,7 +119,7 @@ class MairsilThePretenderGainAbilitiesEffect extends ContinuousEffectImpl {
     private static final FilterCard filter = new FilterCard();
 
     static {
-        filter.add(new CounterCardPredicate(CounterType.CAGE));
+        filter.add(CounterType.CAGE.getPredicate());
     }
 
     public MairsilThePretenderGainAbilitiesEffect() {

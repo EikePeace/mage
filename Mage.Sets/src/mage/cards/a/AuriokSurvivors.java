@@ -44,7 +44,7 @@ public final class AuriokSurvivors extends CardImpl {
         this.addAbility(ability);
     }
 
-    public AuriokSurvivors(final AuriokSurvivors card) {
+    private AuriokSurvivors(final AuriokSurvivors card) {
         super(card);
     }
 
@@ -71,7 +71,7 @@ class AuriokSurvivorsEffect extends OneShotEffect {
         Player player = game.getPlayer(source.getControllerId());
         if (p != null && player != null && sourcePermanent != null) {
             if (player.chooseUse(Outcome.Benefit, "Attach " + p.getName() + " to " + sourcePermanent.getName() + '?', source, game)) {
-                sourcePermanent.addAttachment(p.getId(), game);
+                sourcePermanent.addAttachment(p.getId(), source, game);
             }
             return true;
         }

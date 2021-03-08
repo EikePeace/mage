@@ -10,7 +10,6 @@ import mage.abilities.effects.common.discard.DiscardTargetEffect;
 import mage.abilities.keyword.AftermathAbility;
 import mage.abilities.keyword.MenaceAbility;
 import mage.abilities.keyword.TrampleAbility;
-import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.cards.SplitCard;
 import mage.constants.CardType;
@@ -51,7 +50,7 @@ public final class DrivenDespair extends SplitCard {
 
     }
 
-    public DrivenDespair(final DrivenDespair card) {
+    private DrivenDespair(final DrivenDespair card) {
         super(card);
     }
 

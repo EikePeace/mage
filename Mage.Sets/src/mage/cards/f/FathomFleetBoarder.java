@@ -13,7 +13,7 @@ import mage.cards.CardSetInfo;
 import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.filter.common.FilterControlledPermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 
 /**
  *
@@ -43,7 +43,7 @@ public final class FathomFleetBoarder extends CardImpl {
                  false));
     }
 
-    public FathomFleetBoarder(final FathomFleetBoarder card) {
+    private FathomFleetBoarder(final FathomFleetBoarder card) {
         super(card);
     }
 

@@ -41,11 +41,11 @@ public final class LimitedResources extends CardImpl {
                         new CantPlayLandEffect(),
                         new PermanentsOnTheBattlefieldCondition(
                                 new FilterLandPermanent(),
-                                ComparisonType.MORE_THAN, 9))));
+                                ComparisonType.MORE_THAN, 9, false))));
 
     }
 
-    public LimitedResources(final LimitedResources card) {
+    private LimitedResources(final LimitedResources card) {
         super(card);
     }
 
@@ -82,7 +82,7 @@ class LimitedResourcesEffect extends OneShotEffect {
                 target.setRequired(true);
                 player.chooseTarget(outcome.Benefit, target, source, game);
                 game.getBattlefield().getAllActivePermanents(new FilterControlledLandPermanent(), playerId, game).stream().filter((land) -> (!target.getTargets().contains(land.getId()))).forEachOrdered((land) -> {
-                    land.sacrifice(source.getSourceId(), game);
+                    land.sacrifice(source, game);
                 });
             }
         });

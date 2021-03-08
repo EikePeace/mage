@@ -46,7 +46,7 @@ public final class AvacynsCollar extends CardImpl {
         this.addAbility(new EquipAbility(Outcome.BoostCreature, new GenericManaCost(2)));
     }
 
-    public AvacynsCollar(final AvacynsCollar card) {
+    private AvacynsCollar(final AvacynsCollar card) {
         super(card);
     }
 
@@ -73,7 +73,7 @@ class AvacynsCollarTriggeredAbility extends TriggeredAbilityImpl {
 
     @Override
     public boolean checkEventType(GameEvent event, Game game) {
-        return event.getType() == EventType.ZONE_CHANGE;
+        return event.getType() == GameEvent.EventType.ZONE_CHANGE;
     }
 
     @Override

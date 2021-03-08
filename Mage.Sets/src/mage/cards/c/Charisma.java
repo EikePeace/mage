@@ -4,8 +4,7 @@ package mage.cards.c;
 import java.util.UUID;
 import mage.abilities.Ability;
 import mage.abilities.common.DealsDamageToACreatureAttachedTriggeredAbility;
-import mage.abilities.condition.Condition;
-import mage.abilities.condition.common.SourceOnBattlefieldCondition;
+import mage.abilities.condition.common.SourceRemainsInZoneCondition;
 import mage.abilities.decorator.ConditionalContinuousEffect;
 import mage.abilities.effects.common.AttachEffect;
 import mage.abilities.effects.common.continuous.GainControlTargetEffect;
@@ -16,6 +15,7 @@ import mage.constants.CardType;
 import mage.constants.SubType;
 import mage.constants.Duration;
 import mage.constants.Outcome;
+import mage.constants.Zone;
 import mage.target.TargetPermanent;
 import mage.target.common.TargetCreaturePermanent;
 
@@ -40,13 +40,13 @@ public final class Charisma extends CardImpl {
         this.addAbility(ability);
 
         // Whenever enchanted creature deals damage to a creature, gain control of the other creature for as long as Charisma remains on the battlefield.
-        Condition condition = SourceOnBattlefieldCondition.instance;
-        ConditionalContinuousEffect conditionalEffect = new ConditionalContinuousEffect(new GainControlTargetEffect(Duration.Custom), condition, rule);
+        ConditionalContinuousEffect conditionalEffect = new ConditionalContinuousEffect(new GainControlTargetEffect(Duration.Custom), 
+                new SourceRemainsInZoneCondition(Zone.BATTLEFIELD), rule);
         this.addAbility(new DealsDamageToACreatureAttachedTriggeredAbility(conditionalEffect, false, "enchanted creature", false, true));
         
     }
 
-    public Charisma(final Charisma card) {
+    private Charisma(final Charisma card) {
         super(card);
     }
 

@@ -20,7 +20,7 @@ import mage.constants.SubType;
 import mage.constants.Zone;
 import mage.filter.FilterPermanent;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.events.GameEvent;
 import mage.players.Player;
@@ -55,7 +55,7 @@ public final class RampagingFerocidon extends CardImpl {
                 Zone.BATTLEFIELD, new DamageTargetEffect(1, true, "that creature's controller"), filter, false, SetTargetPointer.PLAYER, ""));
     }
 
-    public RampagingFerocidon(final RampagingFerocidon card) {
+    private RampagingFerocidon(final RampagingFerocidon card) {
         super(card);
     }
 

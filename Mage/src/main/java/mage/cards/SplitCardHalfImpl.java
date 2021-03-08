@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mage.cards;
 
+import mage.abilities.Ability;
 import mage.constants.CardType;
 import mage.constants.SpellAbilityType;
 import mage.constants.Zone;
@@ -14,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- *
  * @author LevelX2
  */
 public class SplitCardHalfImpl extends CardImpl implements SplitCardHalf {
@@ -52,13 +47,18 @@ public class SplitCardHalfImpl extends CardImpl implements SplitCardHalf {
     }
 
     @Override
-    public boolean moveToZone(Zone toZone, UUID sourceId, Game game, boolean flag, List<UUID> appliedEffects) {
-        return splitCardParent.moveToZone(toZone, sourceId, game, flag, appliedEffects);
+    public boolean moveToZone(Zone toZone, Ability source, Game game, boolean flag, List<UUID> appliedEffects) {
+        return splitCardParent.moveToZone(toZone, source, game, flag, appliedEffects);
     }
 
     @Override
-    public boolean moveToExile(UUID exileId, String name, UUID sourceId, Game game, List<UUID> appliedEffects) {
-        return splitCardParent.moveToExile(exileId, name, sourceId, game, appliedEffects);
+    public boolean moveToExile(UUID exileId, String name, Ability source, Game game, List<UUID> appliedEffects) {
+        return splitCardParent.moveToExile(exileId, name, source, game, appliedEffects);
+    }
+
+    @Override
+    public boolean removeFromZone(Game game, Zone fromZone, Ability source) {
+        return splitCardParent.removeFromZone(game, fromZone, source);
     }
 
     @Override

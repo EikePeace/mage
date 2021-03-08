@@ -17,8 +17,6 @@ import mage.constants.Duration;
 import mage.constants.SuperType;
 import mage.constants.Zone;
 import mage.filter.StaticFilters;
-import mage.game.permanent.token.TokenImpl;
-import mage.game.permanent.token.Token;
 import mage.game.permanent.token.custom.CreatureToken;
 import mage.target.common.TargetLandPermanent;
 
@@ -53,7 +51,7 @@ public final class KamahlFistOfKrosa extends CardImpl {
 		this.addAbility(boostAbility);
     }
 
-    public KamahlFistOfKrosa(final KamahlFistOfKrosa card) {
+    private KamahlFistOfKrosa(final KamahlFistOfKrosa card) {
         super(card);
     }
 

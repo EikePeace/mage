@@ -9,7 +9,7 @@ import mage.cards.CardImpl;
 import mage.cards.CardSetInfo;
 import mage.constants.*;
 import mage.filter.common.FilterCreaturePermanent;
-import mage.filter.predicate.permanent.AnotherPredicate;
+import mage.filter.predicate.mageobject.AnotherPredicate;
 import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.target.common.TargetPlayerOrPlaneswalker;
@@ -44,7 +44,7 @@ public final class StalkingVengeance extends CardImpl {
         this.addAbility(ability);
     }
 
-    public StalkingVengeance(final StalkingVengeance card) {
+    private StalkingVengeance(final StalkingVengeance card) {
         super(card);
     }
 
@@ -74,7 +74,7 @@ class StalkingVengeanceDamageEffect extends OneShotEffect {
     public boolean apply(Game game, Ability source) {
         Permanent creature = (Permanent) game.getLastKnownInformation(this.getTargetPointer().getFirst(game, source), Zone.BATTLEFIELD);
         if (creature != null) {
-            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), creature.getPower().getValue(), creature.getId(), game, false, true);
+            game.damagePlayerOrPlaneswalker(source.getFirstTarget(), creature.getPower().getValue(), creature.getId(), source, game, false, true);
             return true;
         }
         return false;

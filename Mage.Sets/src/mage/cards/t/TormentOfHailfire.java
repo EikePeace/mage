@@ -28,7 +28,7 @@ public final class TormentOfHailfire extends CardImpl {
         
     }
     
-    public TormentOfHailfire(final TormentOfHailfire card) {
+    private TormentOfHailfire(final TormentOfHailfire card) {
         super(card);
     }
     
@@ -60,6 +60,7 @@ class TormentOfHailfireEffect extends OneShotEffect {
         if (controller != null) {
             int repeat = source.getManaCostsToPay().getX();
             for (int i = 1; i <= repeat; i++) {
+                
                 for (UUID opponentId : game.getOpponents(source.getControllerId())) {
                     Player opponent = game.getPlayer(opponentId);
                     if (opponent != null) {
@@ -71,7 +72,7 @@ class TormentOfHailfireEffect extends OneShotEffect {
                             if (opponent.choose(outcome, target, source.getSourceId(), game)) {
                                 Permanent permanent = game.getPermanent(target.getFirstTarget());
                                 if (permanent != null) {
-                                    if (permanent.sacrifice(source.getSourceId(), game)) {
+                                    if (permanent.sacrifice(source, game)) {
                                         continue;
                                     }
                                 }
@@ -79,13 +80,12 @@ class TormentOfHailfireEffect extends OneShotEffect {
                         }
                         if (!opponent.getHand().isEmpty() && opponent.chooseUse(outcome, "Discard a card? (Iteration " + i + " of " + repeat + ")",
                                 "Otherwise you lose 3 life.", "Discard", "Lose 3 life", source, game)) {
-                            opponent.discardOne(false, source, game);
+                            opponent.discardOne(false, false, source, game);
                             continue;
                         }
-                        opponent.loseLife(3, game, false);
+                        opponent.loseLife(3, game, source, false);
                     }
                 }
-                
             }
             return true;
         }

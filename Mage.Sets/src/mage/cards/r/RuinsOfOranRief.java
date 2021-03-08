@@ -28,7 +28,7 @@ public final class RuinsOfOranRief extends CardImpl {
 
     static {
         filter.add(ColorlessPredicate.instance);
-        filter.add(new EnteredThisTurnPredicate());
+        filter.add(EnteredThisTurnPredicate.instance);
     }
 
     public RuinsOfOranRief(UUID ownerId, CardSetInfo setInfo) {
@@ -45,7 +45,7 @@ public final class RuinsOfOranRief extends CardImpl {
         this.addAbility(ability);
     }
 
-    public RuinsOfOranRief(final RuinsOfOranRief card) {
+    private RuinsOfOranRief(final RuinsOfOranRief card) {
         super(card);
     }
 

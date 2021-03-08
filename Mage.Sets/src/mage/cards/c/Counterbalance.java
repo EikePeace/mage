@@ -33,7 +33,7 @@ public final class Counterbalance extends CardImpl {
         this.addAbility(new SpellCastOpponentTriggeredAbility(Zone.BATTLEFIELD, new CounterbalanceEffect(), StaticFilters.FILTER_SPELL, true, SetTargetPointer.SPELL));
     }
 
-    public Counterbalance(final Counterbalance card) {
+    private Counterbalance(final Counterbalance card) {
         super(card);
     }
 
@@ -72,7 +72,7 @@ class CounterbalanceEffect extends OneShotEffect {
                     cards.add(topcard);
                     controller.revealCards(sourcePermanent.getName(), cards, game);
                     if (topcard.getConvertedManaCost() == spell.getConvertedManaCost()) {
-                        return game.getStack().counter(spell.getId(), source.getSourceId(), game);
+                        return game.getStack().counter(spell.getId(), source, game);
                     }
                 }
                 return true;

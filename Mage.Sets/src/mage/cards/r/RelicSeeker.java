@@ -19,7 +19,7 @@ import mage.target.common.TargetCardInLibrary;
  */
 public final class RelicSeeker extends CardImpl {
 
-    private static final FilterCard filter = new FilterCard("an Equipment card");
+    private static final FilterCard filter = new FilterCard("Equipment card");
 
     static {
         filter.add(CardType.ARTIFACT.getPredicate());
@@ -42,7 +42,7 @@ public final class RelicSeeker extends CardImpl {
 
     }
 
-    public RelicSeeker(final RelicSeeker card) {
+    private RelicSeeker(final RelicSeeker card) {
         super(card);
     }
 

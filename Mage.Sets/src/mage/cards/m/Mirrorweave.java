@@ -17,7 +17,7 @@ import mage.game.Game;
 import mage.game.permanent.Permanent;
 import mage.players.Player;
 import mage.target.TargetPermanent;
-import mage.util.functions.EmptyApplyToPermanent;
+import mage.util.functions.EmptyCopyApplier;
 
 /**
  *
@@ -40,7 +40,7 @@ public final class Mirrorweave extends CardImpl {
 
     }
 
-    public Mirrorweave(final Mirrorweave card) {
+    private Mirrorweave(final Mirrorweave card) {
         super(card);
     }
 
@@ -72,12 +72,12 @@ class MirrorWeaveEffect extends OneShotEffect {
         FilterCreaturePermanent filter = new FilterCreaturePermanent();
 
         if (controller != null) {
-            Permanent copyFromCreature = game.getPermanentOrLKIBattlefield(source.getFirstTarget());
+            Permanent copyFromCreature = getTargetPointer().getFirstTargetPermanentOrLKI(game, source);
             if (copyFromCreature != null) {
                 filter.add(Predicates.not(new PermanentIdPredicate(copyFromCreature.getId())));
                 for (Permanent copyToCreature : game.getBattlefield().getAllActivePermanents(filter, game)) {
                     if (copyToCreature != null) {
-                        game.copyPermanent(Duration.EndOfTurn, copyFromCreature, copyToCreature.getId(), source, new EmptyApplyToPermanent());
+                        game.copyPermanent(Duration.EndOfTurn, copyFromCreature, copyToCreature.getId(), source, new EmptyCopyApplier());
                     }
                 }
             }
